@@ -5,9 +5,11 @@
 	version="1.0">
 	<persistence-unit name="uy.com.amensg.logistica.persistenceUnit" transaction-type="JTA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>java:PostgreSQL</jta-data-source>
+		<jta-data-source>java:PostgreSQLLogistica</jta-data-source>
         
 		<class>uy.com.amensg.logistica.entities.StockMovimiento</class>
+		<class>uy.com.amensg.logistica.entities.Producto</class>
+		<class>uy.com.amensg.logistica.entities.ACMInterfaceContrato</class>
 
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
