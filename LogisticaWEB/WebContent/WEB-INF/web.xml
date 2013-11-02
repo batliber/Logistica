@@ -2,7 +2,7 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>LogisticaWEB</display-name>
   <welcome-file-list>
-    <welcome-file>test.jsp</welcome-file>
+    <welcome-file>main.jsp</welcome-file>
   </welcome-file-list>
   
   <!-- 
@@ -26,6 +26,15 @@
   </servlet>
   -->
   
+  <filter>
+		<filter-name>SeguridadFilter</filter-name>
+		<filter-class>uy.com.amensg.logistica.filters.SeguridadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SeguridadFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+  
   <servlet>
     <servlet-name>dwr-invoker</servlet-name>
     <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
@@ -36,13 +45,27 @@
     <init-param>
       <param-name>classes</param-name>
       <param-value>
+      	uy.com.amensg.logistica.dwr.ACMInterfaceContratoDWR,
+      	uy.com.amensg.logistica.dwr.ACMInterfacePrepagoDWR,
+      	uy.com.amensg.logistica.dwr.ACMInterfaceProcesoDWR,
+      	uy.com.amensg.logistica.dwr.MetadataConsultaDWR,
       	uy.com.amensg.logistica.dwr.ProductoDWR,
+      	uy.com.amensg.logistica.dwr.SeguridadDWR,
+      	uy.com.amensg.logistica.dwr.UsuarioDWR,
       	<!-- 
       	uy.com.amensg.logistica.dwr.StockMovimientoDWR,
       	uy.com.amensg.logistica.dwr.StockTipoMovimientoDWR,
       	 -->
       	 
+      	uy.com.amensg.logistica.entities.ACMInterfaceContratoTO,
+      	uy.com.amensg.logistica.entities.ACMInterfacePrepagoTO,
+      	uy.com.amensg.logistica.entities.ACMInterfaceProcesoEstadisticaTO,
+      	uy.com.amensg.logistica.entities.MetadataCondicionTO,
+      	uy.com.amensg.logistica.entities.MetadataConsultaTO,
+      	uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO,
+      	uy.com.amensg.logistica.entities.MetadataOrdenacionTO,
       	uy.com.amensg.logistica.entities.ProductoTO,
+      	uy.com.amensg.logistica.entities.UsuarioTO,
       	<!--
       	uy.com.amensg.logistica.entities.StockTipoMovimientoTO,
       	uy.com.amensg.logistica.entities.StockMovimientoTO

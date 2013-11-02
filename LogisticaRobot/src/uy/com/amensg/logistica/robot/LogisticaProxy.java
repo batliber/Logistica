@@ -1,127 +1,64 @@
 package uy.com.amensg.logistica.robot;
 
-import java.util.Properties;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import uy.com.amensg.logistica.bean.ACMInterfaceBean;
-import uy.com.amensg.logistica.bean.IACMInterfaceBean;
-import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
-import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
-import uy.com.amensg.logistica.robot.util.Configuration;
-
 public class LogisticaProxy {
 
-	private void getSiguienteMidContratoSinProcesar() {
-		try {
-			IACMInterfaceBean iACMInterfaceBean = lookupBean();
-			
-			ACMInterfaceContrato acmInterfaceContrato = iACMInterfaceBean.getNextContratoSinProcesar();
-			
-			System.out.println(
-				acmInterfaceContrato.getMid()
-				+ " " + 
-				acmInterfaceContrato.getProcesoId()
-			);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	private IConnectionStrategy iConnectionStrategy = new ConnectionStrategyDirect();
+	
+	public void getSiguienteMidSinProcesar() {
+		System.out.println(iConnectionStrategy.getSiguienteMidSinProcesar());
 	}
 	
-	private void getSiguienteMidPrepagoSinProcesar() {
-		try {
-			IACMInterfaceBean iACMInterfaceBean = lookupBean();
-			
-			ACMInterfacePrepago acmInterfacePrepago = iACMInterfaceBean.getNextPrepagoSinProcesar();
-			
-			System.out.println(
-				acmInterfacePrepago.getMid()
-				+ " " + 
-				acmInterfacePrepago.getProcesoId()
-			);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void actualizarDatosMidContrato(
+	public void actualizarDatosMidContrato(
 		String direccion,
+		String documentoTipo,
 		String documento,
 		String fechaFinContrato,
 		String localidad,
+		String codigoPostal,
 		String mid,
 		String nombre,
-		String procesoId,
-		String tipoContrato) {
-		try {
-			IACMInterfaceBean iACMInterfaceBean = lookupBean();
-			
-			ACMInterfaceContrato acmInterfaceContrato = new ACMInterfaceContrato();
-			acmInterfaceContrato.setDireccion(direccion);
-			acmInterfaceContrato.setDocumento(documento);
-			acmInterfaceContrato.setFechaFinContrato(fechaFinContrato);
-			acmInterfaceContrato.setLocalidad(localidad);
-			acmInterfaceContrato.setMid(mid);
-			acmInterfaceContrato.setNombre(nombre);
-			acmInterfaceContrato.setProcesoId(new Long(procesoId));
-			acmInterfaceContrato.setTipoContrato(tipoContrato);
-			
-			iACMInterfaceBean.update(acmInterfaceContrato);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		String tipoContratoCodigo,
+		String tipoContratoDescripcion
+	) {
+		iConnectionStrategy.actualizarDatosMidContrato(
+			direccion, 
+			documentoTipo,
+			documento, 
+			fechaFinContrato, 
+			localidad,
+			codigoPostal,
+			mid, 
+			nombre, 
+			tipoContratoCodigo,
+			tipoContratoDescripcion
+		);
 	}
 	
-	private void actualizarDatosMidPrepago(
+	public void actualizarDatosMidPrepago(
 		String mesAno,
 		String mid,
 		String montoMesActual,
 		String montoMesAnterior1,
-		String montoMesAnterior2,
-		String procesoId
-		) {
-		try {
-			IACMInterfaceBean iACMInterfaceBean = lookupBean();
-			
-			ACMInterfacePrepago acmInterfacePrepago = new ACMInterfacePrepago();
-			acmInterfacePrepago.setMesAno(mesAno);
-			acmInterfacePrepago.setMid(mid);
-			acmInterfacePrepago.setMontoMesActual(montoMesActual);
-			acmInterfacePrepago.setMontoMesAnterior1(montoMesAnterior1);
-			acmInterfacePrepago.setMontoMesAnterior2(montoMesAnterior2);
-			acmInterfacePrepago.setProcesoId(new Long(procesoId));
-			
-			iACMInterfaceBean.update(acmInterfacePrepago);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		String montoMesAnterior2
+	) {
+		iConnectionStrategy.actualizarDatosMidPrepago(
+			mesAno, 
+			mid, 
+			montoMesActual, 
+			montoMesAnterior1, 
+			montoMesAnterior2
+		);
 	}
 	
-	private IACMInterfaceBean lookupBean() throws NamingException {
-		String EARName = Configuration.getInstance().getProperty("EARName");
-		String beanName = ACMInterfaceBean.class.getSimpleName();
-		String remoteInterfaceName = IACMInterfaceBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
-		
-		Properties properties = new Properties();
-		properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-		properties.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
-		properties.put(javax.naming.Context.PROVIDER_URL, "jnp://" + Configuration.getInstance().getProperty("providerURL"));
-
-		Context context = new InitialContext(properties);
-		
-		return (IACMInterfaceBean) context.lookup(lookupName);
+	public void actualizarDatosMidListaVacia(String mid) {
+		iConnectionStrategy.actualizarDatosMidListaVacia(
+			mid
+		);
 	}
 	
 	public static void main(String[] args) {
 		if (args[0].equals("getSiguienteMidSinProcesar")) {
-			if (args[1].equals("contrato")) {
-				new LogisticaProxy().getSiguienteMidContratoSinProcesar();
-			} else if (args[1].equals("prepago")) {
-				new LogisticaProxy().getSiguienteMidPrepagoSinProcesar();
-			}
+			new LogisticaProxy().getSiguienteMidSinProcesar();
 		} else if (args[0].equals("actualizarDatosMid")) {
 			if (args[1].equals("contrato")) {
 				new LogisticaProxy().actualizarDatosMidContrato(
@@ -132,7 +69,9 @@ public class LogisticaProxy {
 					args[6],
 					args[7],
 					args[8],
-					args[9]
+					args[9],
+					args[10],
+					args[11]
 				);
 			} else if (args[1].equals("prepago")) {
 				new LogisticaProxy().actualizarDatosMidPrepago(
@@ -140,8 +79,11 @@ public class LogisticaProxy {
 					args[3],
 					args[4],
 					args[5],
-					args[6],
-					args[7]
+					args[6]
+				);
+			} else if (args[1].equals("listaVacia")) {
+				new LogisticaProxy().actualizarDatosMidListaVacia(
+					args[2]
 				);
 			}
 		}

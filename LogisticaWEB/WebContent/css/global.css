@@ -1,0 +1,227 @@
+body {
+	font-family: Segoe UI;
+	font-size: 9pt;
+	margin-top: 0;
+	background-color: #F0F0F0;
+}
+
+input[type="text"] {
+	font-family: Segoe UI;
+	font-size: 9pt;
+	height: 14px;
+}
+
+input[type="password"] {
+	font-family: Segoe UI;
+	font-size: 9pt;
+	height: 14px;
+}
+
+input[type="submit"] {
+	font-family: Segoe UI;
+	font-size: 9pt;
+}
+
+table {
+	border: solid 1px #979797;
+	background-color: white;
+}
+
+table thead tr td {
+	font-family: Segoe UI;
+	font-size: 9pt;
+	
+	text-align: center;
+	background-color: #F3F4F6;
+	
+	border-bottom: solid 1px #D5D5D5;
+	border-right: solid 1px #D5D5D5;
+	
+	cursor: pointer;
+}
+
+table tbody tr td {
+	border-right: solid 1px #EBF4FE;
+}
+
+table tbody tr td div {
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+table tfoot tr td {
+	font-family: Segoe UI;
+	font-size: 9pt;
+	
+	text-align: center;
+	background-color: #F3F4F6;
+	
+	border-top: solid 1px #D5D5D5;
+	border-right: solid 1px #D5D5D5;
+}
+
+a {
+	font-family: Segoe UI;
+	font-size: 10pt;
+}
+
+#divModalBackground {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 98%;
+	height: 98%;
+	z-index: 2;
+	background: rgba(200, 200, 200, 0.5);
+	display: none; 
+}
+
+.divButtonBar {
+	width: 100%;
+	height: 66px;
+	padding-top: 2px;
+}
+
+.divButton {
+	width: 86px;
+	float: left;
+}
+
+.divButtonBarSeparator {
+	float: left;
+	width: 1px;
+	height: 100%;
+	border-left: solid 1px white;
+	border-right: solid 1px white;
+	background-image: url("/ParkingWEB/images/div_button_bar_separator.png");
+	background-repeat: no-repeat;
+	background-position: 0 2px;
+}
+
+.divButtonBar input {
+	width: 100%;
+	height: 64px;
+	white-space: normal;
+	overflow: auto;
+	padding-top: 28px;
+}
+
+.divButtonTitleBar {
+	height: 14px;
+	border-bottom: solid 1px gray;
+}
+
+.divButtonTitleBarTitle {
+	float: left;
+	height: 14px;
+	font-size: 8pt;
+	color: gray;
+	text-align: center;
+}
+
+#divButtonTitleSingleSize {
+	width: 86px;
+}
+
+#divButtonTitleDoubleSize {
+	width: 172px;
+}
+
+#divButtonTitleTripleSize {
+	width: 258px;
+}
+
+.divButtonTitleBarSeparator {
+	float: left;
+	width: 1px;
+	height: 100%;
+	border-left: solid 1px white;
+	border-right: solid 1px white;
+	background-image: url("/ParkingWEB/images/div_button_bar_separator.png");
+	background-repeat: no-repeat;
+	background-position: 0 -50px;
+}
+
+.divMainWindow {
+	padding-top: 10px;
+}
+
+.tdActions {
+	width: 34px;
+}
+
+tr {
+	background-color: none;
+}
+
+tr:hover {
+	background-color: orange;
+}
+
+.divEdit {
+	float: left;
+	cursor: pointer;
+	width: 16px;
+	background-image: url("/ParkingWEB/images/edit_faded.png");
+	background-repeat: no-repeat;
+}
+
+.divEdit:hover {
+	background-image: url("/ParkingWEB/images/edit.png");
+}
+
+.divDelete {
+	cursor: pointer;
+	width: 16px;
+	background-image: url("/ParkingWEB/images/delete_faded.png");
+	background-repeat: no-repeat;
+}
+
+.divDelete:hover {
+	background-image: url("/ParkingWEB/images/delete.png");
+}
+
+.divNew {
+	float: left;
+	cursor: pointer;
+	width: 34px;
+	background-image: url("/ParkingWEB/images/new_faded.png");
+	background-repeat: no-repeat;
+	background-position: 18px 0;
+}
+
+.divNew:hover {
+	background-image: url("/ParkingWEB/images/new.png");
+}
+
+.divTitleBar {
+	width: 100%;
+	height: 20px;
+	border-bottom: solid 1px black;
+	background-color: black;
+}
+
+.divTitleBarText {
+	width: 200px;
+	padding-top: 2px;
+	padding-left: 2px;
+	color: white;
+}
+
+.divTitleBarCloseButton {
+	float: right;
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	margin-top: 2px;
+	text-align: center;
+	background-image: url("/ParkingWEB/images/cross.png");
+	color: white;
+}
+
+.divFormLabel {
+	float: left;
+	width: 100px;
+	text-align: right;
+	margin-top: 2px;
+}

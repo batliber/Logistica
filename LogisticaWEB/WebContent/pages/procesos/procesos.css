@@ -1,0 +1,68 @@
+#divProcesos {
+	width: 480px;
+}
+
+#tableProcesos {
+	width: 555px;
+	height: 317px;
+}
+
+#tableProcesos thead {
+	position: fixed;
+}
+						
+#tableProcesos thead tr .tdProcesoFechaInicio {
+	width: 90px;
+}
+
+#tableProcesos thead tr .tdProcesoFechaFin {
+	width: 80px;
+}
+
+#tableProcesos thead tr .tdProcesoCantidadRegistrosParaProcesar {
+	width: 90px;
+}
+
+#tableProcesos thead tr .tdProcesoCantidadRegistrosEnProceso {
+	width: 90px;
+}
+
+#tableProcesos thead tr .tdProcesoCantidadRegistrosParaProcesarPrioritario {
+	width: 90px;
+}
+
+#tableProcesos thead tr .tdProcesoCantidadRegistrosProcesado {
+	width: 90px;
+}
+
+#tableProcesos tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 553px;
+	height: 297px;
+}
+
+#tableProcesos tbody tr .tdProcesoFechaInicio {
+	width: 90px;
+}
+
+#tableProcesos tbody tr .tdProcesoFechaFin {
+	width: 80px;
+}
+
+#tableProcesos tbody tr .tdProcesoCantidadRegistrosParaProcesar {
+	width: 90px;
+}
+
+#tableProcesos tbody tr .tdProcesoCantidadRegistrosEnProceso {
+	width: 90px;
+}
+
+#tableProcesos tbody tr .tdProcesoCantidadRegistrosParaProcesarPrioritario {
+	width: 90px;
+}
+
+#tableProcesos tbody tr .tdProcesoCantidadRegistrosProcesado {
+	width: 90px;
+}

@@ -1,0 +1,76 @@
+body {
+	width: 1024px;
+	height: 720px;
+}
+
+.divMenuBar {
+	width: 100%;
+	height: 22px;
+	margin-left: 10px;
+}
+
+.divMenuBar div {
+	float: left;
+	height: 100%;
+	text-align: center;
+}
+
+#divLogo {
+	background-color: #282829;
+}
+
+#imgLogo {
+	height: 22px;
+}
+
+.inactiveMenuBarItem {
+	width: 80px;
+	border-bottom: solid 1px gray;
+}
+
+.inactiveMenuBarItem div {
+	width: 98%;
+	border-left: solid 1px #F0F0F0;
+	border-right: solid 1px #F0F0F0;
+}
+
+.activeMenuBarItem {
+	width: 80px;
+	border-bottom: solid 1px #F0F0F0;
+}
+
+.activeMenuBarItem div {
+	width: 98%;
+	border-left: solid 1px gray;
+	border-right: solid 1px gray;
+}
+
+.divUserInfo {
+	width: 765px;
+	text-align: right;
+	border-bottom: solid 1px gray;
+}
+
+.divUserInfo div {
+	float: right;
+	text-decoration: underline;
+}
+
+.divLogout {
+	cursor: pointer;
+	float: right;
+	width: 16px;
+	background-image: url("/LogisticaWEB/images/logout.png");
+	background-repeat: no-repeat;
+}
+
+#divIFrameActivePage {
+	width: 100%;
+	height: 75%;
+}
+
+#iFrameActivePage {
+	border: none;
+	width: 100%;
+	height: 100%	
+}

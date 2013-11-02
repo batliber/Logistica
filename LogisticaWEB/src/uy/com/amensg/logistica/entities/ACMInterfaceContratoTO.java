@@ -1,57 +1,24 @@
 package uy.com.amensg.logistica.entities;
 
-import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.directwebremoting.annotations.DataTransferObject;
 
-@Entity
-@Table(name = "acm_interface_contrato")
-public class ACMInterfaceContrato implements Serializable {
+@DataTransferObject
+public class ACMInterfaceContratoTO {
 
-	private static final long serialVersionUID = 5858491604040285536L;
-
-	@Id
-	@Column(name = "mid")
 	private String mid;
-
-	@Column(name = "fecha_fin_contrato")
 	private String fechaFinContrato;
-
-	@Column(name = "tipo_contrato_codigo")
 	private String tipoContratoCodigo;
-
-	@Column(name = "tipo_contrato_descripcion")
 	private String tipoContratoDescripcion;
-
-	@Column(name = "documento_tipo")
 	private Long documentoTipo;
-
-	@Column(name = "documento")
 	private String documento;
-
-	@Column(name = "nombre")
 	private String nombre;
-
-	@Column(name = "direccion")
 	private String direccion;
-
-	@Column(name = "localidad")
 	private String localidad;
-
-	@Column(name = "codigo_postal")
 	private String codigoPostal;
-
-	@Column(name = "uact")
 	private Long uact;
-
-	@Column(name = "fact")
 	private Date fact;
-
-	@Column(name = "term")
 	private Long term;
 
 	public String getMid() {

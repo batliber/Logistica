@@ -1,0 +1,468 @@
+table tbody tr td div {
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.divFiltro {
+	width: 1000px;
+	height: 25px;
+}
+
+#divContratos {
+	width: 1000px; 
+}
+
+#tableContratos {
+	width: 1002px;
+	height: 318px;
+}
+
+#tableContratos thead {
+	position: fixed;
+}
+
+#tableContratos thead tr .tdContratoMidNOO {
+	width: 60px;
+}
+
+#tableContratos thead tr .tdContratoFinContratoNOO {
+	width: 65px;
+}
+
+#tableContratos thead tr .tdContratoTipoContratoDescripcionNOO {
+	width: 110px;
+}
+
+#tableContratos thead tr .tdContratoDocumentoNOO {
+	width: 90px;
+}
+
+#tableContratos thead tr .tdContratoNombreNOO {
+	width: 190px;
+}
+
+#tableContratos thead tr .tdContratoDireccionNOO {
+	width: 190px;
+}
+
+#tableContratos thead tr .tdContratoCodigoPostalNOO {
+	width: 40px;
+}
+
+#tableContratos thead tr .tdContratoLocalidadNOO {
+	width: 145px;
+}
+
+#tableContratos thead tr .tdContratoFactNOO {
+	width: 84px;
+}
+
+#tableContratos thead tr .tdContratoMidASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoFinContratoASC {
+	width: 65px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoTipoContratoDescripcionASC {
+	width: 110px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoDocumentoASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNombreASC {
+	width: 190px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoDireccionASC {
+	width: 190px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoCodigoPostalASC {
+	width: 40px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoLocalidadASC {
+	width: 145px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoFactASC {
+	width: 84px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoMidDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoFinContratoDES {
+	width: 65px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoTipoContratoDescripcionDES {
+	width: 110px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoDocumentoDES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNombreDES {
+	width: 190px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoDireccionDES {
+	width: 190px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoCodigoPostalDES {
+	width: 40px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoLocalidadDES {
+	width: 145px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoFactDES {
+	width: 84px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 1000px;
+	height: 280px;
+}
+
+#tableContratos tbody tr td .divContratoMid {
+	text-align: left;
+	margin-left: 2px;
+	width: 58px;
+}
+
+#tableContratos tbody tr td .divContratoFinContrato {
+	text-align: center;
+	width: 65px;
+}
+
+#tableContratos tbody tr td .divContratoTipoContratoDescripcion {
+	text-align: left;
+	margin-left: 2px;
+	width: 108px;
+}
+
+#tableContratos tbody tr td .divContratoDocumento {
+	text-align: left;
+	margin-left: 2px;
+	width: 88px;
+}
+
+#tableContratos tbody tr td .divContratoNombre {
+	text-align: left;
+	margin-left: 2px;
+	width: 188px;
+}
+
+#tableContratos tbody tr td .divContratoDireccion {
+	text-align: left;
+	margin-left: 2px;
+	width: 188px;
+}
+
+#tableContratos tbody tr td .divContratoCodigoPostal {
+	text-align: left;
+	margin-left: 2px;
+	width: 38px;
+}
+
+#tableContratos tbody tr td .divContratoLocalidad {
+	text-align: left;
+	margin-left: 2px;
+	width: 143px;
+}
+
+#tableContratos tbody tr td .divContratoFact {
+	text-align: center;
+	width: 84px;
+}
+
+#tableContratos tfoot {
+	position: fixed;
+	margin-top: 297px;
+	overflow: auto;
+	width: 1000px;
+}
+
+#tdContratoCantidadRegistrosLabel {
+	width: 120px;
+	text-align: left;
+}
+
+#tdContratoCantidadRegistrosValor {
+	width: 861px;
+}
+
+#divContratoCantidadRegistros {
+	width: 200px;
+	height: 16px;
+	text-align: left;
+	padding-top: 2px;
+	margin-left: 2px;
+}
+
+#divPrepagos {
+	width: 520px;
+	display: none;
+}
+
+#tablePrepagos {
+	width: 611px;
+	height: 318px;
+}
+
+#tablePrepagos thead {
+	position: fixed;
+}
+						
+#tablePrepagos thead tr .tdPrepagoMidNOO {
+	width: 60px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMesAnoNOO {
+	width: 80px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesActualNOO {
+	width: 90px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior1NOO {
+	width: 90px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior2NOO {
+	width: 90px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoPromedioNOO {
+	width: 90px;
+}
+
+#tablePrepagos thead tr .tdPrepagoFactNOO {
+	width: 85px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMidASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMesAnoASC {
+	width: 80px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesActualASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior1ASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior2ASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoPromedioASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFactASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMidDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMesAnoDES {
+	width: 80px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesActualDES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior1DES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior2DES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoPromedioDES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFactDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 609px;
+	height: 280px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMid {
+	width: 60px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMesAno {
+	width: 80px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMontoMesActual {
+	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMontoMesAnterior1 {
+	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMontoMesAnterior2 {
+	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMontoPromedio {
+	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoFact {
+	width: 85px;
+}
+
+#tablePrepagos tfoot {
+	position: fixed;
+	margin-top: 297px;
+	overflow: auto;
+	width: 609px;
+}
+
+#divPrepagoCantidadRegistros {
+	width: 200px;
+	height: 16px;
+	text-align: left;
+	padding-top: 2px;
+	margin-left: 2px;
+}
+
+#tdPrepagoCantidadRegistrosLabel {
+	width: 120px;
+	text-align: left;
+}
+
+#tdPrepagoCantidadRegistrosValor {
+	width: 470px;
+}
