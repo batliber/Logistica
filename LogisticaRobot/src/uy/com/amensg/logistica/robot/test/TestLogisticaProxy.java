@@ -4,12 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import uy.com.amensg.logistica.robot.ConnectionStrategyRemoting;
+import uy.com.amensg.logistica.robot.ConnectionStrategyDirect;
 import uy.com.amensg.logistica.robot.IConnectionStrategy;
 import uy.com.amensg.logistica.robot.util.Configuration;
 
@@ -21,8 +22,8 @@ public class TestLogisticaProxy extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-//		strategy = new ConnectionStrategyDirect();
-		strategy = new ConnectionStrategyRemoting();
+		strategy = new ConnectionStrategyDirect();
+//		strategy = new ConnectionStrategyRemoting();
 		
 		Class.forName("org.postgresql.Driver");
 		
@@ -81,7 +82,7 @@ public class TestLogisticaProxy extends TestCase {
 				"direccion",
 				"1",
 				"documento",
-				"fechaFinContrato",
+				"01/01/2014",
 				"localidad",
 				"CP",
 				mid,
@@ -116,10 +117,12 @@ public class TestLogisticaProxy extends TestCase {
 			
 			resultSet.next();
 			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
 			assertEquals("direccion", resultSet.getString(1));
 			assertEquals("1", resultSet.getString(2));
 			assertEquals("documento", resultSet.getString(3));
-			assertEquals("fechaFinContrato", resultSet.getString(4));
+			assertEquals(format.parse("01/01/2014"), resultSet.getDate(4));
 			assertEquals("localidad", resultSet.getString(5));
 			assertEquals("CP", resultSet.getString(6));
 			assertEquals("nombre", resultSet.getString(7));

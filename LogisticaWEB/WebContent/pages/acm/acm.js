@@ -90,7 +90,8 @@ function reloadData() {
 									+ registroMuestra.mid 
 								+ "</div></td>"
 								+ "<td class='tdContratoFinContrato'><div class='divContratoFinContrato'>" 
-									+ registroMuestra.fechaFinContrato 
+									+ (registroMuestra.fechaFinContrato != null ? 
+										formatShortDate(registroMuestra.fechaFinContrato) : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoTipoContratoDescripcion'><div class='divContratoTipoContratoDescripcion' title='" 
 									+ registroMuestra.tipoContratoCodigo + "'>" 

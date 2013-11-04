@@ -19,7 +19,7 @@ public class ACMInterfaceContrato implements Serializable {
 	private String mid;
 
 	@Column(name = "fecha_fin_contrato")
-	private String fechaFinContrato;
+	private Date fechaFinContrato;
 
 	@Column(name = "tipo_contrato_codigo")
 	private String tipoContratoCodigo;
@@ -62,11 +62,11 @@ public class ACMInterfaceContrato implements Serializable {
 		this.mid = mid;
 	}
 
-	public String getFechaFinContrato() {
+	public Date getFechaFinContrato() {
 		return fechaFinContrato;
 	}
 
-	public void setFechaFinContrato(String fechaFinContrato) {
+	public void setFechaFinContrato(Date fechaFinContrato) {
 		this.fechaFinContrato = fechaFinContrato;
 	}
 

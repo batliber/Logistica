@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import uy.com.amensg.logistica.robot.util.Configuration;
@@ -133,6 +134,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			this.preparedStatementDeleteContrato.executeUpdate();
 			this.preparedStatementDeletePrepago.executeUpdate();
 			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
 			PreparedStatement preparedStatementUpdateContrato = this.connection.prepareStatement(
 				"insert into acm_interface_contrato("
 					+ " direccion,"
@@ -168,7 +171,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			preparedStatementUpdateContrato.setString(1, direccion);
 			preparedStatementUpdateContrato.setLong(2, new Long(documentoTipo));
 			preparedStatementUpdateContrato.setString(3, documento);
-			preparedStatementUpdateContrato.setString(4, fechaFinContrato);
+			preparedStatementUpdateContrato.setDate(4, new java.sql.Date(format.parse(fechaFinContrato).getTime()));
 			preparedStatementUpdateContrato.setString(5, localidad);
 			preparedStatementUpdateContrato.setString(6, codigoPostal);
 			preparedStatementUpdateContrato.setString(7, nombre);

@@ -8,7 +8,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 public class ACMInterfaceContratoTO {
 
 	private String mid;
-	private String fechaFinContrato;
+	private Date fechaFinContrato;
 	private String tipoContratoCodigo;
 	private String tipoContratoDescripcion;
 	private Long documentoTipo;
@@ -29,11 +29,11 @@ public class ACMInterfaceContratoTO {
 		this.mid = mid;
 	}
 
-	public String getFechaFinContrato() {
+	public Date getFechaFinContrato() {
 		return fechaFinContrato;
 	}
 
-	public void setFechaFinContrato(String fechaFinContrato) {
+	public void setFechaFinContrato(Date fechaFinContrato) {
 		this.fechaFinContrato = fechaFinContrato;
 	}
 

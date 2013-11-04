@@ -1,5 +1,6 @@
 package uy.com.amensg.logistica.robot;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -63,11 +64,13 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
 			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
 			ACMInterfaceContrato acmInterfaceContrato = new ACMInterfaceContrato();
 			acmInterfaceContrato.setDireccion(direccion);
 			acmInterfaceContrato.setDocumentoTipo(new Long(documentoTipo));
 			acmInterfaceContrato.setDocumento(documento);
-			acmInterfaceContrato.setFechaFinContrato(fechaFinContrato);
+			acmInterfaceContrato.setFechaFinContrato(format.parse(fechaFinContrato));
 			acmInterfaceContrato.setLocalidad(localidad);
 			acmInterfaceContrato.setCodigoPostal(codigoPostal);
 			acmInterfaceContrato.setMid(mid);
