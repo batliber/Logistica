@@ -45,6 +45,12 @@ public class ACMInterfaceContrato implements Serializable {
 	@Column(name = "codigo_postal")
 	private String codigoPostal;
 
+	@Column(name = "agente")
+	private String agente;
+	
+	@Column(name = "equipo")
+	private String equipo;
+	
 	@Column(name = "uact")
 	private Long uact;
 
@@ -132,6 +138,22 @@ public class ACMInterfaceContrato implements Serializable {
 
 	public void setCodigoPostal(String codigoPostal) {
 		this.codigoPostal = codigoPostal;
+	}
+
+	public String getAgente() {
+		return agente;
+	}
+
+	public void setAgente(String agente) {
+		this.agente = agente;
+	}
+
+	public String getEquipo() {
+		return equipo;
+	}
+
+	public void setEquipo(String equipo) {
+		this.equipo = equipo;
 	}
 
 	public Long getUact() {

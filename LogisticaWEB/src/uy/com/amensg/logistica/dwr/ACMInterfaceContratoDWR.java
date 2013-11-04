@@ -94,10 +94,12 @@ public class ACMInterfaceContratoDWR {
 	public static ACMInterfaceContratoTO transform(ACMInterfaceContrato acmInterfaceContrato) {
 		ACMInterfaceContratoTO acmInterfaceContratoTO = new ACMInterfaceContratoTO();
 		
+		acmInterfaceContratoTO.setAgente(acmInterfaceContrato.getAgente());
 		acmInterfaceContratoTO.setCodigoPostal(acmInterfaceContrato.getCodigoPostal());
 		acmInterfaceContratoTO.setDireccion(acmInterfaceContrato.getDireccion());
 		acmInterfaceContratoTO.setDocumentoTipo(acmInterfaceContrato.getDocumentoTipo());
 		acmInterfaceContratoTO.setDocumento(acmInterfaceContrato.getDocumento());
+		acmInterfaceContratoTO.setEquipo(acmInterfaceContrato.getEquipo());
 		acmInterfaceContratoTO.setFechaFinContrato(acmInterfaceContrato.getFechaFinContrato());
 		acmInterfaceContratoTO.setLocalidad(acmInterfaceContrato.getLocalidad());
 		acmInterfaceContratoTO.setMid(acmInterfaceContrato.getMid());

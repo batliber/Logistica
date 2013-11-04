@@ -14,7 +14,9 @@ public interface IConnectionStrategy {
 		String mid,
 		String nombre,
 		String tipoContratoCodigo,
-		String tipoContratoDescripcion
+		String tipoContratoDescripcion,
+		String agente,
+		String equipo
 	);
 	
 	public void actualizarDatosMidPrepago(

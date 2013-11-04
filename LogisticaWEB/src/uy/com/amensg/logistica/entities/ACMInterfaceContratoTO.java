@@ -17,6 +17,8 @@ public class ACMInterfaceContratoTO {
 	private String direccion;
 	private String localidad;
 	private String codigoPostal;
+	private String agente;
+	private String equipo;
 	private Long uact;
 	private Date fact;
 	private Long term;
@@ -99,6 +101,22 @@ public class ACMInterfaceContratoTO {
 
 	public void setCodigoPostal(String codigoPostal) {
 		this.codigoPostal = codigoPostal;
+	}
+
+	public String getAgente() {
+		return agente;
+	}
+
+	public void setAgente(String agente) {
+		this.agente = agente;
+	}
+
+	public String getEquipo() {
+		return equipo;
+	}
+
+	public void setEquipo(String equipo) {
+		this.equipo = equipo;
 	}
 
 	public Long getUact() {

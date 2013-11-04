@@ -59,7 +59,9 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 		String mid,
 		String nombre,
 		String tipoContratoCodigo,
-		String tipoContratoDescripcion
+		String tipoContratoDescripcion,
+		String agente,
+		String equipo
 	) {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
@@ -77,6 +79,8 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			acmInterfaceContrato.setNombre(nombre);
 			acmInterfaceContrato.setTipoContratoCodigo(tipoContratoCodigo);
 			acmInterfaceContrato.setTipoContratoDescripcion(tipoContratoDescripcion);
+			acmInterfaceContrato.setAgente(agente);
+			acmInterfaceContrato.setEquipo(equipo);
 			acmInterfaceContrato.setUact(new Long(1));
 			acmInterfaceContrato.setFact(new Date());
 			acmInterfaceContrato.setTerm(new Long(1));

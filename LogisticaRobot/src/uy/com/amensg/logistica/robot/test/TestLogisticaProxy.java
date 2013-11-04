@@ -88,7 +88,9 @@ public class TestLogisticaProxy extends TestCase {
 				mid,
 				"nombre",
 				"TCC",
-				"tipoContratoDescripcion"
+				"tipoContratoDescripcion",
+				"agente",
+				"equipo"
 			);
 			
 			PreparedStatement preparedStatement = this.connection.prepareStatement(
@@ -108,7 +110,9 @@ public class TestLogisticaProxy extends TestCase {
 				"select direccion, documento_tipo, documento,"
 					+ " fecha_fin_contrato, localidad, codigo_postal, nombre,"
 					+ " tipo_contrato_codigo,"
-					+ " tipo_contrato_descripcion"
+					+ " tipo_contrato_descripcion,"
+					+ " agente,"
+					+ " equipo"
 				+ " from acm_interface_contrato where mid = ?"
 			);
 			preparedStatement.setString(1, mid);
@@ -128,6 +132,8 @@ public class TestLogisticaProxy extends TestCase {
 			assertEquals("nombre", resultSet.getString(7));
 			assertEquals("TCC", resultSet.getString(8));
 			assertEquals("tipoContratoDescripcion", resultSet.getString(9));
+			assertEquals("agente", resultSet.getString(10));
+			assertEquals("equipo", resultSet.getString(11));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
