@@ -28,7 +28,7 @@ public class Test {
 			);
 			
 			PreparedStatement preparedStatementInsert = connectionPostgreSQL.prepareStatement(
-				"INSERT INTO acm_interface_contrato ("
+				"INSERT INTO acm_interface_contrato_access ("
 					+ "mid, "
 					+ "fecha_fin_contrato, "
 					+ "tipo_contrato_codigo, "
