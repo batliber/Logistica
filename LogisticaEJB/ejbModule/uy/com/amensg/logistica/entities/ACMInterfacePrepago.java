@@ -22,16 +22,16 @@ public class ACMInterfacePrepago implements Serializable {
 	private String mesAno;
 
 	@Column(name = "monto_mes_actual")
-	private String montoMesActual;
+	private Double montoMesActual;
 
 	@Column(name = "monto_mes_anterior_1")
-	private String montoMesAnterior1;
+	private Double montoMesAnterior1;
 
 	@Column(name = "monto_mes_anterior_2")
-	private String montoMesAnterior2;
+	private Double montoMesAnterior2;
 
 	@Column(name = "monto_promedio")
-	private String montoPromedio;
+	private Double montoPromedio;
 
 	@Column(name = "fecha_exportacion")
 	private Date fechaExportacion;
@@ -61,35 +61,35 @@ public class ACMInterfacePrepago implements Serializable {
 		this.mesAno = mesAno;
 	}
 
-	public String getMontoMesActual() {
+	public Double getMontoMesActual() {
 		return montoMesActual;
 	}
 
-	public void setMontoMesActual(String montoMesActual) {
+	public void setMontoMesActual(Double montoMesActual) {
 		this.montoMesActual = montoMesActual;
 	}
 
-	public String getMontoMesAnterior1() {
+	public Double getMontoMesAnterior1() {
 		return montoMesAnterior1;
 	}
 
-	public void setMontoMesAnterior1(String montoMesAnterior1) {
+	public void setMontoMesAnterior1(Double montoMesAnterior1) {
 		this.montoMesAnterior1 = montoMesAnterior1;
 	}
 
-	public String getMontoMesAnterior2() {
+	public Double getMontoMesAnterior2() {
 		return montoMesAnterior2;
 	}
 
-	public void setMontoMesAnterior2(String montoMesAnterior2) {
+	public void setMontoMesAnterior2(Double montoMesAnterior2) {
 		this.montoMesAnterior2 = montoMesAnterior2;
 	}
 
-	public String getMontoPromedio() {
+	public Double getMontoPromedio() {
 		return montoPromedio;
 	}
 
-	public void setMontoPromedio(String montoPromedio) {
+	public void setMontoPromedio(Double montoPromedio) {
 		this.montoPromedio = montoPromedio;
 	}
 

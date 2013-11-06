@@ -182,6 +182,11 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							parameterExpression.getName(), 
 							metadataCondicion.getValores().toArray(new String[]{})[0]
 						);
+					} else if (campo.getJavaType().equals(Double.class)) {
+						parameterValues.put(
+							parameterExpression.getName(), 
+							new Double(metadataCondicion.getValores().toArray(new String[]{})[0])
+						);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -220,6 +225,16 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							parameterExpression.getName(), 
 							metadataCondicion.getValores().toArray(new String[]{})[0]
 						);
+					} else if (campo.getJavaType().equals(Double.class)) {
+						predicate = criteriaBuilder.and(
+							predicate, 
+							criteriaBuilder.greaterThan(campo.as(Double.class), parameterExpression.as(Double.class))
+						);
+						
+						parameterValues.put(
+							parameterExpression.getName(), 
+							new Double(metadataCondicion.getValores().toArray(new String[]{})[0])
+						);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -257,6 +272,16 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 						parameterValues.put(
 							parameterExpression.getName(), 
 							metadataCondicion.getValores().toArray(new String[]{})[0]
+						);
+					} else if (campo.getJavaType().equals(Double.class)) {
+						predicate = criteriaBuilder.and(
+							predicate, 
+							criteriaBuilder.lessThan(campo.as(Double.class), parameterExpression.as(Double.class))
+						);
+						
+						parameterValues.put(
+							parameterExpression.getName(), 
+							new Double(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					}
 				} catch (Exception e) {
@@ -338,6 +363,25 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 						parameterValues.put(
 							parameterExpressionMax.getName(), 
 							valores[1]
+						);
+					} else if (campo.getJavaType().equals(Double.class)) {
+						predicate = criteriaBuilder.and(
+							predicate, 
+							criteriaBuilder.between(
+								campo.as(Double.class), 
+								parameterExpressionMin.as(Double.class),
+								parameterExpressionMax.as(Double.class)
+							)
+						);
+						
+						parameterValues.put(
+							parameterExpressionMin.getName(), 
+							new Double(valores[0])
+						);
+						
+						parameterValues.put(
+							parameterExpressionMax.getName(), 
+							new Double(valores[1])
 						);
 					}
 				} catch (Exception e) {

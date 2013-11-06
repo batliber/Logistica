@@ -104,24 +104,24 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			ACMInterfacePrepago acmInterfacePrepago = new ACMInterfacePrepago();
 			acmInterfacePrepago.setMesAno(mesAno);
 			acmInterfacePrepago.setMid(mid);
-			acmInterfacePrepago.setMontoMesActual(montoMesActual);
-			acmInterfacePrepago.setMontoMesAnterior1(montoMesAnterior1);
-			acmInterfacePrepago.setMontoMesAnterior2(montoMesAnterior2);
 			
 			try {
+				acmInterfacePrepago.setMontoMesActual(new Double(montoMesActual));
+				acmInterfacePrepago.setMontoMesAnterior1(new Double(montoMesAnterior1));
+				acmInterfacePrepago.setMontoMesAnterior2(new Double(montoMesAnterior2));
+				
 				acmInterfacePrepago.setMontoPromedio(
-					Long.toString(
-						(
-							((new Long(acmInterfacePrepago.getMontoMesActual())
-								+ new Long(acmInterfacePrepago.getMontoMesAnterior1())
-								+ new Long(acmInterfacePrepago.getMontoMesAnterior2()))) / 3
-						)
-					)
+					(acmInterfacePrepago.getMontoMesActual() 
+						+ acmInterfacePrepago.getMontoMesAnterior1()
+						+ acmInterfacePrepago.getMontoMesAnterior2()) / 3
 				);
 			} catch (Exception e) {
 				e.printStackTrace();
 				
-				acmInterfacePrepago.setMontoPromedio(Long.toString(-1));
+				acmInterfacePrepago.setMontoMesActual(new Double(-1));
+				acmInterfacePrepago.setMontoMesAnterior1(new Double(-1));
+				acmInterfacePrepago.setMontoMesAnterior2(new Double(-1));
+				acmInterfacePrepago.setMontoPromedio(new Double(-1));
 			}
 			
 			acmInterfacePrepago.setUact(new Long(1));

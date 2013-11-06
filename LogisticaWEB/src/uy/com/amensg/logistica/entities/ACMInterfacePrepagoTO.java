@@ -9,10 +9,10 @@ public class ACMInterfacePrepagoTO {
 
 	private String mid;
 	private String mesAno;
-	private String montoMesActual;
-	private String montoMesAnterior1;
-	private String montoMesAnterior2;
-	private String montoPromedio;
+	private Double montoMesActual;
+	private Double montoMesAnterior1;
+	private Double montoMesAnterior2;
+	private Double montoPromedio;
 	private Date fechaExportacion;
 	private Long uact;
 	private Date fact;
@@ -34,35 +34,35 @@ public class ACMInterfacePrepagoTO {
 		this.mesAno = mesAno;
 	}
 
-	public String getMontoMesActual() {
+	public Double getMontoMesActual() {
 		return montoMesActual;
 	}
 
-	public void setMontoMesActual(String montoMesActual) {
+	public void setMontoMesActual(Double montoMesActual) {
 		this.montoMesActual = montoMesActual;
 	}
 
-	public String getMontoMesAnterior1() {
+	public Double getMontoMesAnterior1() {
 		return montoMesAnterior1;
 	}
 
-	public void setMontoMesAnterior1(String montoMesAnterior1) {
+	public void setMontoMesAnterior1(Double montoMesAnterior1) {
 		this.montoMesAnterior1 = montoMesAnterior1;
 	}
 
-	public String getMontoMesAnterior2() {
+	public Double getMontoMesAnterior2() {
 		return montoMesAnterior2;
 	}
 
-	public void setMontoMesAnterior2(String montoMesAnterior2) {
+	public void setMontoMesAnterior2(Double montoMesAnterior2) {
 		this.montoMesAnterior2 = montoMesAnterior2;
 	}
 
-	public String getMontoPromedio() {
+	public Double getMontoPromedio() {
 		return montoPromedio;
 	}
 
-	public void setMontoPromedio(String montoPromedio) {
+	public void setMontoPromedio(Double montoPromedio) {
 		this.montoPromedio = montoPromedio;
 	}
 

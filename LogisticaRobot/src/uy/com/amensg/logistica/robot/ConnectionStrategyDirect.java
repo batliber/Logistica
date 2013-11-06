@@ -229,17 +229,17 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			this.preparedStatementDeleteContrato.executeUpdate();
 			this.preparedStatementDeletePrepago.executeUpdate();
 			
-			String montoPromedio = "-1";
+			Double montoMesActualDouble = new Double(-1);
+			Double montoMesAnterior1Double = new Double(-1);
+			Double montoMesAnterior2Double = new Double(-1);
+			Double montoPromedio = new Double(-1);
 			
 			try {
-				montoPromedio =
-					Long.toString(
-						(
-							((new Long(montoMesActual)
-								+ new Long(montoMesAnterior1)
-								+ new Long(montoMesAnterior2))) / 3
-						)
-					);
+				montoMesActualDouble = new Double(montoMesActual);
+				montoMesAnterior1Double = new Double(montoMesAnterior1);
+				montoMesAnterior2Double = new Double(montoMesAnterior2);
+				montoPromedio = 
+					(montoMesActualDouble + montoMesAnterior1Double + montoMesAnterior2Double) / 3;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -269,10 +269,10 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 				+ ")"
 			);
 			preparedStatementUpdatePrepago.setString(1, mesAno);
-			preparedStatementUpdatePrepago.setString(2, montoMesActual);
-			preparedStatementUpdatePrepago.setString(3, montoMesAnterior1);
-			preparedStatementUpdatePrepago.setString(4, montoMesAnterior2);
-			preparedStatementUpdatePrepago.setString(5, montoPromedio);
+			preparedStatementUpdatePrepago.setDouble(2, montoMesActualDouble);
+			preparedStatementUpdatePrepago.setDouble(3, montoMesAnterior1Double);
+			preparedStatementUpdatePrepago.setDouble(4, montoMesAnterior2Double);
+			preparedStatementUpdatePrepago.setDouble(5, montoPromedio);
 			preparedStatementUpdatePrepago.setLong(6, 1);
 			preparedStatementUpdatePrepago.setTimestamp(7, new Timestamp(new Date().getTime()));
 			preparedStatementUpdatePrepago.setLong(8, 1);

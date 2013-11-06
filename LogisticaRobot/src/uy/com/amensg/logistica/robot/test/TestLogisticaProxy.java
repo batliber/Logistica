@@ -177,10 +177,10 @@ public class TestLogisticaProxy extends TestCase {
 			resultSet.next();
 			
 			assertEquals("mesAno", resultSet.getString(1));
-			assertEquals("10", resultSet.getString(2));
-			assertEquals("10", resultSet.getString(3));
-			assertEquals("10", resultSet.getString(4));
-			assertEquals("10", resultSet.getString(5));
+			assertEquals(new Double("10"), resultSet.getDouble(2));
+			assertEquals(new Double("10"), resultSet.getDouble(3));
+			assertEquals(new Double("10"), resultSet.getDouble(4));
+			assertEquals(new Double("10"), resultSet.getDouble(5));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
