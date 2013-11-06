@@ -100,6 +100,7 @@ public class ACMInterfacePrepagoDWR {
 		acmInterfacePrepagoTO.setMontoMesAnterior1(acmInterfacePrepago.getMontoMesAnterior1());
 		acmInterfacePrepagoTO.setMontoMesAnterior2(acmInterfacePrepago.getMontoMesAnterior2());
 		acmInterfacePrepagoTO.setMontoPromedio(acmInterfacePrepago.getMontoPromedio());
+		acmInterfacePrepagoTO.setFechaExportacion(acmInterfacePrepago.getFechaExportacion());
 		
 		acmInterfacePrepagoTO.setFact(acmInterfacePrepago.getFact());
 		acmInterfacePrepagoTO.setUact(acmInterfacePrepago.getUact());

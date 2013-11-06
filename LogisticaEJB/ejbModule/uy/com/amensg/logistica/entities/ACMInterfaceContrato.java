@@ -47,10 +47,13 @@ public class ACMInterfaceContrato implements Serializable {
 
 	@Column(name = "agente")
 	private String agente;
-	
+
 	@Column(name = "equipo")
 	private String equipo;
-	
+
+	@Column(name = "fecha_exportacion")
+	private Date fechaExportacion;
+
 	@Column(name = "uact")
 	private Long uact;
 
@@ -154,6 +157,14 @@ public class ACMInterfaceContrato implements Serializable {
 
 	public void setEquipo(String equipo) {
 		this.equipo = equipo;
+	}
+
+	public Date getFechaExportacion() {
+		return fechaExportacion;
+	}
+
+	public void setFechaExportacion(Date fechaExportacion) {
+		this.fechaExportacion = fechaExportacion;
 	}
 
 	public Long getUact() {

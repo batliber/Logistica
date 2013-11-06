@@ -3,6 +3,7 @@ package uy.com.amensg.logistica.bean;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -107,18 +108,30 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			
 			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
 			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
 			for (ACMInterfaceContrato acmInterfaceContrato : query.getResultList()) {
+				acmInterfaceContrato.setFechaExportacion(gregorianCalendar.getTime());
+				acmInterfaceContrato.setUact(new Long(1));
+				acmInterfaceContrato.setFact(gregorianCalendar.getTime());
+				acmInterfaceContrato.setTerm(new Long(1));
+				
+				acmInterfaceContrato = entityManager.merge(acmInterfaceContrato);
+				
 				printWriter.println(
 					acmInterfaceContrato.getMid()
-					+ ";" + acmInterfaceContrato.getFechaFinContrato()
+					+ ";" + (acmInterfaceContrato.getFechaFinContrato() != null ? 
+						format.format(acmInterfaceContrato.getFechaFinContrato())
+						: "")
 					+ ";" + acmInterfaceContrato.getTipoContratoCodigo()
 					+ ";" + acmInterfaceContrato.getTipoContratoDescripcion()
 					+ ";" + acmInterfaceContrato.getDocumentoTipo()
-					+ ";" + acmInterfaceContrato.getDocumento()
+					+ ";'" + acmInterfaceContrato.getDocumento()
 					+ ";" + acmInterfaceContrato.getNombre()
 					+ ";" + acmInterfaceContrato.getDireccion()
 					+ ";" + acmInterfaceContrato.getCodigoPostal()
 					+ ";" + acmInterfaceContrato.getLocalidad()
+					+ ";" + format.format(acmInterfaceContrato.getFechaExportacion())
 				);
 			}
 			

@@ -3,6 +3,7 @@ package uy.com.amensg.logistica.bean;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -98,7 +99,16 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 					
 			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
 			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
 			for (ACMInterfacePrepago acmInterfacePrepago : query.getResultList()) {
+				acmInterfacePrepago.setFechaExportacion(gregorianCalendar.getTime());
+				acmInterfacePrepago.setUact(new Long(1));
+				acmInterfacePrepago.setFact(gregorianCalendar.getTime());
+				acmInterfacePrepago.setTerm(new Long(1));
+				
+				acmInterfacePrepago = entityManager.merge(acmInterfacePrepago);
+				
 				printWriter.println(
 					acmInterfacePrepago.getMid()
 					+ ";" + acmInterfacePrepago.getMesAno()
@@ -106,6 +116,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 					+ ";" + acmInterfacePrepago.getMontoMesAnterior1()
 					+ ";" + acmInterfacePrepago.getMontoMesAnterior2()
 					+ ";" + acmInterfacePrepago.getMontoPromedio()
+					+ ";" + format.format(acmInterfacePrepago.getFechaExportacion())
 				);
 			}
 			

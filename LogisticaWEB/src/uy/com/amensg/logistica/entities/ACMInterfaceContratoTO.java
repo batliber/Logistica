@@ -19,6 +19,7 @@ public class ACMInterfaceContratoTO {
 	private String codigoPostal;
 	private String agente;
 	private String equipo;
+	private Date fechaExportacion;
 	private Long uact;
 	private Date fact;
 	private Long term;
@@ -117,6 +118,14 @@ public class ACMInterfaceContratoTO {
 
 	public void setEquipo(String equipo) {
 		this.equipo = equipo;
+	}
+
+	public Date getFechaExportacion() {
+		return fechaExportacion;
+	}
+
+	public void setFechaExportacion(Date fechaExportacion) {
+		this.fechaExportacion = fechaExportacion;
 	}
 
 	public Long getUact() {

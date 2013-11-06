@@ -106,6 +106,7 @@ public class ACMInterfaceContratoDWR {
 		acmInterfaceContratoTO.setNombre(acmInterfaceContrato.getNombre());
 		acmInterfaceContratoTO.setTipoContratoCodigo(acmInterfaceContrato.getTipoContratoCodigo());
 		acmInterfaceContratoTO.setTipoContratoDescripcion(acmInterfaceContrato.getTipoContratoDescripcion());
+		acmInterfaceContratoTO.setFechaExportacion(acmInterfaceContrato.getFechaExportacion());
 		
 		acmInterfaceContratoTO.setFact(acmInterfaceContrato.getFact());
 		acmInterfaceContratoTO.setUact(acmInterfaceContrato.getUact());

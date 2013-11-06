@@ -13,6 +13,7 @@ public class ACMInterfacePrepagoTO {
 	private String montoMesAnterior1;
 	private String montoMesAnterior2;
 	private String montoPromedio;
+	private Date fechaExportacion;
 	private Long uact;
 	private Date fact;
 	private Long term;
@@ -63,6 +64,14 @@ public class ACMInterfacePrepagoTO {
 
 	public void setMontoPromedio(String montoPromedio) {
 		this.montoPromedio = montoPromedio;
+	}
+
+	public Date getFechaExportacion() {
+		return fechaExportacion;
+	}
+
+	public void setFechaExportacion(Date fechaExportacion) {
+		this.fechaExportacion = fechaExportacion;
 	}
 
 	public Long getUact() {

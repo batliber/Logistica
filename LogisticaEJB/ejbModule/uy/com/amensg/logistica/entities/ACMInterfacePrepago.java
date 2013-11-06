@@ -33,6 +33,9 @@ public class ACMInterfacePrepago implements Serializable {
 	@Column(name = "monto_promedio")
 	private String montoPromedio;
 
+	@Column(name = "fecha_exportacion")
+	private Date fechaExportacion;
+
 	@Column(name = "uact")
 	private Long uact;
 
@@ -88,6 +91,14 @@ public class ACMInterfacePrepago implements Serializable {
 
 	public void setMontoPromedio(String montoPromedio) {
 		this.montoPromedio = montoPromedio;
+	}
+
+	public Date getFechaExportacion() {
+		return fechaExportacion;
+	}
+
+	public void setFechaExportacion(Date fechaExportacion) {
+		this.fechaExportacion = fechaExportacion;
 	}
 
 	public Long getUact() {
