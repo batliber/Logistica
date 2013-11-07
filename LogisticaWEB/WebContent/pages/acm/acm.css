@@ -53,6 +53,10 @@ table tbody tr td div {
 	width: 145px;
 }
 
+#tableContratos thead tr .tdContratoFechaExportacionNOO {
+	width: 84px;
+}
+
 #tableContratos thead tr .tdContratoFactNOO {
 	width: 84px;
 }
@@ -108,6 +112,13 @@ table tbody tr td div {
 
 #tableContratos thead tr .tdContratoLocalidadASC {
 	width: 145px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoFechaExportacionASC {
+	width: 84px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -176,6 +187,13 @@ table tbody tr td div {
 	background-position: right;
 }
 
+#tableContratos thead tr .tdContratoFechaExportacionDES {
+	width: 84px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
 #tableContratos thead tr .tdContratoFactDES {
 	width: 84px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
@@ -236,6 +254,11 @@ table tbody tr td div {
 	text-align: left;
 	margin-left: 2px;
 	width: 143px;
+}
+
+#tableContratos tbody tr td .divContratoFechaExportacion {
+	text-align: center;
+	width: 84px;
 }
 
 #tableContratos tbody tr td .divContratoFact {
@@ -305,6 +328,10 @@ table tbody tr td div {
 	width: 90px;
 }
 
+#tablePrepagos thead tr .tdPrepagoFechaExportacionNOO {
+	width: 85px;
+}
+
 #tablePrepagos thead tr .tdPrepagoFactNOO {
 	width: 85px;
 }
@@ -346,6 +373,13 @@ table tbody tr td div {
 
 #tablePrepagos thead tr .tdPrepagoMontoPromedioASC {
 	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaExportacionASC {
+	width: 85px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -400,6 +434,13 @@ table tbody tr td div {
 	background-position: right;
 }
 
+#tablePrepagos thead tr .tdPrepagoFechaExportacionDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
 #tablePrepagos thead tr .tdPrepagoFactDES {
 	width: 85px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
@@ -437,6 +478,10 @@ table tbody tr td div {
 
 #tablePrepagos tbody tr .tdPrepagoMontoPromedio {
 	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoFechaExportacion {
+	width: 85px;
 }
 
 #tablePrepagos tbody tr .tdPrepagoFact {

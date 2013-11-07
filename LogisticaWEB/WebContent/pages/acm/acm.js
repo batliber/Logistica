@@ -10,6 +10,7 @@ var ordenPrepago = {
 	tdPrepagoMontoMesAnterior1: 0,
 	tdPrepagoMontoMesAnterior2: 0,
 	tdPrepagoMontoPromedio: 0,
+	tdPrepagoFechaExportacion: 0,
 	tdPrepagoFact: 0
 };
 
@@ -22,6 +23,7 @@ var ordenContrato = {
 	tdContratoDireccion: 0,
 	tdContratoCodigoPostal: 0,
 	tdContratoLocalidad: 0,
+	tdContratoFechaExportacion: 0,
 	tdContratoFact: 0
 };
 
@@ -32,6 +34,7 @@ var campos = {
 	tdPrepagoMontoMesAnterior1: "montoMesAnterior1",
 	tdPrepagoMontoMesAnterior2: "montoMesAnterior2",
 	tdPrepagoMontoPromedio: "montoPromedio",
+	tdPrepagoFechaExportacion: "fechaExportacion",
 	tdPrepagoFact: "fact",
 	tdContratoMid: "mid",
 	tdContratoFinContrato: "fechaFinContrato",
@@ -41,6 +44,7 @@ var campos = {
 	tdContratoDireccion: "direccion",
 	tdContratoCodigoPostal: "codigoPostal",
 	tdContratoLocalidad: "localidad",
+	tdContratoFechaExportacion: "fechaExportacion",
 	tdContratoFact: "fact"
 };
 
@@ -113,8 +117,9 @@ function reloadData() {
 								+ "<td class='tdContratoLocalidad'><div class='divContratoLocalidad'>" 
 									+ registroMuestra.localidad 
 								+ "</div></td>"
-								+ "<td class='tdContratoFact'><div class='divContratoFact'>" 
-									+ formatLongDate(registroMuestra.fact) 
+								+ "<td class='tdContratoFechaExportacion'><div class='divContratoFechaExportacion'>" 
+									+ (registroMuestra.fechaExportacion != null ?
+										formatLongDate(registroMuestra.fechaExportacion) : "&nbsp;")
 								+ "</div></td>"
 							+ "</tr>"
 						);
@@ -154,8 +159,9 @@ function reloadData() {
 								+ "<td class='tdPrepagoMontoPromedio'><div class='divPrepagoMontoPromedio'>" 
 									+ registroMuestra.montoPromedio 
 								+ "</div></td>"
-								+ "<td class='tdPrepagoFact'><div class='divPrepagoFact'>" 
-									+ formatLongDate(registroMuestra.fact) 
+								+ "<td class='tdPrepagoFechaExportacion'><div class='divPrepagoFechaExportacion'>" 
+									+ (registroMuestra.fechaExportacion != null ?
+										formatLongDate(registroMuestra.fechaExportacion) : "&nbsp;")
 								+ "</div></td>"
 							+ "</tr>"
 						);
@@ -245,7 +251,7 @@ function inputAgregarFiltroOnClick(event) {
 					+ "<option value='direccion'>Direcci&oacute;n</option>"
 					+ "<option value='codigoPostal'>Código postal</option>"
 					+ "<option value='localidad'>Localidad</option>"
-					+ "<option value='fact'>Obtenido</option>"
+					+ "<option value='fechaExportacion'>Asignado</option>"
 				+ "</select>"
 			+ "</div>";
 	} else {
@@ -259,7 +265,7 @@ function inputAgregarFiltroOnClick(event) {
 					+ "<option value='montoMesAnterior1'>Monto mes ant. 1</option>"
 					+ "<option value='montoMesAnterior2'>Monto mes ant. 2</option>"
 					+ "<option value='montoPromedio'>Monto promedio</option>"
-					+ "<option value='fact'>Obtenido</option>"
+					+ "<option value='fechaExportacion'>Asignado</option>"
 				+ "</select>"
 			+ "</div>";
 	}
@@ -310,7 +316,7 @@ function selectCampoOnChange(event, element, index) {
 			"<option value='like'>Contiene</option>"
 			+ "<option value='eq'>Es igual a</option>";
 	} else if (
-		($("#selectCampo" + index).val() == "fact")
+		($("#selectCampo" + index).val() == "fechaExportacion")
 		|| ($("#selectCampo" + index).val() == "fechaFinContrato")) {
 		html += 
 			"<option value='eq'>Es igual a</option>"
@@ -462,6 +468,8 @@ function inputExportarAExcelOnClick(event) {
 			{
 				callback: function(data) {
 					alert("Archivo generado: " + data);
+					
+					reloadData();
 				}
 			}
 		);
@@ -471,6 +479,8 @@ function inputExportarAExcelOnClick(event) {
 			{
 				callback: function(data) {
 					alert("Archivo generado: " + data);
+					
+					reloadData();
 				}
 			}
 		);
