@@ -140,7 +140,7 @@ function reloadData() {
 									+ registroMuestra.mid 
 								+ "</div></td>"
 								+ "<td class='tdPrepagoMesAno'><div class='divPrepagoMesAno'>" 
-									+ registroMuestra.mesAno 
+									+ formatMonthYearDate(registroMuestra.mesAno) 
 								+ "</div></td>"
 								+ "<td class='tdPrepagoMontoMesActual'><div class='divPrepagoMontoMesActual'>" 
 									+ registroMuestra.montoMesActual 

@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,7 +26,9 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
+import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
@@ -38,6 +41,12 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
 	private EntityManager entityManager;
+	
+	@EJB
+	private IACMInterfaceProcesoBean iACMInterfaceProcesoBean;
+	
+	@EJB
+	private IACMInterfaceMidBean iACMInterfaceMidBean;
 	
 	public Collection<ACMInterfacePrepago> list() {
 		Collection<ACMInterfacePrepago> result = new LinkedList<ACMInterfacePrepago>();
@@ -404,6 +413,29 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 	}
 	
 	public void reprocesar(MetadataConsulta metadataConsulta) {
-		
+		try {
+			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
+			acmInterfaceProceso.setFact(new Date());
+			acmInterfaceProceso.setFechaInicio(new Date());
+			acmInterfaceProceso.setTerm(new Long(1));
+			acmInterfaceProceso.setUact(new Long(1));
+			
+			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
+			
+			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
+			
+			for (ACMInterfacePrepago acmInterfacePrepago : query.getResultList()) {
+				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
+				acmInterfaceMid.setEstado(
+					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+				);
+				acmInterfaceMid.setMid(acmInterfacePrepago.getMid());
+				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
+				
+				iACMInterfaceMidBean.update(acmInterfaceMid);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

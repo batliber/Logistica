@@ -1,3 +1,15 @@
+function formatMonthYearDate(date) {
+	var parts = [
+ 	    "0" + date.getDate(), 
+ 	    "0" + (date.getMonth() + 1), 
+ 	    date.getFullYear(),
+ 	    "0" + date.getHours(),
+ 	    "0" + date.getMinutes()
+ 	];
+ 	
+ 	return parts[1].substring(parts[1].length - 2) + "/" + parts[2];
+}
+
 function formatShortDate(date) {
 	return formatParts(date, 3);
 }

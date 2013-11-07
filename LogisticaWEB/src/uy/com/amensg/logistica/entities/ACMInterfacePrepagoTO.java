@@ -8,7 +8,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 public class ACMInterfacePrepagoTO {
 
 	private String mid;
-	private String mesAno;
+	private Date mesAno;
 	private Double montoMesActual;
 	private Double montoMesAnterior1;
 	private Double montoMesAnterior2;
@@ -26,11 +26,11 @@ public class ACMInterfacePrepagoTO {
 		this.mid = mid;
 	}
 
-	public String getMesAno() {
+	public Date getMesAno() {
 		return mesAno;
 	}
 
-	public void setMesAno(String mesAno) {
+	public void setMesAno(Date mesAno) {
 		this.mesAno = mesAno;
 	}
 

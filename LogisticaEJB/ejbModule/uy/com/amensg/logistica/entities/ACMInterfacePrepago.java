@@ -19,7 +19,7 @@ public class ACMInterfacePrepago implements Serializable {
 	private String mid;
 
 	@Column(name = "mes_ano")
-	private String mesAno;
+	private Date mesAno;
 
 	@Column(name = "monto_mes_actual")
 	private Double montoMesActual;
@@ -53,11 +53,11 @@ public class ACMInterfacePrepago implements Serializable {
 		this.mid = mid;
 	}
 
-	public String getMesAno() {
+	public Date getMesAno() {
 		return mesAno;
 	}
 
-	public void setMesAno(String mesAno) {
+	public void setMesAno(Date mesAno) {
 		this.mesAno = mesAno;
 	}
 

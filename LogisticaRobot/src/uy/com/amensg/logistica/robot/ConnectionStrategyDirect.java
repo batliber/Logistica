@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -229,12 +230,16 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			this.preparedStatementDeleteContrato.executeUpdate();
 			this.preparedStatementDeletePrepago.executeUpdate();
 			
+			Date mesAnoDate = null;
 			Double montoMesActualDouble = new Double(-1);
 			Double montoMesAnterior1Double = new Double(-1);
 			Double montoMesAnterior2Double = new Double(-1);
 			Double montoPromedio = new Double(-1);
 			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
 			try {
+				mesAnoDate = format.parse("01/" + mesAno);
 				montoMesActualDouble = new Double(montoMesActual);
 				montoMesAnterior1Double = new Double(montoMesAnterior1);
 				montoMesAnterior2Double = new Double(montoMesAnterior2);
@@ -268,7 +273,11 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 					+ " ?"
 				+ ")"
 			);
-			preparedStatementUpdatePrepago.setString(1, mesAno);
+			if (mesAnoDate != null) {
+				preparedStatementUpdatePrepago.setDate(1, new java.sql.Date(mesAnoDate.getTime()));
+			} else {
+				preparedStatementUpdatePrepago.setNull(1, Types.DATE);
+			}
 			preparedStatementUpdatePrepago.setDouble(2, montoMesActualDouble);
 			preparedStatementUpdatePrepago.setDouble(3, montoMesAnterior1Double);
 			preparedStatementUpdatePrepago.setDouble(4, montoMesAnterior2Double);

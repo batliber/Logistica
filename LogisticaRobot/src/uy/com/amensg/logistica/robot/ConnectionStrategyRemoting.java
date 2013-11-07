@@ -102,10 +102,12 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
 			
 			ACMInterfacePrepago acmInterfacePrepago = new ACMInterfacePrepago();
-			acmInterfacePrepago.setMesAno(mesAno);
 			acmInterfacePrepago.setMid(mid);
 			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
 			try {
+				acmInterfacePrepago.setMesAno(format.parse("01/" + mesAno));
 				acmInterfacePrepago.setMontoMesActual(new Double(montoMesActual));
 				acmInterfacePrepago.setMontoMesAnterior1(new Double(montoMesAnterior1));
 				acmInterfacePrepago.setMontoMesAnterior2(new Double(montoMesAnterior2));
