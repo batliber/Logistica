@@ -48,6 +48,9 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 	@EJB
 	private IACMInterfaceMidBean iACMInterfaceMidBean;
 	
+	private Predicate where;
+	private Map<String, Object> parameterValues = new HashMap<String, Object>();
+	
 	public Collection<ACMInterfaceContrato> list() {
 		Collection<ACMInterfaceContrato> result = new LinkedList<ACMInterfaceContrato>();
 		
@@ -69,6 +72,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		
 		try {
 			TypedQuery<ACMInterfaceContrato> query = this.construirQuery(metadataConsulta);
+			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
 			
@@ -83,7 +87,20 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			}
 			
 			result.setRegistrosMuestra(registrosMuestra);
-			result.setCantidadRegistros(new Long(resultList.size()));
+			
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+			criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(ACMInterfaceContrato.class)));
+			criteriaQuery.where(where);
+			
+			TypedQuery<Long> countQuery = entityManager.createQuery(criteriaQuery);
+			
+			for (String parameterName : parameterValues.keySet()) {
+				countQuery.setParameter(parameterName, parameterValues.get(parameterName));
+			}
+			
+			result.setCantidadRegistros(countQuery.getSingleResult());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -164,13 +181,13 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			}
 		}
 		
-		Predicate predicate = criteriaBuilder.conjunction();
+		where = criteriaBuilder.conjunction();
 		
 		criteriaQuery
 			.select(root)
 			.orderBy(orders);
 		
-		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		parameterValues = new HashMap<String, Object>();
 		
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
@@ -179,8 +196,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_IGUAL)) {
 				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
 				
-				predicate = criteriaBuilder.and(
-					predicate, 
+				where = criteriaBuilder.and(
+					where, 
 					criteriaBuilder.equal(campo, parameterExpression)
 				);
 				
@@ -214,8 +231,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				
 				try {
 					if (campo.getJavaType().equals(Date.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.greaterThan(campo.as(Date.class), parameterExpression.as(Date.class))
 						);
 						
@@ -224,8 +241,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							DateFormat.getInstance().parse(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					} else if (campo.getJavaType().equals(Long.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.greaterThan(campo.as(Long.class), parameterExpression.as(Long.class))
 						);
 						
@@ -234,8 +251,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							new Long(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					} else if (campo.getJavaType().equals(String.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.greaterThan(campo.as(String.class), parameterExpression.as(String.class))
 						);
 						
@@ -244,8 +261,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							metadataCondicion.getValores().toArray(new String[]{})[0]
 						);
 					} else if (campo.getJavaType().equals(Double.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.greaterThan(campo.as(Double.class), parameterExpression.as(Double.class))
 						);
 						
@@ -262,8 +279,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				
 				try {
 					if (campo.getJavaType().equals(Date.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.lessThan(campo.as(Date.class), parameterExpression.as(Date.class))
 						);
 						
@@ -272,8 +289,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							DateFormat.getInstance().parse(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					} else if (campo.getJavaType().equals(Long.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.lessThan(campo.as(Long.class), parameterExpression.as(Long.class))
 						);
 						
@@ -282,8 +299,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							new Long(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					} else if (campo.getJavaType().equals(String.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.lessThan(campo.as(String.class), parameterExpression.as(String.class))
 						);
 						
@@ -292,8 +309,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							metadataCondicion.getValores().toArray(new String[]{})[0]
 						);
 					} else if (campo.getJavaType().equals(Double.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.lessThan(campo.as(Double.class), parameterExpression.as(Double.class))
 						);
 						
@@ -308,8 +325,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_LIKE)) {
 				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
 				
-				predicate = criteriaBuilder.and(
-					predicate, 
+				where = criteriaBuilder.and(
+					where, 
 					criteriaBuilder.like(campo.as(String.class), parameterExpression.as(String.class))
 				);
 				
@@ -326,8 +343,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				
 				try {
 					if (campo.getJavaType().equals(Date.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.between(
 								campo.as(Date.class), 
 								parameterExpressionMin.as(Date.class),
@@ -345,8 +362,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							DateFormat.getInstance().parse(valores[1])
 						);
 					} else if (campo.getJavaType().equals(Long.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.between(
 								campo.as(Long.class), 
 								parameterExpressionMin.as(Long.class),
@@ -364,8 +381,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							new Long(valores[1])
 						);
 					} else if (campo.getJavaType().equals(String.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.between(
 								campo.as(String.class), 
 								parameterExpressionMin.as(String.class),
@@ -383,8 +400,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 							valores[1]
 						);
 					} else if (campo.getJavaType().equals(Double.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.between(
 								campo.as(Double.class), 
 								parameterExpressionMin.as(Double.class),
@@ -410,7 +427,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			i++;
 		}
 		
-		criteriaQuery.where(predicate);
+		criteriaQuery.where(where);
 		
 		TypedQuery<ACMInterfaceContrato> query = entityManager.createQuery(criteriaQuery);
 		

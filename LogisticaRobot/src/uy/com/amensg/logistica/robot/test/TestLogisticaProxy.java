@@ -87,7 +87,7 @@ public class TestLogisticaProxy extends TestCase {
 				"CP",
 				mid,
 				"nombre",
-				"TCC",
+				"0",
 				"tipoContratoDescripcion",
 				"agente",
 				"equipo"
@@ -130,7 +130,7 @@ public class TestLogisticaProxy extends TestCase {
 			assertEquals("localidad", resultSet.getString(5));
 			assertEquals("CP", resultSet.getString(6));
 			assertEquals("nombre", resultSet.getString(7));
-			assertEquals("TCC", resultSet.getString(8));
+			assertEquals("0", resultSet.getString(8));
 			assertEquals("tipoContratoDescripcion", resultSet.getString(9));
 			assertEquals("agente", resultSet.getString(10));
 			assertEquals("equipo", resultSet.getString(11));
@@ -145,7 +145,7 @@ public class TestLogisticaProxy extends TestCase {
 			String mid = strategy.getSiguienteMidSinProcesar();
 			
 			strategy.actualizarDatosMidPrepago(
-				"mesAno",
+				"01/2013",
 				mid,
 				"10",
 				"10",
@@ -176,7 +176,9 @@ public class TestLogisticaProxy extends TestCase {
 			
 			resultSet.next();
 			
-			assertEquals("mesAno", resultSet.getString(1));
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
+			assertEquals(format.parse("01/01/2013"), resultSet.getDate(1));
 			assertEquals(new Double("10"), resultSet.getDouble(2));
 			assertEquals(new Double("10"), resultSet.getDouble(3));
 			assertEquals(new Double("10"), resultSet.getDouble(4));
