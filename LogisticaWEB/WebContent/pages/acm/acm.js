@@ -208,6 +208,11 @@ function calcularCondiciones() {
 					filtroValido = metadataCondicion.valores[0] != "" && metadataCondicion.valores[1] != "";
 					
 					break;
+				case "nl":
+				case "nnl":
+					filtroValido = true;
+					
+					break;
 				case "gt":
 				case "lt":
 				case "like":
@@ -305,6 +310,8 @@ function selectCampoOnChange(event, element, index) {
 			+ "<option value='btw'>Entre</option>"
 			+ "<option value='gt'>Mayor que</option>"
 			+ "<option value='lt'>Menor que</option>"
+			+ "<option value='nl'>Vac&iacute;o</option>"
+			+ "<option value='nnl'>No vac&iacute;o</option>"
 			+ "<option value='in'>Est&aacute; incluido en</option>";
 	} else if (
 		($("#selectCampo" + index).val() == "tipoContratoDescripcion")
@@ -314,7 +321,9 @@ function selectCampoOnChange(event, element, index) {
 		|| ($("#selectCampo" + index).val() == "localidad")) {
 		html += 
 			"<option value='like'>Contiene</option>"
-			+ "<option value='eq'>Es igual a</option>";
+			+ "<option value='eq'>Es igual a</option>"
+			+ "<option value='nl'>Vac&iacute;o</option>"
+			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if (
 		($("#selectCampo" + index).val() == "fechaExportacion")
 		|| ($("#selectCampo" + index).val() == "fechaFinContrato")) {
@@ -322,7 +331,9 @@ function selectCampoOnChange(event, element, index) {
 			"<option value='eq'>Es igual a</option>"
 			+ "<option value='btw'>Entre</option>"
 			+ "<option value='gt'>Mayor que</option>"
-			+ "<option value='lt'>Menor que</option>";
+			+ "<option value='lt'>Menor que</option>"
+			+ "<option value='nl'>Vac&iacute;o</option>"
+			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if ($("#selectCampo" + index).val() == "documentoTipo") {
 		html += 
 			"<option value='eq'>Es igual a</option>";
@@ -354,6 +365,11 @@ function selectCondicionOnChange(event, element, index) {
 				+ "<div id='divValorMax" + index + "' style='float: left'>"
 					+ "<input id='inputValorMax" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
 				+ "</div>";
+			break;
+		case "nl":
+		case "nnl":
+			reloadData();
+			
 			break;
 		case "gt":
 		case "lt":

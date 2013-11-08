@@ -422,6 +422,16 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NULL)) {
+				where = criteriaBuilder.and(
+					where, 
+					criteriaBuilder.isNull(campo)
+				);
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_NULL)) {
+				where = criteriaBuilder.and(
+					where, 
+					criteriaBuilder.isNotNull(campo)
+				);
 			}
 			
 			i++;
