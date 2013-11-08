@@ -68,12 +68,15 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
 		try {
-			Query query = this.construirQuery(metadataConsulta);
+			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
 			
-			for (Object object : query.getResultList()) {
-				registrosMuestra.add(object);
+			List<ACMInterfacePrepago> resultList = query.getResultList();
+			
+			for (ACMInterfacePrepago acmInterfacePrepago : resultList) {
+				registrosMuestra.add(acmInterfacePrepago);
+				
 				if (registrosMuestra.size() == metadataConsulta.getTamanoMuestra()) {
 					break;
 				}

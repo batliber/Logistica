@@ -68,19 +68,22 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
 		try {
-			Query query = this.construirQuery(metadataConsulta);
+			TypedQuery<ACMInterfaceContrato> query = this.construirQuery(metadataConsulta);
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
 			
-			for (Object object : query.getResultList()) {
-				registrosMuestra.add(object);
+			List<ACMInterfaceContrato> resultList = query.getResultList();
+			
+			for (ACMInterfaceContrato acmInterfaceContrato : resultList) {
+				registrosMuestra.add(acmInterfaceContrato);
+				
 				if (registrosMuestra.size() == metadataConsulta.getTamanoMuestra()) {
 					break;
 				}
 			}
 			
 			result.setRegistrosMuestra(registrosMuestra);
-			result.setCantidadRegistros(new Long(query.getResultList().size()));
+			result.setCantidadRegistros(new Long(resultList.size()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
