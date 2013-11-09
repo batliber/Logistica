@@ -80,10 +80,6 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			
 			for (ACMInterfaceContrato acmInterfaceContrato : resultList) {
 				registrosMuestra.add(acmInterfaceContrato);
-				
-				if (registrosMuestra.size() == metadataConsulta.getTamanoMuestra()) {
-					break;
-				}
 			}
 			
 			result.setRegistrosMuestra(registrosMuestra);

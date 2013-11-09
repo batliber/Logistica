@@ -48,6 +48,9 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 	@EJB
 	private IACMInterfaceMidBean iACMInterfaceMidBean;
 	
+	private Predicate where;
+	private Map<String, Object> parameterValues = new HashMap<String, Object>();
+	
 	public Collection<ACMInterfacePrepago> list() {
 		Collection<ACMInterfacePrepago> result = new LinkedList<ACMInterfacePrepago>();
 		
@@ -69,6 +72,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		
 		try {
 			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
+			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
 			
@@ -76,14 +80,23 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			
 			for (ACMInterfacePrepago acmInterfacePrepago : resultList) {
 				registrosMuestra.add(acmInterfacePrepago);
-				
-				if (registrosMuestra.size() == metadataConsulta.getTamanoMuestra()) {
-					break;
-				}
 			}
 			
 			result.setRegistrosMuestra(registrosMuestra);
-			result.setCantidadRegistros(new Long(query.getResultList().size()));
+			
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+			criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(ACMInterfacePrepago.class)));
+			criteriaQuery.where(where);
+			
+			TypedQuery<Long> countQuery = entityManager.createQuery(criteriaQuery);
+			
+			for (String parameterName : parameterValues.keySet()) {
+				countQuery.setParameter(parameterName, parameterValues.get(parameterName));
+			}
+			
+			result.setCantidadRegistros(countQuery.getSingleResult());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -158,13 +171,13 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			}
 		}
 		
-		Predicate predicate = criteriaBuilder.conjunction();
+		where = criteriaBuilder.conjunction();
 		
 		criteriaQuery
 			.select(root)
 			.orderBy(orders);
 		
-		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		parameterValues = new HashMap<String, Object>();
 		
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
@@ -173,8 +186,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_IGUAL)) {
 				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
 				
-				predicate = criteriaBuilder.and(
-					predicate, 
+				where = criteriaBuilder.and(
+					where, 
 					criteriaBuilder.equal(campo, parameterExpression)
 				);
 				
@@ -208,8 +221,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				
 				try {
 					if (campo.getJavaType().equals(Date.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.greaterThan(campo.as(Date.class), parameterExpression.as(Date.class))
 						);
 						
@@ -218,8 +231,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							DateFormat.getInstance().parse(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					} else if (campo.getJavaType().equals(Long.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.greaterThan(campo.as(Long.class), parameterExpression.as(Long.class))
 						);
 						
@@ -228,8 +241,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							new Long(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					} else if (campo.getJavaType().equals(String.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.greaterThan(campo.as(String.class), parameterExpression.as(String.class))
 						);
 						
@@ -238,8 +251,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							metadataCondicion.getValores().toArray(new String[]{})[0]
 						);
 					} else if (campo.getJavaType().equals(Double.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.greaterThan(campo.as(Double.class), parameterExpression.as(Double.class))
 						);
 						
@@ -256,8 +269,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				
 				try {
 					if (campo.getJavaType().equals(Date.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.lessThan(campo.as(Date.class), parameterExpression.as(Date.class))
 						);
 						
@@ -266,8 +279,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							DateFormat.getInstance().parse(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					} else if (campo.getJavaType().equals(Long.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.lessThan(campo.as(Long.class), parameterExpression.as(Long.class))
 						);
 						
@@ -276,8 +289,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							new Long(metadataCondicion.getValores().toArray(new String[]{})[0])
 						);
 					} else if (campo.getJavaType().equals(String.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.lessThan(campo.as(String.class), parameterExpression.as(String.class))
 						);
 						
@@ -286,8 +299,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							metadataCondicion.getValores().toArray(new String[]{})[0]
 						);
 					} else if (campo.getJavaType().equals(Double.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.lessThan(campo.as(Double.class), parameterExpression.as(Double.class))
 						);
 						
@@ -302,8 +315,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_LIKE)) {
 				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
 				
-				predicate = criteriaBuilder.and(
-					predicate, 
+				where = criteriaBuilder.and(
+					where, 
 					criteriaBuilder.like(campo.as(String.class), parameterExpression.as(String.class))
 				);
 				
@@ -320,8 +333,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				
 				try {
 					if (campo.getJavaType().equals(Date.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.between(
 								campo.as(Date.class), 
 								parameterExpressionMin.as(Date.class),
@@ -339,8 +352,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							DateFormat.getInstance().parse(valores[1])
 						);
 					} else if (campo.getJavaType().equals(Long.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.between(
 								campo.as(Long.class), 
 								parameterExpressionMin.as(Long.class),
@@ -358,8 +371,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							new Long(valores[1])
 						);
 					} else if (campo.getJavaType().equals(String.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.between(
 								campo.as(String.class), 
 								parameterExpressionMin.as(String.class),
@@ -377,8 +390,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 							valores[1]
 						);
 					} else if (campo.getJavaType().equals(Double.class)) {
-						predicate = criteriaBuilder.and(
-							predicate, 
+						where = criteriaBuilder.and(
+							where, 
 							criteriaBuilder.between(
 								campo.as(Double.class), 
 								parameterExpressionMin.as(Double.class),
@@ -399,12 +412,22 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NULL)) {
+				where = criteriaBuilder.and(
+					where, 
+					criteriaBuilder.isNull(campo)
+				);
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_NULL)) {
+				where = criteriaBuilder.and(
+					where, 
+					criteriaBuilder.isNotNull(campo)
+				);
 			}
 			
 			i++;
 		}
 		
-		criteriaQuery.where(predicate);
+		criteriaQuery.where(where);
 		
 		TypedQuery<ACMInterfacePrepago> query = entityManager.createQuery(criteriaQuery);
 		

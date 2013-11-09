@@ -3,6 +3,11 @@ table tbody tr td div {
 	white-space: nowrap;
 }
 
+#divFiltros {
+	width: 1000px;
+	display: inline-table;
+}
+
 .divFiltro {
 	width: 1000px;
 	height: 25px;

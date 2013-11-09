@@ -33,3 +33,11 @@ function formatParts(date, size) {
 	
 	return parts[0] + "/" + parts[1] + "/" + parts[2] + (size > 3 ? " " + parts[3] + ":" + parts[4] : "");
 }
+
+function formatDecimal(number, decimals) {
+	if (number != null) {
+		return (new Number(number)).toFixed(decimals);
+	} else {
+		return "";
+	}
+}

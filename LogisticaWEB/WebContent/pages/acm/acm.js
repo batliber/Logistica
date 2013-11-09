@@ -145,19 +145,20 @@ function reloadData() {
 									+ registroMuestra.mid 
 								+ "</div></td>"
 								+ "<td class='tdPrepagoMesAno'><div class='divPrepagoMesAno'>" 
-									+ formatMonthYearDate(registroMuestra.mesAno) 
+									+ (registroMuestra.mesAno != null ?
+										formatMonthYearDate(registroMuestra.mesAno) : "&nbsp;") 
 								+ "</div></td>"
 								+ "<td class='tdPrepagoMontoMesActual'><div class='divPrepagoMontoMesActual'>" 
-									+ registroMuestra.montoMesActual 
+									+ formatDecimal(registroMuestra.montoMesActual, 2) 
 								+ "</div></td>"
 								+ "<td class='tdPrepagoMontoMesAnterior1'><div class='divPrepagoMontoMesAnterior1'>" 
-									+ registroMuestra.montoMesAnterior1 
+									+ formatDecimal(registroMuestra.montoMesAnterior1, 2) 
 								+ "</div></td>"
 								+ "<td class='tdPrepagoMontoMesAnterior2'><div class='divPrepagoMontoMesAnterior2'>" 
-									+ registroMuestra.montoMesAnterior2 
+									+ formatDecimal(registroMuestra.montoMesAnterior2, 2)
 								+ "</div></td>"
 								+ "<td class='tdPrepagoMontoPromedio'><div class='divPrepagoMontoPromedio'>" 
-									+ registroMuestra.montoPromedio 
+									+ formatDecimal(registroMuestra.montoPromedio, 2)
 								+ "</div></td>"
 								+ "<td class='tdPrepagoFechaExportacion'><div class='divPrepagoFechaExportacion'>" 
 									+ (registroMuestra.fechaExportacion != null ?
@@ -361,8 +362,8 @@ function selectCondicionOnChange(event, element, index) {
 				+ "<div id='divValorMin" + index + "' style='float: left'>"
 					+ "<input id='inputValorMin" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
 				+ "</div>"
-				+ "<div class='divFormLabel'>y:</div>"
-				+ "<div id='divValorMax" + index + "' style='float: left'>"
+				+ "<div class='divFormLabel' style='width: 50px;'>y:</div>"
+				+ "<div id='divValorMax" + index + "' style='float: left;'>"
 					+ "<input id='inputValorMax" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
 				+ "</div>";
 			break;
@@ -479,27 +480,31 @@ function tableTheadTdOnClick(event, element) {
 
 function inputExportarAExcelOnClick(event) {
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		ACMInterfaceContratoDWR.exportarAExcel(
-			calcularMetadataConsulta(),
-			{
-				callback: function(data) {
-					alert("Archivo generado: " + data);
-					
-					reloadData();
+		if (confirm("Se exportarán " + $("#divContratoCantidadRegistros").text() + " registros.")) {
+			ACMInterfaceContratoDWR.exportarAExcel(
+				calcularMetadataConsulta(),
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
 				}
-			}
-		);
+			);
+		}
 	} else {
-		ACMInterfacePrepagoDWR.exportarAExcel(
-			calcularMetadataConsulta(),
-			{
-				callback: function(data) {
-					alert("Archivo generado: " + data);
-					
-					reloadData();
+		if (confirm("Se exportarán " + $("#divPrepagoCantidadRegistros").text()+ " registros.")) {
+			ACMInterfacePrepagoDWR.exportarAExcel(
+				calcularMetadataConsulta(),
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
 				}
-			}
-		);
+			);
+		}
 	}
 }
 
