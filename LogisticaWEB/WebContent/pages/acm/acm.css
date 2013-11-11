@@ -14,11 +14,11 @@ table tbody tr td div {
 }
 
 #divContratos {
-	width: 1100px; 
+	width: 1185px; 
 }
 
 #tableContratos {
-	width: 1088px;
+	width: 1185px;
 	height: 318px;
 }
 
@@ -31,23 +31,23 @@ table tbody tr td div {
 }
 
 #tableContratos thead tr .tdContratoFinContratoNOO {
-	width: 65px;
+	width: 60px;
 }
 
 #tableContratos thead tr .tdContratoTipoContratoDescripcionNOO {
-	width: 110px;
-}
-
-#tableContratos thead tr .tdContratoDocumentoNOO {
 	width: 90px;
 }
 
+#tableContratos thead tr .tdContratoDocumentoNOO {
+	width: 80px;
+}
+
 #tableContratos thead tr .tdContratoNombreNOO {
-	width: 190px;
+	width: 155px;
 }
 
 #tableContratos thead tr .tdContratoDireccionNOO {
-	width: 190px;
+	width: 155px;
 }
 
 #tableContratos thead tr .tdContratoCodigoPostalNOO {
@@ -55,7 +55,15 @@ table tbody tr td div {
 }
 
 #tableContratos thead tr .tdContratoLocalidadNOO {
-	width: 145px;
+	width: 106px;
+}
+
+#tableContratos thead tr .tdContratoEquipoNOO {
+	width: 120px;
+}
+
+#tableContratos thead tr .tdContratoAgenteNOO {
+	width: 120px;
 }
 
 #tableContratos thead tr .tdContratoFechaExportacionNOO {
@@ -74,35 +82,35 @@ table tbody tr td div {
 }
 
 #tableContratos thead tr .tdContratoFinContratoASC {
-	width: 65px;
+	width: 60px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoTipoContratoDescripcionASC {
-	width: 110px;
-	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
-}
-
-#tableContratos thead tr .tdContratoDocumentoASC {
 	width: 90px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
+#tableContratos thead tr .tdContratoDocumentoASC {
+	width: 80px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
 #tableContratos thead tr .tdContratoNombreASC {
-	width: 190px;
+	width: 155px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoDireccionASC {
-	width: 190px;
+	width: 155px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -116,7 +124,21 @@ table tbody tr td div {
 }
 
 #tableContratos thead tr .tdContratoLocalidadASC {
-	width: 145px;
+	width: 106px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoEquipoASC {
+	width: 120px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoAgenteASC {
+	width: 120px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -144,35 +166,35 @@ table tbody tr td div {
 }
 
 #tableContratos thead tr .tdContratoFinContratoDES {
-	width: 65px;
+	width: 60px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoTipoContratoDescripcionDES {
-	width: 110px;
-	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-}
-
-#tableContratos thead tr .tdContratoDocumentoDES {
 	width: 90px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
+#tableContratos thead tr .tdContratoDocumentoDES {
+	width: 80px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
 #tableContratos thead tr .tdContratoNombreDES {
-	width: 190px;
+	width: 155px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoDireccionDES {
-	width: 190px;
+	width: 155px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -186,7 +208,21 @@ table tbody tr td div {
 }
 
 #tableContratos thead tr .tdContratoLocalidadDES {
-	width: 145px;
+	width: 106px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoEquipoDES {
+	width: 120px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoAgenteDES {
+	width: 120px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -210,7 +246,7 @@ table tbody tr td div {
 	position: fixed;
 	margin-top: 17px;
 	overflow: auto;
-	width: 1085px;
+	width: 1183px;
 	height: 280px;
 }
 
@@ -222,31 +258,31 @@ table tbody tr td div {
 
 #tableContratos tbody tr td .divContratoFinContrato {
 	text-align: center;
-	width: 65px;
+	width: 60px;
 }
 
 #tableContratos tbody tr td .divContratoTipoContratoDescripcion {
 	text-align: left;
 	margin-left: 2px;
-	width: 108px;
+	width: 88px;
 }
 
 #tableContratos tbody tr td .divContratoDocumento {
 	text-align: left;
 	margin-left: 2px;
-	width: 88px;
+	width: 78px;
 }
 
 #tableContratos tbody tr td .divContratoNombre {
 	text-align: left;
 	margin-left: 2px;
-	width: 188px;
+	width: 153px;
 }
 
 #tableContratos tbody tr td .divContratoDireccion {
 	text-align: left;
 	margin-left: 2px;
-	width: 188px;
+	width: 153px;
 }
 
 #tableContratos tbody tr td .divContratoCodigoPostal {
@@ -258,7 +294,19 @@ table tbody tr td div {
 #tableContratos tbody tr td .divContratoLocalidad {
 	text-align: left;
 	margin-left: 2px;
-	width: 143px;
+	width: 104px;
+}
+
+#tableContratos tbody tr td .divContratoEquipo {
+	text-align: left;
+	margin-left: 2px;
+	width: 118px;
+}
+
+#tableContratos tbody tr td .divContratoAgente {
+	text-align: left;
+	margin-left: 2px;
+	width: 118px;
 }
 
 #tableContratos tbody tr td .divContratoFechaExportacion {
@@ -275,7 +323,7 @@ table tbody tr td div {
 	position: fixed;
 	margin-top: 297px;
 	overflow: auto;
-	width: 1084px;
+	width: 1184px;
 }
 
 #tdContratoCantidadRegistrosLabel {
@@ -284,7 +332,7 @@ table tbody tr td div {
 }
 
 #tdContratoCantidadRegistrosValor {
-	width: 945px;
+	width: 1044px;
 }
 
 #divContratoCantidadRegistros {

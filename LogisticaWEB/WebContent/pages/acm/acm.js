@@ -23,6 +23,8 @@ var ordenContrato = {
 	tdContratoDireccion: 0,
 	tdContratoCodigoPostal: 0,
 	tdContratoLocalidad: 0,
+	tdContratoEquipo: 0,
+	tdContratoAgente: 0,
 	tdContratoFechaExportacion: 0,
 	tdContratoFact: 0
 };
@@ -44,6 +46,8 @@ var campos = {
 	tdContratoDireccion: "direccion",
 	tdContratoCodigoPostal: "codigoPostal",
 	tdContratoLocalidad: "localidad",
+	tdContratoEquipo: "equipo",
+	tdContratoAgente: "agente",
 	tdContratoFechaExportacion: "fechaExportacion",
 	tdContratoFact: "fact"
 };
@@ -116,6 +120,12 @@ function reloadData() {
 								+ "</div></td>"
 								+ "<td class='tdContratoLocalidad'><div class='divContratoLocalidad'>" 
 									+ registroMuestra.localidad 
+								+ "</div></td>"
+								+ "<td class='tdContratoEquipo'><div class='divContratoEquipo'>" 
+									+ registroMuestra.equipo 
+								+ "</div></td>"
+								+ "<td class='tdContratoAgente'><div class='divContratoAgente'>" 
+									+ registroMuestra.agente
 								+ "</div></td>"
 								+ "<td class='tdContratoFechaExportacion'><div class='divContratoFechaExportacion'>" 
 									+ (registroMuestra.fechaExportacion != null ?
@@ -278,6 +288,8 @@ function inputAgregarFiltroOnClick(event) {
 					+ "<option value='direccion'>Direcci&oacute;n</option>"
 					+ "<option value='codigoPostal'>Código postal</option>"
 					+ "<option value='localidad'>Localidad</option>"
+					+ "<option value='equipo'>Equipo</option>"
+					+ "<option value='agente'>Agente</option>"
 					+ "<option value='fechaExportacion'>Asignado</option>"
 					+ "<option value='fact'>Obtenido</option>"
 				+ "</select>"
@@ -342,7 +354,9 @@ function selectCampoOnChange(event, element, index) {
 		|| ($("#selectCampo" + index).val() == "documento")
 		|| ($("#selectCampo" + index).val() == "nombre")
 		|| ($("#selectCampo" + index).val() == "direccion")
-		|| ($("#selectCampo" + index).val() == "localidad")) {
+		|| ($("#selectCampo" + index).val() == "localidad")
+		|| ($("#selectCampo" + index).val() == "equipo")
+		|| ($("#selectCampo" + index).val() == "agente")) {
 		html += 
 			"<option value='like'>Contiene</option>"
 			+ "<option value='eq'>Es igual a</option>"

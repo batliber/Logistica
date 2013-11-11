@@ -51,12 +51,16 @@
 							<td class="tdContratoDireccionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Direcci&oacute;n</td>
 							<td class="tdContratoCodigoPostalNOO" onclick="javascript:tableTheadTdOnClick(event, this)">CP</td>
 							<td class="tdContratoLocalidadNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Localidad</td>
+							<td class="tdContratoEquipoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Equipo</td>
+							<td class="tdContratoAgenteNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Agente</td>
 							<td class="tdContratoFechaExportacionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Asignado</td>
 							<td class="tdContratoFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Obtenido</td>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
