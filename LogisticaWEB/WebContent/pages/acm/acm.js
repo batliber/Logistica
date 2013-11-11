@@ -239,11 +239,13 @@ function calcularCondiciones() {
 			}
 			
 			if (filtroValido) {
-				for (var j = 0; j < metadataCondicion.valores.length; j++) {
-					if (metadataCondicion.valores[j].indexOf("/") > 0) {
-						metadataCondicion.valores[j] = 
-							(metadataCondicion.valores[j] + " 00:00")
-								.substring(0, 16);
+				if (metadataCondicion.valores != null) {
+					for (var j = 0; j < metadataCondicion.valores.length; j++) {
+						if (metadataCondicion.valores[j].indexOf("/") > 0) {
+							metadataCondicion.valores[j] = 
+								(metadataCondicion.valores[j] + " 00:00")
+									.substring(0, 16);
+						}
 					}
 				}
 				
