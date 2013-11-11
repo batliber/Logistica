@@ -534,22 +534,26 @@ function inputExportarAExcelOnClick(event) {
 
 function inputReprocesarOnClick(event) {
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		ACMInterfaceContratoDWR.reprocesar(
-			calcularMetadataConsulta(),
-			{
-				callback: function(data) {
-					
+		if (confirm("Se reprocesarán " + $("#divContratoCantidadRegistros").text() + " registros.")) {
+			ACMInterfaceContratoDWR.reprocesar(
+				calcularMetadataConsulta(),
+				{
+					callback: function(data) {
+						
+					}
 				}
-			}
-		);
+			);
+		}
 	} else {
-		ACMInterfacePrepagoDWR.reprocesar(
-			calcularMetadataConsulta(),
-			{
-				callback: function(data) {
-					
+		if (confirm("Se reprocesarán " + $("#divContratoCantidadRegistros").text() + " registros.")) {
+			ACMInterfacePrepagoDWR.reprocesar(
+				calcularMetadataConsulta(),
+				{
+					callback: function(data) {
+						
+					}
 				}
-			}
-		);
+			);
+		}
 	}
 }

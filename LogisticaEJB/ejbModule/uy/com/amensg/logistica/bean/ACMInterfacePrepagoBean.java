@@ -45,9 +45,6 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 	@EJB
 	private IACMInterfaceProcesoBean iACMInterfaceProcesoBean;
 	
-	@EJB
-	private IACMInterfaceMidBean iACMInterfaceMidBean;
-	
 	private Predicate where;
 	private Map<String, Object> parameterValues = new HashMap<String, Object>();
 	
@@ -458,7 +455,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				acmInterfaceMid.setMid(acmInterfacePrepago.getMid());
 				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
 				
-				iACMInterfaceMidBean.update(acmInterfaceMid);
+				entityManager.merge(acmInterfaceMid);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

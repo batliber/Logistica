@@ -45,9 +45,6 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 	@EJB
 	private IACMInterfaceProcesoBean iACMInterfaceProcesoBean;
 	
-	@EJB
-	private IACMInterfaceMidBean iACMInterfaceMidBean;
-	
 	private Predicate where;
 	private Map<String, Object> parameterValues = new HashMap<String, Object>();
 	
@@ -464,7 +461,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				acmInterfaceMid.setMid(acmInterfaceContrato.getMid());
 				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
 				
-				iACMInterfaceMidBean.update(acmInterfaceMid);
+				entityManager.merge(acmInterfaceMid);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
