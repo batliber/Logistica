@@ -121,6 +121,9 @@ function reloadData() {
 									+ (registroMuestra.fechaExportacion != null ?
 										formatLongDate(registroMuestra.fechaExportacion) : "&nbsp;")
 								+ "</div></td>"
+								+ "<td class='tdContratoFact'><div class='divContratoFact'>" 
+									+ formatLongDate(registroMuestra.fact)
+								+ "</div></td>"
 							+ "</tr>"
 						);
 					}
@@ -164,6 +167,9 @@ function reloadData() {
 									+ (registroMuestra.fechaExportacion != null ?
 										formatLongDate(registroMuestra.fechaExportacion) : "&nbsp;")
 								+ "</div></td>"
+								+ "<td class='tdPrepagoFact'><div class='divPrepagoFact'>" 
+									+ formatLongDate(registroMuestra.fact)
+								+ "</div></td>"
 							+ "</tr>"
 						);
 					}
@@ -204,9 +210,14 @@ function calcularCondiciones() {
 			var filtroValido = false;
 			switch ($("#selectCondicion" + i).val()) {
 				case "btw":
-					metadataCondicion.valores = [$("#inputValorMin" + i).val(), $("#inputValorMax" + i).val()];
+					var valorMin = $("#inputValorMin" + i).val();
+					var valorMax = $("#inputValorMax" + i).val();
 					
-					filtroValido = metadataCondicion.valores[0] != "" && metadataCondicion.valores[1] != "";
+					metadataCondicion.valores = [valorMin, valorMax];
+					
+					filtroValido = 
+						metadataCondicion.valores[0] != "" 
+							&& metadataCondicion.valores[1] != "";
 					
 					break;
 				case "nl":
@@ -228,6 +239,14 @@ function calcularCondiciones() {
 			}
 			
 			if (filtroValido) {
+				for (var j = 0; j < metadataCondicion.valores.length; j++) {
+					if (metadataCondicion.valores[j].indexOf("/") > 0) {
+						metadataCondicion.valores[j] = 
+							(metadataCondicion.valores[j] + " 00:00")
+								.substring(0, 16);
+					}
+				}
+				
 				result[result.length] = metadataCondicion;
 			}
 		}
@@ -258,6 +277,7 @@ function inputAgregarFiltroOnClick(event) {
 					+ "<option value='codigoPostal'>Código postal</option>"
 					+ "<option value='localidad'>Localidad</option>"
 					+ "<option value='fechaExportacion'>Asignado</option>"
+					+ "<option value='fact'>Obtenido</option>"
 				+ "</select>"
 			+ "</div>";
 	} else {
@@ -272,6 +292,7 @@ function inputAgregarFiltroOnClick(event) {
 					+ "<option value='montoMesAnterior2'>Monto mes ant. 2</option>"
 					+ "<option value='montoPromedio'>Monto promedio</option>"
 					+ "<option value='fechaExportacion'>Asignado</option>"
+					+ "<option value='fact'>Obtenido</option>"
 				+ "</select>"
 			+ "</div>";
 	}
@@ -327,7 +348,8 @@ function selectCampoOnChange(event, element, index) {
 			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if (
 		($("#selectCampo" + index).val() == "fechaExportacion")
-		|| ($("#selectCampo" + index).val() == "fechaFinContrato")) {
+		|| ($("#selectCampo" + index).val() == "fechaFinContrato")
+		|| ($("#selectCampo" + index).val() == "fact")) {
 		html += 
 			"<option value='eq'>Es igual a</option>"
 			+ "<option value='btw'>Entre</option>"

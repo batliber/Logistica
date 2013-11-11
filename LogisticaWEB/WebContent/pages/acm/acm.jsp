@@ -52,10 +52,12 @@
 							<td class="tdContratoCodigoPostalNOO" onclick="javascript:tableTheadTdOnClick(event, this)">CP</td>
 							<td class="tdContratoLocalidadNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Localidad</td>
 							<td class="tdContratoFechaExportacionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Asignado</td>
+							<td class="tdContratoFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Obtenido</td>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
+							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
@@ -88,10 +90,12 @@
 							<td class="tdPrepagoMontoMesAnterior2NOO" onclick="javascript:tableTheadTdOnClick(event, this)">Monto ant. 2</td>
 							<td class="tdPrepagoMontoPromedioNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Monto prom.</td>
 							<td class="tdPrepagoFechaExportacionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Asignado</td>
+							<td class="tdPrepagoFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Obtenido</td>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
+							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
