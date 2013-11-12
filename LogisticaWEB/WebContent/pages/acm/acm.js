@@ -103,29 +103,37 @@ function reloadData() {
 								+ "</div></td>"
 								+ "<td class='tdContratoTipoContratoDescripcion'><div class='divContratoTipoContratoDescripcion' title='" 
 									+ registroMuestra.tipoContratoCodigo + "'>" 
-									+ registroMuestra.tipoContratoDescripcion 
+									+ (registroMuestra.tipoContratoDescripcion != null ? 
+										registroMuestra.tipoContratoDescripcion : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoDocumento'><div class='divContratoDocumento' title='"
 									+ registroMuestra.documentoTipo + "'>" 
-									+ registroMuestra.documento 
+									+ (registroMuestra.documento != null ?
+										registroMuestra.documento : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoNombre'><div class='divContratoNombre'>" 
-									+ registroMuestra.nombre 
+									+ (registroMuestra.nombre != null ?
+										registroMuestra.nombre : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoDireccion'><div class='divContratoDireccion'>" 
-									+ registroMuestra.direccion 
+									+ (registroMuestra.direccion != null ?
+										registroMuestra.direccion : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoCodigoPostal'><div class='divContratoCodigoPostal'>" 
-									+ registroMuestra.codigoPostal 
+									+ (registroMuestra.codigoPostal != null ?
+										registroMuestra.codigoPostal : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoLocalidad'><div class='divContratoLocalidad'>" 
-									+ registroMuestra.localidad 
+									+ (registroMuestra.localidad != null ?
+										registroMuestra.localidad : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoEquipo'><div class='divContratoEquipo'>" 
-									+ registroMuestra.equipo 
+									+ (registroMuestra.equipo != null ?
+										registroMuestra.equipo : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoAgente'><div class='divContratoAgente'>" 
-									+ registroMuestra.agente
+									+ (registroMuestra.agente != null ?
+										registroMuestra.agente : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoFechaExportacion'><div class='divContratoFechaExportacion'>" 
 									+ (registroMuestra.fechaExportacion != null ?
