@@ -34,6 +34,7 @@ public class MetadataConsultaDWR {
 		metadataConsulta.setMetadataOrdenaciones(metadataOrdenaciones);
 		
 		metadataConsulta.setTamanoMuestra(metadataConsultaTO.getTamanoMuestra());
+		metadataConsulta.setTamanoSubconjunto(metadataConsultaTO.getTamanoSubconjunto());
 		
 		return metadataConsulta;
 	}

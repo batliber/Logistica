@@ -54,6 +54,9 @@ public class ACMInterfaceContrato implements Serializable {
 	@Column(name = "fecha_exportacion")
 	private Date fechaExportacion;
 
+	@Column(name = "fecha_exportacion_anterior")
+	private Date fechaExportacionAnterior;
+
 	@Column(name = "uact")
 	private Long uact;
 
@@ -165,6 +168,14 @@ public class ACMInterfaceContrato implements Serializable {
 
 	public void setFechaExportacion(Date fechaExportacion) {
 		this.fechaExportacion = fechaExportacion;
+	}
+
+	public Date getFechaExportacionAnterior() {
+		return fechaExportacionAnterior;
+	}
+
+	public void setFechaExportacionAnterior(Date fechaExportacionAnterior) {
+		this.fechaExportacionAnterior = fechaExportacionAnterior;
 	}
 
 	public Long getUact() {

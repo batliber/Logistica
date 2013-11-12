@@ -5,12 +5,15 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -107,7 +110,33 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		try {
 			TypedQuery<ACMInterfaceContrato> query = this.construirQuery(metadataConsulta);
 			
+			Collection<ACMInterfaceContrato> resultList = new LinkedList<ACMInterfaceContrato>();
+			if (metadataConsulta.getTamanoSubconjunto() != null) {
+				List<ACMInterfaceContrato> toOrder = query.getResultList();
+				
+				Collections.sort(toOrder, new Comparator<ACMInterfaceContrato>() {
+					public int compare(ACMInterfaceContrato arg0, ACMInterfaceContrato arg1) {
+						Random random = new Random();
+						
+						return random.nextBoolean() ? 1 : -1;
+					}
+				});
+				
+				int i = 0;
+				for (ACMInterfaceContrato acmInterfaceContrato : toOrder) {
+					resultList.add(acmInterfaceContrato);
+					
+					i++;
+					if (i == metadataConsulta.getTamanoSubconjunto()) {
+						break;
+					}
+				}
+			} else {
+				resultList = query.getResultList();
+			}
+			
 			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			Date currentDate = gregorianCalendar.getTime();
 			
 			String fileName = 
 				Configuration.getInstance().getProperty("exportacion.carpeta")
@@ -123,11 +152,11 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			
-			for (ACMInterfaceContrato acmInterfaceContrato : query.getResultList()) {
-				acmInterfaceContrato.setFechaExportacion(gregorianCalendar.getTime());
-				acmInterfaceContrato.setUact(new Long(1));
-				acmInterfaceContrato.setFact(gregorianCalendar.getTime());
-				acmInterfaceContrato.setTerm(new Long(1));
+			for (ACMInterfaceContrato acmInterfaceContrato : resultList) {
+				acmInterfaceContrato.setFechaExportacionAnterior(
+					acmInterfaceContrato.getFechaExportacion()
+				);
+				acmInterfaceContrato.setFechaExportacion(currentDate);
 				
 				acmInterfaceContrato = entityManager.merge(acmInterfaceContrato);
 				
@@ -144,7 +173,12 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					+ ";" + acmInterfaceContrato.getDireccion()
 					+ ";" + acmInterfaceContrato.getCodigoPostal()
 					+ ";" + acmInterfaceContrato.getLocalidad()
-					+ ";" + format.format(acmInterfaceContrato.getFechaExportacion())
+					+ ";" + acmInterfaceContrato.getEquipo()
+					+ ";" + acmInterfaceContrato.getAgente()
+					+ ";" + (acmInterfaceContrato.getFechaExportacion() != null ?
+						format.format(acmInterfaceContrato.getFechaExportacion())
+						: "")
+					+ ";" + format.format(acmInterfaceContrato.getFact())
 				);
 			}
 			
@@ -156,6 +190,64 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		}
 		
 		return result;
+	}
+	
+	public void deshacerAsignacion(MetadataConsulta metadataConsulta) {
+		try {
+			TypedQuery<ACMInterfaceContrato> query = entityManager.createQuery(
+				"SELECT c FROM ACMInterfaceContrato c ORDER BY c.fechaExportacion DESC",
+				ACMInterfaceContrato.class
+			);
+			
+			Date fechaExportacion = null;
+			for (ACMInterfaceContrato acmInterfaceContrato : query.getResultList()) {
+				if (fechaExportacion == null 
+					|| acmInterfaceContrato.getFechaExportacion()
+						.equals(fechaExportacion)) {
+					fechaExportacion = acmInterfaceContrato.getFechaExportacion();
+					
+					acmInterfaceContrato.setFechaExportacion(
+						acmInterfaceContrato.getFechaExportacionAnterior()
+					);
+					acmInterfaceContrato.setFechaExportacionAnterior(
+						fechaExportacion
+					);
+					
+					entityManager.merge(acmInterfaceContrato);
+				} else {
+					break;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void reprocesar(MetadataConsulta metadataConsulta) {
+		try {
+			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
+			acmInterfaceProceso.setFact(new Date());
+			acmInterfaceProceso.setFechaInicio(new Date());
+			acmInterfaceProceso.setTerm(new Long(1));
+			acmInterfaceProceso.setUact(new Long(1));
+			
+			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
+			
+			TypedQuery<ACMInterfaceContrato> query = this.construirQuery(metadataConsulta);
+			
+			for (ACMInterfaceContrato acmInterfaceContrato : query.getResultList()) {
+				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
+				acmInterfaceMid.setEstado(
+					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+				);
+				acmInterfaceMid.setMid(acmInterfaceContrato.getMid());
+				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
+				
+				entityManager.merge(acmInterfaceMid);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private TypedQuery<ACMInterfaceContrato> construirQuery(MetadataConsulta metadataConsulta) {
@@ -439,32 +531,5 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		}
 		
 		return query;
-	}
-	
-	public void reprocesar(MetadataConsulta metadataConsulta) {
-		try {
-			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
-			acmInterfaceProceso.setFact(new Date());
-			acmInterfaceProceso.setFechaInicio(new Date());
-			acmInterfaceProceso.setTerm(new Long(1));
-			acmInterfaceProceso.setUact(new Long(1));
-			
-			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
-			
-			TypedQuery<ACMInterfaceContrato> query = this.construirQuery(metadataConsulta);
-			
-			for (ACMInterfaceContrato acmInterfaceContrato : query.getResultList()) {
-				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
-				acmInterfaceMid.setEstado(
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
-				);
-				acmInterfaceMid.setMid(acmInterfaceContrato.getMid());
-				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
-				
-				entityManager.merge(acmInterfaceMid);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

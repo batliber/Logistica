@@ -25,5 +25,6 @@
 		</div>
 	</div>
 	<div id="divIFrameActivePage"><iframe id="iFrameActivePage" src="/LogisticaWEB/pages/acm/acm.jsp" frameborder="0"></iframe></div>
+	<div id="divModalBackground">&nbsp;</div>
 </body>
 </html>

@@ -10,6 +10,7 @@ public class MetadataConsultaTO {
 	private Collection<MetadataCondicionTO> metadataCondiciones;
 	private Collection<MetadataOrdenacionTO> metadataOrdenaciones;
 	private Long tamanoMuestra;
+	private Long tamanoSubconjunto;
 
 	public Collection<MetadataCondicionTO> getMetadataCondiciones() {
 		return metadataCondiciones;
@@ -35,5 +36,13 @@ public class MetadataConsultaTO {
 
 	public void setTamanoMuestra(Long tamanoMuestra) {
 		this.tamanoMuestra = tamanoMuestra;
+	}
+
+	public Long getTamanoSubconjunto() {
+		return tamanoSubconjunto;
+	}
+
+	public void setTamanoSubconjunto(Long tamanoSubconjunto) {
+		this.tamanoSubconjunto = tamanoSubconjunto;
 	}
 }

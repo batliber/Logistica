@@ -91,6 +91,20 @@ public class ACMInterfaceContratoDWR {
 		}
 	}
 	
+	public void deshacerAsignacion(MetadataConsultaTO metadataConsultaTO) {
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			iACMInterfaceContratoBean.deshacerAsignacion(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static ACMInterfaceContratoTO transform(ACMInterfaceContrato acmInterfaceContrato) {
 		ACMInterfaceContratoTO acmInterfaceContratoTO = new ACMInterfaceContratoTO();
 		

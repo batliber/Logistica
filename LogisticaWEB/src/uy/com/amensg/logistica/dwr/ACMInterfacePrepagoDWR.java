@@ -91,6 +91,20 @@ public class ACMInterfacePrepagoDWR {
 		}
 	}
 	
+	public void deshacerAsignacion(MetadataConsultaTO metadataConsultaTO) {
+		try {
+			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+			
+			iACMInterfacePrepagoBean.deshacerAsignacion(
+				MetadataConsultaDWR.transform(
+						metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public ACMInterfacePrepagoTO transform(ACMInterfacePrepago acmInterfacePrepago) {
 		ACMInterfacePrepagoTO acmInterfacePrepagoTO = new ACMInterfacePrepagoTO();
 		

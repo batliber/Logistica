@@ -10,6 +10,7 @@ public class MetadataConsulta implements Serializable {
 	private Collection<MetadataCondicion> metadataCondiciones;
 	private Collection<MetadataOrdenacion> metadataOrdenaciones;
 	private Long tamanoMuestra;
+	private Long tamanoSubconjunto;
 
 	public Collection<MetadataCondicion> getMetadataCondiciones() {
 		return metadataCondiciones;
@@ -35,5 +36,13 @@ public class MetadataConsulta implements Serializable {
 
 	public void setTamanoMuestra(Long tamanoMuestra) {
 		this.tamanoMuestra = tamanoMuestra;
+	}
+
+	public Long getTamanoSubconjunto() {
+		return tamanoSubconjunto;
+	}
+
+	public void setTamanoSubconjunto(Long tamanoSubconjunto) {
+		this.tamanoSubconjunto = tamanoSubconjunto;
 	}
 }

@@ -5,12 +5,15 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -107,7 +110,33 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		try {
 			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
 			
+			Collection<ACMInterfacePrepago> resultList = new LinkedList<ACMInterfacePrepago>();
+			if (metadataConsulta.getTamanoSubconjunto() != null) {
+				List<ACMInterfacePrepago> toOrder = query.getResultList();
+				
+				Collections.sort(toOrder, new Comparator<ACMInterfacePrepago>() {
+					public int compare(ACMInterfacePrepago arg0, ACMInterfacePrepago arg1) {
+						Random random = new Random();
+						
+						return random.nextBoolean() ? 1 : -1;
+					}
+				});
+				
+				int i = 0;
+				for (ACMInterfacePrepago acmInterfacePrepago : toOrder) {
+					resultList.add(acmInterfacePrepago);
+					
+					i++;
+					if (i == metadataConsulta.getTamanoSubconjunto()) {
+						break;
+					}
+				}
+			} else {
+				resultList = query.getResultList();
+			}
+			
 			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			Date currentDate = gregorianCalendar.getTime();
 			
 			String fileName =
 				Configuration.getInstance().getProperty("exportacion.carpeta")
@@ -122,23 +151,28 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat formatMesAno = new SimpleDateFormat("MM/yyyy");
 			
-			for (ACMInterfacePrepago acmInterfacePrepago : query.getResultList()) {
-				acmInterfacePrepago.setFechaExportacion(gregorianCalendar.getTime());
-				acmInterfacePrepago.setUact(new Long(1));
-				acmInterfacePrepago.setFact(gregorianCalendar.getTime());
-				acmInterfacePrepago.setTerm(new Long(1));
+			for (ACMInterfacePrepago acmInterfacePrepago : resultList) {
+				acmInterfacePrepago.setFechaExportacionAnterior(
+					acmInterfacePrepago.getFechaExportacion()
+				);
+				acmInterfacePrepago.setFechaExportacion(currentDate);
 				
 				acmInterfacePrepago = entityManager.merge(acmInterfacePrepago);
 				
 				printWriter.println(
 					acmInterfacePrepago.getMid()
-					+ ";" + acmInterfacePrepago.getMesAno()
+					+ ";" + (acmInterfacePrepago.getMesAno() != null ?
+						formatMesAno.format(acmInterfacePrepago.getMesAno())
+						: "")
 					+ ";" + acmInterfacePrepago.getMontoMesActual()
 					+ ";" + acmInterfacePrepago.getMontoMesAnterior1()
 					+ ";" + acmInterfacePrepago.getMontoMesAnterior2()
 					+ ";" + acmInterfacePrepago.getMontoPromedio()
-					+ ";" + format.format(acmInterfacePrepago.getFechaExportacion())
+					+ ";" + (acmInterfacePrepago.getFechaExportacion() != null ?
+						format.format(acmInterfacePrepago.getFechaExportacion())
+						: "")
 				);
 			}
 			
@@ -150,6 +184,64 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		}
 		
 		return result;
+	}
+	
+	public void deshacerAsignacion(MetadataConsulta metadataConsulta) {
+		try {
+			TypedQuery<ACMInterfacePrepago> query = entityManager.createQuery(
+				"SELECT p FROM ACMInterfacePrepago p ORDER BY p.fechaExportacion DESC",
+				ACMInterfacePrepago.class
+			);
+			
+			Date fechaExportacion = null;
+			for (ACMInterfacePrepago acmInterfacePrepago : query.getResultList()) {
+				if (fechaExportacion == null 
+					|| acmInterfacePrepago.getFechaExportacion()
+						.equals(fechaExportacion)) {
+					fechaExportacion = acmInterfacePrepago.getFechaExportacion();
+					
+					acmInterfacePrepago.setFechaExportacion(
+						acmInterfacePrepago.getFechaExportacionAnterior()
+					);
+					acmInterfacePrepago.setFechaExportacionAnterior(
+						fechaExportacion
+					);
+					
+					entityManager.merge(acmInterfacePrepago);
+				} else {
+					break;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void reprocesar(MetadataConsulta metadataConsulta) {
+		try {
+			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
+			acmInterfaceProceso.setFact(new Date());
+			acmInterfaceProceso.setFechaInicio(new Date());
+			acmInterfaceProceso.setTerm(new Long(1));
+			acmInterfaceProceso.setUact(new Long(1));
+			
+			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
+			
+			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
+			
+			for (ACMInterfacePrepago acmInterfacePrepago : query.getResultList()) {
+				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
+				acmInterfaceMid.setEstado(
+					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+				);
+				acmInterfaceMid.setMid(acmInterfacePrepago.getMid());
+				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
+				
+				entityManager.merge(acmInterfaceMid);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private TypedQuery<ACMInterfacePrepago> construirQuery(MetadataConsulta metadataConsulta) {
@@ -433,32 +525,5 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		}
 		
 		return query;
-	}
-	
-	public void reprocesar(MetadataConsulta metadataConsulta) {
-		try {
-			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
-			acmInterfaceProceso.setFact(new Date());
-			acmInterfaceProceso.setFechaInicio(new Date());
-			acmInterfaceProceso.setTerm(new Long(1));
-			acmInterfaceProceso.setUact(new Long(1));
-			
-			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
-			
-			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
-			
-			for (ACMInterfacePrepago acmInterfacePrepago : query.getResultList()) {
-				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
-				acmInterfaceMid.setEstado(
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
-				);
-				acmInterfaceMid.setMid(acmInterfacePrepago.getMid());
-				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
-				
-				entityManager.merge(acmInterfaceMid);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

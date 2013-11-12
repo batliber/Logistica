@@ -571,3 +571,64 @@ function inputReprocesarOnClick(event) {
 		}
 	}
 }
+
+function inputExportarSubconjuntoOnClick(event) {
+	var metadataConsulta = calcularMetadataConsulta();
+	metadataConsulta.tamanoSubconjunto = 500;
+	
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+			ACMInterfaceContratoDWR.exportarAExcel(
+				metadataConsulta,
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
+				}
+			);
+		}
+	} else {
+		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+			ACMInterfacePrepagoDWR.exportarAExcel(
+				metadataConsulta,
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
+				}
+			);
+		}
+	}
+}
+
+function inputDeshacerAsignacionOnClick(event) {
+	var metadataConsulta = calcularMetadataConsulta();
+	
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		if (confirm("Se anulará la última asignación.")) {
+			ACMInterfaceContratoDWR.deshacerAsignacion(
+				metadataConsulta,
+				{
+					callback: function(data) {
+						reloadData();
+					}
+				}
+			);
+		}
+	} else {
+		if (confirm("Se anulará la última asignación.")) {
+			ACMInterfacePrepagoDWR.deshacerAsignacion(
+				metadataConsulta,
+				{
+					callback: function(data) {
+						reloadData();
+					}
+				}
+			);
+		}
+	}
+}

@@ -17,12 +17,16 @@
 <body>
 	<div class="divButtonBar">
 		<div class="divButton"><input type="submit" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event)"/></div>
+		<div class="divButton"><input type="submit" value="Exportar subconjunto" onclick="javascript:inputExportarSubconjuntoOnClick(event)"/></div>
+		<div class="divButton"><input type="submit" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event)"/></div>
+		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton"><input type="submit" value="Reprocesar" onclick="javascript:inputReprocesarOnClick(event)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divButtonTitleBar">
-		<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
+		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Exportar</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
+		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Reprocesar</div>
 	</div>
 	<div class="divMainWindow">
 		<div id="divFiltros">
@@ -119,6 +123,5 @@
 			</div>
 		</div>
 	</div>
-	<div id="divModalBackground">&nbsp;</div>
 </body>
 </html>
