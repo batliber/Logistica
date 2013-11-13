@@ -71,12 +71,12 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			this.initializeConnection();
 			
 			PreparedStatement preparedStatementQuery = this.connection.prepareStatement(
-				"select mid"
+				"select mid, random() as ordinal"
 				+ " from acm_interface_mid"
 				+ " where estado in ("
 					+ "	?, ?"
 				+ " )"
-				+ " order by estado desc"
+				+ " order by estado desc, ordinal asc"
 				+ " limit 1"
 			);
 			preparedStatementQuery.setLong(
