@@ -1,7 +1,7 @@
 var filtros = 0;
 var ordenaciones = 0;
 
-var ordenSufijos = ["NOO", "ASC", "DES"];
+var ordenSufijos = [ "NOO", "ASC", "DES" ];
 
 var ordenPrepago = {
 	tdPrepagoMid: 0,
