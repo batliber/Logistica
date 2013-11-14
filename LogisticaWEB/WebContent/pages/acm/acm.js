@@ -443,6 +443,7 @@ function selectCondicionOnChange(event, element, index) {
 							+ "<option value='1'>Persona</option>"
 							+ "<option value='2'>Empresa</option>"
 							+ "<option value='3'>Estatal</option>"
+							+ "<option value='4'>Otros</option>"
 						+ "</select>"
 					+ "</div>";				
 			} else {
