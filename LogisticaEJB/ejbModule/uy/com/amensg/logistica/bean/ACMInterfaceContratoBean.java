@@ -546,6 +546,50 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					where, 
 					criteriaBuilder.isNotNull(campo)
 				);
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
+				Predicate or = criteriaBuilder.disjunction();
+				
+				for (String valor : metadataCondicion.getValores()) {
+					ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
+					
+					or = criteriaBuilder.or(
+						or, 
+						criteriaBuilder.equal(campo, parameterExpression)
+					);
+					
+					try {
+						if (campo.getJavaType().equals(Date.class)) {
+							parameterValues.put(
+								parameterExpression.getName(), 
+								DateFormat.getInstance().parse(valor)
+							);
+						} else if (campo.getJavaType().equals(Long.class)) {
+							parameterValues.put(
+								parameterExpression.getName(), 
+								new Long(valor)
+							);
+						} else if (campo.getJavaType().equals(String.class)) {
+							parameterValues.put(
+								parameterExpression.getName(), 
+								valor
+							);
+						} else if (campo.getJavaType().equals(Double.class)) {
+							parameterValues.put(
+								parameterExpression.getName(), 
+								new Double(valor)
+							);
+						}
+						
+						i++;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				where = criteriaBuilder.and(
+					where, 
+					or
+				);
 			}
 			
 			i++;

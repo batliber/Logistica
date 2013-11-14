@@ -258,6 +258,17 @@ function calcularCondiciones() {
 				case "like":
 				case "eq": 
 				case "in":
+					var valoresMultiples = $(("#divFiltro" + i) + " .divValorMultiple");
+					
+					metadataCondicion.valores = [];
+					for (var j=0; j<valoresMultiples.length; j++) {
+						metadataCondicion.valores[metadataCondicion.valores.length] = 
+							valoresMultiples[j].innerHTML;
+					}
+					
+					filtroValido = true;
+					
+					break;
 				default:
 					metadataCondicion.valores = [$("#inputValor" + i).val()];
 
@@ -368,8 +379,7 @@ function selectCampoOnChange(event, element, index) {
 			+ "<option value='nnl'>No vac&iacute;o</option>"
 			+ "<option value='in'>Est&aacute; incluido en</option>";
 	} else if (
-		($("#selectCampo" + index).val() == "tipoContratoDescripcion")
-		|| ($("#selectCampo" + index).val() == "documento")
+		($("#selectCampo" + index).val() == "documento")
 		|| ($("#selectCampo" + index).val() == "nombre")
 		|| ($("#selectCampo" + index).val() == "direccion")
 		|| ($("#selectCampo" + index).val() == "localidad")
@@ -378,6 +388,13 @@ function selectCampoOnChange(event, element, index) {
 		html += 
 			"<option value='like'>Contiene</option>"
 			+ "<option value='eq'>Es igual a</option>"
+			+ "<option value='nl'>Vac&iacute;o</option>"
+			+ "<option value='nnl'>No vac&iacute;o</option>";
+	} else if (
+		($("#selectCampo" + index).val() == "tipoContratoDescripcion")) {
+		html += 
+			+ "<option value='eq'>Es igual a</option>"
+			+ "<option value='in'>Incluido en</option>"
 			+ "<option value='nl'>Vac&iacute;o</option>"
 			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if (
@@ -433,6 +450,48 @@ function selectCondicionOnChange(event, element, index) {
 		case "like":
 		case "eq": 
 		case "in":
+			if ($("#selectCampo" + index).val() == "tipoContratoDescripcion") {
+				ACMInterfaceContratoDWR.listTipoContratos(
+					{
+						callback: function(data) {
+							var html = "<div id='divCondicionValores" + filtros + "'>";
+							
+							html += 
+								"<div class='divFormLabel'>Valor:</div>"
+								+ "<div id='divValor" + filtros + "' style='float: left;'>"
+									+ "<select id='inputValor" + filtros 
+										+ "' onchange='javascript:inputValorMultipleOnChange(event, this, " + filtros + ")'>"
+										+ "<option>Seleccione...</option>";
+							
+							for (var i=0; i < data.length; i++) {
+								html += "<option value='" + data[i].tipoContratoDescripcion + "'>"
+									+ data[i].tipoContratoDescripcion 
+									+ "</option>";
+							}
+							
+							html += "</select>"
+								+ "</div>";	
+							
+							html += 
+								"<div id='divValores" + filtros + "' class='divValoresMultiples' style='float: left;'>"
+								+ "</div>";
+							
+							html +=
+								"<div id='divQuitarFiltro" + filtros + "'>"
+									+ "<input type='submit' id='inputQuitarFiltro" + filtros + "' value='Quitar'"
+										+ " onclick='javascript:inputQuitarFiltroOnClick(event, this, " + filtros + ")'/>"
+								+ "</div>"
+								+ "</div>";
+							
+							$("#divFiltro" + filtros).append(html);
+						}, async: false
+					}
+				);
+				
+				return;
+			}
+			
+			break;
 		default:
 			if ($("#selectCampo" + index).val() == "documentoTipo") {
 				html += 
@@ -461,12 +520,28 @@ function selectCondicionOnChange(event, element, index) {
 			+ "<input type='submit' id='inputQuitarFiltro" + index + "' value='Quitar'"
 				+ " onclick='javascript:inputQuitarFiltroOnClick(event, this, " + index + ")'/>"
 		+ "</div>"
-		+ "<div>";
+		+ "</div>";
 	
 	$("#divFiltro" + index).append(html);
 }
 
 function inputValorOnChange(event, element) {
+	reloadData();
+}
+
+function inputValorMultipleOnChange(event, element, index) {
+	$("#divValores" + index).append(
+		"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
+			+ $("#inputValor" + index).val()
+		+ "</div>"
+	);
+	
+	reloadData();
+}
+
+function inputValorMultipleOnClick(event, element) {
+	$(element).remove();
+	
 	reloadData();
 }
 
