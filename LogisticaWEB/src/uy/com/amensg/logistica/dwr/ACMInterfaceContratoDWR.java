@@ -16,6 +16,8 @@ import uy.com.amensg.logistica.entities.ACMInterfaceContratoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
+import uy.com.amensg.logistica.entities.TipoContrato;
+import uy.com.amensg.logistica.entities.TipoContratoTO;
 
 @RemoteProxy
 public class ACMInterfaceContratoDWR {
@@ -105,6 +107,22 @@ public class ACMInterfaceContratoDWR {
 		}
 	}
 	
+	public Collection<TipoContratoTO> listTipoContratos() {
+		Collection<TipoContratoTO> result = new LinkedList<TipoContratoTO>();
+		
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			for (TipoContrato tipoContrato : iACMInterfaceContratoBean.listTipoContratos()) {
+				result.add(transform(tipoContrato));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public static ACMInterfaceContratoTO transform(ACMInterfaceContrato acmInterfaceContrato) {
 		ACMInterfaceContratoTO acmInterfaceContratoTO = new ACMInterfaceContratoTO();
 		
@@ -127,5 +145,14 @@ public class ACMInterfaceContratoDWR {
 		acmInterfaceContratoTO.setTerm(acmInterfaceContrato.getTerm());
 		
 		return acmInterfaceContratoTO;
+	}
+
+	public static TipoContratoTO transform(TipoContrato tipoContrato) {
+		TipoContratoTO tipoContratoTO = new TipoContratoTO();
+		
+		tipoContratoTO.setTipoContratoCodigo(tipoContrato.getTipoContratoCodigo());
+		tipoContratoTO.setTipoContratoDescripcion(tipoContrato.getTipoContratoDescripcion());
+		
+		return tipoContratoTO;
 	}
 }

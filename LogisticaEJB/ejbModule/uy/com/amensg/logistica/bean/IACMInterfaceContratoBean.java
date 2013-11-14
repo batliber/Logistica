@@ -7,6 +7,7 @@ import javax.ejb.Remote;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.TipoContrato;
 
 @Remote
 public interface IACMInterfaceContratoBean {
@@ -20,4 +21,6 @@ public interface IACMInterfaceContratoBean {
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
+	
+	public Collection<TipoContrato> listTipoContratos();
 }

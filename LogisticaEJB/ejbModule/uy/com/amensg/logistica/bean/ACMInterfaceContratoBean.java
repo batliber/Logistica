@@ -36,6 +36,7 @@ import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
+import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
 
@@ -248,6 +249,34 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Collection<TipoContrato> listTipoContratos() {
+		Collection<TipoContrato> result = new LinkedList<TipoContrato>();
+		
+		try {
+			Query query = entityManager.createQuery(
+				"SELECT c.tipoContratoDescripcion, COUNT(c)"
+				+ " FROM ACMInterfaceContrato c"
+				+ " GROUP BY c.tipoContratoDescripcion"
+				+ " ORDER BY COUNT(c) DESC"
+			);
+			
+			for (Object object : query.getResultList()) {
+				Object[] fields = (Object[]) object;
+				
+				TipoContrato tipoContrato = new TipoContrato();
+				
+				// tipoContrato.setTipoContratoCodigo((String) fields[0]);
+				tipoContrato.setTipoContratoDescripcion((String) fields[0]);
+				
+				result.add(tipoContrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	private TypedQuery<ACMInterfaceContrato> construirQuery(MetadataConsulta metadataConsulta) {

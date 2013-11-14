@@ -65,6 +65,7 @@
       	uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO,
       	uy.com.amensg.logistica.entities.MetadataOrdenacionTO,
       	uy.com.amensg.logistica.entities.ProductoTO,
+      	uy.com.amensg.logistica.entities.TipoContratoTO,
       	uy.com.amensg.logistica.entities.UsuarioTO,
       	<!--
       	uy.com.amensg.logistica.entities.StockTipoMovimientoTO,
