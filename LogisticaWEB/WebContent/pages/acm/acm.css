@@ -7,14 +7,34 @@ table tbody tr td div {
 	white-space: nowrap;
 }
 
+#divTamanoMuestra {
+	float: letf;
+	width: 750px;
+}
+
+#divAgregarFiltro {
+	float: left;
+	width: 700px;
+}
+
 #divFiltros {
 	width: 1000px;
 	display: inline-table;
 }
 
 .divFiltro {
+	float: left;
 	width: 1000px;
-	height: 25px;
+}
+
+.divCondicionValores {
+	float: left;
+	width: 525px;
+}
+
+.divCondicionValoresMultiples {
+	float: left;
+	width: 500px;
 }
 
 .divValoresMultiples {
@@ -30,6 +50,11 @@ table tbody tr td div {
 	background-image: url('/LogisticaWEB/images/bullet_toggle_minus.png');
 	background-repeat: no-repeat;
 	background-position: right;
+}
+
+.divQuitarFiltro {
+	float: left;
+	width: 50px;
 }
 
 #divContratos {

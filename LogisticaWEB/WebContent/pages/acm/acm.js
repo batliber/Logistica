@@ -426,7 +426,7 @@ function selectCondicionOnChange(event, element, index) {
 		divCondicionValoresAnterior.remove();
 	}
 	
-	var html = "<div id='divCondicionValores" + index + "'>";
+	var html = "<div id='divCondicionValores" + index + "' class='divCondicionValores'>";
 	
 	switch ($("#selectCondicion" + index).val()) {
 		case "btw":
@@ -454,7 +454,7 @@ function selectCondicionOnChange(event, element, index) {
 				ACMInterfaceContratoDWR.listTipoContratos(
 					{
 						callback: function(data) {
-							var html = "<div id='divCondicionValores" + filtros + "'>";
+							var html = "<div id='divCondicionValores" + filtros + "' class='divCondicionValoresMultiples'>";
 							
 							html += 
 								"<div class='divFormLabel'>Valor:</div>"
@@ -477,7 +477,7 @@ function selectCondicionOnChange(event, element, index) {
 								+ "</div>";
 							
 							html +=
-								"<div id='divQuitarFiltro" + filtros + "'>"
+								"<div id='divQuitarFiltro" + filtros + "' class='divQuitarFiltro'>"
 									+ "<input type='submit' id='inputQuitarFiltro" + filtros + "' value='Quitar'"
 										+ " onclick='javascript:inputQuitarFiltroOnClick(event, this, " + filtros + ")'/>"
 								+ "</div>"
@@ -516,7 +516,7 @@ function selectCondicionOnChange(event, element, index) {
 	}
 	
 	html +=
-		"<div id='divQuitarFiltro" + index + "'>"
+		"<div id='divQuitarFiltro" + index + "' class='divQuitarFiltro'>"
 			+ "<input type='submit' id='inputQuitarFiltro" + index + "' value='Quitar'"
 				+ " onclick='javascript:inputQuitarFiltroOnClick(event, this, " + index + ")'/>"
 		+ "</div>"
