@@ -445,10 +445,6 @@ function selectCondicionOnChange(event, element, index) {
 			reloadData();
 			
 			break;
-		case "gt":
-		case "lt":
-		case "like":
-		case "eq": 
 		case "in":
 			if ($("#selectCampo" + index).val() == "tipoContratoDescripcion") {
 				ACMInterfaceContratoDWR.listTipoContratos(
@@ -492,6 +488,10 @@ function selectCondicionOnChange(event, element, index) {
 			}
 			
 			break;
+		case "gt":
+		case "lt":
+		case "like":
+		case "eq":
 		default:
 			if ($("#selectCampo" + index).val() == "documentoTipo") {
 				html += 
