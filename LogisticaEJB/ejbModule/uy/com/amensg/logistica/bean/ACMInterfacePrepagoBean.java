@@ -3,6 +3,7 @@ package uy.com.amensg.logistica.bean;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -152,6 +153,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			SimpleDateFormat formatMesAno = new SimpleDateFormat("MM/yyyy");
+			DecimalFormat formatMonto = new DecimalFormat("0.00"); 
 			
 			for (ACMInterfacePrepago acmInterfacePrepago : resultList) {
 				acmInterfacePrepago.setFechaExportacionAnterior(
@@ -166,10 +168,18 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 					+ ";" + (acmInterfacePrepago.getMesAno() != null ?
 						formatMesAno.format(acmInterfacePrepago.getMesAno())
 						: "")
-					+ ";" + acmInterfacePrepago.getMontoMesActual()
-					+ ";" + acmInterfacePrepago.getMontoMesAnterior1()
-					+ ";" + acmInterfacePrepago.getMontoMesAnterior2()
-					+ ";" + acmInterfacePrepago.getMontoPromedio()
+					+ ";" + (acmInterfacePrepago.getMontoMesActual() != null ?
+						formatMonto.format(acmInterfacePrepago.getMontoMesActual())
+						: "")
+					+ ";" + (acmInterfacePrepago.getMontoMesActual() != null ?
+						formatMonto.format(acmInterfacePrepago.getMontoMesAnterior1())
+						: "")
+					+ ";" + (acmInterfacePrepago.getMontoMesActual() != null ? 
+						formatMonto.format(acmInterfacePrepago.getMontoMesAnterior2())
+						: "")
+					+ ";" + (acmInterfacePrepago.getMontoMesActual() != null ?
+						formatMonto.format(acmInterfacePrepago.getMontoPromedio())
+						: "")
 					+ ";" + (acmInterfacePrepago.getFechaExportacion() != null ?
 						format.format(acmInterfacePrepago.getFechaExportacion())
 						: "")
