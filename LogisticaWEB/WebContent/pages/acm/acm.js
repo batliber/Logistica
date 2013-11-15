@@ -253,10 +253,6 @@ function calcularCondiciones() {
 					filtroValido = true;
 					
 					break;
-				case "gt":
-				case "lt":
-				case "like":
-				case "eq": 
 				case "in":
 					var valoresMultiples = $(("#divFiltro" + i) + " .divValorMultiple");
 					
@@ -269,6 +265,10 @@ function calcularCondiciones() {
 					filtroValido = true;
 					
 					break;
+				case "gt":
+				case "lt":
+				case "like":
+				case "eq": 
 				default:
 					metadataCondicion.valores = [$("#inputValor" + i).val()];
 
