@@ -1,3 +1,5 @@
+var accionesHabilitadas = false;
+
 var filtros = 0;
 var ordenaciones = 0;
 
@@ -56,8 +58,33 @@ var metadataOrdenacionesContrato = [];
 var metadataOrdenacionesPrepago = [];
 
 $(document).ready(function() {
+	$("#inputExportarAExcel").prop("disabled", true);
+	$("#inputExportarSubconjunto").prop("disabled", true);
+	$("#inputDeshacerAsignacion").prop("disabled", true);
+	$("#inputReprocesar").prop("disabled", true);
+	
 	reloadData();
 });
+
+function inputHabilitarAccionesOnClick(event, element) {
+	if (accionesHabilitadas) {
+		$("#inputExportarAExcel").prop("disabled", true);
+		$("#inputExportarSubconjunto").prop("disabled", true);
+		$("#inputDeshacerAsignacion").prop("disabled", true);
+		$("#inputReprocesar").prop("disabled", true);
+		
+		$(element).val("Habilitar acciones");
+	} else {
+		$("#inputExportarAExcel").prop("disabled", false);
+		$("#inputExportarSubconjunto").prop("disabled", false);
+		$("#inputDeshacerAsignacion").prop("disabled", false);
+		$("#inputReprocesar").prop("disabled", false);
+		
+		$(element).val("Deshabilitar acciones");
+	}
+	
+	accionesHabilitadas = !accionesHabilitadas;
+}
 
 function selectTipoRegistroOnChange() {
 	$("#divContratos").hide();

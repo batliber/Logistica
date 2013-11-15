@@ -16,14 +16,17 @@
 </head>
 <body>
 	<div class="divButtonBar">
-		<div class="divButton"><input type="submit" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event)"/></div>
-		<div class="divButton"><input type="submit" value="Exportar subconjunto" onclick="javascript:inputExportarSubconjuntoOnClick(event)"/></div>
-		<div class="divButton"><input type="submit" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event)"/></div>
+		<div class="divButton"><input type="submit" value="Habilitar acciones" onclick="javascript:inputHabilitarAccionesOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
-		<div class="divButton"><input type="submit" value="Reprocesar" onclick="javascript:inputReprocesarOnClick(event)"/></div>
+		<div class="divButton"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></div>
+		<div class="divButton"><input type="submit" id="inputExportarSubconjunto" value="Exportar subconjunto" onclick="javascript:inputExportarSubconjuntoOnClick(event, this)"/></div>
+		<div class="divButton"><input type="submit" id="inputDeshacerAsignacion" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
+		<div class="divButton"><input type="submit" id="inputReprocesar" value="Reprocesar" onclick="javascript:inputReprocesarOnClick(event, this)"/></div>
 	</div>
 	<div class="divButtonTitleBar">
+		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
+		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Exportar</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Reprocesar</div>
