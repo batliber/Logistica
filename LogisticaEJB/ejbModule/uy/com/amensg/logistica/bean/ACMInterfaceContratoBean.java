@@ -142,7 +142,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			String fileName = 
 				Configuration.getInstance().getProperty("exportacion.carpeta")
 					+ gregorianCalendar.get(GregorianCalendar.YEAR)
-					+ gregorianCalendar.get(GregorianCalendar.MONTH)
+					+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1)
 					+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH)
 					+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY)
 					+ gregorianCalendar.get(GregorianCalendar.MINUTE)
