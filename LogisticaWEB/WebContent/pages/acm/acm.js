@@ -484,7 +484,9 @@ function selectCondicionOnChange(event, element, index) {
 								+ "<div id='divValor" + filtros + "' style='float: left;'>"
 									+ "<select id='inputValor" + filtros 
 										+ "' onchange='javascript:inputValorMultipleOnChange(event, this, " + filtros + ")'>"
-										+ "<option>Seleccione...</option>";
+										+ "<option>Seleccione...</option>"
+										+ "<option value='Todos'>Todos</option>"
+										+ "<option value='Ninguno'>Ninguno</option>";
 							
 							for (var i=0; i < data.length; i++) {
 								html += "<option value='" + data[i].tipoContratoDescripcion + "'>"
@@ -496,8 +498,16 @@ function selectCondicionOnChange(event, element, index) {
 								+ "</div>";	
 							
 							html += 
-								"<div id='divValores" + filtros + "' class='divValoresMultiples' style='float: left;'>"
-								+ "</div>";
+								"<div id='divValores" + filtros + "' class='divValoresMultiples' style='float: left;'>";
+								
+							for (var i=0; i < data.length; i++) {
+								html += 
+									"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
+										+ data[i].tipoContratoDescripcion
+									+ "</div>";
+							}
+							
+							html += "</div>";
 							
 							html +=
 								"<div id='divQuitarFiltro" + filtros + "' class='divQuitarFiltro'>"
@@ -510,6 +520,8 @@ function selectCondicionOnChange(event, element, index) {
 						}, async: false
 					}
 				);
+				
+				reloadData();
 				
 				return;
 			}
@@ -557,11 +569,27 @@ function inputValorOnChange(event, element) {
 }
 
 function inputValorMultipleOnChange(event, element, index) {
-	$("#divValores" + index).append(
-		"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
-			+ $("#inputValor" + index).val()
-		+ "</div>"
-	);
+	if ($("#inputValor" + index).val() == "Todos") {
+		var options = $("#inputValor" + index + " option");
+		
+		for (var i=0; i < options.length; i++) {
+			if (i > 2) {
+				$("#divValores" + index).append(
+					"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
+						+ $(options[i]).val()
+					+ "</div>"
+				);
+			}
+		}
+	} else if ($("#inputValor" + index).val() == "Ninguno") {
+		$("#divValores" + index + " div").remove();
+	} else {
+		$("#divValores" + index).append(
+			"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
+				+ $("#inputValor" + index).val()
+			+ "</div>"
+		);
+	}
 	
 	reloadData();
 }
