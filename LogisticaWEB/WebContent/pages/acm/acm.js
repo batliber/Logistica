@@ -708,7 +708,7 @@ function inputReprocesarOnClick(event) {
 			);
 		}
 	} else {
-		if (confirm("Se reprocesarán " + $("#divContratoCantidadRegistros").text() + " registros.")) {
+		if (confirm("Se reprocesarán " + $("#divPrepagoCantidadRegistros").text() + " registros.")) {
 			ACMInterfacePrepagoDWR.reprocesar(
 				calcularMetadataConsulta(),
 				{
