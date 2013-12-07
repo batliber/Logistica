@@ -183,6 +183,9 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 					+ ";" + (acmInterfacePrepago.getFechaExportacion() != null ?
 						format.format(acmInterfacePrepago.getFechaExportacion())
 						: "")
+					+ ";" + (acmInterfacePrepago.getFechaActivacionKit() != null ?
+						format.format(acmInterfacePrepago.getFechaActivacionKit())
+						: "")
 				);
 			}
 			

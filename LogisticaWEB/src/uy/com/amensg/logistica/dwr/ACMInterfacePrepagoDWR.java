@@ -83,7 +83,7 @@ public class ACMInterfacePrepagoDWR {
 			
 			iACMInterfacePrepagoBean.reprocesar(
 				MetadataConsultaDWR.transform(
-						metadataConsultaTO
+					metadataConsultaTO
 				)
 			);
 		} catch (Exception e) {
@@ -97,7 +97,7 @@ public class ACMInterfacePrepagoDWR {
 			
 			iACMInterfacePrepagoBean.deshacerAsignacion(
 				MetadataConsultaDWR.transform(
-						metadataConsultaTO
+					metadataConsultaTO
 				)
 			);
 		} catch (Exception e) {
@@ -115,6 +115,7 @@ public class ACMInterfacePrepagoDWR {
 		acmInterfacePrepagoTO.setMontoMesAnterior2(acmInterfacePrepago.getMontoMesAnterior2());
 		acmInterfacePrepagoTO.setMontoPromedio(acmInterfacePrepago.getMontoPromedio());
 		acmInterfacePrepagoTO.setFechaExportacion(acmInterfacePrepago.getFechaExportacion());
+		acmInterfacePrepagoTO.setFechaActivacionKit(acmInterfacePrepago.getFechaActivacionKit());
 		
 		acmInterfacePrepagoTO.setFact(acmInterfacePrepago.getFact());
 		acmInterfacePrepagoTO.setUact(acmInterfacePrepago.getUact());

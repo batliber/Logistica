@@ -13,6 +13,7 @@ var ordenPrepago = {
 	tdPrepagoMontoMesAnterior2: 0,
 	tdPrepagoMontoPromedio: 0,
 	tdPrepagoFechaExportacion: 0,
+	tdPrepagoFechaActivacionKit: 0,
 	tdPrepagoFact: 0
 };
 
@@ -39,6 +40,7 @@ var campos = {
 	tdPrepagoMontoMesAnterior2: "montoMesAnterior2",
 	tdPrepagoMontoPromedio: "montoPromedio",
 	tdPrepagoFechaExportacion: "fechaExportacion",
+	tdPrepagoFechaActivacionKit: "fechaActivacionKit",
 	tdPrepagoFact: "fact",
 	tdContratoMid: "mid",
 	tdContratoFinContrato: "fechaFinContrato",
@@ -222,6 +224,10 @@ function reloadData() {
 									+ (registroMuestra.fechaExportacion != null ?
 										formatLongDate(registroMuestra.fechaExportacion) : "&nbsp;")
 								+ "</div></td>"
+								+ "<td class='tdPrepagoFechaActivacionKit'><div class='divPrepagoFechaActivacionKit'>" 
+									+ (registroMuestra.fechaActivacionKit != null ?
+										formatShortDate(registroMuestra.fechaActivacionKit) : "&nbsp;")
+								+ "</div></td>"
 								+ "<td class='tdPrepagoFact'><div class='divPrepagoFact'>" 
 									+ formatLongDate(registroMuestra.fact)
 								+ "</div></td>"
@@ -362,6 +368,7 @@ function inputAgregarFiltroOnClick(event) {
 					+ "<option value='montoMesAnterior2'>Monto mes ant. 2</option>"
 					+ "<option value='montoPromedio'>Monto promedio</option>"
 					+ "<option value='fechaExportacion'>Asignado</option>"
+					+ "<option value='fechaActivacionKit'>Activaci&oacute;n</option>"
 					+ "<option value='fact'>Obtenido</option>"
 				+ "</select>"
 			+ "</div>";
@@ -427,6 +434,7 @@ function selectCampoOnChange(event, element, index) {
 	} else if (
 		($("#selectCampo" + index).val() == "fechaExportacion")
 		|| ($("#selectCampo" + index).val() == "fechaFinContrato")
+		|| ($("#selectCampo" + index).val() == "fechaActivacionKit")
 		|| ($("#selectCampo" + index).val() == "fact")) {
 		html += 
 			"<option value='eq'>Es igual a</option>"

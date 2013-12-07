@@ -14,6 +14,7 @@ public class ACMInterfacePrepagoTO {
 	private Double montoMesAnterior2;
 	private Double montoPromedio;
 	private Date fechaExportacion;
+	private Date fechaActivacionKit;
 	private Long uact;
 	private Date fact;
 	private Long term;
@@ -72,6 +73,14 @@ public class ACMInterfacePrepagoTO {
 
 	public void setFechaExportacion(Date fechaExportacion) {
 		this.fechaExportacion = fechaExportacion;
+	}
+
+	public Date getFechaActivacionKit() {
+		return fechaActivacionKit;
+	}
+
+	public void setFechaActivacionKit(Date fechaActivacionKit) {
+		this.fechaActivacionKit = fechaActivacionKit;
 	}
 
 	public Long getUact() {

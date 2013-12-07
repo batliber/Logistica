@@ -39,6 +39,9 @@ public class ACMInterfacePrepago implements Serializable {
 	@Column(name = "fecha_exportacion_anterior")
 	private Date fechaExportacionAnterior;
 
+	@Column(name = "fecha_activacion_kit")
+	private Date fechaActivacionKit;
+
 	@Column(name = "uact")
 	private Long uact;
 
@@ -110,6 +113,14 @@ public class ACMInterfacePrepago implements Serializable {
 
 	public void setFechaExportacionAnterior(Date fechaExportacionAnterior) {
 		this.fechaExportacionAnterior = fechaExportacionAnterior;
+	}
+
+	public Date getFechaActivacionKit() {
+		return fechaActivacionKit;
+	}
+
+	public void setFechaActivacionKit(Date fechaActivacionKit) {
+		this.fechaActivacionKit = fechaActivacionKit;
 	}
 
 	public Long getUact() {

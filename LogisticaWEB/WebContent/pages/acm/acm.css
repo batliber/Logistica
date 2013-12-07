@@ -388,12 +388,12 @@ table tbody tr td div {
 }
 
 #divPrepagos {
-	width: 695px;
+	width: 784px;
 	display: none;
 }
 
 #tablePrepagos {
-	width: 697px;
+	width: 784px;
 	height: 318px;
 }
 
@@ -426,6 +426,10 @@ table tbody tr td div {
 }
 
 #tablePrepagos thead tr .tdPrepagoFechaExportacionNOO {
+	width: 85px;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaActivacionKitNOO {
 	width: 85px;
 }
 
@@ -476,6 +480,13 @@ table tbody tr td div {
 }
 
 #tablePrepagos thead tr .tdPrepagoFechaExportacionASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaActivacionKitASC {
 	width: 85px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
@@ -538,6 +549,13 @@ table tbody tr td div {
 	background-position: right;
 }
 
+#tablePrepagos thead tr .tdPrepagoFechaActivacionKitDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
 #tablePrepagos thead tr .tdPrepagoFactDES {
 	width: 85px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
@@ -549,7 +567,7 @@ table tbody tr td div {
 	position: fixed;
 	margin-top: 17px;
 	overflow: auto;
-	width: 695px;
+	width: 782px;
 	height: 280px;
 }
 
@@ -581,6 +599,10 @@ table tbody tr td div {
 	width: 85px;
 }
 
+#tablePrepagos tbody tr .tdPrepagoFechaActivacionKit {
+	width: 85px;
+}
+
 #tablePrepagos tbody tr .tdPrepagoFact {
 	width: 85px;
 }
@@ -589,7 +611,7 @@ table tbody tr td div {
 	position: fixed;
 	margin-top: 297px;
 	overflow: auto;
-	width: 695px;
+	width: 782px;
 }
 
 #divPrepagoCantidadRegistros {
@@ -606,5 +628,5 @@ table tbody tr td div {
 }
 
 #tdPrepagoCantidadRegistrosValor {
-	width: 556px;
+	width: 641px;
 }
