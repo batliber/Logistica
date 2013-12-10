@@ -149,7 +149,8 @@ public class TestLogisticaProxy extends TestCase {
 				mid,
 				"10",
 				"10",
-				"10"
+				"10",
+				"01/11/2013"
 			);
 			
 			PreparedStatement preparedStatement = this.connection.prepareStatement(
@@ -167,7 +168,7 @@ public class TestLogisticaProxy extends TestCase {
 			
 			preparedStatement = this.connection.prepareStatement(
 				"select mes_ano, monto_mes_actual, monto_mes_anterior_1,"
-					+ " monto_mes_anterior_2, monto_promedio"
+					+ " monto_mes_anterior_2, monto_promedio, fecha_activacion_kit"
 				+ " from acm_interface_prepago where mid = ?"
 			);
 			preparedStatement.setString(1, mid);
@@ -183,6 +184,7 @@ public class TestLogisticaProxy extends TestCase {
 			assertEquals(new Double("10"), resultSet.getDouble(3));
 			assertEquals(new Double("10"), resultSet.getDouble(4));
 			assertEquals(new Double("10"), resultSet.getDouble(5));
+			assertEquals(format.parse("01/11/2013"), resultSet.getDate(6));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

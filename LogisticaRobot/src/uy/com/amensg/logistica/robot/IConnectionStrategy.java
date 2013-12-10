@@ -24,7 +24,8 @@ public interface IConnectionStrategy {
 		String mid,
 		String montoMesActual,
 		String montoMesAnterior1,
-		String montoMesAnterior2
+		String montoMesAnterior2,
+		String fechaActivacionKit
 	);
 
 	public void actualizarDatosMidListaVacia(

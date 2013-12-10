@@ -96,7 +96,8 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 		String mid,
 		String montoMesActual,
 		String montoMesAnterior1,
-		String montoMesAnterior2
+		String montoMesAnterior2,
+		String fechaActivacionKit
 	) {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
@@ -117,6 +118,8 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 						+ acmInterfacePrepago.getMontoMesAnterior1()
 						+ acmInterfacePrepago.getMontoMesAnterior2()) / 3
 				);
+				
+				acmInterfacePrepago.setFechaActivacionKit(format.parse(fechaActivacionKit));
 			} catch (Exception e) {
 				e.printStackTrace();
 				

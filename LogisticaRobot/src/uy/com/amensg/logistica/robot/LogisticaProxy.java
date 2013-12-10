@@ -43,14 +43,16 @@ public class LogisticaProxy {
 		String mid,
 		String montoMesActual,
 		String montoMesAnterior1,
-		String montoMesAnterior2
+		String montoMesAnterior2,
+		String fechaActivacionKit
 	) {
 		iConnectionStrategy.actualizarDatosMidPrepago(
 			mesAno, 
 			mid, 
 			montoMesActual, 
 			montoMesAnterior1, 
-			montoMesAnterior2
+			montoMesAnterior2,
+			fechaActivacionKit
 		);
 	}
 	
@@ -85,7 +87,8 @@ public class LogisticaProxy {
 					args[3],
 					args[4],
 					args[5],
-					args[6]
+					args[6],
+					args[7]
 				);
 			} else if (args[1].equals("listaVacia")) {
 				new LogisticaProxy().actualizarDatosMidListaVacia(

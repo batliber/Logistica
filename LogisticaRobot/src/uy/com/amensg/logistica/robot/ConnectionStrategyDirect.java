@@ -219,7 +219,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		String mid,
 		String montoMesActual, 
 		String montoMesAnterior1,
-		String montoMesAnterior2
+		String montoMesAnterior2,
+		String fechaActivacionKit
 	) {
 		try {
 			this.initializeConnection();
@@ -235,6 +236,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			Double montoMesAnterior1Double = new Double(-1);
 			Double montoMesAnterior2Double = new Double(-1);
 			Double montoPromedio = new Double(-1);
+			Date fechaActivacionKitDate = null;
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -245,6 +247,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 				montoMesAnterior2Double = new Double(montoMesAnterior2);
 				montoPromedio = 
 					(montoMesActualDouble + montoMesAnterior1Double + montoMesAnterior2Double) / 3;
+				fechaActivacionKitDate = format.parse(fechaActivacionKit);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -256,12 +259,14 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 					+ " monto_mes_anterior_1,"
 					+ " monto_mes_anterior_2,"
 					+ " monto_promedio,"
+					+ " fecha_activacion_kit,"
 					+ " uact,"
 					+ " fact,"
 					+ " term,"
 					+ " mid"
 				+ ")"
 				+ " values ("
+					+ " ?,"
 					+ " ?,"
 					+ " ?,"
 					+ " ?,"
@@ -282,10 +287,15 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			preparedStatementUpdatePrepago.setDouble(3, montoMesAnterior1Double);
 			preparedStatementUpdatePrepago.setDouble(4, montoMesAnterior2Double);
 			preparedStatementUpdatePrepago.setDouble(5, montoPromedio);
-			preparedStatementUpdatePrepago.setLong(6, 1);
-			preparedStatementUpdatePrepago.setTimestamp(7, new Timestamp(new Date().getTime()));
-			preparedStatementUpdatePrepago.setLong(8, 1);
-			preparedStatementUpdatePrepago.setString(9, mid);
+			if (fechaActivacionKitDate != null) {
+				preparedStatementUpdatePrepago.setDate(6, new java.sql.Date(fechaActivacionKitDate.getTime()));
+			} else {
+				preparedStatementUpdatePrepago.setNull(6, Types.DATE);
+			}
+			preparedStatementUpdatePrepago.setLong(7, 1);
+			preparedStatementUpdatePrepago.setTimestamp(8, new Timestamp(new Date().getTime()));
+			preparedStatementUpdatePrepago.setLong(9, 1);
+			preparedStatementUpdatePrepago.setString(10, mid);
 			
 			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
 			Long uact = new Long(1);
