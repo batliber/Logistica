@@ -107,6 +107,20 @@ public class ACMInterfaceContratoDWR {
 		}
 	}
 	
+	public void agregarAListaNegra(MetadataConsultaTO metadataConsultaTO) {
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			iACMInterfaceContratoBean.agregarAListaNegra(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Collection<TipoContratoTO> listTipoContratos() {
 		Collection<TipoContratoTO> result = new LinkedList<TipoContratoTO>();
 		

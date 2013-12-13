@@ -7,22 +7,28 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceContratoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfacePrepagoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceListaNegraDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
 	<script type="text/javascript" src="./acm.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
 	<link rel="stylesheet" type="text/css" href="./acm.css"/>
+	<link rel="stylesheet" type="text/css" href="./contrato.css"/>
+	<link rel="stylesheet" type="text/css" href="./prepago.css"/>
+	<link rel="stylesheet" type="text/css" href="./listaNegra.css"/>
 </head>
 <body>
 	<div class="divButtonBar">
-		<div class="divButton"><input type="submit" value="Habilitar acciones" onclick="javascript:inputHabilitarAccionesOnClick(event, this)"/></div>
+		<div class="divButton"><input type="submit" id="inputHabilitarAcciones" value="Habilitar acciones" onclick="javascript:inputHabilitarAccionesOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></div>
 		<div class="divButton"><input type="submit" id="inputExportarSubconjunto" value="Exportar subconjunto" onclick="javascript:inputExportarSubconjuntoOnClick(event, this)"/></div>
 		<div class="divButton"><input type="submit" id="inputDeshacerAsignacion" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton"><input type="submit" id="inputReprocesar" value="Reprocesar" onclick="javascript:inputReprocesarOnClick(event, this)"/></div>
+		<div class="divButtonBarSeparator">&nbsp;</div>
+		<div class="divButton"><input type="submit" id="inputListaNegra" value="Lista negra" onclick="javascript:inputListaNegraOnClick(event, this)"/></div>
 	</div>
 	<div class="divButtonTitleBar">
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
@@ -30,6 +36,8 @@
 		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Exportar</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Reprocesar</div>
+		<div class="divButtonTitleBarSeparator">&nbsp;</div>
+		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Lista negra</div>
 	</div>
 	<div class="divMainWindow">
 		<div id="divFiltros">
@@ -38,6 +46,7 @@
 				<select id="selectTipoRegistro" onchange="javascript:selectTipoRegistroOnChange(event)">
 					<option value="contrato">Contrato</option>
 					<option value="prepago">Prepago</option>
+					<option value="listaNegra">Lista negra</option>
 				</select>
 			</div>
 			<div class="divFormLabel">Tama&ntilde;o de muestra:</div>
@@ -122,6 +131,32 @@
 						<tr>
 							<td id="tdPrepagoCantidadRegistrosLabel"><div>Cantidad de registros:</div></td>
 							<td id="tdPrepagoCantidadRegistrosValor"><div id="divPrepagoCantidadRegistros">&nbsp;</div></td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+		<div id="divListaNegra">
+			<div id="divTableListaNegra">
+				<table id="tableListaNegra" border="0" cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<td class="tdListaNegraMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Mid</td>
+							<td class="tdListaNegraObservacionesNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Observaciones</td>
+							<td class="tdListaNegraFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Fecha</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td id="tdListaNegraCantidadRegistrosLabel"><div>Cantidad de registros:</div></td>
+							<td id="tdListaNegraCantidadRegistrosValor"><div id="divListaNegraCantidadRegistros">&nbsp;</div></td>
 						</tr>
 					</tfoot>
 				</table>

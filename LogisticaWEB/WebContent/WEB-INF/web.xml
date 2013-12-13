@@ -46,6 +46,7 @@
       <param-name>classes</param-name>
       <param-value>
       	uy.com.amensg.logistica.dwr.ACMInterfaceContratoDWR,
+      	uy.com.amensg.logistica.dwr.ACMInterfaceListaNegraDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfacePrepagoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceProcesoDWR,
       	uy.com.amensg.logistica.dwr.MetadataConsultaDWR,
@@ -58,6 +59,7 @@
       	 -->
       	 
       	uy.com.amensg.logistica.entities.ACMInterfaceContratoTO,
+      	uy.com.amensg.logistica.entities.ACMInterfaceListaNegraTO,
       	uy.com.amensg.logistica.entities.ACMInterfacePrepagoTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceProcesoEstadisticaTO,
       	uy.com.amensg.logistica.entities.MetadataCondicionTO,

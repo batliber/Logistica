@@ -8,6 +8,7 @@
 		<jta-data-source>java:PostgreSQLLogistica</jta-data-source>
         
 		<class>uy.com.amensg.logistica.entities.ACMInterfaceContrato</class>
+		<class>uy.com.amensg.logistica.entities.ACMInterfaceListaNegra</class>
 		<class>uy.com.amensg.logistica.entities.ACMInterfaceMid</class>
 		<class>uy.com.amensg.logistica.entities.ACMInterfacePrepago</class>
 		<class>uy.com.amensg.logistica.entities.ACMInterfaceProceso</class>

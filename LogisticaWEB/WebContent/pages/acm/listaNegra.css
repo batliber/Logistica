@@ -1,0 +1,113 @@
+#divListaNegra {
+	width: 784px;
+	display: none;
+}
+
+#tableListaNegra {
+	width: 784px;
+	height: 318px;
+}
+
+#tableListaNegra thead {
+	position: fixed;
+}
+						
+#tableListaNegra thead tr .tdListaNegraMidNOO {
+	width: 60px;
+}
+
+#tableListaNegra thead tr .tdListaNegraObservacionesNOO {
+	width: 615px;
+}
+
+#tableListaNegra thead tr .tdListaNegraFactNOO {
+	width: 85px;
+}
+
+#tableListaNegra thead tr .tdListaNegraMidASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableListaNegra thead tr .tdListaNegraObservacionesASC {
+	width: 615px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableListaNegra thead tr .tdListaNegraFactASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableListaNegra thead tr .tdListaNegraMidDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableListaNegra thead tr .tdListaNegraObservacionesDES {
+	width: 615px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableListaNegra thead tr .tdListaNegraFactDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableListaNegra tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 782px;
+	height: 280px;
+}
+
+#tableListaNegra tbody tr .tdListaNegraMid {
+	width: 60px;
+}
+
+#tableListaNegra tbody tr td .divListaNegraObservaciones {
+	text-align: left;
+	margin-left: 2px;
+	width: 613px;
+}
+
+#tableListaNegra tbody tr .tdListaNegraFact {
+	width: 85px;
+}
+
+#tableListaNegra tfoot {
+	position: fixed;
+	margin-top: 297px;
+	overflow: auto;
+	width: 782px;
+}
+
+#divListaNegraCantidadRegistros {
+	width: 200px;
+	height: 16px;
+	text-align: left;
+	padding-top: 2px;
+	margin-left: 2px;
+}
+
+#tdListaNegraCantidadRegistrosLabel {
+	width: 120px;
+	text-align: left;
+}
+
+#tdListaNegraCantidadRegistrosValor {
+	width: 641px;
+}

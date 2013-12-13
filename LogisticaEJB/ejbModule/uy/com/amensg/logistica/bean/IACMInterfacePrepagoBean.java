@@ -19,5 +19,7 @@ public interface IACMInterfacePrepagoBean {
 	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
 	
+	public void agregarAListaNegra(MetadataConsulta metadataConsulta);
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 }

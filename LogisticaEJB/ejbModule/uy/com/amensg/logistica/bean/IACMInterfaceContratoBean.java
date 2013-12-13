@@ -20,6 +20,8 @@ public interface IACMInterfaceContratoBean {
 	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
 	
+	public void agregarAListaNegra(MetadataConsulta metadataConsulta);
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
 	public Collection<TipoContrato> listTipoContratos();

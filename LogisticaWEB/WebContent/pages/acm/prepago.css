@@ -1,0 +1,243 @@
+#divPrepagos {
+	width: 784px;
+	display: none;
+}
+
+#tablePrepagos {
+	width: 784px;
+	height: 318px;
+}
+
+#tablePrepagos thead {
+	position: fixed;
+}
+						
+#tablePrepagos thead tr .tdPrepagoMidNOO {
+	width: 60px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMesAnoNOO {
+	width: 80px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesActualNOO {
+	width: 90px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior1NOO {
+	width: 90px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior2NOO {
+	width: 90px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoPromedioNOO {
+	width: 90px;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaExportacionNOO {
+	width: 85px;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaActivacionKitNOO {
+	width: 85px;
+}
+
+#tablePrepagos thead tr .tdPrepagoFactNOO {
+	width: 85px;
+}
+
+#tablePrepagos thead tr .tdPrepagoMidASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMesAnoASC {
+	width: 80px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesActualASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior1ASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior2ASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoPromedioASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaExportacionASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaActivacionKitASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFactASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMidDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMesAnoDES {
+	width: 80px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesActualDES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior1DES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoMesAnterior2DES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoMontoPromedioDES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaExportacionDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFechaActivacionKitDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos thead tr .tdPrepagoFactDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tablePrepagos tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 782px;
+	height: 280px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMid {
+	width: 60px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMesAno {
+	width: 80px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMontoMesActual {
+	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMontoMesAnterior1 {
+	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMontoMesAnterior2 {
+	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoMontoPromedio {
+	width: 90px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoFechaExportacion {
+	width: 85px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoFechaActivacionKit {
+	width: 85px;
+}
+
+#tablePrepagos tbody tr .tdPrepagoFact {
+	width: 85px;
+}
+
+#tablePrepagos tfoot {
+	position: fixed;
+	margin-top: 297px;
+	overflow: auto;
+	width: 782px;
+}
+
+#divPrepagoCantidadRegistros {
+	width: 200px;
+	height: 16px;
+	text-align: left;
+	padding-top: 2px;
+	margin-left: 2px;
+}
+
+#tdPrepagoCantidadRegistrosLabel {
+	width: 120px;
+	text-align: left;
+}
+
+#tdPrepagoCantidadRegistrosValor {
+	width: 641px;
+}

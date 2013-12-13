@@ -30,6 +30,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
+import uy.com.amensg.logistica.entities.ACMInterfaceListaNegra;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
@@ -251,6 +252,55 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		}
 	}
 	
+	public void agregarAListaNegra(MetadataConsulta metadataConsulta) {
+		try {
+			TypedQuery<ACMInterfaceContrato> query = this.construirQuery(metadataConsulta);
+			
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
+			for (ACMInterfaceContrato acmInterfaceContrato : query.getResultList()) {
+				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
+				acmInterfaceMid.setEstado(
+					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
+				);
+				acmInterfaceMid.setMid(acmInterfaceContrato.getMid());
+				
+				entityManager.merge(acmInterfaceMid);
+				
+				ACMInterfaceListaNegra acmInterfaceListaNegra = new ACMInterfaceListaNegra();
+				
+				acmInterfaceListaNegra.setMid(acmInterfaceContrato.getMid());
+				acmInterfaceListaNegra.setObservaciones(
+					(acmInterfaceContrato.getFechaFinContrato() != null ? 
+						format.format(acmInterfaceContrato.getFechaFinContrato())
+						: "")
+					+ ";" + acmInterfaceContrato.getTipoContratoCodigo()
+					+ ";" + acmInterfaceContrato.getTipoContratoDescripcion()
+					+ ";" + acmInterfaceContrato.getDocumentoTipo()
+					+ ";'" + acmInterfaceContrato.getDocumento()
+					+ ";" + acmInterfaceContrato.getNombre()
+					+ ";" + acmInterfaceContrato.getDireccion()
+					+ ";" + acmInterfaceContrato.getCodigoPostal()
+					+ ";" + acmInterfaceContrato.getLocalidad()
+					+ ";" + acmInterfaceContrato.getEquipo()
+					+ ";" + acmInterfaceContrato.getAgente()
+				);
+				
+				acmInterfaceListaNegra.setTerm(new Long(1));
+				acmInterfaceListaNegra.setFact(hoy);
+				acmInterfaceListaNegra.setUact(new Long(1));
+				
+				entityManager.persist(acmInterfaceListaNegra);
+				
+				entityManager.remove(acmInterfaceContrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Collection<TipoContrato> listTipoContratos() {
 		Collection<TipoContrato> result = new LinkedList<TipoContrato>();
 		
@@ -443,6 +493,18 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				where = criteriaBuilder.and(
 					where, 
 					criteriaBuilder.like(campo.as(String.class), parameterExpression.as(String.class))
+				);
+				
+				parameterValues.put(
+					parameterExpression.getName(), 
+					metadataCondicion.getValores().toArray(new String[]{})[0]
+				);
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_LIKE)) {
+				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
+				
+				where = criteriaBuilder.and(
+					where, 
+					criteriaBuilder.notLike(campo.as(String.class), parameterExpression.as(String.class))
 				);
 				
 				parameterValues.put(

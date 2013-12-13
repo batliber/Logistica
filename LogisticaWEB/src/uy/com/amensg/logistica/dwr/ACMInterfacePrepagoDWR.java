@@ -105,6 +105,20 @@ public class ACMInterfacePrepagoDWR {
 		}
 	}
 	
+	public void agregarAListaNegra(MetadataConsultaTO metadataConsultaTO) {
+		try {
+			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+			
+			iACMInterfacePrepagoBean.agregarAListaNegra(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public ACMInterfacePrepagoTO transform(ACMInterfacePrepago acmInterfacePrepago) {
 		ACMInterfacePrepagoTO acmInterfacePrepagoTO = new ACMInterfacePrepagoTO();
 		
