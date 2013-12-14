@@ -1,5 +1,9 @@
 $(document).ready(function() {
-	$("#inputUsuario").focus();
+	if (window.parent != window) {
+		window.top.location = window.location;
+	} else {
+		$("#inputUsuario").focus();
+	}
 });
 
 function inputAccederOnClick(event, element) {
