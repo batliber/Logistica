@@ -111,11 +111,14 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 	
 	public void reprocesar(MetadataConsulta metadataConsulta) {
 		try {
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
 			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
-			acmInterfaceProceso.setFact(new Date());
-			acmInterfaceProceso.setFechaInicio(new Date());
-			acmInterfaceProceso.setTerm(new Long(1));
+			acmInterfaceProceso.setFechaInicio(hoy);
+			
 			acmInterfaceProceso.setUact(new Long(1));
+			acmInterfaceProceso.setFact(hoy);
+			acmInterfaceProceso.setTerm(new Long(1));
 			
 			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
 			
@@ -146,11 +149,11 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 				resultList = query.getResultList();
 			}
 			
-			Date hoy = GregorianCalendar.getInstance().getTime();
-			
 			for (ACMInterfaceMid acmInterfaceMid : query.getResultList()) {
 				acmInterfaceMid.setEstado(
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+					new Long(
+						Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")
+					)
 				);
 				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
 				

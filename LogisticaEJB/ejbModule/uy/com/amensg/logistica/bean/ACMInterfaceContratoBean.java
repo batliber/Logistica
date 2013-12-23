@@ -229,11 +229,14 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 	
 	public void reprocesar(MetadataConsulta metadataConsulta) {
 		try {
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
 			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
-			acmInterfaceProceso.setFact(new Date());
-			acmInterfaceProceso.setFechaInicio(new Date());
-			acmInterfaceProceso.setTerm(new Long(1));
+			acmInterfaceProceso.setFechaInicio(hoy);
+			
 			acmInterfaceProceso.setUact(new Long(1));
+			acmInterfaceProceso.setFact(hoy);
+			acmInterfaceProceso.setTerm(new Long(1));
 			
 			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
 			
@@ -267,10 +270,16 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			for (ACMInterfaceContrato acmInterfaceContrato : resultList) {
 				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
 				acmInterfaceMid.setEstado(
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+					new Long(
+						Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")
+					)
 				);
 				acmInterfaceMid.setMid(acmInterfaceContrato.getMid());
 				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
+				
+				acmInterfaceMid.setUact(new Long(1));
+				acmInterfaceMid.setFact(hoy);
+				acmInterfaceMid.setTerm(new Long(1));
 				
 				entityManager.merge(acmInterfaceMid);
 			}
@@ -293,6 +302,10 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
 				);
 				acmInterfaceMid.setMid(acmInterfaceContrato.getMid());
+				
+				acmInterfaceMid.setUact(new Long(1));
+				acmInterfaceMid.setFact(hoy);
+				acmInterfaceMid.setTerm(new Long(1));
 				
 				entityManager.merge(acmInterfaceMid);
 				
