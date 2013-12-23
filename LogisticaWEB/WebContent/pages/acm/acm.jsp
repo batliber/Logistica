@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceContratoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfacePrepagoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceListaNegraDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceMidDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
@@ -17,6 +18,7 @@
 	<link rel="stylesheet" type="text/css" href="./contrato.css"/>
 	<link rel="stylesheet" type="text/css" href="./prepago.css"/>
 	<link rel="stylesheet" type="text/css" href="./listaNegra.css"/>
+	<link rel="stylesheet" type="text/css" href="./enProceso.css"/>
 </head>
 <body>
 	<div class="divButtonBar">
@@ -27,6 +29,7 @@
 		<div class="divButton"><input type="submit" id="inputDeshacerAsignacion" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton"><input type="submit" id="inputReprocesar" value="Reprocesar" onclick="javascript:inputReprocesarOnClick(event, this)"/></div>
+		<div class="divButton"><input type="submit" id="inputReprocesarSubconjunto" value="Reprocesar subconjunto" onclick="javascript:inputReprocesarSubconjuntoOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton"><input type="submit" id="inputListaNegra" value="Lista negra" onclick="javascript:inputListaNegraOnClick(event, this)"/></div>
 	</div>
@@ -35,7 +38,7 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Exportar</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
-		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Reprocesar</div>
+		<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Reprocesar</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Lista negra</div>
 	</div>
@@ -47,10 +50,13 @@
 					<option value="contrato">Contrato</option>
 					<option value="prepago">Prepago</option>
 					<option value="listaNegra">Lista negra</option>
+					<option value="enProceso">En proceso</option>
 				</select>
 			</div>
 			<div class="divFormLabel">Tama&ntilde;o de muestra:</div>
 			<div id="divTamanoMuestra"><input type="text" id="inputTamanoMuestra" value="50" onchange="javascript:inputTamanoMuestraOnChange(event)"/></div>
+			<div id="divFormLabelTamanoSubconjunto">Tama&ntilde;o de subconjunto:</div>
+			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="500"/></div>
 			<div class="divFormLabel">Agregar filtro:</div>
 			<div id="divAgregarFiltro"><input type="submit" value="Agregar" id="inputAgregarFiltro" onclick="javascript:inputAgregarFiltroOnClick(event)"/></div>
 		</div>
@@ -157,6 +163,30 @@
 						<tr>
 							<td id="tdListaNegraCantidadRegistrosLabel"><div>Cantidad de registros:</div></td>
 							<td id="tdListaNegraCantidadRegistrosValor"><div id="divListaNegraCantidadRegistros">&nbsp;</div></td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+		<div id="divEnProceso">
+			<div id="divTableEnProceso">
+				<table id="tableEnProceso" border="0" cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<td class="tdEnProcesoMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">MID</td>
+							<td class="tdEnProcesoFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Reprocesado</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td id="tdEnProcesoCantidadRegistrosLabel"><div>Registros:</div></td>
+							<td id="tdEnProcesoCantidadRegistrosValor"><div id="divEnProcesoCantidadRegistros">&nbsp;</div></td>
 						</tr>
 					</tfoot>
 				</table>

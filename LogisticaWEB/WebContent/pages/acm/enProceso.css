@@ -1,0 +1,89 @@
+#divEnProceso {
+	width: 167px;
+	display: none;
+}
+
+#tableEnProceso {
+	width: 167px;
+	height: 318px;
+}
+
+#tableEnProceso thead {
+	position: fixed;
+}
+						
+#tableEnProceso thead tr .tdEnProcesoMidNOO {
+	width: 60px;
+}
+
+#tableEnProceso thead tr .tdEnProcesoFactNOO {
+	width: 85px;
+}
+
+#tableEnProceso thead tr .tdEnProcesoMidASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableEnProceso thead tr .tdEnProcesoFactASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableEnProceso thead tr .tdEnProcesoMidDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableEnProceso thead tr .tdEnProcesoFactDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableEnProceso tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 164px;
+	height: 280px;
+}
+
+#tableEnProceso tbody tr .tdEnProcesoMid {
+	width: 60px;
+}
+
+#tableEnProceso tbody tr .tdEnProcesoFact {
+	width: 85px;
+}
+
+#tableEnProceso tfoot {
+	position: fixed;
+	margin-top: 297px;
+	overflow: auto;
+	width: 165px;
+}
+
+#tdEnProcesoCantidadRegistrosLabel {
+	width: 50px;
+	text-align: left;
+}
+
+#divEnProcesoCantidadRegistros {
+	width: 93px;
+	height: 16px;
+	text-align: left;
+	padding-top: 2px;
+	margin-left: 2px;
+}
+
+#tdEnProcesoCantidadRegistrosValor {
+	width: 93px;
+}

@@ -8,8 +8,22 @@ table tbody tr td div {
 }
 
 #divTamanoMuestra {
-	float: letf;
-	width: 750px;
+	float: left;
+	width: 150px;
+	height: 20px;
+}
+
+#divFormLabelTamanoSubconjunto {
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-top: 2px;
+}
+
+#divTamanoSubconjunto {
+	float: left;
+	width: 400px;
+	height: 20px;
 }
 
 #divAgregarFiltro {

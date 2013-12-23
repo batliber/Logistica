@@ -10,24 +10,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
-import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceListaNegra;
@@ -39,7 +36,7 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.util.Configuration;
-import uy.com.amensg.logistica.util.Constants;
+import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
 public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
@@ -50,8 +47,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 	@EJB
 	private IACMInterfaceProcesoBean iACMInterfaceProcesoBean;
 	
-	private Predicate where;
-	private Map<String, Object> parameterValues = new HashMap<String, Object>();
+	private CriteriaQuery<ACMInterfacePrepago> criteriaQuery;
 	
 	public Collection<ACMInterfacePrepago> list() {
 		Collection<ACMInterfacePrepago> result = new LinkedList<ACMInterfacePrepago>();
@@ -73,14 +69,12 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
 		try {
-			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
-			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
+			// Query para obtener los registros de muestra
+			TypedQuery<ACMInterfacePrepago> queryMuestra = this.construirQuery(metadataConsulta);
+			queryMuestra.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
-			
-			List<ACMInterfacePrepago> resultList = query.getResultList();
-			
-			for (ACMInterfacePrepago acmInterfacePrepago : resultList) {
+			for (ACMInterfacePrepago acmInterfacePrepago : queryMuestra.getResultList()) {
 				registrosMuestra.add(acmInterfacePrepago);
 			}
 			
@@ -88,17 +82,22 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			
-			CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-			criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(ACMInterfacePrepago.class)));
-			criteriaQuery.where(where);
+			// Query para obtener la cantidad de registros
+			CriteriaQuery<Long> criteriaQueryCount = criteriaBuilder.createQuery(Long.class);
 			
-			TypedQuery<Long> countQuery = entityManager.createQuery(criteriaQuery);
+			criteriaQueryCount.select(
+				criteriaBuilder.count(criteriaQueryCount.from(ACMInterfacePrepago.class))
+			);
 			
-			for (String parameterName : parameterValues.keySet()) {
-				countQuery.setParameter(parameterName, parameterValues.get(parameterName));
+			criteriaQueryCount.where(criteriaQuery.getRestriction());
+			
+			TypedQuery<Long> queryCount = entityManager.createQuery(criteriaQueryCount);
+			
+			for (Parameter<?> parameter : queryMuestra.getParameters()) {
+				queryCount.setParameter(parameter.getName(), queryMuestra.getParameterValue(parameter));
 			}
 			
-			result.setCantidadRegistros(countQuery.getSingleResult());
+			result.setCantidadRegistros(queryCount.getSingleResult());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -243,7 +242,32 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			
 			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
 			
-			for (ACMInterfacePrepago acmInterfacePrepago : query.getResultList()) {
+			Collection<ACMInterfacePrepago> resultList = new LinkedList<ACMInterfacePrepago>();
+			if (metadataConsulta.getTamanoSubconjunto() != null) {
+				List<ACMInterfacePrepago> toOrder = query.getResultList();
+				
+				Collections.sort(toOrder, new Comparator<ACMInterfacePrepago>() {
+					public int compare(ACMInterfacePrepago arg0, ACMInterfacePrepago arg1) {
+						Random random = new Random();
+						
+						return random.nextBoolean() ? 1 : -1;
+					}
+				});
+				
+				int i = 0;
+				for (ACMInterfacePrepago acmInterfacePrepago : toOrder) {
+					resultList.add(acmInterfacePrepago);
+					
+					i++;
+					if (i == metadataConsulta.getTamanoSubconjunto()) {
+						break;
+					}
+				}
+			} else {
+				resultList = query.getResultList();
+			}
+			
+			for (ACMInterfacePrepago acmInterfacePrepago : resultList) {
 				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
 				acmInterfaceMid.setEstado(
 					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
@@ -317,7 +341,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 	private TypedQuery<ACMInterfacePrepago> construirQuery(MetadataConsulta metadataConsulta) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		
-		CriteriaQuery<ACMInterfacePrepago> criteriaQuery = criteriaBuilder.createQuery(ACMInterfacePrepago.class);
+		criteriaQuery = criteriaBuilder.createQuery(ACMInterfacePrepago.class);
+		
 		Root<ACMInterfacePrepago> root = criteriaQuery.from(ACMInterfacePrepago.class);
 		
 		List<Order> orders = new LinkedList<Order>();
@@ -330,280 +355,46 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			}
 		}
 		
-		where = criteriaBuilder.conjunction();
-		
 		criteriaQuery
 			.select(root)
-			.orderBy(orders);
-		
-		parameterValues = new HashMap<String, Object>();
-		
-		int i = 0;
-		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
-			Path<?> campo = root.get(metadataCondicion.getCampo());
-			
-			if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_IGUAL)) {
-				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
-				
-				where = criteriaBuilder.and(
-					where, 
-					criteriaBuilder.equal(campo, parameterExpression)
-				);
-				
-				try {
-					if (campo.getJavaType().equals(Date.class)) {
-						parameterValues.put(
-							parameterExpression.getName(), 
-							DateFormat.getInstance().parse(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					} else if (campo.getJavaType().equals(Long.class)) {
-						parameterValues.put(
-							parameterExpression.getName(), 
-							new Long(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					} else if (campo.getJavaType().equals(String.class)) {
-						parameterValues.put(
-							parameterExpression.getName(), 
-							metadataCondicion.getValores().toArray(new String[]{})[0]
-						);
-					} else if (campo.getJavaType().equals(Double.class)) {
-						parameterValues.put(
-							parameterExpression.getName(), 
-							new Double(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MAYOR)) {
-				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
-				
-				try {
-					if (campo.getJavaType().equals(Date.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.greaterThan(campo.as(Date.class), parameterExpression.as(Date.class))
-						);
-						
-						parameterValues.put(
-							parameterExpression.getName(), 
-							DateFormat.getInstance().parse(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					} else if (campo.getJavaType().equals(Long.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.greaterThan(campo.as(Long.class), parameterExpression.as(Long.class))
-						);
-						
-						parameterValues.put(
-							parameterExpression.getName(), 
-							new Long(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					} else if (campo.getJavaType().equals(String.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.greaterThan(campo.as(String.class), parameterExpression.as(String.class))
-						);
-						
-						parameterValues.put(
-							parameterExpression.getName(), 
-							metadataCondicion.getValores().toArray(new String[]{})[0]
-						);
-					} else if (campo.getJavaType().equals(Double.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.greaterThan(campo.as(Double.class), parameterExpression.as(Double.class))
-						);
-						
-						parameterValues.put(
-							parameterExpression.getName(), 
-							new Double(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MENOR)) {
-				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
-				
-				try {
-					if (campo.getJavaType().equals(Date.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.lessThan(campo.as(Date.class), parameterExpression.as(Date.class))
-						);
-						
-						parameterValues.put(
-							parameterExpression.getName(), 
-							DateFormat.getInstance().parse(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					} else if (campo.getJavaType().equals(Long.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.lessThan(campo.as(Long.class), parameterExpression.as(Long.class))
-						);
-						
-						parameterValues.put(
-							parameterExpression.getName(), 
-							new Long(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					} else if (campo.getJavaType().equals(String.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.lessThan(campo.as(String.class), parameterExpression.as(String.class))
-						);
-						
-						parameterValues.put(
-							parameterExpression.getName(), 
-							metadataCondicion.getValores().toArray(new String[]{})[0]
-						);
-					} else if (campo.getJavaType().equals(Double.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.lessThan(campo.as(Double.class), parameterExpression.as(Double.class))
-						);
-						
-						parameterValues.put(
-							parameterExpression.getName(), 
-							new Double(metadataCondicion.getValores().toArray(new String[]{})[0])
-						);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_LIKE)) {
-				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
-				
-				where = criteriaBuilder.and(
-					where, 
-					criteriaBuilder.like(campo.as(String.class), parameterExpression.as(String.class))
-				);
-				
-				parameterValues.put(
-					parameterExpression.getName(), 
-					metadataCondicion.getValores().toArray(new String[]{})[0]
-				);
-			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_LIKE)) {
-				ParameterExpression<?> parameterExpression = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
-				
-				where = criteriaBuilder.and(
-					where, 
-					criteriaBuilder.notLike(campo.as(String.class), parameterExpression.as(String.class))
-				);
-				
-				parameterValues.put(
-					parameterExpression.getName(), 
-					metadataCondicion.getValores().toArray(new String[]{})[0]
-				);
-			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_ENTRE)) {
-				ParameterExpression<?> parameterExpressionMin = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
-				i++;
-				ParameterExpression<?> parameterExpressionMax = criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
-				
-				String[] valores = metadataCondicion.getValores().toArray(new String[]{});
-				
-				try {
-					if (campo.getJavaType().equals(Date.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.between(
-								campo.as(Date.class), 
-								parameterExpressionMin.as(Date.class),
-								parameterExpressionMax.as(Date.class)
-							)
-						);
-						
-						parameterValues.put(
-							parameterExpressionMin.getName(), 
-							DateFormat.getInstance().parse(valores[0])
-						);
-						
-						parameterValues.put(
-							parameterExpressionMax.getName(), 
-							DateFormat.getInstance().parse(valores[1])
-						);
-					} else if (campo.getJavaType().equals(Long.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.between(
-								campo.as(Long.class), 
-								parameterExpressionMin.as(Long.class),
-								parameterExpressionMax.as(Long.class)
-							)
-						);
-						
-						parameterValues.put(
-							parameterExpressionMin.getName(), 
-							new Long(valores[0])
-						);
-						
-						parameterValues.put(
-							parameterExpressionMax.getName(), 
-							new Long(valores[1])
-						);
-					} else if (campo.getJavaType().equals(String.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.between(
-								campo.as(String.class), 
-								parameterExpressionMin.as(String.class),
-								parameterExpressionMax.as(String.class)
-							)
-						);
-						
-						parameterValues.put(
-							parameterExpressionMin.getName(), 
-							valores[0]
-						);
-						
-						parameterValues.put(
-							parameterExpressionMax.getName(), 
-							valores[1]
-						);
-					} else if (campo.getJavaType().equals(Double.class)) {
-						where = criteriaBuilder.and(
-							where, 
-							criteriaBuilder.between(
-								campo.as(Double.class), 
-								parameterExpressionMin.as(Double.class),
-								parameterExpressionMax.as(Double.class)
-							)
-						);
-						
-						parameterValues.put(
-							parameterExpressionMin.getName(), 
-							new Double(valores[0])
-						);
-						
-						parameterValues.put(
-							parameterExpressionMax.getName(), 
-							new Double(valores[1])
-						);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NULL)) {
-				where = criteriaBuilder.and(
-					where, 
-					criteriaBuilder.isNull(campo)
-				);
-			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_NULL)) {
-				where = criteriaBuilder.and(
-					where, 
-					criteriaBuilder.isNotNull(campo)
-				);
-			}
-			
-			i++;
-		}
-		
-		criteriaQuery.where(where);
+			.orderBy(orders)
+			.where(new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, root));
 		
 		TypedQuery<ACMInterfacePrepago> query = entityManager.createQuery(criteriaQuery);
 		
-		for (String parameterName : parameterValues.keySet()) {
-			query.setParameter(parameterName, parameterValues.get(parameterName));
+		int i = 0;
+		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
+			for (String valor : metadataCondicion.getValores()) {
+				Path<?> campo = root.get(metadataCondicion.getCampo());
+				
+				try {
+					if (campo.getJavaType().equals(Date.class)) {
+						query.setParameter(
+							"p" + i,
+							DateFormat.getInstance().parse(valor)
+						);
+					} else if (campo.getJavaType().equals(Long.class)) {
+						query.setParameter(
+							"p" + i,
+							new Long(valor)
+						);
+					} else if (campo.getJavaType().equals(String.class)) {
+						query.setParameter(
+							"p" + i,
+							valor
+						);
+					} else if (campo.getJavaType().equals(Double.class)) {
+						query.setParameter(
+							"p" + i,
+							new Double(valor)
+						);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				i++;
+			}
 		}
 		
 		return query;
