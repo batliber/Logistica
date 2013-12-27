@@ -427,6 +427,10 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				
 				i++;
 			}
+			
+			if (metadataCondicion.getValores().size() == 0) {
+				i++;
+			}
 		}
 		
 		return query;

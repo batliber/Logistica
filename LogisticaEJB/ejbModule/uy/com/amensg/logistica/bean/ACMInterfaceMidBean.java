@@ -233,6 +233,10 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 				
 				i++;
 			}
+			
+			if (metadataCondicion.getValores().size() == 0) {
+				i++;
+			}
 		}
 		
 		return query;

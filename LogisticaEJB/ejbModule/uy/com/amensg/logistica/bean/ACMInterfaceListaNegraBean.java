@@ -129,6 +129,10 @@ public class ACMInterfaceListaNegraBean implements IACMInterfaceListaNegraBean {
 				
 				i++;
 			}
+			
+			if (metadataCondicion.getValores().size() == 0) {
+				i++;
+			}
 		}
 		
 		return query;

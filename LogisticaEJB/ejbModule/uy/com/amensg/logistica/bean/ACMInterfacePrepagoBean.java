@@ -409,6 +409,10 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				
 				i++;
 			}
+			
+			if (metadataCondicion.getValores().size() == 0) {
+				i++;
+			}
 		}
 		
 		return query;
