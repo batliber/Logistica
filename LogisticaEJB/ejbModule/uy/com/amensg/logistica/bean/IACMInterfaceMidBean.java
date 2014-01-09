@@ -11,9 +11,9 @@ public interface IACMInterfaceMidBean {
 
 	public MetadataConsultaResultado listEnProceso(MetadataConsulta metadataConsulta);
 	
-	public void reprocesarEnProceso(MetadataConsulta metadataConsulta);
+	public void reprocesarEnProceso(MetadataConsulta metadataConsulta, String observaciones);
 	
-	public void reprocesar(MetadataConsulta metadataConsulta);
+	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
 	
 	public void update(ACMInterfaceMid acmInterfaceMid);
 }

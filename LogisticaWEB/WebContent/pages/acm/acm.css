@@ -29,6 +29,7 @@ table tbody tr td div {
 #divAgregarFiltro {
 	float: left;
 	width: 700px;
+	height: 24px;
 }
 
 #divFiltros {
@@ -41,9 +42,14 @@ table tbody tr td div {
 	width: 1000px;
 }
 
+.divCondicion {
+	float: left;
+}
+
 .divCondicionValores {
 	float: left;
-	width: 525px;
+	width: 475px;
+	height: 24px;
 }
 
 .divCondicionValoresMultiples {

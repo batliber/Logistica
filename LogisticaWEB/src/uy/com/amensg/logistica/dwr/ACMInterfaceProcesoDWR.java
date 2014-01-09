@@ -53,6 +53,7 @@ public class ACMInterfaceProcesoDWR {
 		result.setFechaFin(acmInterfaceProcesoEstadistica.getFechaFin());
 		result.setFechaInicio(acmInterfaceProcesoEstadistica.getFechaInicio());
 		result.setId(acmInterfaceProcesoEstadistica.getId());
+		result.setObservaciones(acmInterfaceProcesoEstadistica.getObservaciones());
 		
 		return result;
 	}

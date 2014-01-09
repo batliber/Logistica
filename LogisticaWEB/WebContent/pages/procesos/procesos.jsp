@@ -30,6 +30,7 @@
 						<tr>
 							<td class="tdProcesoFechaInicio">Fecha inicio</td>
 							<td class="tdProcesoFechaFin">Fecha fin</td>
+							<td class="tdProcesoObservaciones">Observaciones</td>
 							<td class="tdProcesoCantidadRegistrosParaProcesar">Para procesar</td>
 							<td class="tdProcesoCantidadRegistrosEnProceso">En proceso</td>
 							<td class="tdProcesoCantidadRegistrosParaProcesarPrioritario">Prioritarios</td>
@@ -38,6 +39,7 @@
 					</thead>
 					<tbody>
 						<tr>
+							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>

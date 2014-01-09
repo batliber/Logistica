@@ -82,7 +82,7 @@ a {
 	height: 100%;
 	border-left: solid 1px white;
 	border-right: solid 1px white;
-	background-image: url("/ParkingWEB/images/div_button_bar_separator.png");
+	background-image: url("/LogisticaWEB/images/div_button_bar_separator.png");
 	background-repeat: no-repeat;
 	background-position: 0 2px;
 }
@@ -126,7 +126,7 @@ a {
 	height: 100%;
 	border-left: solid 1px white;
 	border-right: solid 1px white;
-	background-image: url("/ParkingWEB/images/div_button_bar_separator.png");
+	background-image: url("/LogisticaWEB/images/div_button_bar_separator.png");
 	background-repeat: no-repeat;
 	background-position: 0 -50px;
 }
@@ -151,36 +151,36 @@ tr:hover {
 	float: left;
 	cursor: pointer;
 	width: 16px;
-	background-image: url("/ParkingWEB/images/edit_faded.png");
+	background-image: url("/LogisticaWEB/images/edit_faded.png");
 	background-repeat: no-repeat;
 }
 
 .divEdit:hover {
-	background-image: url("/ParkingWEB/images/edit.png");
+	background-image: url("/LogisticaWEB/images/edit.png");
 }
 
 .divDelete {
 	cursor: pointer;
 	width: 16px;
-	background-image: url("/ParkingWEB/images/delete_faded.png");
+	background-image: url("/LogisticaWEB/images/delete_faded.png");
 	background-repeat: no-repeat;
 }
 
 .divDelete:hover {
-	background-image: url("/ParkingWEB/images/delete.png");
+	background-image: url("/LogisticaWEB/images/delete.png");
 }
 
 .divNew {
 	float: left;
 	cursor: pointer;
 	width: 34px;
-	background-image: url("/ParkingWEB/images/new_faded.png");
+	background-image: url("/LogisticaWEB/images/new_faded.png");
 	background-repeat: no-repeat;
 	background-position: 18px 0;
 }
 
 .divNew:hover {
-	background-image: url("/ParkingWEB/images/new.png");
+	background-image: url("/LogisticaWEB/images/new.png");
 }
 
 .divTitleBar {
@@ -204,7 +204,7 @@ tr:hover {
 	height: 16px;
 	margin-top: 2px;
 	text-align: center;
-	background-image: url("/ParkingWEB/images/cross.png");
+	background-image: url("/LogisticaWEB/images/cross.png");
 	color: white;
 }
 

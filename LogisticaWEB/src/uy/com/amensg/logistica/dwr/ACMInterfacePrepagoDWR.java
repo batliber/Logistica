@@ -77,14 +77,15 @@ public class ACMInterfacePrepagoDWR {
 		return result;
 	}
 	
-	public void reprocesar(MetadataConsultaTO metadataConsultaTO) {
+	public void reprocesar(MetadataConsultaTO metadataConsultaTO, String observaciones) {
 		try {
 			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
 			
 			iACMInterfacePrepagoBean.reprocesar(
 				MetadataConsultaDWR.transform(
 					metadataConsultaTO
-				)
+				),
+				observaciones
 			);
 		} catch (Exception e) {
 			e.printStackTrace();

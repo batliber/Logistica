@@ -14,9 +14,12 @@ public class ACMInterfaceProceso extends BaseEntity {
 
 	@Column(name = "fecha_inicio")
 	private Date fechaInicio;
-	
+
 	@Column(name = "fecha_fin")
 	private Date fechaFin;
+
+	@Column(name = "observaciones")
+	private String observaciones;
 
 	public Date getFechaInicio() {
 		return fechaInicio;
@@ -33,4 +36,13 @@ public class ACMInterfaceProceso extends BaseEntity {
 	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
 	}
+
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
+	}
+
 }

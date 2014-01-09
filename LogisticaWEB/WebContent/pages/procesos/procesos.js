@@ -17,6 +17,9 @@ function reloadData() {
 							+ "<td class='tdProcesoFechaFin'><div class='divProcesoFechaFin'>" 
 								+ (data[i].fechaFin != null ? formatLongDate(data[i].fechaFin) : "&nbsp;")
 							+ "</div></td>"
+							+ "<td class='tdProcesoObservaciones'><div class='divProcesoObservaciones'>" 
+								+ (data[i].observaciones != null ? data[i].observaciones : "&nbsp;")
+							+ "</div></td>"
 							+ "<td class='tdProcesoCantidadRegistrosParaProcesar'><div class='divProcesoCantidadRegistrosParaProcesar'>" 
 								+ (data[i].cantidadRegistrosParaProcesar != null ? data[i].cantidadRegistrosParaProcesar : "0") 
 							+ "</div></td>"

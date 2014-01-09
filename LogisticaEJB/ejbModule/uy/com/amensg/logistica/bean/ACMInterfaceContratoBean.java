@@ -227,12 +227,13 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		}
 	}
 	
-	public void reprocesar(MetadataConsulta metadataConsulta) {
+	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones) {
 		try {
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
 			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
 			acmInterfaceProceso.setFechaInicio(hoy);
+			acmInterfaceProceso.setObservaciones(observaciones);
 			
 			acmInterfaceProceso.setUact(new Long(1));
 			acmInterfaceProceso.setFact(hoy);

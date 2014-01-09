@@ -5,43 +5,7 @@ var ordenaciones = 0;
 
 var ordenSufijos = [ "NOO", "ASC", "DES" ];
 
-var ordenPrepago = {
-	tdPrepagoMid: 0,
-	tdPrepagoMesAno: 0,
-	tdPrepagoMontoMesActual: 0,
-	tdPrepagoMontoMesAnterior1: 0,
-	tdPrepagoMontoMesAnterior2: 0,
-	tdPrepagoMontoPromedio: 0,
-	tdPrepagoFechaExportacion: 0,
-	tdPrepagoFechaActivacionKit: 0,
-	tdPrepagoFact: 0
-};
-
-var ordenContrato = {
-	tdContratoMid: 0,
-	tdContratoFinContrato: 0,
-	tdContratoTipoContratoDescripcion: 0,
-	tdContratoDocumento: 0,
-	tdContratoNombre: 0,
-	tdContratoDireccion: 0,
-	tdContratoCodigoPostal: 0,
-	tdContratoLocalidad: 0,
-	tdContratoEquipo: 0,
-	tdContratoAgente: 0,
-	tdContratoFechaExportacion: 0,
-	tdContratoFact: 0
-};
-
-var ordenListaNegra = {
-	tdListaNegraMid: 0,
-	tdListaNegraObservaciones: 0,
-	tdListaNegraFact: 0
-};
-
-var ordenEnProceso = {
-	tdEnProcesoMid: 0,
-	tdEnProcesoFact: 0
-};
+var ordenes = {};
 
 var campos = {
 	tdPrepagoMid: "mid",
@@ -71,11 +35,6 @@ var campos = {
 	tdEnProcesoMid: "mid",
 	tdEnProcesoFact: "fact"
 };
-
-var metadataOrdenacionesContrato = [];
-var metadataOrdenacionesPrepago = [];
-var metadataOrdenacionesListaNegra = [];
-var metadataOrdenacionesEnProceso = [];
 
 $(document).ready(function() {
 	$("#inputExportarAExcel").prop("disabled", true);
@@ -357,29 +316,39 @@ function reloadData() {
 
 function calcularMetadataConsulta() {
 	var metadataConsulta = {
-		tamanoMuestra: $("#inputTamanoMuestra").val()
+		tamanoMuestra: $("#inputTamanoMuestra").val(),
 	};
 	
-	if ($("#selectTipoRegistro").val() == "contrato") {
-		metadataConsulta.metadataOrdenaciones = metadataOrdenacionesContrato;
-	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		metadataConsulta.metadataOrdenaciones = metadataOrdenacionesPrepago;
-	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-		metadataConsulta.metadataOrdenaciones = metadataOrdenacionesListaNegra;
-	} else {
-		metadataConsulta.metadataOrdenaciones = metadataOrdenacionesEnProceso;
-	}
-	
+	metadataConsulta.metadataOrdenaciones = calcularOrdenaciones();
 	metadataConsulta.metadataCondiciones = calcularCondiciones();
 	
 	return metadataConsulta;
+}
+
+function calcularOrdenaciones() {
+	var result = [];
+	
+	for (var campo in ordenes) {
+		if ((campo.toLowerCase().indexOf($("#selectTipoRegistro").val()) > 0)
+			&& (ordenes[campo] > 0)) {
+			result[result.length] = {
+				campo: campos[campo],
+				ascendente: (ordenes[campo] == 1)
+			};
+		}
+	}
+	
+	return result;
 }
 
 function calcularCondiciones() {
 	var result = [];
 	
 	for (var i=1; i<=filtros; i++) {
-		if ($("#divFiltro" + i).length > 0) {
+		if (($("#divFiltro" + i).length > 0) 
+			&& ($("#selectCampo" + i).val() != "")
+			&& ($("#selectCondicion" + i).length > 0)
+			&& ($("#selectCondicion" + i).val() != "")) {
 			var metadataCondicion = {
 				campo: $("#selectCampo" + i).val(),
 				operador: $("#selectCondicion" + i).val()
@@ -454,13 +423,17 @@ function inputAgregarFiltroOnClick(event) {
 	
 	var html = 
 		"<div id='divFiltro" + filtros + "' class='divFiltro'>"
+		+ "<div id='divQuitarFiltro" + filtros + "' class='divQuitarFiltro'>"
+			+ "<input type='submit' id='inputQuitarFiltro" + filtros + "' value='Quitar'"
+				+ " onclick='javascript:inputQuitarFiltroOnClick(event, this, " + filtros + ")'/>"
+		+ "</div>"
 		+ "<div class='divFormLabel'>Campo:</div>";
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
 		html += 
 			"<div id='divCampoContrato" + filtros + "' style='float: left;'>"
 				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
-					+ "<option>Seleccione...</option>"
+					+ "<option value=''>Seleccione...</option>"
 					+ "<option value='mid'>MID</option>"
 					+ "<option value='fechaFinContrato'>Fin de contrato</option>"
 					+ "<option value='tipoContratoDescripcion'>Tipo de contrato</option>"
@@ -480,7 +453,7 @@ function inputAgregarFiltroOnClick(event) {
 		html += 
 			"<div id='divCampoPrepago" + filtros + "' style='float: left;'>"
 				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
-					+ "<option>Seleccione...</option>"
+					+ "<option value=''>Seleccione...</option>"
 					+ "<option value='mid'>MID</option>"
 					+ "<option value='mesAno'>Mes/A&ntilde;o</option>"
 					+ "<option value='montoMesActual'>Monto mes actual</option>"
@@ -496,7 +469,7 @@ function inputAgregarFiltroOnClick(event) {
 		html += 
 			"<div id='divCampoListaNegra" + filtros + "' style='float: left;'>"
 				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
-					+ "<option>Seleccione...</option>"
+					+ "<option value=''>Seleccione...</option>"
 					+ "<option value='mid'>MID</option>"
 					+ "<option value='observaciones'>Observaciones</option>"
 					+ "<option value='fact'>Ingresado</option>"
@@ -506,7 +479,7 @@ function inputAgregarFiltroOnClick(event) {
 		html += 
 			"<div id='divCampoEnProceso" + filtros + "' style='float: left;'>"
 				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
-					+ "<option>Seleccione...</option>"
+					+ "<option value=''>Seleccione...</option>"
 					+ "<option value='mid'>MID</option>"
 					+ "<option value='fact'>Reprocesado</option>"
 				+ "</select>"
@@ -515,7 +488,7 @@ function inputAgregarFiltroOnClick(event) {
 	
 	html +=
 			"<div class='divFormLabel'>Condici&oacute;n:</div>"
-			+ "<div id='divCondicion" + filtros + "' style='float: left;'></div>"
+			+ "<div id='divCondicion" + filtros + "' class='divCondicion'>&nbsp;</div>"
 		+ "</div>";
 	
 	$("#divFiltros").append(html);
@@ -533,8 +506,8 @@ function selectCampoOnChange(event, element, index) {
 	divCondicion.empty();
 	
 	var html = 
-		"<select id='selectCondicion" + filtros + "' onchange='javascript:selectCondicionOnChange(event, this, " + filtros + ")'>"
-			+ "<option>Seleccione...</option>";
+		"<select id='selectCondicion" + index + "' onchange='javascript:selectCondicionOnChange(event, this, " + index + ")'>"
+			+ "<option value=''>Seleccione...</option>";
 	
 	if (($("#selectCampo" + index).val() == "mid") 
 		|| ($("#selectCampo" + index).val() == "codigoPostal")
@@ -609,11 +582,11 @@ function selectCondicionOnChange(event, element, index) {
 			html +=
 				"<div class='divFormLabel'>Valor:</div>"
 				+ "<div id='divValorMin" + index + "' style='float: left'>"
-					+ "<input id='inputValorMin" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
+					+ "<input type='text' id='inputValorMin" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
 				+ "</div>"
 				+ "<div class='divFormLabel' style='width: 50px;'>y:</div>"
 				+ "<div id='divValorMax" + index + "' style='float: left;'>"
-					+ "<input id='inputValorMax" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
+					+ "<input type='text' id='inputValorMax" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
 				+ "</div>";
 			break;
 		case "nl":
@@ -626,28 +599,30 @@ function selectCondicionOnChange(event, element, index) {
 				ACMInterfaceContratoDWR.listTipoContratos(
 					{
 						callback: function(data) {
-							var html = "<div id='divCondicionValores" + filtros + "' class='divCondicionValoresMultiples'>";
+							var html = "<div id='divCondicionValores" + index + "' class='divCondicionValoresMultiples'>";
 							
 							html += 
 								"<div class='divFormLabel'>Valor:</div>"
-								+ "<div id='divValor" + filtros + "' style='float: left;'>"
-									+ "<select id='inputValor" + filtros 
-										+ "' onchange='javascript:inputValorMultipleOnChange(event, this, " + filtros + ")'>"
-										+ "<option>Seleccione...</option>"
+								+ "<div id='divValor" + index + "' style='float: left;'>"
+									+ "<select id='inputValor" + index 
+										+ "' onchange='javascript:inputValorMultipleOnChange(event, this, " + index + ")'>"
+										+ "<option value=''>Seleccione...</option>"
 										+ "<option value='Todos'>Todos</option>"
 										+ "<option value='Ninguno'>Ninguno</option>";
 							
 							for (var i=0; i < data.length; i++) {
-								html += "<option value='" + data[i].tipoContratoDescripcion + "'>"
-									+ data[i].tipoContratoDescripcion 
-									+ "</option>";
+								html += 
+										"<option value='" + data[i].tipoContratoDescripcion + "'>"
+											+ data[i].tipoContratoDescripcion 
+										+ "</option>";
 							}
 							
-							html += "</select>"
+							html += 
+										"</select>"
 								+ "</div>";	
 							
 							html += 
-								"<div id='divValores" + filtros + "' class='divValoresMultiples' style='float: left;'>";
+								"<div id='divValores" + index + "' class='divValoresMultiples' style='float: left;'>";
 								
 							for (var i=0; i < data.length; i++) {
 								html += 
@@ -656,16 +631,10 @@ function selectCondicionOnChange(event, element, index) {
 									+ "</div>";
 							}
 							
-							html += "</div>";
-							
 							html +=
-								"<div id='divQuitarFiltro" + filtros + "' class='divQuitarFiltro'>"
-									+ "<input type='submit' id='inputQuitarFiltro" + filtros + "' value='Quitar'"
-										+ " onclick='javascript:inputQuitarFiltroOnClick(event, this, " + filtros + ")'/>"
-								+ "</div>"
 								+ "</div>";
 							
-							$("#divFiltro" + filtros).append(html);
+							$("#divFiltro" + index).append(html);
 						}, async: false
 					}
 				);
@@ -687,7 +656,7 @@ function selectCondicionOnChange(event, element, index) {
 					"<div class='divFormLabel'>Valor:</div>"
 					+ "<div id='divValor" + index + "' style='float: left;'>"
 						+ "<select id='inputValor" + index + "' onchange='javascript:inputValorOnChange(event, this)'>"
-							+ "<option>Seleccione...</option>"
+							+ "<option value=''>Seleccione...</option>"
 							+ "<option value='1'>Persona</option>"
 							+ "<option value='2'>Empresa</option>"
 							+ "<option value='3'>Estatal</option>"
@@ -698,18 +667,14 @@ function selectCondicionOnChange(event, element, index) {
 				html += 
 					"<div class='divFormLabel'>Valor:</div>"
 					+ "<div id='divValor" + index + "' style='float: left;'>"
-						+ "<input id='inputValor" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
+						+ "<input type='text' id='inputValor" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
 					+ "</div>";
 			}
 			break;
 	}
 	
 	html +=
-		"<div id='divQuitarFiltro" + index + "' class='divQuitarFiltro'>"
-			+ "<input type='submit' id='inputQuitarFiltro" + index + "' value='Quitar'"
-				+ " onclick='javascript:inputQuitarFiltroOnClick(event, this, " + index + ")'/>"
-		+ "</div>"
-		+ "</div>";
+		"</div>";
 	
 	$("#divFiltro" + index).append(html);
 }
@@ -760,106 +725,16 @@ function tableTheadTdOnClick(event, element) {
 	var className = element.getAttribute("class");
 	className = className.substring(0, className.length - 3);
 	
-	if (className.split("Contrato").length > 1) {
-		ordenContrato[className] = (ordenContrato[className] + 1) % ordenSufijos.length;
-		
-		element.setAttribute("class", className + ordenSufijos[ordenContrato[className]]);
-		
-		var index = -1;
-		for (var i=0; i<metadataOrdenacionesContrato.length; i++) {
-			if (metadataOrdenacionesContrato[i].campo == campos[className]) {
-				index = i;
-				break;
-			}
-		}
-		
-		if (index > -1) {
-			if (metadataOrdenacionesContrato[index].ascendente) {
-				metadataOrdenacionesContrato[index].ascendente = false;
-			} else {
-				metadataOrdenacionesContrato.splice(index, 1);
-			}
-		} else {
-			metadataOrdenacionesContrato[metadataOrdenacionesContrato.length] = {
-				campo: campos[className],
-				ascendente: true
-			};
-		}
-	} else if (className.split("Prepago").length > 1) {
-		ordenPrepago[className] = (ordenPrepago[className] + 1) % ordenSufijos.length;
-		
-		element.setAttribute("class", className + ordenSufijos[ordenPrepago[className]]);
-		
-		var index = -1;
-		for (var i=0; i<metadataOrdenacionesPrepago.length; i++) {
-			if (metadataOrdenacionesPrepago[i].campo == campos[className]) {
-				index = i;
-				break;
-			}
-		}
-		
-		if (index > -1) {
-			if (metadataOrdenacionesPrepago[index].ascendente) {
-				metadataOrdenacionesPrepago[index].ascendente = false;
-			} else {
-				metadataOrdenacionesPrepago.splice(index, 1);
-			}
-		} else {
-			metadataOrdenacionesPrepago[metadataOrdenacionesPrepago.length] = {
-				campo: campos[className],
-				ascendente: true
-			};
-		}
-	} else if (className.split("ListaNegra").length > 1) {
-		ordenListaNegra[className] = (ordenListaNegra[className] + 1) % ordenSufijos.length;
-		
-		element.setAttribute("class", className + ordenSufijos[ordenListaNegra[className]]);
-		
-		var index = -1;
-		for (var i=0; i<metadataOrdenacionesListaNegra.length; i++) {
-			if (metadataOrdenacionesListaNegra[i].campo == campos[className]) {
-				index = i;
-				break;
-			}
-		}
-		
-		if (index > -1) {
-			if (metadataOrdenacionesListaNegra[index].ascendente) {
-				metadataOrdenacionesListaNegra[index].ascendente = false;
-			} else {
-				metadataOrdenacionesListaNegra.splice(index, 1);
-			}
-		} else {
-			metadataOrdenacionesListaNegra[metadataOrdenacionesListaNegra.length] = {
-				campo: campos[className],
-				ascendente: true
-			};
-		}
+	if (ordenes[className] != null) {
+		ordenes[className] = (ordenes[className] + 1) % ordenSufijos.length;
 	} else {
-		ordenEnProceso[className] = (ordenEnProceso[className] + 1) % ordenSufijos.length;
-		
-		element.setAttribute("class", className + ordenSufijos[ordenEnProceso[className]]);
-		
-		var index = -1;
-		for (var i=0; i<metadataOrdenacionesEnProceso.length; i++) {
-			if (metadataOrdenacionesEnProceso[i].campo == campos[className]) {
-				index = i;
-				break;
-			}
-		}
-		
-		if (index > -1) {
-			if (metadataOrdenacionesEnProceso[index].ascendente) {
-				metadataOrdenacionesEnProceso[index].ascendente = false;
-			} else {
-				metadataOrdenacionesEnProceso.splice(index, 1);
-			}
-		} else {
-			metadataOrdenacionesEnProceso[metadataOrdenacionesEnProceso.length] = {
-				campo: campos[className],
-				ascendente: true
-			};
-		}
+		ordenes[className] = 1;
+	}
+	
+	element.setAttribute("class", className + ordenSufijos[ordenes[className]]);
+	
+	if (ordenes[className] == 0) {
+		ordenes[className] = null;
 	}
 	
 	reloadData();
@@ -898,10 +773,15 @@ function inputExportarAExcelOnClick(event) {
 }
 
 function inputReprocesarOnClick(event) {
+	var observaciones = null;
+	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		if (confirm("Se reprocesarán " + $("#divContratoCantidadRegistros").text() + " registros.")) {
+		observaciones = prompt("Se reprocesarán " + $("#divContratoCantidadRegistros").text() + " registros.");
+		
+		if (observaciones != null) {
 			ACMInterfaceContratoDWR.reprocesar(
 				calcularMetadataConsulta(),
+				observaciones,
 				{
 					callback: function(data) {
 						
@@ -910,9 +790,12 @@ function inputReprocesarOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		if (confirm("Se reprocesarán " + $("#divPrepagoCantidadRegistros").text() + " registros.")) {
+		observaciones = prompt("Se reprocesarán " + $("#divPrepagoCantidadRegistros").text() + " registros.");
+		
+		if (observaciones != null) {
 			ACMInterfacePrepagoDWR.reprocesar(
 				calcularMetadataConsulta(),
+				observaciones,
 				{
 					callback: function(data) {
 						
@@ -921,9 +804,12 @@ function inputReprocesarOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "enProceso") {
-		if (confirm("Se reprocesarán " + $("#divEnProcesoCantidadRegistros").text() + " registros.")) {
+		observaciones = prompt("Se reprocesarán " + $("#divEnProcesoCantidadRegistros").text() + " registros.");
+		
+		if (observaciones != null) {
 			ACMInterfaceMidDWR.reprocesarEnProceso(
 				calcularMetadataConsulta(),
+				observaciones,
 				{
 					callback: function(data) {
 						reloadData();
@@ -938,6 +824,7 @@ function inputReprocesarOnClick(event) {
 
 function inputReprocesarSubconjuntoOnClick(event) {
 	var metadataConsulta = calcularMetadataConsulta();
+	var observaciones = null;
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
 		metadataConsulta.tamanoSubconjunto = 
@@ -946,9 +833,12 @@ function inputReprocesarSubconjuntoOnClick(event) {
 				$("#divContratoCantidadRegistros").text()
 			);
 		
-		if (confirm("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		
+		if (observaciones != null) {
 			ACMInterfaceContratoDWR.reprocesar(
 				metadataConsulta,
+				observaciones,
 				{
 					callback: function(data) {
 						
@@ -963,9 +853,12 @@ function inputReprocesarSubconjuntoOnClick(event) {
 				$("#divPrepagoCantidadRegistros").text()
 			);
 		
-		if (confirm("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		
+		if (observaciones != null) {
 			ACMInterfacePrepagoDWR.reprocesar(
 				metadataConsulta,
+				observaciones,
 				{
 					callback: function(data) {
 						
@@ -980,9 +873,12 @@ function inputReprocesarSubconjuntoOnClick(event) {
 				$("#divEnProcesoCantidadRegistros").text()
 			);
 		
-		if (confirm("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		
+		if (observaciones != null) {
 			ACMInterfaceMidDWR.reprocesarEnProceso(
 				metadataConsulta,
+				observaciones,
 				{
 					callback: function(data) {
 						reloadData();

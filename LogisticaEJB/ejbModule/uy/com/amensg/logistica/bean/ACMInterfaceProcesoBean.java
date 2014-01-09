@@ -38,6 +38,7 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 				acmInterfaceProcesoEstadistica.setFechaFin(acmInterfaceProceso.getFechaFin());
 				acmInterfaceProcesoEstadistica.setFechaInicio(acmInterfaceProceso.getFechaInicio());
 				acmInterfaceProcesoEstadistica.setId(acmInterfaceProceso.getId());
+				acmInterfaceProcesoEstadistica.setObservaciones(acmInterfaceProceso.getObservaciones());
 				
 				estadisticas.put(acmInterfaceProceso.getId(), acmInterfaceProcesoEstadistica);
 			}

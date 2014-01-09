@@ -94,7 +94,7 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		return result;
 	}
 	
-	public void reprocesarEnProceso(MetadataConsulta metadataConsulta) {
+	public void reprocesarEnProceso(MetadataConsulta metadataConsulta, String observaciones) {
 		// Condicion de estado "En proceso"
 		Collection<String> valores = new LinkedList<String>();
 		valores.add(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso"));
@@ -106,15 +106,16 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		
 		metadataConsulta.getMetadataCondiciones().add(metadataCondicion);
 		
-		this.reprocesar(metadataConsulta);
+		this.reprocesar(metadataConsulta, observaciones);
 	}
 	
-	public void reprocesar(MetadataConsulta metadataConsulta) {
+	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones) {
 		try {
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
 			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
 			acmInterfaceProceso.setFechaInicio(hoy);
+			acmInterfaceProceso.setObservaciones(observaciones);
 			
 			acmInterfaceProceso.setUact(new Long(1));
 			acmInterfaceProceso.setFact(hoy);

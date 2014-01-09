@@ -10,6 +10,7 @@ public class ACMInterfaceProcesoEstadisticaTO {
 	private Long id;
 	private Date fechaInicio;
 	private Date fechaFin;
+	private String observaciones;
 	private Long cantidadRegistrosParaProcesar;
 	private Long cantidadRegistrosParaProcesarPrioritario;
 	private Long cantidadRegistrosProcesado;
@@ -37,6 +38,14 @@ public class ACMInterfaceProcesoEstadisticaTO {
 
 	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
+	}
+
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
 	}
 
 	public Long getCantidadRegistrosParaProcesar() {

@@ -59,28 +59,30 @@ public class ACMInterfaceMidDWR {
 		return result;
 	}
 	
-	public void reprocesarEnProceso(MetadataConsultaTO metadataConsultaTO) {
+	public void reprocesarEnProceso(MetadataConsultaTO metadataConsultaTO, String observaciones) {
 		try {
 			IACMInterfaceMidBean iACMInterfaceMidBean = lookupBean();
 			
 			iACMInterfaceMidBean.reprocesarEnProceso(
 				MetadataConsultaDWR.transform(
 					metadataConsultaTO
-				)
+				),
+				observaciones
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void reprocesar(MetadataConsultaTO metadataConsultaTO) {
+	public void reprocesar(MetadataConsultaTO metadataConsultaTO, String observaciones) {
 		try {
 			IACMInterfaceMidBean iACMInterfaceMidBean = lookupBean();
 			
 			iACMInterfaceMidBean.reprocesar(
 				MetadataConsultaDWR.transform(
 					metadataConsultaTO
-				)
+				),
+				observaciones
 			);
 		} catch (Exception e) {
 			e.printStackTrace();

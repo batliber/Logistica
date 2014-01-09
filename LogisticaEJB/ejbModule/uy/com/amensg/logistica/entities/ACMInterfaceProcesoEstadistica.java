@@ -3,13 +3,15 @@ package uy.com.amensg.logistica.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-public class ACMInterfaceProcesoEstadistica implements Serializable, Comparable<ACMInterfaceProcesoEstadistica> {
+public class ACMInterfaceProcesoEstadistica implements Serializable,
+		Comparable<ACMInterfaceProcesoEstadistica> {
 
 	private static final long serialVersionUID = 2201062222502297785L;
-	
+
 	private Long id;
 	private Date fechaInicio;
 	private Date fechaFin;
+	private String observaciones;
 	private Long cantidadRegistrosParaProcesar;
 	private Long cantidadRegistrosParaProcesarPrioritario;
 	private Long cantidadRegistrosProcesado;
@@ -37,6 +39,14 @@ public class ACMInterfaceProcesoEstadistica implements Serializable, Comparable<
 
 	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
+	}
+
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
 	}
 
 	public Long getCantidadRegistrosParaProcesar() {

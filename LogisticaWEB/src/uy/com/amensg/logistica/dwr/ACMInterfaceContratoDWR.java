@@ -79,14 +79,15 @@ public class ACMInterfaceContratoDWR {
 		return result;
 	}
 	
-	public void reprocesar(MetadataConsultaTO metadataConsultaTO) {
+	public void reprocesar(MetadataConsultaTO metadataConsultaTO, String observaciones) {
 		try {
 			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
 			
 			iACMInterfaceContratoBean.reprocesar(
 				MetadataConsultaDWR.transform(
 					metadataConsultaTO
-				)
+				),
+				observaciones
 			);
 		} catch (Exception e) {
 			e.printStackTrace();

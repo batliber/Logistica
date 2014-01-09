@@ -1,9 +1,9 @@
 #divProcesos {
-	width: 480px;
+	width: 880px;
 }
 
 #tableProcesos {
-	width: 555px;
+	width: 955px;
 	height: 317px;
 }
 
@@ -17,6 +17,10 @@
 
 #tableProcesos thead tr .tdProcesoFechaFin {
 	width: 80px;
+}
+
+#tableProcesos thead tr .tdProcesoObservaciones {
+	width: 400px;
 }
 
 #tableProcesos thead tr .tdProcesoCantidadRegistrosParaProcesar {
@@ -39,7 +43,7 @@
 	position: fixed;
 	margin-top: 17px;
 	overflow: auto;
-	width: 553px;
+	width: 953px;
 	height: 297px;
 }
 
@@ -49,6 +53,10 @@
 
 #tableProcesos tbody tr .tdProcesoFechaFin {
 	width: 80px;
+}
+
+#tableProcesos tbody tr .tdProcesoObservaciones {
+	width: 400px;
 }
 
 #tableProcesos tbody tr .tdProcesoCantidadRegistrosParaProcesar {
