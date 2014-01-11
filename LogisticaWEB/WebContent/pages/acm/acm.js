@@ -610,7 +610,7 @@ function selectCondicionOnChange(event, element, index) {
 										+ "<option value='Todos'>Todos</option>"
 										+ "<option value='Ninguno'>Ninguno</option>";
 							
-							for (var i=0; i < data.length; i++) {
+							for (var i=0; i<data.length; i++) {
 								html += 
 										"<option value='" + data[i].tipoContratoDescripcion + "'>"
 											+ data[i].tipoContratoDescripcion 
@@ -624,7 +624,7 @@ function selectCondicionOnChange(event, element, index) {
 							html += 
 								"<div id='divValores" + index + "' class='divValoresMultiples' style='float: left;'>";
 								
-							for (var i=0; i < data.length; i++) {
+							for (var i=0; i<data.length; i++) {
 								html += 
 									"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
 										+ data[i].tipoContratoDescripcion
@@ -632,7 +632,7 @@ function selectCondicionOnChange(event, element, index) {
 							}
 							
 							html +=
-								+ "</div>";
+								"</div>";
 							
 							$("#divFiltro" + index).append(html);
 						}, async: false
