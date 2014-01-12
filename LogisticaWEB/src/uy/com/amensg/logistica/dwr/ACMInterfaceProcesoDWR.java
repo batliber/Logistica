@@ -43,7 +43,18 @@ public class ACMInterfaceProcesoDWR {
 		return result;
 	}
 	
-	public static ACMInterfaceProcesoEstadisticaTO transform(ACMInterfaceProcesoEstadistica acmInterfaceProcesoEstadistica) {
+	public void finalizarProcesos() {
+		try {
+			IACMInterfaceProcesoBean iACMInterfaceProcesoBean = this.lookupBean();
+			
+			iACMInterfaceProcesoBean.finalizarProcesos();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static ACMInterfaceProcesoEstadisticaTO transform(
+		ACMInterfaceProcesoEstadistica acmInterfaceProcesoEstadistica) {
 		ACMInterfaceProcesoEstadisticaTO result = new ACMInterfaceProcesoEstadisticaTO();
 		
 		result.setCantidadRegistrosEnProceso(acmInterfaceProcesoEstadistica.getCantidadRegistrosEnProceso());
