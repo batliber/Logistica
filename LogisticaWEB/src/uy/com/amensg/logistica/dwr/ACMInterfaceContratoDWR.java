@@ -122,13 +122,19 @@ public class ACMInterfaceContratoDWR {
 		}
 	}
 	
-	public Collection<TipoContratoTO> listTipoContratos() {
+	public Collection<TipoContratoTO> listTipoContratos(MetadataConsultaTO metadataConsultaTO) {
 		Collection<TipoContratoTO> result = new LinkedList<TipoContratoTO>();
 		
 		try {
 			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
 			
-			for (TipoContrato tipoContrato : iACMInterfaceContratoBean.listTipoContratos()) {
+			for (TipoContrato tipoContrato : 
+				iACMInterfaceContratoBean.listTipoContratos(
+					MetadataConsultaDWR.transform(
+						metadataConsultaTO
+					)
+				)) {
+				
 				result.add(transform(tipoContrato));
 			}
 		} catch (Exception e) {
@@ -151,6 +157,8 @@ public class ACMInterfaceContratoDWR {
 		acmInterfaceContratoTO.setLocalidad(acmInterfaceContrato.getLocalidad());
 		acmInterfaceContratoTO.setMid(acmInterfaceContrato.getMid());
 		acmInterfaceContratoTO.setNombre(acmInterfaceContrato.getNombre());
+		acmInterfaceContratoTO.setNumeroCliente(acmInterfaceContrato.getNumeroCliente());
+		acmInterfaceContratoTO.setNumeroContrato(acmInterfaceContrato.getNumeroContrato());
 		acmInterfaceContratoTO.setTipoContratoCodigo(acmInterfaceContrato.getTipoContratoCodigo());
 		acmInterfaceContratoTO.setTipoContratoDescripcion(acmInterfaceContrato.getTipoContratoDescripcion());
 		acmInterfaceContratoTO.setFechaExportacion(acmInterfaceContrato.getFechaExportacion());

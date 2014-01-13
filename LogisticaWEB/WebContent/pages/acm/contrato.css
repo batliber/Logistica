@@ -1,9 +1,9 @@
 #divContratos {
-	width: 1185px; 
+	width: 1242px; 
 }
 
 #tableContratos {
-	width: 1185px;
+	width: 1242px;
 	height: 318px;
 }
 
@@ -12,7 +12,7 @@
 }
 
 #tableContratos thead tr .tdContratoMidNOO {
-	width: 60px;
+	width: 50px;
 }
 
 #tableContratos thead tr .tdContratoFinContratoNOO {
@@ -27,12 +27,20 @@
 	width: 80px;
 }
 
+#tableContratos thead tr .tdContratoNumeroClienteNOO {
+	width: 60px;
+}
+
+#tableContratos thead tr .tdContratoNumeroContratoNOO {
+	width: 60px;
+}
+
 #tableContratos thead tr .tdContratoNombreNOO {
-	width: 155px;
+	width: 135px;
 }
 
 #tableContratos thead tr .tdContratoDireccionNOO {
-	width: 155px;
+	width: 135px;
 }
 
 #tableContratos thead tr .tdContratoCodigoPostalNOO {
@@ -52,15 +60,15 @@
 }
 
 #tableContratos thead tr .tdContratoFechaExportacionNOO {
-	width: 84px;
+	width: 75px;
 }
 
 #tableContratos thead tr .tdContratoFactNOO {
-	width: 84px;
+	width: 75px;
 }
 
 #tableContratos thead tr .tdContratoMidASC {
-	width: 60px;
+	width: 50px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -87,15 +95,29 @@
 	background-position: right;
 }
 
+#tableContratos thead tr .tdContratoNumeroClienteASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNumeroContratoASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
 #tableContratos thead tr .tdContratoNombreASC {
-	width: 155px;
+	width: 135px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoDireccionASC {
-	width: 155px;
+	width: 135px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -130,21 +152,21 @@
 }
 
 #tableContratos thead tr .tdContratoFechaExportacionASC {
-	width: 84px;
+	width: 75px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoFactASC {
-	width: 84px;
+	width: 75px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoMidDES {
-	width: 60px;
+	width: 50px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -171,15 +193,29 @@
 	background-position: right;
 }
 
+#tableContratos thead tr .tdContratoNumeroClienteDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNumeroContratoDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
 #tableContratos thead tr .tdContratoNombreDES {
-	width: 155px;
+	width: 135px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoDireccionDES {
-	width: 155px;
+	width: 135px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -214,14 +250,14 @@
 }
 
 #tableContratos thead tr .tdContratoFechaExportacionDES {
-	width: 84px;
+	width: 75px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
 }
 
 #tableContratos thead tr .tdContratoFactDES {
-	width: 84px;
+	width: 75px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
@@ -231,14 +267,14 @@
 	position: fixed;
 	margin-top: 17px;
 	overflow: auto;
-	width: 1183px;
+	width: 1238px;
 	height: 280px;
 }
 
 #tableContratos tbody tr td .divContratoMid {
 	text-align: left;
 	margin-left: 2px;
-	width: 58px;
+	width: 48px;
 }
 
 #tableContratos tbody tr td .divContratoFinContrato {
@@ -258,16 +294,28 @@
 	width: 78px;
 }
 
+#tableContratos tbody tr td .divContratoNumeroCliente {
+	text-align: left;
+	margin-left: 2px;
+	width: 58px;
+}
+
+#tableContratos tbody tr td .divContratoNumeroContrato {
+	text-align: left;
+	margin-left: 2px;
+	width: 58px;
+}
+
 #tableContratos tbody tr td .divContratoNombre {
 	text-align: left;
 	margin-left: 2px;
-	width: 153px;
+	width: 133px;
 }
 
 #tableContratos tbody tr td .divContratoDireccion {
 	text-align: left;
 	margin-left: 2px;
-	width: 153px;
+	width: 133px;
 }
 
 #tableContratos tbody tr td .divContratoCodigoPostal {
@@ -296,19 +344,19 @@
 
 #tableContratos tbody tr td .divContratoFechaExportacion {
 	text-align: center;
-	width: 84px;
+	width: 75px;
 }
 
 #tableContratos tbody tr td .divContratoFact {
 	text-align: center;
-	width: 84px;
+	width: 75px;
 }
 
 #tableContratos tfoot {
 	position: fixed;
 	margin-top: 297px;
 	overflow: auto;
-	width: 1184px;
+	width: 1236px;
 }
 
 #tdContratoCantidadRegistrosLabel {
@@ -317,7 +365,7 @@
 }
 
 #tdContratoCantidadRegistrosValor {
-	width: 1044px;
+	width: 1096px;
 }
 
 #divContratoCantidadRegistros {

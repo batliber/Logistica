@@ -69,6 +69,8 @@
 							<td class="tdContratoFinContratoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Fin</td>
 							<td class="tdContratoTipoContratoDescripcionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Tipo</td>
 							<td class="tdContratoDocumentoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Documento</td>
+							<td class="tdContratoNumeroClienteNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Cliente</td>
+							<td class="tdContratoNumeroContratoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Contrato</td>
 							<td class="tdContratoNombreNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Nombre</td>
 							<td class="tdContratoDireccionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Direcci&oacute;n</td>
 							<td class="tdContratoCodigoPostalNOO" onclick="javascript:tableTheadTdOnClick(event, this)">CP</td>
@@ -81,6 +83,8 @@
 					</thead>
 					<tbody>
 						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>

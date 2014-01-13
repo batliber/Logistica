@@ -25,4 +25,6 @@ public interface IACMInterfaceContratoBean {
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
 	public Collection<TipoContrato> listTipoContratos();
+	
+	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta);
 }

@@ -21,6 +21,8 @@ var campos = {
 	tdContratoFinContrato: "fechaFinContrato",
 	tdContratoTipoContratoDescripcion: "tipoContratoDescripcion",
 	tdContratoDocumento: "documento",
+	tdContratoNumeroCliente: "numeroCliente",
+	tdContratoNumeroContrato: "numeroContrato",
 	tdContratoNombre: "nombre",
 	tdContratoDireccion: "direccion",
 	tdContratoCodigoPostal: "codigoPostal",
@@ -147,6 +149,18 @@ function reloadData() {
 									+ registroMuestra.documentoTipo + "'>" 
 									+ (registroMuestra.documento != null ?
 										registroMuestra.documento : "&nbsp;")
+								+ "</div></td>"
+								+ "<td class='tdContratoNumeroCliente'><div class='divContratoNumeroCliente' title='" 
+									+ (registroMuestra.numeroCliente != null ?
+										registroMuestra.numeroCliente : "&nbsp;") + "'>" 
+									+ (registroMuestra.numeroCliente != null ?
+										registroMuestra.numeroCliente : "&nbsp;")
+								+ "</div></td>"
+								+ "<td class='tdContratoNumeroContrato'><div class='divContratoNumeroContrato' title='" 
+									+ (registroMuestra.numeroContrato != null ?
+										registroMuestra.numeroContrato : "&nbsp;") + "'>" 
+									+ (registroMuestra.numeroContrato != null ?
+										registroMuestra.numeroContrato : "&nbsp;")
 								+ "</div></td>"
 								+ "<td class='tdContratoNombre'><div class='divContratoNombre' title='" 
 									+ (registroMuestra.nombre != null ?
@@ -439,6 +453,8 @@ function inputAgregarFiltroOnClick(event) {
 					+ "<option value='tipoContratoDescripcion'>Tipo de contrato</option>"
 					+ "<option value='documentoTipo'>Tipo de documento</option>"
 					+ "<option value='documento'>Documento</option>"
+					+ "<option value='numeroCliente'>N&uacute;mero de cliente</option>"
+					+ "<option value='numeroContrato'>N&uacute;mero de contrato</option>"
 					+ "<option value='nombre'>Nombre</option>"
 					+ "<option value='direccion'>Direcci&oacute;n</option>"
 					+ "<option value='codigoPostal'>Código postal</option>"
@@ -510,6 +526,8 @@ function selectCampoOnChange(event, element, index) {
 			+ "<option value=''>Seleccione...</option>";
 	
 	if (($("#selectCampo" + index).val() == "mid") 
+		|| ($("#selectCampo" + index).val() == "numeroCliente")
+		|| ($("#selectCampo" + index).val() == "numeroContrato")	
 		|| ($("#selectCampo" + index).val() == "codigoPostal")
 		|| ($("#selectCampo" + index).val() == "mesAno")
 		|| ($("#selectCampo" + index).val() == "montoMesActual")
@@ -522,8 +540,7 @@ function selectCampoOnChange(event, element, index) {
 			+ "<option value='gt'>Mayor que</option>"
 			+ "<option value='lt'>Menor que</option>"
 			+ "<option value='nl'>Vac&iacute;o</option>"
-			+ "<option value='nnl'>No vac&iacute;o</option>"
-			+ "<option value='in'>Est&aacute; incluido en</option>";
+			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if (
 		($("#selectCampo" + index).val() == "documento")
 		|| ($("#selectCampo" + index).val() == "nombre")
@@ -597,6 +614,7 @@ function selectCondicionOnChange(event, element, index) {
 		case "in":
 			if ($("#selectCampo" + index).val() == "tipoContratoDescripcion") {
 				ACMInterfaceContratoDWR.listTipoContratos(
+					calcularMetadataConsulta(),
 					{
 						callback: function(data) {
 							var html = "<div id='divCondicionValores" + index + "' class='divCondicionValoresMultiples'>";

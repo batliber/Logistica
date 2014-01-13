@@ -36,6 +36,7 @@ import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
@@ -371,6 +372,53 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		return result;
 	}
 	
+	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta) {
+		Collection<TipoContrato> result = new LinkedList<TipoContrato>();
+		
+		try {
+			// Query con todos los filtros
+			TypedQuery<ACMInterfaceContrato> queryACMInterfaceContrato = 
+				this.construirQuery(metadataConsulta);
+			
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			// Criteria query para los tipos de contrato
+			CriteriaQuery<Object[]> criteriaQueryTiposContrato = criteriaBuilder.createQuery(Object[].class);
+			
+			Root<ACMInterfaceContrato> root = criteriaQueryTiposContrato.from(ACMInterfaceContrato.class);
+			
+			criteriaQueryTiposContrato.multiselect(
+				root.get("tipoContratoDescripcion")
+			).distinct(true);
+			
+			// Mismo where que la primera Query
+			criteriaQueryTiposContrato.where(criteriaQuery.getRestriction());
+			
+			TypedQuery<Object[]> queryTiposContrato = entityManager.createQuery(criteriaQueryTiposContrato);
+			
+			for (Parameter<?> parameter : queryACMInterfaceContrato.getParameters()) {
+				queryTiposContrato.setParameter(
+					parameter.getName(), 
+					queryACMInterfaceContrato.getParameterValue(parameter));
+			}
+			
+			for (Object object : queryTiposContrato.getResultList()) {
+				if (object != null) {
+					TipoContrato tipoContrato = new TipoContrato();
+					
+					// tipoContrato.setTipoContratoCodigo((String) fields[0]);
+					tipoContrato.setTipoContratoDescripcion((String) object);
+					
+					result.add(tipoContrato);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	private TypedQuery<ACMInterfaceContrato> construirQuery(MetadataConsulta metadataConsulta) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		
@@ -397,40 +445,42 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
-			for (String valor : metadataCondicion.getValores()) {
-				Path<?> campo = root.get(metadataCondicion.getCampo());
-				
-				try {
-					if (campo.getJavaType().equals(Date.class)) {
-						query.setParameter(
-							"p" + i,
-							DateFormat.getInstance().parse(valor)
-						);
-					} else if (campo.getJavaType().equals(Long.class)) {
-						query.setParameter(
-							"p" + i,
-							new Long(valor)
-						);
-					} else if (campo.getJavaType().equals(String.class)) {
-						query.setParameter(
-							"p" + i,
-							valor
-						);
-					} else if (campo.getJavaType().equals(Double.class)) {
-						query.setParameter(
-							"p" + i,
-							new Double(valor)
-						);
+			if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
+				for (String valor : metadataCondicion.getValores()) {
+					Path<?> campo = root.get(metadataCondicion.getCampo());
+					
+					try {
+						if (campo.getJavaType().equals(Date.class)) {
+							query.setParameter(
+								"p" + i,
+								DateFormat.getInstance().parse(valor)
+							);
+						} else if (campo.getJavaType().equals(Long.class)) {
+							query.setParameter(
+								"p" + i,
+								new Long(valor)
+							);
+						} else if (campo.getJavaType().equals(String.class)) {
+							query.setParameter(
+								"p" + i,
+								valor
+							);
+						} else if (campo.getJavaType().equals(Double.class)) {
+							query.setParameter(
+								"p" + i,
+								new Double(valor)
+							);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
+					
+					i++;
 				}
 				
-				i++;
-			}
-			
-			if (metadataCondicion.getValores().size() == 0) {
-				i++;
+				if (metadataCondicion.getValores().size() == 0) {
+					i++;
+				}
 			}
 		}
 		
