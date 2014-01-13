@@ -33,6 +33,12 @@ public class ACMInterfaceContrato implements Serializable {
 	@Column(name = "documento")
 	private String documento;
 
+	@Column(name = "numero_cliente")
+	private Long numeroCliente;
+
+	@Column(name = "numero_contrato")
+	private Long numeroContrato;
+
 	@Column(name = "nombre")
 	private String nombre;
 
@@ -112,6 +118,22 @@ public class ACMInterfaceContrato implements Serializable {
 
 	public void setDocumento(String documento) {
 		this.documento = documento;
+	}
+
+	public Long getNumeroCliente() {
+		return numeroCliente;
+	}
+
+	public void setNumeroCliente(Long numeroCliente) {
+		this.numeroCliente = numeroCliente;
+	}
+
+	public Long getNumeroContrato() {
+		return numeroContrato;
+	}
+
+	public void setNumeroContrato(Long numeroContrato) {
+		this.numeroContrato = numeroContrato;
 	}
 
 	public String getNombre() {

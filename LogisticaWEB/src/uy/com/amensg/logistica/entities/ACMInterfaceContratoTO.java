@@ -13,6 +13,8 @@ public class ACMInterfaceContratoTO {
 	private String tipoContratoDescripcion;
 	private Long documentoTipo;
 	private String documento;
+	private Long numeroCliente;
+	private Long numeroContrato;
 	private String nombre;
 	private String direccion;
 	private String localidad;
@@ -70,6 +72,22 @@ public class ACMInterfaceContratoTO {
 
 	public void setDocumento(String documento) {
 		this.documento = documento;
+	}
+
+	public Long getNumeroCliente() {
+		return numeroCliente;
+	}
+
+	public void setNumeroCliente(Long numeroCliente) {
+		this.numeroCliente = numeroCliente;
+	}
+
+	public Long getNumeroContrato() {
+		return numeroContrato;
+	}
+
+	public void setNumeroContrato(Long numeroContrato) {
+		this.numeroContrato = numeroContrato;
 	}
 
 	public String getNombre() {
