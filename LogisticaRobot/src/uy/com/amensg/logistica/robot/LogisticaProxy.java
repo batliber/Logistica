@@ -20,7 +20,9 @@ public class LogisticaProxy {
 		String tipoContratoCodigo,
 		String tipoContratoDescripcion,
 		String agente,
-		String equipo
+		String equipo,
+		String numeroCliente,
+		String numeroContrato
 	) {
 		iConnectionStrategy.actualizarDatosMidContrato(
 			direccion, 
@@ -34,7 +36,9 @@ public class LogisticaProxy {
 			tipoContratoCodigo,
 			tipoContratoDescripcion,
 			agente,
-			equipo
+			equipo,
+			numeroCliente,
+			numeroContrato
 		);
 	}
 	
@@ -79,7 +83,9 @@ public class LogisticaProxy {
 					args[10],
 					args[11],
 					args[12],
-					args[13]
+					args[13],
+					args[14],
+					args[15]
 				);
 			} else if (args[1].equals("prepago")) {
 				new LogisticaProxy().actualizarDatosMidPrepago(

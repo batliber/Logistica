@@ -126,7 +126,9 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		String tipoContratoCodigo,
 		String tipoContratoDescripcion,
 		String agente,
-		String equipo
+		String equipo,
+		String numeroCliente,
+		String numeroContrato
 	) {
 		try {
 			this.initializeConnection();
@@ -152,12 +154,16 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 					+ " tipo_contrato_descripcion,"
 					+ " agente,"
 					+ " equipo,"
+					+ " numero_cliente,"
+					+ " numero_contrato,"
 					+ " uact,"
 					+ " fact,"
 					+ " term,"
 					+ " mid"
 				+ ")"
 				+ " values ("
+					+ " ?,"
+					+ " ?,"
 					+ " ?,"
 					+ " ?,"
 					+ " ?,"
@@ -186,10 +192,13 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			preparedStatementUpdateContrato.setString(9, tipoContratoDescripcion);
 			preparedStatementUpdateContrato.setString(10, agente);
 			preparedStatementUpdateContrato.setString(11, equipo);
-			preparedStatementUpdateContrato.setLong(12, 1);
-			preparedStatementUpdateContrato.setTimestamp(13, new Timestamp(new Date().getTime()));
+			preparedStatementUpdateContrato.setLong(12, new Long(numeroCliente));
+			preparedStatementUpdateContrato.setLong(13, new Long(numeroContrato));
+			
 			preparedStatementUpdateContrato.setLong(14, 1);
-			preparedStatementUpdateContrato.setString(15, mid);
+			preparedStatementUpdateContrato.setTimestamp(15, new Timestamp(new Date().getTime()));
+			preparedStatementUpdateContrato.setLong(16, 1);
+			preparedStatementUpdateContrato.setString(17, mid);
 			
 			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
 			Long uact = new Long(1);
