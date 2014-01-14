@@ -151,7 +151,7 @@
 				<table id="tableListaNegra" border="0" cellspacing="0" cellpadding="0">
 					<thead>
 						<tr>
-							<td class="tdListaNegraMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Mid</td>
+							<td class="tdListaNegraMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">MID</td>
 							<td class="tdListaNegraObservacionesNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Observaciones</td>
 							<td class="tdListaNegraFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Fecha</td>
 						</tr>
