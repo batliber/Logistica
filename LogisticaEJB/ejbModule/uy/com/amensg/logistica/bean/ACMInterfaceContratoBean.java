@@ -170,20 +170,46 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					+ ";" + (acmInterfaceContrato.getFechaFinContrato() != null ? 
 						format.format(acmInterfaceContrato.getFechaFinContrato())
 						: "")
-					+ ";" + acmInterfaceContrato.getTipoContratoCodigo()
-					+ ";" + acmInterfaceContrato.getTipoContratoDescripcion()
-					+ ";" + acmInterfaceContrato.getDocumentoTipo()
-					+ ";'" + acmInterfaceContrato.getDocumento()
-					+ ";" + acmInterfaceContrato.getNombre()
-					+ ";" + acmInterfaceContrato.getDireccion()
-					+ ";" + acmInterfaceContrato.getCodigoPostal()
-					+ ";" + acmInterfaceContrato.getLocalidad()
-					+ ";" + acmInterfaceContrato.getEquipo()
-					+ ";" + acmInterfaceContrato.getAgente()
+					+ ";" + (acmInterfaceContrato.getTipoContratoCodigo() != null ?
+						acmInterfaceContrato.getTipoContratoCodigo() 
+						: "")
+					+ ";" + (acmInterfaceContrato.getTipoContratoDescripcion() != null ?
+						acmInterfaceContrato.getTipoContratoDescripcion()
+						: "")
+					+ ";" + (acmInterfaceContrato.getDocumentoTipo() != null ?
+						acmInterfaceContrato.getDocumentoTipo()
+						: "")
+					+ ";'" + (acmInterfaceContrato.getDocumento() != null ?
+						acmInterfaceContrato.getDocumento()
+						: "")
+					+ ";" + (acmInterfaceContrato.getNombre() != null ?
+						acmInterfaceContrato.getNombre()
+						: "")
+					+ ";" + (acmInterfaceContrato.getDireccion() != null ?
+						acmInterfaceContrato.getDireccion()
+						: "")
+					+ ";" + (acmInterfaceContrato.getCodigoPostal() != null ?
+						acmInterfaceContrato.getCodigoPostal()
+						: "")
+					+ ";" + (acmInterfaceContrato.getLocalidad() != null ?
+						acmInterfaceContrato.getLocalidad()
+						: "")
+					+ ";" + (acmInterfaceContrato.getEquipo() != null ?
+						acmInterfaceContrato.getEquipo()
+						: "")
+					+ ";" + (acmInterfaceContrato.getAgente() != null ?
+						acmInterfaceContrato.getAgente()
+						: "")
 					+ ";" + (acmInterfaceContrato.getFechaExportacion() != null ?
 						format.format(acmInterfaceContrato.getFechaExportacion())
 						: "")
 					+ ";" + format.format(acmInterfaceContrato.getFact())
+					+ ";" + (acmInterfaceContrato.getNumeroCliente() != null ?
+						acmInterfaceContrato.getNumeroCliente()
+						: "")
+					+ ";" + (acmInterfaceContrato.getNumeroContrato() != null ?
+						acmInterfaceContrato.getNumeroContrato()
+						: "")
 				);
 			}
 			
@@ -328,6 +354,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					+ ";" + acmInterfaceContrato.getLocalidad()
 					+ ";" + acmInterfaceContrato.getEquipo()
 					+ ";" + acmInterfaceContrato.getAgente()
+					+ ";" + acmInterfaceContrato.getNumeroCliente()
+					+ ";" + acmInterfaceContrato.getNumeroContrato()
 				);
 				
 				acmInterfaceListaNegra.setTerm(new Long(1));
