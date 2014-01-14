@@ -343,7 +343,7 @@ function calcularOrdenaciones() {
 	var result = [];
 	
 	for (var campo in ordenes) {
-		if ((campo.toLowerCase().indexOf($("#selectTipoRegistro").val()) > 0)
+		if ((campo.toLowerCase().indexOf($("#selectTipoRegistro").val().toLowerCase()) > 0)
 			&& (ordenes[campo] > 0)) {
 			result[result.length] = {
 				campo: campos[campo],
