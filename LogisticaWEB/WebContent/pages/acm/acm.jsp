@@ -23,6 +23,7 @@
 </head>
 <body>
 	<div class="divButtonBar">
+		<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 		<div class="divButton"><input type="submit" id="inputHabilitarAcciones" value="Habilitar acciones" onclick="javascript:inputHabilitarAccionesOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></div>
@@ -35,7 +36,7 @@
 		<div class="divButton"><input type="submit" id="inputListaNegra" value="Lista negra" onclick="javascript:inputListaNegraOnClick(event, this)"/></div>
 	</div>
 	<div class="divButtonTitleBar">
-		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
+		<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Exportar</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>

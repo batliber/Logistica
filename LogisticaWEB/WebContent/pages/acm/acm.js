@@ -60,6 +60,10 @@ $(document).ready(function() {
 	reloadData();
 });
 
+function inputActualizarOnClick(event, element) {
+	reloadData();
+}
+
 function inputHabilitarAccionesOnClick(event, element) {
 	habilitarAcciones(accionesHabilitadas, false);
 }
