@@ -1,5 +1,15 @@
 var accionesHabilitadas = false;
 
+var estados = [
+	"No procesado", 
+	"En proceso", 
+	"Procesado", 
+	"Lista vacia", 
+	"Para procesar", 
+	"Prioritario", 
+	"Lista negra"
+];
+
 var filtros = 0;
 var ordenaciones = 0;
 
@@ -34,8 +44,9 @@ var campos = {
 	tdListaNegraMid: "mid",
 	tdListaNegraObservaciones: "observaciones",
 	tdListaNegraFact: "fact",
-	tdEnProcesoMid: "mid",
-	tdEnProcesoFact: "fact"
+	tdSinDatosMid: "mid",
+	tdSinDatosEstado: "estado",
+	tdSinDatosFact: "fact"
 };
 
 $(document).ready(function() {
@@ -94,7 +105,7 @@ function selectTipoRegistroOnChange() {
 	$("#divContratos").hide();
 	$("#divPrepagos").hide();
 	$("#divListaNegra").hide();
-	$("#divEnProceso").hide();
+	$("#divSinDatos").hide();
 	
 	habilitarAcciones(false, true);
 	
@@ -110,7 +121,7 @@ function selectTipoRegistroOnChange() {
 	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
 		$("#divListaNegra").show();
 	} else {
-		$("#divEnProceso").show();
+		$("#divSinDatos").show();
 	}
 	
 	reloadData();
@@ -298,28 +309,33 @@ function reloadData() {
 			}
 		);
 	} else {
-		ACMInterfaceMidDWR.listEnProceso(
+		ACMInterfaceMidDWR.listSinDatos(
 			calcularMetadataConsulta(),
 			{
 				callback: function(data) {
-					$("#tableEnProceso > tbody:last > tr").remove();
+					$("#tableSinDatos > tbody:last > tr").remove();
 					
 					for (var i=0; i<data.registrosMuestra.length; i++) {
 						var registroMuestra = data.registrosMuestra[i];
 						
-						$("#tableEnProceso > tbody:last").append(
+						$("#tableSinDatos > tbody:last").append(
 							"<tr id='" + registroMuestra.mid + "'>"
-								+ "<td class='tdEnProcesoMid'><div class='divEnProcesoMid'>" 
+								+ "<td class='tdSinDatosMid'><div class='divSinDatosMid'>" 
 									+ registroMuestra.mid 
 								+ "</div></td>"
-								+ "<td class='tdEnProcesoFact'><div class='divEnProcesoFact'>" 
-									+ formatLongDate(registroMuestra.fact)
+								+ "<td class='tdSinDatosEstado'><div class='divSinDatosEstado'>" 
+									+ estados[registroMuestra.estado]
+								+ "</div></td>"
+								+ "<td class='tdSinDatosFact'><div class='divSinDatosFact'>"
+									+ (registroMuestra.fact != null ?  
+										formatLongDate(registroMuestra.fact)
+										: "&nbsp;")
 								+ "</div></td>"
 							+ "</tr>"
 						);
 					}
 					
-					$("#divEnProcesoCantidadRegistros").text(data.cantidadRegistros);
+					$("#divSinDatosCantidadRegistros").text(data.cantidadRegistros);
 					
 					$("#inputHabilitarAcciones").prop("disabled", false);
 				}, async: false
@@ -493,11 +509,12 @@ function inputAgregarFiltroOnClick(event) {
 			+ "</div>";
 	} else {
 		html += 
-			"<div id='divCampoEnProceso" + filtros + "' style='float: left;'>"
+			"<div id='divCampoSinDatos" + filtros + "' style='float: left;'>"
 				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
 					+ "<option value=''>Seleccione...</option>"
 					+ "<option value='mid'>MID</option>"
-					+ "<option value='fact'>Reprocesado</option>"
+					+ "<option value='estado'>Estado</option>"
+					+ "<option value='fact'>Modificado</option>"
 				+ "</select>"
 			+ "</div>";
 	}
@@ -574,7 +591,9 @@ function selectCampoOnChange(event, element, index) {
 			+ "<option value='lt'>Menor que</option>"
 			+ "<option value='nl'>Vac&iacute;o</option>"
 			+ "<option value='nnl'>No vac&iacute;o</option>";
-	} else if ($("#selectCampo" + index).val() == "documentoTipo") {
+	} else if (
+		($("#selectCampo" + index).val() == "documentoTipo")
+		|| ($("#selectCampo" + index).val() == "estado")) {
 		html += 
 			"<option value='eq'>Es igual a</option>";
 	}
@@ -679,6 +698,21 @@ function selectCondicionOnChange(event, element, index) {
 							+ "<option value='2'>Empresa</option>"
 							+ "<option value='3'>Estatal</option>"
 							+ "<option value='4'>Otros</option>"
+						+ "</select>"
+					+ "</div>";				
+			} else if ($("#selectCampo" + index).val() == "estado") {
+				html += 
+					"<div class='divFormLabel'>Valor:</div>"
+					+ "<div id='divValor" + index + "' style='float: left;'>"
+						+ "<select id='inputValor" + index + "' onchange='javascript:inputValorOnChange(event, this)'>"
+							+ "<option value=''>Seleccione...</option>"
+							+ "<option value='0'>No procesado</option>"
+							+ "<option value='1'>En proceso</option>"
+							// + "<option value='2'>Procesado</option>"
+							+ "<option value='3'>Lista vac&iacute;a</option>"
+							+ "<option value='4'>Para procesar</option>"
+							+ "<option value='5'>Para procesar prioritario</option>"
+							+ "<option value='6'>Lista negra</option>"
 						+ "</select>"
 					+ "</div>";				
 			} else {
@@ -790,125 +824,6 @@ function inputExportarAExcelOnClick(event) {
 	}
 }
 
-function inputReprocesarOnClick(event) {
-	var observaciones = null;
-	
-	if ($("#selectTipoRegistro").val() == "contrato") {
-		observaciones = prompt("Se reprocesarán " + $("#divContratoCantidadRegistros").text() + " registros.");
-		
-		if (observaciones != null) {
-			ACMInterfaceContratoDWR.reprocesar(
-				calcularMetadataConsulta(),
-				observaciones,
-				{
-					callback: function(data) {
-						
-					}
-				}
-			);
-		}
-	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		observaciones = prompt("Se reprocesarán " + $("#divPrepagoCantidadRegistros").text() + " registros.");
-		
-		if (observaciones != null) {
-			ACMInterfacePrepagoDWR.reprocesar(
-				calcularMetadataConsulta(),
-				observaciones,
-				{
-					callback: function(data) {
-						
-					}
-				}
-			);
-		}
-	} else if ($("#selectTipoRegistro").val() == "enProceso") {
-		observaciones = prompt("Se reprocesarán " + $("#divEnProcesoCantidadRegistros").text() + " registros.");
-		
-		if (observaciones != null) {
-			ACMInterfaceMidDWR.reprocesarEnProceso(
-				calcularMetadataConsulta(),
-				observaciones,
-				{
-					callback: function(data) {
-						reloadData();
-					}
-				}
-			);
-		}
-	} else {
-		alert("Funcionalidad no habilitada para el tipo de registro.");
-	}
-}
-
-function inputReprocesarSubconjuntoOnClick(event) {
-	var metadataConsulta = calcularMetadataConsulta();
-	var observaciones = null;
-	
-	if ($("#selectTipoRegistro").val() == "contrato") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divContratoCantidadRegistros").text()
-			);
-		
-		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
-		
-		if (observaciones != null) {
-			ACMInterfaceContratoDWR.reprocesar(
-				metadataConsulta,
-				observaciones,
-				{
-					callback: function(data) {
-						
-					}
-				}
-			);
-		}
-	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divPrepagoCantidadRegistros").text()
-			);
-		
-		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
-		
-		if (observaciones != null) {
-			ACMInterfacePrepagoDWR.reprocesar(
-				metadataConsulta,
-				observaciones,
-				{
-					callback: function(data) {
-						
-					}
-				}
-			);
-		}
-	} else if ($("#selectTipoRegistro").val() == "enProceso") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divEnProcesoCantidadRegistros").text()
-			);
-		
-		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
-		
-		if (observaciones != null) {
-			ACMInterfaceMidDWR.reprocesarEnProceso(
-				metadataConsulta,
-				observaciones,
-				{
-					callback: function(data) {
-						reloadData();
-					}
-				}
-			);
-		}
-	} else {
-		alert("Funcionalidad no habilitada para el tipo de registro.");
-	}
-}
-
 function inputExportarSubconjuntoOnClick(event) {
 	var metadataConsulta = calcularMetadataConsulta();
 	
@@ -985,6 +900,125 @@ function inputDeshacerAsignacionOnClick(event) {
 	}
 }
 
+function inputReprocesarOnClick(event) {
+	var observaciones = null;
+	
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		observaciones = prompt("Se reprocesarán " + $("#divContratoCantidadRegistros").text() + " registros.");
+		
+		if (observaciones != null) {
+			ACMInterfaceContratoDWR.reprocesar(
+				calcularMetadataConsulta(),
+				observaciones,
+				{
+					callback: function(data) {
+						
+					}
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "prepago") {
+		observaciones = prompt("Se reprocesarán " + $("#divPrepagoCantidadRegistros").text() + " registros.");
+		
+		if (observaciones != null) {
+			ACMInterfacePrepagoDWR.reprocesar(
+				calcularMetadataConsulta(),
+				observaciones,
+				{
+					callback: function(data) {
+						
+					}
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
+		observaciones = prompt("Se reprocesarán " + $("#divSinDatosCantidadRegistros").text() + " registros.");
+		
+		if (observaciones != null) {
+			ACMInterfaceMidDWR.reprocesarSinDatos(
+				calcularMetadataConsulta(),
+				observaciones,
+				{
+					callback: function(data) {
+						reloadData();
+					}
+				}
+			);
+		}
+	} else {
+		alert("Funcionalidad no habilitada para el tipo de registro.");
+	}
+}
+
+function inputReprocesarSubconjuntoOnClick(event) {
+	var metadataConsulta = calcularMetadataConsulta();
+	var observaciones = null;
+	
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		metadataConsulta.tamanoSubconjunto = 
+			Math.min(
+				$("#inputTamanoSubconjunto").val(),
+				$("#divContratoCantidadRegistros").text()
+			);
+		
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		
+		if (observaciones != null) {
+			ACMInterfaceContratoDWR.reprocesar(
+				metadataConsulta,
+				observaciones,
+				{
+					callback: function(data) {
+						
+					}
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "prepago") {
+		metadataConsulta.tamanoSubconjunto = 
+			Math.min(
+				$("#inputTamanoSubconjunto").val(),
+				$("#divPrepagoCantidadRegistros").text()
+			);
+		
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		
+		if (observaciones != null) {
+			ACMInterfacePrepagoDWR.reprocesar(
+				metadataConsulta,
+				observaciones,
+				{
+					callback: function(data) {
+						
+					}
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
+		metadataConsulta.tamanoSubconjunto = 
+			Math.min(
+				$("#inputTamanoSubconjunto").val(),
+				$("#divSinDatosCantidadRegistros").text()
+			);
+		
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		
+		if (observaciones != null) {
+			ACMInterfaceMidDWR.reprocesarSinDatos(
+				metadataConsulta,
+				observaciones,
+				{
+					callback: function(data) {
+						reloadData();
+					}
+				}
+			);
+		}
+	} else {
+		alert("Funcionalidad no habilitada para el tipo de registro.");
+	}
+}
+
 function inputListaNegraOnClick(event) {
 	var metadataConsulta = calcularMetadataConsulta();
 	
@@ -1002,6 +1036,17 @@ function inputListaNegraOnClick(event) {
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
 		if (confirm("Se agregarán " + $("#divPrepagoCantidadRegistros").text()+ " registros a la lista negra.")) {
 			ACMInterfacePrepagoDWR.agregarAListaNegra(
+				metadataConsulta,
+				{
+					callback: function(data) {
+						reloadData();
+					}
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
+		if (confirm("Se agregarán " + $("#divSinDatosCantidadRegistros").text()+ " registros a la lista negra.")) {
+			ACMInterfaceMidDWR.agregarAListaNegraSinDatos(
 				metadataConsulta,
 				{
 					callback: function(data) {

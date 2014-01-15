@@ -13,7 +13,9 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 
 public class QueryHelper {
 
-	public Predicate construirWhere(MetadataConsulta metadataConsulta, CriteriaBuilder criteriaBuilder, Root<?> root) {
+	public Predicate construirWhere(
+		MetadataConsulta metadataConsulta, CriteriaBuilder criteriaBuilder, Root<?> root
+	) {
 		Predicate where = criteriaBuilder.conjunction();
 		
 		int i = 0;
@@ -27,6 +29,14 @@ public class QueryHelper {
 				where = criteriaBuilder.and(
 					where, 
 					criteriaBuilder.equal(campo, parameterExpression)
+				);
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_IGUAL)) {
+				ParameterExpression<?> parameterExpression = 
+					criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
+				
+				where = criteriaBuilder.and(
+					where, 
+					criteriaBuilder.notEqual(campo, parameterExpression)
 				);
 			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MAYOR)) {
 				ParameterExpression<?> parameterExpression = 

@@ -22,6 +22,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
+import uy.com.amensg.logistica.entities.ACMInterfaceListaNegra;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
@@ -29,7 +30,6 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.util.Configuration;
-import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
@@ -41,23 +41,18 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 	@EJB
 	private IACMInterfaceProcesoBean iACMInterfaceProcesoBean;
 	
+	@EJB
+	private IACMInterfaceContratoBean iACMInterfaceContratoBean;
+	
+	@EJB
+	private IACMInterfacePrepagoBean iACMInterfacePrepagoBean;
+	
 	private CriteriaQuery<ACMInterfaceMid> criteriaQuery;
 	
-	public MetadataConsultaResultado listEnProceso(MetadataConsulta metadataConsulta) {
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
 		try {
-			// Condicion de estado "En proceso"
-			Collection<String> valores = new LinkedList<String>();
-			valores.add(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso"));
-			
-			MetadataCondicion metadataCondicion = new MetadataCondicion();
-			metadataCondicion.setCampo("estado");
-			metadataCondicion.setOperador(Constants.__METADATA_CONDICION_OPERADOR_IGUAL);
-			metadataCondicion.setValores(valores);
-			
-			metadataConsulta.getMetadataCondiciones().add(metadataCondicion);
-			
 			// Query para obtener los registros de muestra
 			TypedQuery<ACMInterfaceMid> queryMuestra = this.construirQuery(metadataConsulta);
 			queryMuestra.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
@@ -92,21 +87,6 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		}
 		
 		return result;
-	}
-	
-	public void reprocesarEnProceso(MetadataConsulta metadataConsulta, String observaciones) {
-		// Condicion de estado "En proceso"
-		Collection<String> valores = new LinkedList<String>();
-		valores.add(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso"));
-		
-		MetadataCondicion metadataCondicion = new MetadataCondicion();
-		metadataCondicion.setCampo("estado");
-		metadataCondicion.setOperador(Constants.__METADATA_CONDICION_OPERADOR_IGUAL);
-		metadataCondicion.setValores(valores);
-		
-		metadataConsulta.getMetadataCondiciones().add(metadataCondicion);
-		
-		this.reprocesar(metadataConsulta, observaciones);
 	}
 	
 	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones) {
@@ -163,6 +143,49 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 				acmInterfaceMid.setTerm(new Long(1));
 				
 				entityManager.merge(acmInterfaceMid);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void agregarAListaNegra(MetadataConsulta metadataConsulta) {
+		try {
+			iACMInterfaceContratoBean.agregarAListaNegra(metadataConsulta);
+			iACMInterfacePrepagoBean.agregarAListaNegra(metadataConsulta);
+			
+			TypedQuery<ACMInterfaceMid> query = this.construirQuery(metadataConsulta);
+			
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			for (ACMInterfaceMid acmInterfaceMid : query.getResultList()) {
+				if (!acmInterfaceMid.getEstado().equals(
+						new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
+					)
+				) {
+					acmInterfaceMid.setEstado(
+						new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
+					);
+					
+					acmInterfaceMid.setUact(new Long(1));
+					acmInterfaceMid.setFact(hoy);
+					acmInterfaceMid.setTerm(new Long(1));
+					
+					entityManager.merge(acmInterfaceMid); 
+					
+					ACMInterfaceListaNegra acmInterfaceListaNegra = new ACMInterfaceListaNegra();
+					
+					acmInterfaceListaNegra.setMid(acmInterfaceMid.getMid());
+					acmInterfaceListaNegra.setObservaciones(
+						Configuration.getInstance().getProperty("listaNegra.NoProcesado")
+					);
+					
+					acmInterfaceListaNegra.setTerm(new Long(1));
+					acmInterfaceListaNegra.setFact(hoy);
+					acmInterfaceListaNegra.setUact(new Long(1));
+					
+					entityManager.persist(acmInterfaceListaNegra);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

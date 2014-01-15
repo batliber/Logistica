@@ -19,6 +19,7 @@
 	<link rel="stylesheet" type="text/css" href="./prepago.css"/>
 	<link rel="stylesheet" type="text/css" href="./listaNegra.css"/>
 	<link rel="stylesheet" type="text/css" href="./enProceso.css"/>
+	<link rel="stylesheet" type="text/css" href="./sinDatos.css"/>
 </head>
 <body>
 	<div class="divButtonBar">
@@ -50,7 +51,7 @@
 					<option value="contrato">Contrato</option>
 					<option value="prepago">Prepago</option>
 					<option value="listaNegra">Lista negra</option>
-					<option value="enProceso">En proceso</option>
+					<option value="sinDatos">Sin datos</option>
 				</select>
 			</div>
 			<div class="divFormLabel">Tama&ntilde;o de muestra:</div>
@@ -172,25 +173,27 @@
 				</table>
 			</div>
 		</div>
-		<div id="divEnProceso">
-			<div id="divTableEnProceso">
-				<table id="tableEnProceso" border="0" cellspacing="0" cellpadding="0">
+		<div id="divSinDatos">
+			<div id="divTableSinDatos">
+				<table id="tableSinDatos" border="0" cellspacing="0" cellpadding="0">
 					<thead>
 						<tr>
-							<td class="tdEnProcesoMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">MID</td>
-							<td class="tdEnProcesoFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Reprocesado</td>
+							<td class="tdSinDatosMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">MID</td>
+							<td class="tdSinDatosEstadoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Estado</td>
+							<td class="tdSinDatosFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Modificado</td>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
+							<td>&nbsp;</td>
 						</tr>
 					</tbody>
 					<tfoot>
 						<tr>
-							<td id="tdEnProcesoCantidadRegistrosLabel"><div>Registros:</div></td>
-							<td id="tdEnProcesoCantidadRegistrosValor"><div id="divEnProcesoCantidadRegistros">&nbsp;</div></td>
+							<td id="tdSinDatosCantidadRegistrosLabel"><div>Registros:</div></td>
+							<td id="tdSinDatosCantidadRegistrosValor"><div id="divSinDatosCantidadRegistros">&nbsp;</div></td>
 						</tr>
 					</tfoot>
 				</table>

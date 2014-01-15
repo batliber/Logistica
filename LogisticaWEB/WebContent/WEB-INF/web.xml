@@ -55,6 +55,7 @@
       	uy.com.amensg.logistica.dwr.ACMInterfaceMidDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfacePrepagoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceProcesoDWR,
+      	uy.com.amensg.logistica.dwr.ConfigurationDWR,
       	uy.com.amensg.logistica.dwr.MetadataConsultaDWR,
       	uy.com.amensg.logistica.dwr.ProductoDWR,
       	uy.com.amensg.logistica.dwr.SeguridadDWR,

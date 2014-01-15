@@ -9,11 +9,11 @@ import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 @Remote
 public interface IACMInterfaceMidBean {
 
-	public MetadataConsultaResultado listEnProceso(MetadataConsulta metadataConsulta);
-	
-	public void reprocesarEnProceso(MetadataConsulta metadataConsulta, String observaciones);
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
 	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
+	
+	public void agregarAListaNegra(MetadataConsulta metadataConsulta);
 	
 	public void update(ACMInterfaceMid acmInterfaceMid);
 }

@@ -1,0 +1,111 @@
+#divSinDatos {
+	width: 252px;
+	display: none;
+}
+
+#tableSinDatos {
+	width: 252px;
+	height: 318px;
+}
+
+#tableSinDatos thead {
+	position: fixed;
+}
+						
+#tableSinDatos thead tr .tdSinDatosMidNOO {
+	width: 60px;
+}
+
+#tableSinDatos thead tr .tdSinDatosEstadoNOO {
+	width: 85px;
+}
+
+#tableSinDatos thead tr .tdSinDatosFactNOO {
+	width: 85px;
+}
+
+#tableSinDatos thead tr .tdSinDatosMidASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableSinDatos thead tr .tdSinDatosEstadoASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableSinDatos thead tr .tdSinDatosFactASC {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableSinDatos thead tr .tdSinDatosMidDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableSinDatos thead tr .tdSinDatosEstadoDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableSinDatos thead tr .tdSinDatosFactDES {
+	width: 85px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableSinDatos tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 250px;
+	height: 280px;
+}
+
+#tableSinDatos tbody tr .tdSinDatosMid {
+	width: 60px;
+}
+
+#tableSinDatos tbody tr .tdSinDatosEstado {
+	width: 85px;
+}
+
+#tableSinDatos tbody tr .tdSinDatosFact {
+	width: 85px;
+}
+
+#tableSinDatos tfoot {
+	position: fixed;
+	margin-top: 297px;
+	overflow: auto;
+	width: 250px;
+}
+
+#tdSinDatosCantidadRegistrosLabel {
+	width: 50px;
+	text-align: left;
+}
+
+#divSinDatosCantidadRegistros {
+	width: 178px;
+	height: 16px;
+	text-align: left;
+	padding-top: 2px;
+	margin-left: 2px;
+}
+
+#tdSinDatosCantidadRegistrosValor {
+	width: 93px;
+}
