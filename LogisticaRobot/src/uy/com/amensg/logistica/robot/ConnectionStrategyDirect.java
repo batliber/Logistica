@@ -59,7 +59,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		this.preparedStatementUpdateMid.setLong(2, uact);
 		this.preparedStatementUpdateMid.setTimestamp(3, new Timestamp(fact.getTime()));
 		this.preparedStatementUpdateMid.setLong(4, term);
-		this.preparedStatementUpdateMid.setString(5, mid);
+		this.preparedStatementUpdateMid.setLong(5, new Long(mid));
 		
 		this.preparedStatementUpdateMid.executeUpdate();
 	}
@@ -88,7 +88,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			
 			ResultSet resultSet = preparedStatementQuery.executeQuery();
 			if (resultSet.next()) {
-				result = resultSet.getString(1);
+				result = new Long(resultSet.getLong(1)).toString();
 				
 				Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso"));
 				Long uact = new Long(1);
@@ -133,8 +133,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		try {
 			this.initializeConnection();
 			
-			this.preparedStatementDeleteContrato.setString(1, mid);
-			this.preparedStatementDeletePrepago.setString(1, mid);
+			this.preparedStatementDeleteContrato.setLong(1, new Long(mid));
+			this.preparedStatementDeletePrepago.setLong(1, new Long(mid));
 			
 			this.preparedStatementDeleteContrato.executeUpdate();
 			this.preparedStatementDeletePrepago.executeUpdate();
@@ -198,7 +198,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			preparedStatementUpdateContrato.setLong(14, 1);
 			preparedStatementUpdateContrato.setTimestamp(15, new Timestamp(new Date().getTime()));
 			preparedStatementUpdateContrato.setLong(16, 1);
-			preparedStatementUpdateContrato.setString(17, mid);
+			preparedStatementUpdateContrato.setLong(17, new Long(mid));
 			
 			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
 			Long uact = new Long(1);
@@ -234,8 +234,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		try {
 			this.initializeConnection();
 			
-			this.preparedStatementDeleteContrato.setString(1, mid);
-			this.preparedStatementDeletePrepago.setString(1, mid);
+			this.preparedStatementDeleteContrato.setLong(1, new Long(mid));
+			this.preparedStatementDeletePrepago.setLong(1, new Long(mid));
 			
 			this.preparedStatementDeleteContrato.executeUpdate();
 			this.preparedStatementDeletePrepago.executeUpdate();
@@ -304,7 +304,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			preparedStatementUpdatePrepago.setLong(7, 1);
 			preparedStatementUpdatePrepago.setTimestamp(8, new Timestamp(new Date().getTime()));
 			preparedStatementUpdatePrepago.setLong(9, 1);
-			preparedStatementUpdatePrepago.setString(10, mid);
+			preparedStatementUpdatePrepago.setLong(10, new Long(mid));
 			
 			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
 			Long uact = new Long(1);
@@ -335,8 +335,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		try  {
 			this.initializeConnection();
 			
-			this.preparedStatementDeleteContrato.setString(1, mid);
-			this.preparedStatementDeletePrepago.setString(1, mid);
+			this.preparedStatementDeleteContrato.setLong(1, new Long(mid));
+			this.preparedStatementDeletePrepago.setLong(1, new Long(mid));
 			
 			this.preparedStatementDeleteContrato.executeUpdate();
 			this.preparedStatementDeletePrepago.executeUpdate();

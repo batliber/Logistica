@@ -50,7 +50,7 @@ public class TestLogisticaProxy extends TestCase {
 			
 			resultSet.next();
 			
-			String expectedMidSinProcesar = resultSet.getString(1);
+			Long expectedMidSinProcesar = resultSet.getLong(1);
 			
 			assertEquals(expectedMidSinProcesar, strategy.getSiguienteMidSinProcesar());
 			
@@ -63,7 +63,7 @@ public class TestLogisticaProxy extends TestCase {
 			
 			resultSet.next();
 			
-			String expectedMidEnProceso = resultSet.getString(1);
+			Long expectedMidEnProceso = resultSet.getLong(1);
 			
 			assertEquals(expectedMidEnProceso, expectedMidSinProcesar);
 			
@@ -98,7 +98,7 @@ public class TestLogisticaProxy extends TestCase {
 			PreparedStatement preparedStatement = this.connection.prepareStatement(
 				"select mid, estado from acm_interface_mid where mid = ?"
 			);
-			preparedStatement.setString(1, mid);
+			preparedStatement.setLong(1, new Long(mid));
 			
 			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
 			
@@ -119,7 +119,7 @@ public class TestLogisticaProxy extends TestCase {
 					+ " numero_contrato"
 				+ " from acm_interface_contrato where mid = ?"
 			);
-			preparedStatement.setString(1, mid);
+			preparedStatement.setLong(1, new Long(mid));
 			
 			resultSet = preparedStatement.executeQuery();
 			
@@ -162,7 +162,7 @@ public class TestLogisticaProxy extends TestCase {
 			PreparedStatement preparedStatement = this.connection.prepareStatement(
 				"select mid, estado from acm_interface_mid where mid = ?"
 			);
-			preparedStatement.setString(1, mid);
+			preparedStatement.setLong(1, new Long(mid));
 			
 			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
 			
@@ -177,7 +177,7 @@ public class TestLogisticaProxy extends TestCase {
 					+ " monto_mes_anterior_2, monto_promedio, fecha_activacion_kit"
 				+ " from acm_interface_prepago where mid = ?"
 			);
-			preparedStatement.setString(1, mid);
+			preparedStatement.setLong(1, new Long(mid));
 			
 			resultSet = preparedStatement.executeQuery();
 			
@@ -206,7 +206,7 @@ public class TestLogisticaProxy extends TestCase {
 			PreparedStatement preparedStatement = this.connection.prepareStatement(
 				"select mid, estado from acm_interface_mid where mid = ?"
 			);
-			preparedStatement.setString(1, mid);
+			preparedStatement.setLong(1, new Long(mid));
 			
 			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia"));
 			

@@ -2,12 +2,12 @@ package uy.com.amensg.logistica.bean;
 
 import java.text.DateFormat;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.ejb.EJB;
@@ -93,6 +93,7 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		try {
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
+			// Generación de proceso
 			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
 			acmInterfaceProceso.setFechaInicio(hoy);
 			acmInterfaceProceso.setObservaciones(observaciones);
@@ -103,34 +104,58 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 			
 			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
 			
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			// Query para generar los criterios
 			TypedQuery<ACMInterfaceMid> query = this.construirQuery(metadataConsulta);
 			
-			Collection<ACMInterfaceMid> resultList = new LinkedList<ACMInterfaceMid>();
-			if (metadataConsulta.getTamanoSubconjunto() != null) {
-				List<ACMInterfaceMid> toOrder = query.getResultList();
-				
-				Collections.sort(toOrder, new Comparator<ACMInterfaceMid>() {
-					public int compare(ACMInterfaceMid arg0, ACMInterfaceMid arg1) {
-						Random random = new Random();
-						
-						return random.nextBoolean() ? 1 : -1;
-					}
-				});
-				
-				int i = 0;
-				for (ACMInterfaceMid acmInterfaceMid : toOrder) {
-					resultList.add(acmInterfaceMid);
-					
-					i++;
-					if (i == metadataConsulta.getTamanoSubconjunto()) {
-						break;
-					}
-				}
-			} else {
-				resultList = query.getResultList();
+			// Query para obtener la cantidad de registros
+			CriteriaQuery<Long> criteriaQueryCount = criteriaBuilder.createQuery(Long.class);
+			
+			criteriaQueryCount.select(
+				criteriaBuilder.count(criteriaQueryCount.from(ACMInterfaceMid.class))
+			);
+			
+			criteriaQueryCount.where(criteriaQuery.getRestriction());
+			
+			TypedQuery<Long> queryCount = entityManager.createQuery(criteriaQueryCount);
+			
+			for (Parameter<?> parameter : query.getParameters()) {
+				queryCount.setParameter(parameter.getName(), query.getParameterValue(parameter));
 			}
 			
-			for (ACMInterfaceMid acmInterfaceMid : query.getResultList()) {
+			Long cantidadRegistros = queryCount.getSingleResult();
+			
+			Long cantidadFinal =
+				metadataConsulta.getTamanoSubconjunto() != null ? 
+					Math.min(cantidadRegistros, metadataConsulta.getTamanoSubconjunto())
+					: cantidadRegistros;
+			
+			Long cantidadRegistrosPagina = new Long(Configuration.getInstance().getProperty("acmInterfaceMid.cantidadRegistrosPagina"));
+			Long cantidadPaginas = cantidadRegistros / cantidadRegistrosPagina;
+			
+			query.setMaxResults(cantidadRegistrosPagina.intValue());
+			
+			Map<Long, ACMInterfaceMid> resultMap = new HashMap<Long, ACMInterfaceMid>();
+			
+			Random random = new Random();
+			
+			int i = 0;
+			while (resultMap.size() < cantidadFinal) {
+				query.setFirstResult(cantidadRegistrosPagina.intValue() * i);
+				
+				for (ACMInterfaceMid acmInterfaceMid : query.getResultList()) {
+					if (!resultMap.containsKey(acmInterfaceMid.getMid()) 
+						&& resultMap.size() < cantidadFinal
+						&& random.nextBoolean()) {
+						resultMap.put(acmInterfaceMid.getMid(), acmInterfaceMid);
+					}
+				}
+				
+				i = (i + random.nextInt(cantidadPaginas.intValue())) % cantidadPaginas.intValue();
+			}
+			
+			for (ACMInterfaceMid acmInterfaceMid : resultMap.values()) {
 				acmInterfaceMid.setEstado(
 					new Long(
 						Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")

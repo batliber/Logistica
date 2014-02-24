@@ -7,17 +7,17 @@ import org.directwebremoting.annotations.DataTransferObject;
 @DataTransferObject
 public class ACMInterfaceListaNegraTO {
 
-	private String mid;
+	private Long mid;
 	private String observaciones;
 	private Long uact;
 	private Date fact;
 	private Long term;
 
-	public String getMid() {
+	public Long getMid() {
 		return mid;
 	}
 
-	public void setMid(String mid) {
+	public void setMid(Long mid) {
 		this.mid = mid;
 	}
 

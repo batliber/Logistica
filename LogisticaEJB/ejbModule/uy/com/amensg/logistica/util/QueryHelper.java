@@ -1,6 +1,7 @@
 package uy.com.amensg.logistica.util;
 
 import java.util.Date;
+import java.util.Random;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.ParameterExpression;
@@ -209,5 +210,11 @@ public class QueryHelper {
 		}
 		
 		return where;
+	}
+
+	public Long generarMidAleatorio(Long minimo, Long maximo) {
+		Random random = new Random();
+		
+		return minimo + random.nextInt(new Long(maximo - minimo).intValue() + 1); 
 	}
 }

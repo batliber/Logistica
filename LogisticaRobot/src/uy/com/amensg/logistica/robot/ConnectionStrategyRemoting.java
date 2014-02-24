@@ -41,7 +41,7 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			
 			ACMInterfaceMid acmInterfaceMid = iACMInterfaceBean.getNextMidSinProcesar();
 			
-			result = acmInterfaceMid.getMid();
+			result = acmInterfaceMid.getMid().toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -77,7 +77,7 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			acmInterfaceContrato.setFechaFinContrato(format.parse(fechaFinContrato));
 			acmInterfaceContrato.setLocalidad(localidad);
 			acmInterfaceContrato.setCodigoPostal(codigoPostal);
-			acmInterfaceContrato.setMid(mid);
+			acmInterfaceContrato.setMid(new Long(mid));
 			acmInterfaceContrato.setNombre(nombre);
 			acmInterfaceContrato.setTipoContratoCodigo(tipoContratoCodigo);
 			acmInterfaceContrato.setTipoContratoDescripcion(tipoContratoDescripcion);
@@ -107,7 +107,7 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
 			
 			ACMInterfacePrepago acmInterfacePrepago = new ACMInterfacePrepago();
-			acmInterfacePrepago.setMid(mid);
+			acmInterfacePrepago.setMid(new Long(mid));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -151,7 +151,7 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			
 			ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
 			acmInterfaceMid.setEstado(new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia")));
-			acmInterfaceMid.setMid(mid);
+			acmInterfaceMid.setMid(new Long(mid));
 						
 			iACMInterfaceBean.update(acmInterfaceMid);
 		} catch (Exception e) {

@@ -7,7 +7,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 @DataTransferObject
 public class ACMInterfacePrepagoTO {
 
-	private String mid;
+	private Long mid;
 	private Date mesAno;
 	private Double montoMesActual;
 	private Double montoMesAnterior1;
@@ -19,11 +19,11 @@ public class ACMInterfacePrepagoTO {
 	private Date fact;
 	private Long term;
 
-	public String getMid() {
+	public Long getMid() {
 		return mid;
 	}
 
-	public void setMid(String mid) {
+	public void setMid(Long mid) {
 		this.mid = mid;
 	}
 

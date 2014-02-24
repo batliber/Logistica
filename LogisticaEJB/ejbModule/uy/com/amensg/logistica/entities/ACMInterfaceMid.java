@@ -16,7 +16,7 @@ public class ACMInterfaceMid implements Serializable {
 
 	@Id
 	@Column(name = "mid")
-	private String mid;
+	private Long mid;
 
 	@Column(name = "estado")
 	private Long estado;
@@ -33,11 +33,11 @@ public class ACMInterfaceMid implements Serializable {
 	@Column(name = "term")
 	private Long term;
 
-	public String getMid() {
+	public Long getMid() {
 		return mid;
 	}
 
-	public void setMid(String mid) {
+	public void setMid(Long mid) {
 		this.mid = mid;
 	}
 
