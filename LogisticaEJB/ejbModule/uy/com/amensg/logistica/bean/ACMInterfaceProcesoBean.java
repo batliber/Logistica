@@ -104,7 +104,7 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 				+ " FROM ACMInterfaceMid m"
 				+ " WHERE m.procesoId IS NOT NULL"
 				+ " AND m.estado NOT IN ("
-					+ " :estadoIdProcesado, :estadoIdListaVacia"
+					+ " :estadoIdProcesado, :estadoIdListaVacia, :estadoIdListaNegra"
 				+ " )"
 			);
 			querySinFinalizar.setParameter(
@@ -114,6 +114,10 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 			querySinFinalizar.setParameter(
 				"estadoIdListaVacia", 
 				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
+			);
+			querySinFinalizar.setParameter(
+				"estadoIdListaNegra", 
+				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
 			);
 			
 			Collection<Long> sinFinalizar = new LinkedList<Long>();
