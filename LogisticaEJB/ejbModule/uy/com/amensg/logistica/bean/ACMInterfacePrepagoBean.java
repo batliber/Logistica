@@ -2,7 +2,6 @@ package uy.com.amensg.logistica.bean;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -376,6 +375,8 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		
 		TypedQuery<ACMInterfacePrepago> query = entityManager.createQuery(criteriaQuery);
 		
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 			for (String valor : metadataCondicion.getValores()) {
@@ -385,7 +386,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 					if (campo.getJavaType().equals(Date.class)) {
 						query.setParameter(
 							"p" + i,
-							DateFormat.getInstance().parse(valor)
+							format.parse(valor)
 						);
 					} else if (campo.getJavaType().equals(Long.class)) {
 						query.setParameter(

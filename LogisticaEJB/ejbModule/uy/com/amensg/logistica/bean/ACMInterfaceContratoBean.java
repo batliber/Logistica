@@ -2,7 +2,6 @@ package uy.com.amensg.logistica.bean;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -471,6 +470,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		
 		TypedQuery<ACMInterfaceContrato> query = entityManager.createQuery(criteriaQuery);
 		
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 			if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -481,7 +482,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 						if (campo.getJavaType().equals(Date.class)) {
 							query.setParameter(
 								"p" + i,
-								DateFormat.getInstance().parse(valor)
+								format.parse(valor)
 							);
 						} else if (campo.getJavaType().equals(Long.class)) {
 							query.setParameter(
