@@ -17,6 +17,7 @@
 	<div class="divMenuBar">
 		<div class="inactiveMenuBarItem"><div id="divLogo"><img id="imgLogo" src="/LogisticaWEB/images/logo-vos-bw.png"></img></div></div>
 		<div class="activeMenuBarItem"><div><a href="#" onclick="javascript:menuItemOnClick(event, this)" id="acm">ACM</a></div></div>
+		<div class="inactiveMenuBarItem"><div><a href="#" onclick="javascript:menuItemOnClick(event, this)" id="archivos">Archivos</a></div></div>
 		<div class="inactiveMenuBarItem"><div><a href="#" onclick="javascript:menuItemOnClick(event, this)" id="procesos">Procesos</a></div></div>
 		<div class="divUserInfo">
 			<div class="divLogout" style="float: right;" onclick="javascript:divLogoutOnClick(event, this)">&nbsp;</div>

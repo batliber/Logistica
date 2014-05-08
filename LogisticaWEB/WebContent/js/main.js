@@ -1,5 +1,6 @@
 var links = {
 	acm: "/LogisticaWEB/pages/acm/acm.jsp",
+	archivos: "/LogisticaWEB/pages/archivos/archivos.jsp",
 	procesos: "/LogisticaWEB/pages/procesos/procesos.jsp"
 };
 

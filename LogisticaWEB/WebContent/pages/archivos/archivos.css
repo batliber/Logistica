@@ -1,0 +1,31 @@
+#divArchivos {
+	width: 100%;
+	float: left;
+}
+
+#tableArchivos {
+	width: 521px;
+	height: 318px;
+}
+
+#tableArchivos thead {
+	position: fixed;
+}
+
+#tableArchivos thead tr .tdArchivosNombre {
+	width: 500px;
+}
+
+#tableArchivos tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 518px;
+	height: 299px;
+}
+
+#tableArchivos tbody tr td .divArchivosNombre {
+	text-align: left;
+	margin-left: 2px;
+	width: 498px;
+}

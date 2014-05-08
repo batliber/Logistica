@@ -31,6 +31,15 @@
 	<load-on-startup>3</load-on-startup>
   </servlet>
   
+  <servlet>
+  	<servlet-name>DownloadServlet</servlet-name>
+  	<servlet-class>uy.com.amensg.logistica.servlets.DownloadServlet</servlet-class>  	
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DownloadServlet</servlet-name>
+  	<url-pattern>/Download</url-pattern>
+  </servlet-mapping>
+  
   <filter>
 		<filter-name>SeguridadFilter</filter-name>
 		<filter-class>uy.com.amensg.logistica.filters.SeguridadFilter</filter-class>
@@ -56,6 +65,7 @@
       	uy.com.amensg.logistica.dwr.ACMInterfacePrepagoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceProcesoDWR,
       	uy.com.amensg.logistica.dwr.ConfigurationDWR,
+      	uy.com.amensg.logistica.dwr.FileManagerDWR,
       	uy.com.amensg.logistica.dwr.MetadataConsultaDWR,
       	uy.com.amensg.logistica.dwr.ProductoDWR,
       	uy.com.amensg.logistica.dwr.SeguridadDWR,
@@ -65,6 +75,7 @@
       	uy.com.amensg.logistica.dwr.StockTipoMovimientoDWR,
       	 -->
       	 
+      	uy.com.amensg.logistica.entities.ArchivoTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceContratoTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceListaNegraTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceMidTO,
