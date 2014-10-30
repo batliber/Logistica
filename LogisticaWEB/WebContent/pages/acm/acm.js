@@ -308,7 +308,7 @@ function reloadData() {
 					
 					$("#divListaNegraCantidadRegistros").text(data.cantidadRegistros);
 					
-					$("#inputHabilitarAcciones").prop("disabled", true);
+					$("#inputHabilitarAcciones").prop("disabled", false);
 				}, async: false
 			}
 		);
@@ -823,6 +823,19 @@ function inputExportarAExcelOnClick(event) {
 				}
 			);
 		}
+	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
+		if (confirm("Se exportarán " + $("#divListaNegraCantidadRegistros").text()+ " registros.")) {
+			ACMInterfaceListaNegraDWR.exportarAExcel(
+				calcularMetadataConsulta(),
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
+				}
+			);
+		}
 	} else {
 		alert("Funcionalidad no habilitada para el tipo de registro.");
 	}
@@ -859,6 +872,25 @@ function inputExportarSubconjuntoOnClick(event) {
 		
 		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 			ACMInterfacePrepagoDWR.exportarAExcel(
+				metadataConsulta,
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
+		metadataConsulta.tamanoSubconjunto = 
+			Math.min(
+				$("#inputTamanoSubconjunto").val(),
+				$("#divListaNegraCantidadRegistros").text()
+			);
+		
+		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+			ACMInterfaceListaNegraDWR.exportarAExcel(
 				metadataConsulta,
 				{
 					callback: function(data) {

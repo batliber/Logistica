@@ -9,4 +9,6 @@ import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 public interface IACMInterfaceListaNegraBean {
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
+	
+	public String exportarAExcel(MetadataConsulta metadataConsulta);
 }

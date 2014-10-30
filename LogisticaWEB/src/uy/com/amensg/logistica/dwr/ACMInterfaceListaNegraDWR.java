@@ -30,6 +30,24 @@ public class ACMInterfaceListaNegraDWR {
 		return (IACMInterfaceListaNegraBean) context.lookup(lookupName);
 	}
 	
+	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
+		String result = null;
+		
+		try {
+			IACMInterfaceListaNegraBean iACMInterfaceListaNegraBean = lookupBean();
+			
+			result = iACMInterfaceListaNegraBean.exportarAExcel(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public MetadataConsultaResultadoTO list(MetadataConsultaTO metadataConsultaTO) {
 		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
 		

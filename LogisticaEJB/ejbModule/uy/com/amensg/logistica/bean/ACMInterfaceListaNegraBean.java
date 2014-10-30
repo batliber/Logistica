@@ -1,10 +1,16 @@
 package uy.com.amensg.logistica.bean;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,6 +28,7 @@ import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
+import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
@@ -31,6 +38,75 @@ public class ACMInterfaceListaNegraBean implements IACMInterfaceListaNegraBean {
 	private EntityManager entityManager;
 	
 	private CriteriaQuery<ACMInterfaceListaNegra> criteriaQuery;
+	
+	public String exportarAExcel(MetadataConsulta metadataConsulta) {
+		String result = null;
+		
+		try {
+			TypedQuery<ACMInterfaceListaNegra> query = this.construirQuery(metadataConsulta);
+			
+			Collection<ACMInterfaceListaNegra> resultList = new LinkedList<ACMInterfaceListaNegra>();
+			if (metadataConsulta.getTamanoSubconjunto() != null) {
+				List<ACMInterfaceListaNegra> toOrder = query.getResultList();
+				
+				Collections.sort(toOrder, new Comparator<ACMInterfaceListaNegra>() {
+					public int compare(ACMInterfaceListaNegra arg0, ACMInterfaceListaNegra arg1) {
+						Random random = new Random();
+						
+						return random.nextBoolean() ? 1 : -1;
+					}
+				});
+				
+				int i = 0;
+				for (ACMInterfaceListaNegra acmInterfacePrepago : toOrder) {
+					resultList.add(acmInterfacePrepago);
+					
+					i++;
+					if (i == metadataConsulta.getTamanoSubconjunto()) {
+						break;
+					}
+				}
+			} else {
+				resultList = query.getResultList();
+			}
+			
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName =
+				Configuration.getInstance().getProperty("exportacion.carpeta")
+					+ gregorianCalendar.get(GregorianCalendar.YEAR)
+					+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1)
+					+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH)
+					+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY)
+					+ gregorianCalendar.get(GregorianCalendar.MINUTE)
+					+ gregorianCalendar.get(GregorianCalendar.SECOND)
+					+ ".csv";
+					
+			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
+			for (ACMInterfaceListaNegra acmInterfaceListaNegra : resultList) {
+				printWriter.println(
+					acmInterfaceListaNegra.getMid()
+					+ ";" + (acmInterfaceListaNegra.getObservaciones() != null ?
+						acmInterfaceListaNegra.getObservaciones()
+						: "")
+					+ ";" + (acmInterfaceListaNegra.getFact() != null ?
+						format.format(acmInterfaceListaNegra.getFact())
+						: "")
+				);
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
