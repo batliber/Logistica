@@ -95,4 +95,17 @@ public class ProductoDWR {
 			e.printStackTrace();
 		}
 	}
+
+	public static ProductoTO transform(Producto producto) {
+		ProductoTO productoTO = new ProductoTO();
+		
+		productoTO.setDescripcion(producto.getDescripcion());
+		
+		productoTO.setFact(producto.getFact());
+		productoTO.setId(producto.getId());
+		productoTO.setTerm(producto.getTerm());
+		productoTO.setUact(producto.getUact());
+		
+		return productoTO;
+	}
 }

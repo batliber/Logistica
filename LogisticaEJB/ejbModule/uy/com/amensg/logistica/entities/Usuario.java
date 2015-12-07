@@ -1,7 +1,12 @@
 package uy.com.amensg.logistica.entities;
 
+import java.util.Collection;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -18,7 +23,13 @@ public class Usuario extends BaseEntity {
 
 	@Column(name = "nombre")
 	private String nombre;
+	
+	@Column(name = "fecha_baja")
+	private Date fechaBaja;
 
+	@OneToMany(mappedBy = "usuario", fetch=FetchType.EAGER)
+	private Collection<UsuarioRolEmpresa> usuarioRolEmpresas;
+	
 	public String getLogin() {
 		return login;
 	}
@@ -41,5 +52,21 @@ public class Usuario extends BaseEntity {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+	
+	public Date getFechaBaja() {
+		return fechaBaja;
+	}
+
+	public void setFechaBaja(Date fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
+
+	public Collection<UsuarioRolEmpresa> getUsuarioRolEmpresas() {
+		return usuarioRolEmpresas;
+	}
+
+	public void setUsuarioRolEmpresas(Collection<UsuarioRolEmpresa> usuarioRolEmpresas) {
+		this.usuarioRolEmpresas = usuarioRolEmpresas;
 	}
 }

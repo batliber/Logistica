@@ -30,10 +30,15 @@ import uy.com.amensg.logistica.entities.ACMInterfaceListaNegra;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
 import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
+import uy.com.amensg.logistica.entities.Contrato;
+import uy.com.amensg.logistica.entities.ContratoRoutingHistory;
+import uy.com.amensg.logistica.entities.Empresa;
+import uy.com.amensg.logistica.entities.Estado;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
+import uy.com.amensg.logistica.entities.Rol;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.QueryHelper;
 
@@ -45,6 +50,15 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 	
 	@EJB
 	private IACMInterfaceProcesoBean iACMInterfaceProcesoBean;
+	
+	@EJB
+	private IRolBean iRolBean;
+	
+	@EJB
+	private IContratoBean iContratoBean;
+	
+	@EJB
+	private IEstadoBean iEstadoBean;
 	
 	private CriteriaQuery<ACMInterfacePrepago> criteriaQuery;
 	
@@ -116,6 +130,10 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				
 				Collections.sort(toOrder, new Comparator<ACMInterfacePrepago>() {
 					public int compare(ACMInterfacePrepago arg0, ACMInterfacePrepago arg1) {
+						if (arg0 == arg1) {
+							return 0;
+						}
+						
 						Random random = new Random();
 						
 						return random.nextBoolean() ? 1 : -1;
@@ -198,30 +216,208 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		return result;
 	}
 	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones) {
+		String result = null;
+		
+		try {
+			TypedQuery<ACMInterfacePrepago> query = this.construirQuery(metadataConsulta);
+			
+			Collection<ACMInterfacePrepago> resultList = new LinkedList<ACMInterfacePrepago>();
+			if (metadataConsulta.getTamanoSubconjunto() != null) {
+				List<ACMInterfacePrepago> toOrder = query.getResultList();
+				
+				Collections.sort(toOrder, new Comparator<ACMInterfacePrepago>() {
+					public int compare(ACMInterfacePrepago arg0, ACMInterfacePrepago arg1) {
+						if (arg0 == arg1) {
+							return 0;
+						}
+						
+						Random random = new Random();
+						
+						return random.nextBoolean() ? 1 : -1;
+					}
+				});
+				
+				int i = 0;
+				for (ACMInterfacePrepago acmInterfacePrepago : toOrder) {
+					resultList.add(acmInterfacePrepago);
+					
+					i++;
+					if (i == metadataConsulta.getTamanoSubconjunto()) {
+						break;
+					}
+				}
+			} else {
+				resultList = query.getResultList();
+			}
+			
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			Date currentDate = gregorianCalendar.getTime();
+			
+			String fileName =
+				Configuration.getInstance().getProperty("exportacion.carpeta")
+					+ gregorianCalendar.get(GregorianCalendar.YEAR)
+					+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1)
+					+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH)
+					+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY)
+					+ gregorianCalendar.get(GregorianCalendar.MINUTE)
+					+ gregorianCalendar.get(GregorianCalendar.SECOND)
+					+ ".csv";
+					
+			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat formatMesAno = new SimpleDateFormat("MM/yyyy");
+			DecimalFormat formatMonto = new DecimalFormat("0.00"); 
+			
+			Rol rolSupervisorCallCenter = 
+				iRolBean.getById(new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")));
+			
+			Estado estado = 
+				iEstadoBean.getById(
+					new Long(Configuration.getInstance().getProperty("estado.LLAMAR"))
+				);
+			
+			for (ACMInterfacePrepago acmInterfacePrepago : resultList) {
+				acmInterfacePrepago.setFechaExportacionAnterior(
+					acmInterfacePrepago.getFechaExportacion()
+				);
+				acmInterfacePrepago.setFechaExportacion(currentDate);
+				
+				acmInterfacePrepago = entityManager.merge(acmInterfacePrepago);
+				
+				printWriter.println(
+					acmInterfacePrepago.getMid()
+					+ ";" + (acmInterfacePrepago.getMesAno() != null ?
+						formatMesAno.format(acmInterfacePrepago.getMesAno())
+						: "")
+					+ ";" + (acmInterfacePrepago.getMontoMesActual() != null ?
+						formatMonto.format(acmInterfacePrepago.getMontoMesActual())
+						: "")
+					+ ";" + (acmInterfacePrepago.getMontoMesAnterior1() != null ?
+						formatMonto.format(acmInterfacePrepago.getMontoMesAnterior1())
+						: "")
+					+ ";" + (acmInterfacePrepago.getMontoMesAnterior2() != null ? 
+						formatMonto.format(acmInterfacePrepago.getMontoMesAnterior2())
+						: "")
+					+ ";" + (acmInterfacePrepago.getMontoPromedio() != null ?
+						formatMonto.format(acmInterfacePrepago.getMontoPromedio())
+						: "")
+					+ ";" + (acmInterfacePrepago.getFechaExportacion() != null ?
+						format.format(acmInterfacePrepago.getFechaExportacion())
+						: "")
+					+ ";" + (acmInterfacePrepago.getFechaActivacionKit() != null ?
+						format.format(acmInterfacePrepago.getFechaActivacionKit())
+						: "")
+					+ ";" + (
+						"Monto promedio: " 
+						+ (acmInterfacePrepago.getMontoPromedio() != null ? formatMonto.format(acmInterfacePrepago.getMontoPromedio()) : "0") 
+						+ ". " + observaciones
+						)
+				);
+				
+				Contrato contrato = iContratoBean.getByMidEmpresa(acmInterfacePrepago.getMid(), empresa);
+				
+				if (contrato == null) {
+					contrato = new Contrato();
+				}
+				
+				contrato.setAgente(null);
+				contrato.setCodigoPostal(null);
+				contrato.setDireccion(null);
+				contrato.setDocumento(null);
+				contrato.setDocumentoTipo(null);
+				contrato.setEquipo(null);
+				contrato.setFechaFinContrato(null);
+				contrato.setLocalidad(null);
+				contrato.setMid(acmInterfacePrepago.getMid());
+				contrato.setNombre(null);
+				contrato.setNumeroCliente(null);
+				contrato.setNumeroContrato(null);
+				contrato.setObservaciones(
+					"Monto promedio: " 
+						+ (acmInterfacePrepago.getMontoPromedio() != null ? formatMonto.format(acmInterfacePrepago.getMontoPromedio()) : "0") 
+						+ ".\n"
+					+ observaciones
+				);
+				contrato.setTipoContratoCodigo(null);
+				contrato.setTipoContratoDescripcion(null);
+				
+				contrato.setEmpresa(empresa);
+				contrato.setEstado(estado);
+				contrato.setRol(rolSupervisorCallCenter);
+				
+				contrato = iContratoBean.update(contrato);
+				
+				ContratoRoutingHistory contratoRoutingHistory = new ContratoRoutingHistory();
+				contratoRoutingHistory.setContrato(contrato);
+				contratoRoutingHistory.setEmpresa(empresa);
+				contratoRoutingHistory.setFecha(currentDate);
+				contratoRoutingHistory.setRol(rolSupervisorCallCenter);
+				
+				contratoRoutingHistory.setFact(currentDate);
+				contratoRoutingHistory.setTerm(new Long(1));
+				contratoRoutingHistory.setUact(new Long(1));
+				
+				entityManager.persist(contratoRoutingHistory);
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta) {
 		try {
 			TypedQuery<ACMInterfacePrepago> query = entityManager.createQuery(
-				"SELECT p FROM ACMInterfacePrepago p ORDER BY p.fechaExportacion DESC",
+				"SELECT p FROM ACMInterfacePrepago p WHERE p.fechaExportacion IS NOT NULL ORDER BY p.fechaExportacion DESC",
 				ACMInterfacePrepago.class
 			);
+			query.setMaxResults(1);
 			
-			Date fechaExportacion = null;
-			for (ACMInterfacePrepago acmInterfacePrepago : query.getResultList()) {
-				if (fechaExportacion == null 
-					|| acmInterfacePrepago.getFechaExportacion()
-						.equals(fechaExportacion)) {
-					fechaExportacion = acmInterfacePrepago.getFechaExportacion();
-					
-					acmInterfacePrepago.setFechaExportacion(
-						acmInterfacePrepago.getFechaExportacionAnterior()
+			Collection<ACMInterfacePrepago> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				ACMInterfacePrepago acmInterfacePrepago = resultList.toArray(new ACMInterfacePrepago[]{})[0];
+				
+				if (acmInterfacePrepago.getFechaExportacion() != null) {
+					TypedQuery<ACMInterfacePrepago> queryUltimaExportacion = entityManager.createQuery(
+						"SELECT p FROM ACMInterfacePrepago p WHERE p.fechaExportacion = :fechaExportacion"
+						, ACMInterfacePrepago.class
 					);
-					acmInterfacePrepago.setFechaExportacionAnterior(
-						fechaExportacion
-					);
+					queryUltimaExportacion.setParameter("fechaExportacion", acmInterfacePrepago.getFechaExportacion());
 					
-					entityManager.merge(acmInterfacePrepago);
-				} else {
-					break;
+					TypedQuery<ContratoRoutingHistory> queryContratoRoutingHistory = entityManager.createQuery(
+						"SELECT crh FROM ContratoRoutingHistory crh"
+						+ " WHERE crh.fact = :fechaExportacion", 
+						ContratoRoutingHistory.class
+					);
+					queryContratoRoutingHistory.setParameter("fechaExportacion", acmInterfacePrepago.getFechaExportacion());
+					
+					Collection<ACMInterfacePrepago> acmInterfacePrepagosUltimaFechaExportacion = queryUltimaExportacion.getResultList();
+					Collection<ContratoRoutingHistory> contratoRoutingHistoriesUltimaFechaExportacion = queryContratoRoutingHistory.getResultList();
+					
+					for (ACMInterfacePrepago acmInterfacePrepagoUltimaExportacion : acmInterfacePrepagosUltimaFechaExportacion) {
+						acmInterfacePrepagoUltimaExportacion.setFechaExportacion(
+							acmInterfacePrepagoUltimaExportacion.getFechaExportacionAnterior()
+						);
+						acmInterfacePrepagoUltimaExportacion.setFechaExportacionAnterior(
+							acmInterfacePrepago.getFechaExportacion()
+						);
+							
+						entityManager.merge(acmInterfacePrepagoUltimaExportacion);
+					}
+					
+					for (ContratoRoutingHistory contratoRoutingHistory : contratoRoutingHistoriesUltimaFechaExportacion) {
+						Contrato contrato = contratoRoutingHistory.getContrato();
+						
+						entityManager.remove(contratoRoutingHistory);
+						entityManager.remove(contrato);
+					}
 				}
 			}
 		} catch (Exception e) {

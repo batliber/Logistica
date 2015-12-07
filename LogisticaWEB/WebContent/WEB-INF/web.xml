@@ -25,6 +25,15 @@
   </servlet>
   
   <servlet>
+    <servlet-name>BarcodeServlet</servlet-name>
+    <servlet-class>uy.com.amensg.logistica.servlets.BarcodeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BarcodeServlet</servlet-name>
+    <url-pattern>/Barcode</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
 	<servlet-name>JobInitializerServlet</servlet-name>
 	<servlet-class>uy.com.amensg.logistica.servlets.JobInitializerServlet</servlet-class>
 
@@ -50,6 +59,23 @@
 	</filter-mapping>
   
   <servlet>
+  	<servlet-name>UploadServlet</servlet-name>
+  	<servlet-class>uy.com.amensg.logistica.servlets.UploadServlet</servlet-class>  	
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>UploadServlet</servlet-name>
+  	<url-pattern>/Upload</url-pattern>
+  </servlet-mapping>
+  
+  <session-config>
+  	<session-timeout>15</session-timeout>
+  </session-config>
+  
+  <listener>
+  	<listener-class>uy.com.amensg.logistica.listeners.SessionExpirationListener</listener-class>
+  </listener>
+  
+  <servlet>
     <servlet-name>dwr-invoker</servlet-name>
     <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
     <init-param>
@@ -65,13 +91,24 @@
       	uy.com.amensg.logistica.dwr.ACMInterfacePrepagoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceProcesoDWR,
       	uy.com.amensg.logistica.dwr.ConfigurationDWR,
+      	uy.com.amensg.logistica.dwr.ContratoDWR,
+      	uy.com.amensg.logistica.dwr.ContratoRoutingHistoryDWR,
+      	uy.com.amensg.logistica.dwr.DepartamentoDWR,
+      	uy.com.amensg.logistica.dwr.DisponibilidadEntregaEmpresaZonaTurnoDWR,
+      	uy.com.amensg.logistica.dwr.EmpresaDWR,
+      	uy.com.amensg.logistica.dwr.EstadoDWR,
       	uy.com.amensg.logistica.dwr.FileManagerDWR,
+      	uy.com.amensg.logistica.dwr.MenuDWR,
       	uy.com.amensg.logistica.dwr.MetadataConsultaDWR,
       	uy.com.amensg.logistica.dwr.ProductoDWR,
+      	uy.com.amensg.logistica.dwr.RolDWR,
       	uy.com.amensg.logistica.dwr.SeguridadDWR,
-      	uy.com.amensg.logistica.dwr.UsuarioDWR,
-      	<!-- 
       	uy.com.amensg.logistica.dwr.StockMovimientoDWR,
+      	uy.com.amensg.logistica.dwr.TurnoDWR,
+      	uy.com.amensg.logistica.dwr.UsuarioDWR,
+      	uy.com.amensg.logistica.dwr.UsuarioRolEmpresaDWR,
+      	uy.com.amensg.logistica.dwr.ZonaDWR,
+      	<!--
       	uy.com.amensg.logistica.dwr.StockTipoMovimientoDWR,
       	 -->
       	 
@@ -81,16 +118,28 @@
       	uy.com.amensg.logistica.entities.ACMInterfaceMidTO,
       	uy.com.amensg.logistica.entities.ACMInterfacePrepagoTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceProcesoEstadisticaTO,
+      	uy.com.amensg.logistica.entities.ContratoTO,
+      	uy.com.amensg.logistica.entities.ContratoRoutingHistoryTO,
+      	uy.com.amensg.logistica.entities.DepartamentoTO,
+      	uy.com.amensg.logistica.entities.DisponibilidadEntregaEmpresaZonaTurnoTO,
+      	uy.com.amensg.logistica.entities.EmpresaTO,
+      	uy.com.amensg.logistica.entities.EstadoTO,
+      	uy.com.amensg.logistica.entities.MenuTO,
       	uy.com.amensg.logistica.entities.MetadataCondicionTO,
       	uy.com.amensg.logistica.entities.MetadataConsultaTO,
       	uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO,
       	uy.com.amensg.logistica.entities.MetadataOrdenacionTO,
       	uy.com.amensg.logistica.entities.ProductoTO,
+      	uy.com.amensg.logistica.entities.RolTO,
+      	uy.com.amensg.logistica.entities.StockMovimientoTO,
       	uy.com.amensg.logistica.entities.TipoContratoTO,
+      	uy.com.amensg.logistica.entities.TurnoTO,
       	uy.com.amensg.logistica.entities.UsuarioTO,
+      	uy.com.amensg.logistica.entities.UsuarioRolEmpresaTO,
+      	uy.com.amensg.logistica.entities.ZonaTO,
+      	
       	<!--
       	uy.com.amensg.logistica.entities.StockTipoMovimientoTO,
-      	uy.com.amensg.logistica.entities.StockMovimientoTO
       	 -->
       </param-value>
     </init-param>

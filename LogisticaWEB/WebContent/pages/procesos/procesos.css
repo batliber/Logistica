@@ -3,7 +3,7 @@
 }
 
 #tableProcesos {
-	width: 955px;
+	width: 1049px;
 	height: 317px;
 }
 
@@ -39,11 +39,15 @@
 	width: 90px;
 }
 
+#tableProcesos thead tr .tdProcesoCantidadRegistrosListaVacia {
+	width: 90px;
+}
+
 #tableProcesos tbody {
 	position: fixed;
 	margin-top: 17px;
 	overflow: auto;
-	width: 953px;
+	width: 1046px;
 	height: 297px;
 }
 
@@ -72,5 +76,9 @@
 }
 
 #tableProcesos tbody tr .tdProcesoCantidadRegistrosProcesado {
+	width: 90px;
+}
+
+#tableProcesos tbody tr .tdProcesoCantidadRegistrosListaVacia {
 	width: 90px;
 }

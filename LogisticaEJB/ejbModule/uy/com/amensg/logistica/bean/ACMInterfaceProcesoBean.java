@@ -66,6 +66,8 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 						acmInterfaceProcesoEstadistica.setCantidadRegistrosProcesado((Long) queryResult[2]);
 					} else if (estado.equals(new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso")))) {
 						acmInterfaceProcesoEstadistica.setCantidadRegistrosEnProceso((Long) queryResult[2]);
+					} else if (estado.equals(new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia")))) {
+						acmInterfaceProcesoEstadistica.setCantidadRegistrosListaVacia((Long) queryResult[2]);
 					}
 				}
 			}

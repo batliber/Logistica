@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
+import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.TipoContrato;
@@ -15,6 +16,8 @@ public interface IACMInterfaceContratoBean {
 	public Collection<ACMInterfaceContrato> list();
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta);
+	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
 	
 	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
 	

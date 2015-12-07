@@ -7,71 +7,68 @@ table tbody tr td div {
 	white-space: nowrap;
 }
 
+#divTipoRegistro {
+	float: left;
+}
+
 #divTamanoMuestra {
 	float: left;
 	width: 150px;
 	height: 20px;
 }
 
-#divFormLabelTamanoSubconjunto {
-	float: left;
-	width: 150px;
-	text-align: right;
-	margin-top: 2px;
-}
-
 #divTamanoSubconjunto {
 	float: left;
-	width: 400px;
+	width: 55%;
 	height: 20px;
+}
+
+#divAgregarFiltroContainer {
+	width: 100%;
+	height: 24px;
+	float: left;
 }
 
 #divAgregarFiltro {
 	float: left;
-	width: 700px;
+	width: 50%;
 	height: 24px;
 }
 
 #divFiltros {
-	width: 1000px;
-	display: inline-table;
-}
-
-.divFiltro {
 	float: left;
-	width: 1000px;
+	width: 100%;
 }
 
-.divCondicion {
+#divIFrameSeleccionEmpresa {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#iFrameSeleccionEmpresa {
+	width: 400px;
+	height: 300px;
+	border: none;
+}
+
+#divSeleccionEmpresa {
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
+}
+
+#divObservaciones {
 	float: left;
+	width: 60%;
 }
 
-.divCondicionValores {
-	float: left;
-	width: 475px;
-	height: 24px;
-}
-
-.divCondicionValoresMultiples {
-	float: left;
-}
-
-.divValoresMultiples {
-	width: 125px;
-	height: 75px;
-	background-color: white;
-	border: solid 1px #7F9DB9;
-	overflow: auto;
-}
-
-.divValorMultiple {
-	cursor: pointer;
-	background-image: url('/LogisticaWEB/images/bullet_toggle_minus.png');
-	background-repeat: no-repeat;
-	background-position: right;
-}
-
-.divQuitarFiltro {
-	float: left;
-	width: 50px;
+#textareaObservaciones {
+	width: 100%;
 }

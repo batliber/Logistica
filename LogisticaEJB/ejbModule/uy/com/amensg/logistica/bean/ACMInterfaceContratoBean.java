@@ -29,10 +29,15 @@ import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceListaNegra;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
+import uy.com.amensg.logistica.entities.Contrato;
+import uy.com.amensg.logistica.entities.ContratoRoutingHistory;
+import uy.com.amensg.logistica.entities.Empresa;
+import uy.com.amensg.logistica.entities.Estado;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
+import uy.com.amensg.logistica.entities.Rol;
 import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
@@ -49,6 +54,15 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 	
 	@EJB
 	private IACMInterfaceBean iACMInterfaceBean;
+	
+	@EJB
+	private IRolBean iRolBean;
+	
+	@EJB
+	private IContratoBean iContratoBean;
+	
+	@EJB
+	private IEstadoBean iEstadoBean;
 	
 	private CriteriaQuery<ACMInterfaceContrato> criteriaQuery;
 	
@@ -120,6 +134,10 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				
 				Collections.sort(toOrder, new Comparator<ACMInterfaceContrato>() {
 					public int compare(ACMInterfaceContrato arg0, ACMInterfaceContrato arg1) {
+						if (arg0 == arg1) {
+							return 0;
+						}
+						
 						Random random = new Random();
 						
 						return random.nextBoolean() ? 1 : -1;
@@ -222,30 +240,221 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		return result;
 	}
 	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones) {
+		String result = null;
+		
+		try {
+			TypedQuery<ACMInterfaceContrato> query = this.construirQuery(metadataConsulta);
+			
+			Collection<ACMInterfaceContrato> resultList = new LinkedList<ACMInterfaceContrato>();
+			if (metadataConsulta.getTamanoSubconjunto() != null) {
+				List<ACMInterfaceContrato> toOrder = query.getResultList();
+				
+				Collections.sort(toOrder, new Comparator<ACMInterfaceContrato>() {
+					public int compare(ACMInterfaceContrato arg0, ACMInterfaceContrato arg1) {
+						if (arg0 == arg1) {
+							return 0;
+						}
+						
+						Random random = new Random();
+						
+						return random.nextBoolean() ? 1 : -1;
+					}
+				});
+				
+				int i = 0;
+				for (ACMInterfaceContrato acmInterfaceContrato : toOrder) {
+					resultList.add(acmInterfaceContrato);
+					
+					i++;
+					if (i == metadataConsulta.getTamanoSubconjunto()) {
+						break;
+					}
+				}
+			} else {
+				resultList = query.getResultList();
+			}
+			
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			Date currentDate = gregorianCalendar.getTime();
+			
+			String fileName = 
+				Configuration.getInstance().getProperty("exportacion.carpeta")
+					+ gregorianCalendar.get(GregorianCalendar.YEAR)
+					+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1)
+					+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH)
+					+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY)
+					+ gregorianCalendar.get(GregorianCalendar.MINUTE)
+					+ gregorianCalendar.get(GregorianCalendar.SECOND)
+					+ ".csv";
+			
+			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
+			Rol rolSupervisorCallCenter = 
+				iRolBean.getById(new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")));
+			
+			Estado estado = 
+				iEstadoBean.getById(
+					new Long(Configuration.getInstance().getProperty("estado.LLAMAR"))
+				);
+			
+			for (ACMInterfaceContrato acmInterfaceContrato : resultList) {
+				acmInterfaceContrato.setFechaExportacionAnterior(
+					acmInterfaceContrato.getFechaExportacion()
+				);
+				acmInterfaceContrato.setFechaExportacion(currentDate);
+				
+				acmInterfaceContrato = entityManager.merge(acmInterfaceContrato);
+				
+				printWriter.println(
+					acmInterfaceContrato.getMid()
+					+ ";" + (acmInterfaceContrato.getFechaFinContrato() != null ? 
+						format.format(acmInterfaceContrato.getFechaFinContrato())
+						: "")
+					+ ";" + (acmInterfaceContrato.getTipoContratoCodigo() != null ?
+						acmInterfaceContrato.getTipoContratoCodigo() 
+						: "")
+					+ ";" + (acmInterfaceContrato.getTipoContratoDescripcion() != null ?
+						acmInterfaceContrato.getTipoContratoDescripcion()
+						: "")
+					+ ";" + (acmInterfaceContrato.getDocumentoTipo() != null ?
+						acmInterfaceContrato.getDocumentoTipo()
+						: "")
+					+ ";'" + (acmInterfaceContrato.getDocumento() != null ?
+						acmInterfaceContrato.getDocumento()
+						: "")
+					+ ";" + (acmInterfaceContrato.getNombre() != null ?
+						acmInterfaceContrato.getNombre()
+						: "")
+					+ ";" + (acmInterfaceContrato.getDireccion() != null ?
+						acmInterfaceContrato.getDireccion()
+						: "")
+					+ ";" + (acmInterfaceContrato.getCodigoPostal() != null ?
+						acmInterfaceContrato.getCodigoPostal()
+						: "")
+					+ ";" + (acmInterfaceContrato.getLocalidad() != null ?
+						acmInterfaceContrato.getLocalidad()
+						: "")
+					+ ";" + (acmInterfaceContrato.getEquipo() != null ?
+						acmInterfaceContrato.getEquipo()
+						: "")
+					+ ";" + (acmInterfaceContrato.getAgente() != null ?
+						acmInterfaceContrato.getAgente()
+						: "")
+					+ ";" + (acmInterfaceContrato.getFechaExportacion() != null ?
+						format.format(acmInterfaceContrato.getFechaExportacion())
+						: "")
+					+ ";" + format.format(acmInterfaceContrato.getFact())
+					+ ";" + (acmInterfaceContrato.getNumeroCliente() != null ?
+						acmInterfaceContrato.getNumeroCliente()
+						: "")
+					+ ";" + (acmInterfaceContrato.getNumeroContrato() != null ?
+						acmInterfaceContrato.getNumeroContrato()
+						: "")
+					+ ";" + (observaciones != null ?
+						observaciones
+						: "")
+				);
+				
+				Contrato contrato = iContratoBean.getByMidEmpresa(acmInterfaceContrato.getMid(), empresa);
+				
+				if (contrato == null) {
+					contrato = new Contrato();
+				}
+				
+				contrato.setAgente(acmInterfaceContrato.getAgente());
+				contrato.setCodigoPostal(acmInterfaceContrato.getCodigoPostal());
+				contrato.setDireccion(acmInterfaceContrato.getDireccion());
+				contrato.setDocumento(acmInterfaceContrato.getDocumento());
+				contrato.setDocumentoTipo(acmInterfaceContrato.getDocumentoTipo());
+				contrato.setEquipo(acmInterfaceContrato.getEquipo());
+				contrato.setFechaFinContrato(acmInterfaceContrato.getFechaFinContrato());
+				contrato.setLocalidad(acmInterfaceContrato.getLocalidad());
+				contrato.setMid(acmInterfaceContrato.getMid());
+				contrato.setNombre(acmInterfaceContrato.getNombre());
+				contrato.setNumeroCliente(acmInterfaceContrato.getNumeroCliente());
+				contrato.setNumeroContrato(acmInterfaceContrato.getNumeroContrato());
+				contrato.setObservaciones(observaciones);
+				contrato.setTipoContratoCodigo(acmInterfaceContrato.getTipoContratoCodigo());
+				contrato.setTipoContratoDescripcion(acmInterfaceContrato.getTipoContratoDescripcion());
+				
+				contrato.setEmpresa(empresa);
+				contrato.setEstado(estado);
+				contrato.setRol(rolSupervisorCallCenter);
+				
+				contrato = iContratoBean.update(contrato);
+				
+				ContratoRoutingHistory contratoRoutingHistory = new ContratoRoutingHistory();
+				contratoRoutingHistory.setContrato(contrato);
+				contratoRoutingHistory.setEmpresa(empresa);
+				contratoRoutingHistory.setFecha(currentDate);
+				contratoRoutingHistory.setRol(rolSupervisorCallCenter);
+				
+				contratoRoutingHistory.setFact(currentDate);
+				contratoRoutingHistory.setTerm(new Long(1));
+				contratoRoutingHistory.setUact(new Long(1));
+				
+				entityManager.persist(contratoRoutingHistory);
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta) {
 		try {
 			TypedQuery<ACMInterfaceContrato> query = entityManager.createQuery(
-				"SELECT c FROM ACMInterfaceContrato c ORDER BY c.fechaExportacion DESC",
+				"SELECT c FROM ACMInterfaceContrato c WHERE c.fechaExportacion IS NOT NULL ORDER BY c.fechaExportacion DESC",
 				ACMInterfaceContrato.class
 			);
+			query.setMaxResults(1);
 			
-			Date fechaExportacion = null;
-			for (ACMInterfaceContrato acmInterfaceContrato : query.getResultList()) {
-				if (fechaExportacion == null 
-					|| acmInterfaceContrato.getFechaExportacion()
-						.equals(fechaExportacion)) {
-					fechaExportacion = acmInterfaceContrato.getFechaExportacion();
-					
-					acmInterfaceContrato.setFechaExportacion(
-						acmInterfaceContrato.getFechaExportacionAnterior()
+			Collection<ACMInterfaceContrato> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				ACMInterfaceContrato acmInterfaceContrato = resultList.toArray(new ACMInterfaceContrato[]{})[0];
+				
+				if (acmInterfaceContrato.getFechaExportacion() != null) {
+					TypedQuery<ACMInterfaceContrato> queryUltimaExportacion = entityManager.createQuery(
+						"SELECT c FROM ACMInterfaceContrato c WHERE c.fechaExportacion = :fechaExportacion"
+						, ACMInterfaceContrato.class
 					);
-					acmInterfaceContrato.setFechaExportacionAnterior(
-						fechaExportacion
-					);
+					queryUltimaExportacion.setParameter("fechaExportacion", acmInterfaceContrato.getFechaExportacion());
 					
-					entityManager.merge(acmInterfaceContrato);
-				} else {
-					break;
+					TypedQuery<ContratoRoutingHistory> queryContratoRoutingHistory = entityManager.createQuery(
+						"SELECT crh FROM ContratoRoutingHistory crh"
+						+ " WHERE crh.fact = :fechaExportacion", 
+						ContratoRoutingHistory.class
+					);
+					queryContratoRoutingHistory.setParameter("fechaExportacion", acmInterfaceContrato.getFechaExportacion());
+					
+					Collection<ACMInterfaceContrato> acmInterfaceContratosUltimaFechaExportacion = queryUltimaExportacion.getResultList();
+					Collection<ContratoRoutingHistory> contratoRoutingHistoriesUltimaFechaExportacion = queryContratoRoutingHistory.getResultList();
+					
+					for (ACMInterfaceContrato acmInterfaceContratoUltimaExportacion : acmInterfaceContratosUltimaFechaExportacion) {
+						acmInterfaceContratoUltimaExportacion.setFechaExportacion(
+							acmInterfaceContratoUltimaExportacion.getFechaExportacionAnterior()
+						);
+						acmInterfaceContratoUltimaExportacion.setFechaExportacionAnterior(
+							acmInterfaceContrato.getFechaExportacion()
+						);
+							
+						entityManager.merge(acmInterfaceContratoUltimaExportacion);
+					}
+					
+					for (ContratoRoutingHistory contratoRoutingHistory : contratoRoutingHistoriesUltimaFechaExportacion) {
+						Contrato contrato = contratoRoutingHistory.getContrato();
+						
+						entityManager.remove(contratoRoutingHistory);
+						entityManager.remove(contrato);
+					}
 				}
 			}
 		} catch (Exception e) {

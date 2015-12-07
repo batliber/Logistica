@@ -16,14 +16,11 @@ public class DownloadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -399580989560190747L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-    	throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
-		throws ServletException, IOException {
-		
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String fileName = request.getParameter("fn");
 		
 		ServletOutputStream servletOutputStream = null;

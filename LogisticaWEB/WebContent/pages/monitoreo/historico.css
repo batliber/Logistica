@@ -1,0 +1,69 @@
+#divHistorico {
+	width: 600px; 
+}
+
+#tableHistorico {
+	width: 600px;
+	height: 218px;
+}
+
+#tableHistorico thead {
+	position: fixed;
+}
+
+#tableHistorico thead tr .tdFecha {
+	width: 90px;
+}
+
+#tableHistorico thead tr .tdEmpresa {
+	width: 120px;
+}
+
+#tableHistorico thead tr .tdUsuario {
+	width: 140px;
+}
+
+#tableHistorico thead tr .tdRol {
+	width: 140px;
+}
+
+#tableHistorico thead tr .tdEstado {
+	width: 80px;
+}
+
+#tableHistorico tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 595px;
+	height: 180px;
+}
+
+#tableHistorico tbody tr td .divFecha {
+	text-align: center;
+	width: 90px;
+}
+
+#tableHistorico tbody tr td .divEmpresa {
+	text-align: left;
+	margin-left: 2px;
+	width: 118px;
+}
+
+#tableHistorico tbody tr td .divUsuario {
+	text-align: left;
+	margin-left: 2px;
+	width: 138px;
+}
+
+#tableHistorico tbody tr td .divRol {
+	text-align: left;
+	margin-left: 2px;
+	width: 138px;
+}
+
+#tableHistorico tbody tr td .divEstado {
+	text-align: left;
+	margin-left: 2px;
+	width: 78px;
+}

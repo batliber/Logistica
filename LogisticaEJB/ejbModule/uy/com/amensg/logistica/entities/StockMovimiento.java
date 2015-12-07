@@ -16,13 +16,17 @@ public class StockMovimiento extends BaseEntity {
 
 	@Column(name = "fecha")
 	private Date fecha;
-	
+
 	@Column(name = "cantidad")
 	private Long cantidad;
-	
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto_id", nullable = false)
 	private Producto producto;
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "empresa_id", nullable = false)
+	private Empresa empresa;
 
 	public Date getFecha() {
 		return fecha;
@@ -46,5 +50,13 @@ public class StockMovimiento extends BaseEntity {
 
 	public void setProducto(Producto producto) {
 		this.producto = producto;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 }

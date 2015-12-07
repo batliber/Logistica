@@ -1,0 +1,56 @@
+#divContratos {
+	float: left; 
+}
+
+#divIFrameContrato {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameContrato {
+	width: 800px;
+	height: 400px;
+	border: none;
+}
+
+#divIFrameHistoricoContrato {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameHistorico {
+	width: 615px;
+	height: 330px;
+	border: none;
+}
+
+#divIFrameImportacionArchivo {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divImportacionArchivo {
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
+}
+
+#inputArchivo {
+	float: left;
+	width: 60%;
+}

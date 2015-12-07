@@ -1,0 +1,51 @@
+#tableUsuarios {
+	width: 325px;
+	height: 318px;
+}
+
+#tableUsuarios thead {
+	position: fixed;
+}
+
+#tableUsuarios thead tr .tdUsuarioLogin {
+	width: 100px;
+}
+
+#tableUsuarios thead tr .tdUsuarioNombre {
+	width: 200px;
+}
+
+#tableUsuarios tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 321px;
+	height: 299px;
+}
+
+#tableUsuarios tbody tr td .divUsuarioLogin {
+	text-align: left;
+	margin-left: 2px;
+	width: 98px;
+}
+
+#tableUsuarios tbody tr td .divUsuarioNombre {
+	text-align: left;
+	margin-left: 2px;
+	width: 198px;
+}
+
+#divIFrameUsuario {
+	position: absolute;
+	top: 100px;
+	left: 100px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameUsuario {
+	width: 550px;
+	height: 320px;
+	border: none;
+}

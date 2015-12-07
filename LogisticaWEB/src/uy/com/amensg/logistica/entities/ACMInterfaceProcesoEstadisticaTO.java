@@ -15,6 +15,7 @@ public class ACMInterfaceProcesoEstadisticaTO {
 	private Long cantidadRegistrosParaProcesarPrioritario;
 	private Long cantidadRegistrosProcesado;
 	private Long cantidadRegistrosEnProceso;
+	private Long cantidadRegistrosListaVacia;
 
 	public Long getId() {
 		return id;
@@ -80,5 +81,13 @@ public class ACMInterfaceProcesoEstadisticaTO {
 
 	public void setCantidadRegistrosEnProceso(Long cantidadRegistrosEnProceso) {
 		this.cantidadRegistrosEnProceso = cantidadRegistrosEnProceso;
+	}
+
+	public Long getCantidadRegistrosListaVacia() {
+		return cantidadRegistrosListaVacia;
+	}
+
+	public void setCantidadRegistrosListaVacia(Long cantidadRegistrosListaVacia) {
+		this.cantidadRegistrosListaVacia = cantidadRegistrosListaVacia;
 	}
 }

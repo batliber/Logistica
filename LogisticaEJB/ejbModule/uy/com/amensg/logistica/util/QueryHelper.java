@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Random;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -21,7 +23,23 @@ public class QueryHelper {
 		
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
-			Path<?> campo = root.get(metadataCondicion.getCampo());
+			String[] campos = metadataCondicion.getCampo().split("\\.");
+			
+			Path<?> campo = root;
+			Join<?, ?> join = null;
+			for (int j=0; j<campos.length - 1; j++) {
+				if (join != null) {
+					join = join.join(campos[j], JoinType.LEFT);
+				} else {
+					join = root.join(campos[j], JoinType.LEFT);
+				}
+			}
+			
+			if (join != null) {
+				campo = join.get(campos[campos.length - 1]);
+			} else {
+				campo = root.get(campos[campos.length - 1]);
+			}
 			
 			if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_IGUAL)) {
 				ParameterExpression<?> parameterExpression = 

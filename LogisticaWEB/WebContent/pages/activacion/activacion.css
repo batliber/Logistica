@@ -1,0 +1,398 @@
+#divContratos {
+	float: left;
+	width: 1242px; 
+}
+
+#tableContratos {
+	width: 1242px;
+	height: 318px;
+}
+
+#tableContratos thead {
+	position: fixed;
+}
+
+#tableContratos thead tr .tdContratoMidNOO {
+	width: 50px;
+}
+
+#tableContratos thead tr .tdContratoFinContratoNOO {
+	width: 60px;
+}
+
+#tableContratos thead tr .tdContratoNuevoPlanNOO {
+	width: 90px;
+}
+
+#tableContratos thead tr .tdContratoDocumentoNOO {
+	width: 80px;
+}
+
+#tableContratos thead tr .tdContratoNumeroContratoNOO {
+	width: 60px;
+}
+
+#tableContratos thead tr .tdContratoNombreNOO {
+	width: 135px;
+}
+
+#tableContratos thead tr .tdContratoDireccionNOO {
+	width: 135px;
+}
+
+#tableContratos thead tr .tdContratoLocalidadNOO {
+	width: 106px;
+}
+
+#tableContratos thead tr .tdContratoEquipoNOO {
+	width: 120px;
+}
+
+#tableContratos thead tr .tdEmpresaNOO {
+	width: 75px;
+}
+
+#tableContratos thead tr .tdActivadorNOO {
+	width: 120px;
+}
+
+#tableContratos thead tr .tdFechaActivarEnNOO {
+	width: 75px;
+}
+
+#tableContratos thead tr .tdEstadoNOO {
+	width: 75px;
+}
+
+#tableContratos thead tr .tdContratoMidASC {
+	width: 50px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoFinContratoASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNuevoPlanASC {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoDocumentoASC {
+	width: 80px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNumeroContratoASC {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNombreASC {
+	width: 135px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoDireccionASC {
+	width: 135px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoLocalidadASC {
+	width: 106px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoEquipoASC {
+	width: 120px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdEmpresaASC {
+	width: 75px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdActivadorASC {
+	width: 120px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdFechaActivarEnASC {
+	width: 75px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdEstadoASC {
+	width: 75px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoMidDES {
+	width: 50px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoFinContratoDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNuevoPlanDES {
+	width: 90px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoDocumentoDES {
+	width: 80px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNumeroContratoDES {
+	width: 60px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoNombreDES {
+	width: 135px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoDireccionDES {
+	width: 135px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoLocalidadDES {
+	width: 106px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdContratoEquipoDES {
+	width: 120px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdEmpresaDES {
+	width: 75px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdActivadorDES {
+	width: 120px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdFechaActivarEnDES {
+	width: 75px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos thead tr .tdEstadoDES {
+	width: 75px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+#tableContratos tbody {
+	position: fixed;
+	margin-top: 17px;
+	overflow: auto;
+	width: 1238px;
+	height: 280px;
+}
+
+#tableContratos tbody tr td .divContratoMid {
+	text-align: left;
+	margin-left: 2px;
+	width: 48px;
+}
+
+#tableContratos tbody tr td .divContratoFinContrato {
+	text-align: center;
+	width: 60px;
+}
+
+#tableContratos tbody tr td .divContratoNuevoPlan {
+	text-align: left;
+	margin-left: 2px;
+	width: 88px;
+}
+
+#tableContratos tbody tr td .divContratoDocumento {
+	text-align: left;
+	margin-left: 2px;
+	width: 78px;
+}
+
+#tableContratos tbody tr td .divContratoNumeroContrato {
+	text-align: left;
+	margin-left: 2px;
+	width: 58px;
+}
+
+#tableContratos tbody tr td .divContratoNombre {
+	text-align: left;
+	margin-left: 2px;
+	width: 133px;
+}
+
+#tableContratos tbody tr td .divContratoDireccion {
+	text-align: left;
+	margin-left: 2px;
+	width: 133px;
+}
+
+#tableContratos tbody tr td .divContratoLocalidad {
+	text-align: left;
+	margin-left: 2px;
+	width: 104px;
+}
+
+#tableContratos tbody tr td .divContratoEquipo {
+	text-align: left;
+	margin-left: 2px;
+	width: 118px;
+}
+
+#tableContratos tbody tr td .divEmpresa {
+	text-align: left;
+	margin-left: 2px;
+	width: 73px;
+}
+
+#tableContratos tbody tr td .divActivador {
+	text-align: left;
+	margin-left: 2px;
+	width: 118px;
+}
+
+#tableContratos tbody tr td .divFechaActivarEn {
+	text-align: left;
+	margin-left: 2px;
+	width: 73px;
+}
+
+#tableContratos tbody tr td .divEstado {
+	text-align: left;
+	margin-left: 2px;
+	width: 73px;
+}
+
+#tableContratos tfoot {
+	position: fixed;
+	margin-top: 297px;
+	overflow: auto;
+	width: 1236px;
+}
+
+#tdContratoCantidadRegistrosLabel {
+	width: 120px;
+	text-align: left;
+}
+
+#tdContratoCantidadRegistrosValor {
+	width: 1096px;
+}
+
+#divContratoCantidadRegistros {
+	width: 200px;
+	height: 16px;
+	text-align: left;
+	padding-top: 2px;
+	margin-left: 2px;
+}
+
+#divIFrameContrato {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameContrato {
+	width: 800px;
+	height: 450px;
+	border: none;
+}
+
+#divIFrameSeleccionActivador {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionActivador {
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
+}
+
+#divObservaciones {
+	float: left;
+	width: 60%;
+}
+
+#textareaObservaciones {
+	width: 100%;
+}

@@ -58,6 +58,7 @@ public class ACMInterfaceProcesoDWR {
 		ACMInterfaceProcesoEstadisticaTO result = new ACMInterfaceProcesoEstadisticaTO();
 		
 		result.setCantidadRegistrosEnProceso(acmInterfaceProcesoEstadistica.getCantidadRegistrosEnProceso());
+		result.setCantidadRegistrosListaVacia(acmInterfaceProcesoEstadistica.getCantidadRegistrosListaVacia());
 		result.setCantidadRegistrosParaProcesar(acmInterfaceProcesoEstadistica.getCantidadRegistrosParaProcesar());
 		result.setCantidadRegistrosParaProcesarPrioritario(acmInterfaceProcesoEstadistica.getCantidadRegistrosParaProcesarPrioritario());
 		result.setCantidadRegistrosProcesado(acmInterfaceProcesoEstadistica.getCantidadRegistrosProcesado());

@@ -35,10 +35,12 @@
 							<td class="tdProcesoCantidadRegistrosEnProceso">En proceso</td>
 							<td class="tdProcesoCantidadRegistrosParaProcesarPrioritario">Prioritarios</td>
 							<td class="tdProcesoCantidadRegistrosProcesado">Procesados</td>
+							<td class="tdProcesoCantidadRegistrosProcesado">Lista Vac&iacute;a</td>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
+							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>

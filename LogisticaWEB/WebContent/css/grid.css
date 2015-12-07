@@ -1,0 +1,116 @@
+table {
+	height: 318px;	
+}
+
+thead {
+	position: fixed;
+}
+
+thead tr td {
+	height: 18px;
+}
+
+thead tr .td1NOO {
+	width: 55px;
+}
+
+thead tr .td2NOO {
+	width: 110px;
+}
+
+thead tr .td3NOO {
+	width: 65px;
+}
+
+thead tr .td1ASC {
+	width: 55px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+thead tr .td2ASC {
+	width: 110px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+thead tr .td3ASC {
+	width: 65px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+thead tr .td1DES {
+	width: 55px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+thead tr .td2DES {
+	width: 110px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+thead tr .td3DES {
+	width: 65px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+tbody {
+	position: fixed;
+	margin-top: 19px;
+	overflow: auto;
+	height: 277px;
+}
+
+tbody tr td .div1 {
+	text-align: right;
+	margin-right: 2px;
+	width: 53px;
+}
+
+tbody tr td .div2 {
+	text-align: left;
+	margin-left: 2px;
+	width: 108px;
+}
+
+tbody tr td .div3 {
+	text-align: center;
+	width: 65px;
+}
+
+tfoot {
+	position: fixed;
+	margin-top: 297px;
+	overflow: auto;
+}
+
+tfoot tr td {
+	height: 18px;
+}
+
+.tdCantidadRegistrosLabel {
+	width: 120px;
+	text-align: left;
+}
+
+.tdCantidadRegistrosLabel div {
+	margin-left: 2px;
+}
+
+#divCantidadRegistros {
+	width: 99%;
+	height: 16px;
+	text-align: left;
+	padding-top: 2px;
+	margin-left: 2px;
+}

@@ -32,6 +32,9 @@ function reloadData() {
 							+ "<td class='tdProcesoCantidadRegistrosProcesado'><div class='divProcesoCantidadRegistrosProcesado'>" 
 								+ (data[i].cantidadRegistrosProcesado != null ? data[i].cantidadRegistrosProcesado : "0")
 							+ "</div></td>"
+							+ "<td class='tdProcesoCantidadRegistrosListaVacia'><div class='divProcesoCantidadRegistrosListaVacia'>" 
+								+ (data[i].cantidadRegistrosListaVacia != null ? data[i].cantidadRegistrosListaVacia : "0")
+							+ "</div></td>"
 						+ "</tr>"
 					);
 				}

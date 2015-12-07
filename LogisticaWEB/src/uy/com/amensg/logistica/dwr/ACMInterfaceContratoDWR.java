@@ -13,6 +13,7 @@ import uy.com.amensg.logistica.bean.ACMInterfaceContratoBean;
 import uy.com.amensg.logistica.bean.IACMInterfaceContratoBean;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceContratoTO;
+import uy.com.amensg.logistica.entities.EmpresaTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
@@ -71,6 +72,28 @@ public class ACMInterfaceContratoDWR {
 				MetadataConsultaDWR.transform(
 					metadataConsultaTO
 				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String exportarAExcelByEmpresa(
+		MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones
+	) {
+		String result = null;
+		
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			result = iACMInterfaceContratoBean.exportarAExcel(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				),
+				EmpresaDWR.transform(empresaTO),
+				observaciones
 			);
 		} catch (Exception e) {
 			e.printStackTrace();

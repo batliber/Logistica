@@ -1,4 +1,5 @@
 #divPrepagos {
+	float: left;
 	width: 784px;
 	display: none;
 }

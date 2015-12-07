@@ -1,0 +1,165 @@
+.divLayoutColumn {
+	float: left;
+	width: 50%;
+}
+
+#divMid {
+	float: left;
+	width: 60%;
+}
+
+#divNumeroTramite {
+	float: left;
+	width: 60%;
+}
+
+#divEstado {
+	float: left;
+	width: 60%;
+}
+
+#divFechaVenta {
+	float: left;
+	width: 60%;
+}
+
+#divLocalidad {
+	float: left;
+	width: 60%;
+}
+
+#divFechaVencimiento {
+	float: left;
+	width: 60%;
+}
+
+#divNumeroContrato {
+	float: left;
+	width: 60%;
+}
+
+#divPlan {
+	float: left;
+	width: 60%;
+}
+
+#divNuevoPlan {
+	float: left;
+	width: 60%;
+}
+
+#divEquipo {
+	float: left;
+	width: 60%;
+}
+
+#divNumeroSerie {
+	float: left;
+	width: 60%;
+}
+
+#divDocumento {
+	float: left;
+	width: 60%;
+}
+
+#divNombre {
+	float: left;
+	width: 60%;
+}
+
+#inputNombre {
+	width: 100%;
+}
+
+#divNumeroFactura {
+	float: left;
+	width: 60%;
+}
+
+#divDireccionFactura {
+	float: left;
+	width: 60%;
+}
+
+#inputDireccionFactura {
+	width: 100%;
+}
+
+#divDireccionEntrega {
+	float: left;
+	width: 60%;
+}
+
+#inputDireccionEntrega {
+	width: 100%;
+}
+
+#divDepartamento {
+	float: left;
+	width: 60%;
+}
+
+#divTelefonoContacto {
+	float: left;
+	width: 60%;
+}
+
+#divEmail {
+	float: left;
+	width: 60%;
+}
+
+#inputEmail {
+	width: 100%;
+}
+
+#divPrecio {
+	float: left;
+	width: 60%;
+}
+
+#divDepartamento {
+	float: left;
+	width: 60%;
+}
+
+#selectDepartamento {
+	width: 56.5%;
+}
+
+#divZona {
+	float: left;
+	width: 61.5%;
+}
+
+#selectZona {
+	width: 100%;
+}
+
+#divTurno {
+	float: left;
+	width: 61.5%;
+}
+
+#selectTurno {
+	width: 100%;
+}
+
+#divFechaEntrega {
+	float: left;
+	width: 61.5%;
+}
+
+#selectFechaEntrega {
+	width: 100%;
+}
+
+#divObservaciones {
+	float: left;
+	width: 60%;
+}
+
+#textareaObservaciones {
+	width: 100%;
+}

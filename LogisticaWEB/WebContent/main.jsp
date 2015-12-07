@@ -14,18 +14,8 @@
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/main.css"/>
 </head>
 <body>
-	<div class="divMenuBar">
-		<div class="inactiveMenuBarItem"><div id="divLogo"><img id="imgLogo" src="/LogisticaWEB/images/logo-vos-bw.png"></img></div></div>
-		<div class="activeMenuBarItem"><div><a href="#" onclick="javascript:menuItemOnClick(event, this)" id="acm">ACM</a></div></div>
-		<div class="inactiveMenuBarItem"><div><a href="#" onclick="javascript:menuItemOnClick(event, this)" id="archivos">Archivos</a></div></div>
-		<div class="inactiveMenuBarItem"><div><a href="#" onclick="javascript:menuItemOnClick(event, this)" id="procesos">Procesos</a></div></div>
-		<div class="divUserInfo">
-			<div class="divLogout" style="float: right;" onclick="javascript:divLogoutOnClick(event, this)">&nbsp;</div>
-			<div id="divActiveUser" style="float: right;">&nbsp;</div>
-			<div style="float: right;">Usuario:</div>
-		</div>
-	</div>
-	<div id="divIFrameActivePage"><iframe id="iFrameActivePage" src="/LogisticaWEB/pages/acm/acm.jsp" frameborder="0"></iframe></div>
+	<div class="divMenuBar">&nbsp;</div>
+	<div id="divIFrameActivePage"><iframe id="iFrameActivePage" src="#" frameborder="0"></iframe></div>
 	<div id="divModalBackground">&nbsp;</div>
 </body>
 </html>

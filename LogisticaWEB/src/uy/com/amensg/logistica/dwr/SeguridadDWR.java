@@ -14,6 +14,7 @@ import uy.com.amensg.logistica.bean.SeguridadBean;
 import uy.com.amensg.logistica.bean.UsuarioBean;
 import uy.com.amensg.logistica.entities.SeguridadAuditoria;
 import uy.com.amensg.logistica.entities.Usuario;
+import uy.com.amensg.logistica.entities.UsuarioTO;
 
 @RemoteProxy
 public class SeguridadDWR {
@@ -28,8 +29,8 @@ public class SeguridadDWR {
 		return (ISeguridadBean) context.lookup(lookupName);
 	}
 	
-	public String getActiveUserData() {
-		String result = null;
+	public UsuarioTO getActiveUserData() {
+		UsuarioTO result = null;
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		
@@ -47,7 +48,7 @@ public class SeguridadDWR {
 				
 				Usuario usuario = iUsuarioBean.getById(usuarioId);
 				
-				result = usuario.getNombre();
+				result = UsuarioDWR.transform(usuario);
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
@@ -88,6 +89,7 @@ public class SeguridadDWR {
 				iSeguridadBean.logout(usuarioId);
 				
 				httpSession.removeAttribute("sesion");
+				httpSession.invalidate();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

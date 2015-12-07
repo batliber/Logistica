@@ -1,0 +1,45 @@
+#divContratos {
+	float: left; 
+}
+
+#divIFrameContrato {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameContrato {
+	width: 800px;
+	height: 450px;
+	border: none;
+}
+
+#divIFrameSeleccionDistribuidor {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionDistribuidor {
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
+}
+
+#divObservaciones {
+	float: left;
+	width: 60%;
+}
+
+#textareaObservaciones {
+	width: 100%;
+}

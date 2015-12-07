@@ -52,6 +52,8 @@ var campos = {
 $(document).ready(function() {
 	$("#inputExportarAExcel").prop("disabled", true);
 	$("#inputExportarSubconjunto").prop("disabled", true);
+	$("#inputAsignar").prop("disabled", true);
+	$("#inputAsignarSubconjunto").prop("disabled", true);
 	$("#inputDeshacerAsignacion").prop("disabled", true);
 	$("#inputReprocesar").prop("disabled", true);
 	$("#inputReprocesarSubconjunto").prop("disabled", true);
@@ -73,6 +75,8 @@ function habilitarAcciones(habilitar, force) {
 		if (accionesHabilitadas) {
 			$("#inputExportarAExcel").prop("disabled", true);
 			$("#inputExportarSubconjunto").prop("disabled", true);
+			$("#inputAsignar").prop("disabled", true);
+			$("#inputAsignarSubconjunto").prop("disabled", true);
 			$("#inputDeshacerAsignacion").prop("disabled", true);
 			$("#inputReprocesar").prop("disabled", true);
 			$("#inputReprocesarSubconjunto").prop("disabled", true);
@@ -82,6 +86,8 @@ function habilitarAcciones(habilitar, force) {
 		} else {
 			$("#inputExportarAExcel").prop("disabled", false);
 			$("#inputExportarSubconjunto").prop("disabled", false);
+			$("#inputAsignar").prop("disabled", false);
+			$("#inputAsignarSubconjunto").prop("disabled", false);
 			$("#inputDeshacerAsignacion").prop("disabled", false);
 			$("#inputReprocesar").prop("disabled", false);
 			$("#inputReprocesarSubconjunto").prop("disabled", false);
@@ -96,6 +102,8 @@ function habilitarAcciones(habilitar, force) {
 		
 		$("#inputExportarAExcel").prop("disabled", !habilitar);
 		$("#inputExportarSubconjunto").prop("disabled", !habilitar);
+		$("#inputAsignar").prop("disabled", !habilitar);
+		$("#inputAsignarSubconjunto").prop("disabled", !habilitar);
 		$("#inputDeshacerAsignacion").prop("disabled", !habilitar);
 		$("#inputReprocesar").prop("disabled", !habilitar);
 		$("#inputReprocesarSubconjunto").prop("disabled", !habilitar);
@@ -838,6 +846,151 @@ function inputExportarAExcelOnClick(event) {
 		}
 	} else {
 		alert("Funcionalidad no habilitada para el tipo de registro.");
+	}
+}
+
+function inputAsignarOnClick(event) {
+	$("#selectEmpresa > option").remove();
+	
+	$("#selectEmpresa").append("<option value='0'>Seleccione...</option>");
+	
+	EmpresaDWR.list(
+		{
+			callback: function(data) {
+				var html = "";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+				}
+				
+				$("#selectEmpresa").append(html);
+			}, async: false
+		}
+	);
+	
+	showPopUp(document.getElementById("divIFrameSeleccionEmpresa"));
+}
+
+function inputAsignarSubconjuntoOnClick(event) {
+	$("#inputTamanoSubconjuntoAsignacion").val($("#inputTamanoSubconjunto").val());
+	
+	$("#selectEmpresa > option").remove();
+	
+	$("#selectEmpresa").append("<option value='0'>Seleccione...</option>");
+	
+	EmpresaDWR.list(
+		{
+			callback: function(data) {
+				var html = "";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+				}
+				
+				$("#selectEmpresa").append(html);
+			}, async: false
+		}
+	);
+	
+	showPopUp(document.getElementById("divIFrameSeleccionEmpresa"));
+}
+
+function divCloseOnClick(event, element) {
+	closePopUp(event, element.parentNode.parentNode);
+	
+	$("#inputTamanoSubconjuntoAsignacion").val(0);
+	$("#selectEmpresa").val("0");
+	$("#textareaObservaciones").val("");
+	
+	reloadData();
+}
+
+function inputCancelarOnClick(event, element) {
+	closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
+	
+	$("#inputTamanoSubconjuntoAsignacion").val(0);
+	$("#selectEmpresa").val("0");
+	$("#textareaObservaciones").val("");
+	
+	reloadData();
+}
+
+function inputAceptarOnClick(event) {
+	var metadataConsulta = calcularMetadataConsulta();
+	
+	if ($("#selectEmpresa").val() != "0") {
+		var empresa = {
+			id: $("#selectEmpresa").val()
+		};
+		
+		if ($("#selectTipoRegistro").val() == "contrato") {
+			if ($("#inputTamanoSubconjuntoAsignacion").val() != 0) {
+				metadataConsulta.tamanoSubconjunto = 
+					Math.min(
+						$("#inputTamanoSubconjuntoAsignacion").val(),
+						$("#divContratoCantidadRegistros").text()
+					);
+			}
+			
+			if (confirm("Se exportarán " 
+				+ (metadataConsulta.tamanoSubconjunto != null ?
+					metadataConsulta.tamanoSubconjunto
+					: $("#divContratoCantidadRegistros").text()) + " registros.")) {
+				ACMInterfaceContratoDWR.exportarAExcelByEmpresa(
+					metadataConsulta,
+					empresa,
+					$("#textareaObservaciones").val(),
+					{
+						callback: function(data) {
+							alert("Archivo generado: " + data);
+							
+							closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
+							
+							$("#inputTamanoSubconjuntoAsignacion").val(0);
+							$("#selectEmpresa").val("0");
+							$("#textareaObservaciones").val("");
+							
+							reloadData();
+						}
+					}
+				);
+			}
+		} else if ($("#selectTipoRegistro").val() == "prepago") {
+			if ($("#inputTamanoSubconjuntoAsignacion").val() != 0) {
+				metadataConsulta.tamanoSubconjunto = 
+					Math.min(
+						$("#inputTamanoSubconjuntoAsignacion").val(),
+						$("#divPrepagoCantidadRegistros").text()
+					);
+			}
+			
+			if (confirm("Se exportarán " 
+				+ (metadataConsulta.tamanoSubconjunto != null ?
+					metadataConsulta.tamanoSubconjunto
+					: $("#divPrepagoCantidadRegistros").text()) + " registros.")) {
+				ACMInterfacePrepagoDWR.exportarAExcelByEmpresa(
+					metadataConsulta,
+					empresa,
+					$("#textareaObservaciones").val(),
+					{
+						callback: function(data) {
+							alert("Archivo generado: " + data);
+							
+							closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
+							
+							$("#selectEmpresa").val("0");
+							$("#textareaObservaciones").val("");
+							
+							reloadData();
+						}
+					}
+				);
+			}
+		} else {
+			alert("Funcionalidad no habilitada para el tipo de registro.");
+		}
+	} else {
+		alert("Debe seleccionar una empresa.");
 	}
 }
 

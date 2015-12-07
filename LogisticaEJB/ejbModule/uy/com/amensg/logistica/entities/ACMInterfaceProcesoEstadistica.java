@@ -16,6 +16,7 @@ public class ACMInterfaceProcesoEstadistica implements Serializable,
 	private Long cantidadRegistrosParaProcesarPrioritario;
 	private Long cantidadRegistrosProcesado;
 	private Long cantidadRegistrosEnProceso;
+	private Long cantidadRegistrosListaVacia;
 
 	public Long getId() {
 		return id;
@@ -81,6 +82,14 @@ public class ACMInterfaceProcesoEstadistica implements Serializable,
 
 	public void setCantidadRegistrosEnProceso(Long cantidadRegistrosEnProceso) {
 		this.cantidadRegistrosEnProceso = cantidadRegistrosEnProceso;
+	}
+
+	public Long getCantidadRegistrosListaVacia() {
+		return cantidadRegistrosListaVacia;
+	}
+
+	public void setCantidadRegistrosListaVacia(Long cantidadRegistrosListaVacia) {
+		this.cantidadRegistrosListaVacia = cantidadRegistrosListaVacia;
 	}
 
 	public int compareTo(ACMInterfaceProcesoEstadistica o) {

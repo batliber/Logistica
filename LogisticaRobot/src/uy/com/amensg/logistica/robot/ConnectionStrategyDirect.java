@@ -71,12 +71,13 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			this.initializeConnection();
 			
 			PreparedStatement preparedStatementQuery = this.connection.prepareStatement(
-				"select mid, random() as ordinal"
-				+ " from acm_interface_mid"
+				"select mid.mid, contrato.documento, contrato.numero_contrato, random() as ordinal"
+				+ " from acm_interface_mid mid"
+				+ " left outer join acm_interface_contrato contrato on contrato.mid = mid.mid"
 				+ " where estado in ("
 					+ "	?, ?"
 				+ " )"
-				+ " order by estado desc, ordinal asc"
+				+ " order by mid.estado desc, ordinal asc"
 				+ " limit 1"
 			);
 			preparedStatementQuery.setLong(
@@ -88,7 +89,15 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			
 			ResultSet resultSet = preparedStatementQuery.executeQuery();
 			if (resultSet.next()) {
-				result = new Long(resultSet.getLong(1)).toString();
+				String mid = new Long(resultSet.getLong(1)).toString();
+				String documento = resultSet.getString(2) != null ? resultSet.getString(2) : "";
+				String numeroContrato = resultSet.getString(3) != null ? new Long(resultSet.getLong(3)).toString() : "";
+				
+				if (!documento.equals("")) {
+					result = "C " + mid + " " + documento + " " + numeroContrato;
+				} else {
+					result = "P " + mid;
+				}
 				
 				Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso"));
 				Long uact = new Long(1);
@@ -100,7 +109,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 					uact,
 					fact,
 					term,
-					result
+					mid
 				);
 				
 				this.connection.commit();
