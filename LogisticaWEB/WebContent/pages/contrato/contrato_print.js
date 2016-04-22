@@ -96,6 +96,8 @@ $(document).ready(function() {
 					data.usuario != null ? data.usuario.nombre : "&nbsp;"
 				);
 				*/
+				
+				window.print();
 			}, async: false
 		}
 	);

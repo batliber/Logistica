@@ -43,7 +43,7 @@ public class BarcodeServlet extends HttpServlet {
 				} else if (type.equals("B")) {
 					//  Write Barcode
 					writer = new Code128Writer();
-					bitMatrix = writer.encode(code, BarcodeFormat.CODE_128, 150, 80, null);
+					bitMatrix = writer.encode(code, BarcodeFormat.CODE_128, 200, 80, null);
 					MatrixToImageWriter.writeToStream(bitMatrix, "png", servletOutputStream);
 				} else if (type.equals("PDF")) {
 					//  Write PDF417
@@ -54,7 +54,7 @@ public class BarcodeServlet extends HttpServlet {
 			} else {
 				//  Write Barcode
 				writer = new Code128Writer();
-				bitMatrix = writer.encode(code, BarcodeFormat.CODE_128, 150, 80, null);
+				bitMatrix = writer.encode(code, BarcodeFormat.CODE_128, 200, 80, null);
 				MatrixToImageWriter.writeToStream(bitMatrix, "png", servletOutputStream);
 			}
 		} catch (Exception e){

@@ -5,6 +5,7 @@
 	<title>ACM</title>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceContratoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfacePrepagoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceListaNegraDWR.js"></script>
@@ -13,8 +14,10 @@
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
-	<script type="text/javascript" src="./acm.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/pages/acm/acm.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
 	<link rel="stylesheet" type="text/css" href="./acm.css"/>
 	<link rel="stylesheet" type="text/css" href="./contrato.css"/>
@@ -24,6 +27,9 @@
 	<link rel="stylesheet" type="text/css" href="./sinDatos.css"/>
 </head>
 <body>
+	<div class="divMenuBar">
+<%@ include file="/includes/menu.jsp" %>	
+	</div>
 	<div class="divButtonBar">
 		<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 		<div class="divButton"><input type="submit" id="inputHabilitarAcciones" value="Habilitar acciones" onclick="javascript:inputHabilitarAccionesOnClick(event, this)"/></div>

@@ -6,20 +6,30 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoRoutingHistoryDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
-	<script type="text/javascript" src="./activacion.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/pages/activacion/activacion.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
-	<link rel="stylesheet" type="text/css" href="./activacion.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/activacion/activacion.css"/>
 </head>
 <body>
+	<div class="divMenuBar">
+<%@ include file="/includes/menu.jsp" %>	
+	</div>
 	<div class="divButtonBar">
 		<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 		<div class="divButton" id="divButtonAsignar"><input type="submit" id="inputAsignar" value="Asignar" onclick="javascript:inputAsignarOnClick(event, this)"/></div>
@@ -41,6 +51,8 @@
 			<div id="divAgregarFiltroContainer">
 				<div class="divFormLabelExtended">Agregar filtro:</div>
 				<div id="divAgregarFiltro"><input type="submit" value="Agregar" id="inputAgregarFiltro" onclick="javascript:grid.filtroDinamico.agregarFiltro(event, this)"/></div>
+				<div class="divFormLabelExtended">Limpiar filtros:</div>
+				<div id="divLimpiarFiltros"><input type="submit" value="Limpiar" id="inputLimpiarFiltros" onclick="javascript:grid.filtroDinamico.limpiarFiltros(event, this)"/></div>
 			</div>
 		</div>
 		<div id="divContratos">
@@ -50,7 +62,7 @@
 	<div id="divIFrameContrato" style="display: none;">
 		<div class="divTitleBar">
 			<div class="divTitleBarText" style="float:left;">Contrato</div>
-			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
+			<div id="divCloseIFrameContrato" class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
 		</div>
 		<iframe id="iFrameContrato" frameborder="0" src="#"></iframe>
 	</div>

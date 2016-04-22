@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -27,7 +26,7 @@ public class Usuario extends BaseEntity {
 	@Column(name = "fecha_baja")
 	private Date fechaBaja;
 
-	@OneToMany(mappedBy = "usuario", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "usuario")
 	private Collection<UsuarioRolEmpresa> usuarioRolEmpresas;
 	
 	public String getLogin() {

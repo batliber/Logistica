@@ -19,13 +19,39 @@ public class DisponibilidadEntregaEmpresaZonaTurnoBean implements IDisponibilida
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
 	private EntityManager entityManager;
 	
+	public Collection<DisponibilidadEntregaEmpresaZonaTurno> listByEmpresaZona(Empresa empresa, Zona zona) {
+		Collection<DisponibilidadEntregaEmpresaZonaTurno> result = new LinkedList<DisponibilidadEntregaEmpresaZonaTurno>();
+		
+		try {
+			TypedQuery<DisponibilidadEntregaEmpresaZonaTurno> query = 
+				entityManager.createQuery(
+					"SELECT deezt"
+					+ " FROM DisponibilidadEntregaEmpresaZonaTurno deezt"
+					+ " WHERE deezt.empresa = :empresa"
+					+ " AND deezt.zona = :zona", 
+					DisponibilidadEntregaEmpresaZonaTurno.class
+				);
+			query.setParameter("empresa", empresa);
+			query.setParameter("zona", zona);
+			
+			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurno : query.getResultList()) {
+				result.add(disponibilidadEntregaEmpresaZonaTurno);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<DisponibilidadEntregaEmpresaZonaTurno> listByEmpresaZonaTurno(Empresa empresa, Zona zona, Turno turno) {
 		Collection<DisponibilidadEntregaEmpresaZonaTurno> result = new LinkedList<DisponibilidadEntregaEmpresaZonaTurno>();
 		
 		try {
 			TypedQuery<DisponibilidadEntregaEmpresaZonaTurno> query = 
 				entityManager.createQuery(
-					"SELECT deezt FROM DisponibilidadEntregaEmpresaZonaTurno deezt"
+					"SELECT deezt"
+					+ " FROM DisponibilidadEntregaEmpresaZonaTurno deezt"
 					+ " WHERE deezt.empresa = :empresa"
 					+ " AND deezt.zona = :zona"
 					+ " AND deezt.turno = :turno", 

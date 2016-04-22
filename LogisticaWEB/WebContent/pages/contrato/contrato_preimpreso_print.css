@@ -1,0 +1,157 @@
+body {
+	margin: 0px;
+	background-color: white;
+}
+
+span {
+	padding-left: 2px;
+}
+
+.divA4Sheet {
+	font-size: 9pt;
+	font-family: Calibri, Segoe UI;
+	width: 205mm;
+	height: 255mm;
+	/* background-color: grey; */
+	/* border: solid 1px black; */
+}
+
+.divPageHeading {
+	margin: auto;
+	width: 80%;
+	height: 50mm;
+}
+
+.divPageContent {
+	margin: auto;
+	width: 78%;
+}
+
+.divTexto {
+	height: 95px;
+}
+
+.divTitulo {
+	float: left;
+	width: 100%;
+	height: 34px;
+	font-weight: bold;
+	overflow: hidden;
+	/* white-space: nowrap; */
+}
+
+.divTabla {
+	float: left;
+	width: 100%;
+	border-top: solid 1px black;
+	border-left: solid 1px black;
+	border-right: solid 1px black;
+}
+
+.divFila {
+	float: left;
+	width: 100%;
+	height: 22px;
+	border-bottom: solid 1px black;
+}
+
+.divFilaLast {
+	float: left;
+	width: 100%;
+	height: 22px;
+}
+
+.divTextarea {
+	float: left;
+	width: 100%;
+	border: solid 1px black;
+}
+
+.divTextarea ul {
+ 
+}
+
+.divFila div {
+	float: left;
+	padding-left: 2px;
+	padding-top: 2px;
+	height: 20px;
+}
+
+.divColumnaFull {
+	width: 603px;
+}
+
+.divColumnaHalf {
+	width: 299px;
+	border-right: solid 1px black;
+}
+
+.divColumnaHalfFiller {
+	width: 300px;
+}
+
+.divColumnaThird {
+	width: 199px;
+	border-right: solid 1px black;
+}
+
+.divColumnaThirdFiller {
+	width: 198px;
+}
+
+.divColumnaQuarter {
+	width: 144px;
+	border-right: solid 1px black;
+}
+
+.divColumnaQuarterFiller {
+	width: 145px;
+}
+
+.divColumnaFifth {
+	width: 118px;
+	border-right: solid 1px black;
+}
+
+.divColumnaFifthFiller {
+	width: 118px;
+}
+
+.divColumnaSixth {
+	width: 98px;
+	border-right: solid 1px black;
+}
+
+.divColumnaSixthFiller {
+	width: 97px;
+}
+
+.divColumnaNineth {
+	width: 64px;
+	border-right: solid 1px black;
+}
+
+.divColumnaNinethFiller {
+	width: 66px;
+}
+
+.divColumnaMin {
+	width: 15px;
+	border-right: solid 1px black;
+}
+
+.divColumnaMinFiller {
+	width: 13px;
+}
+
+.divColumnaDigit {
+	width: 20px;
+	border-right: solid 1px black;
+	text-align: center;
+}
+
+.divColumnaDigitFiller {
+	width: 24px;
+	text-align: center;
+}

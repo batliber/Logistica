@@ -364,21 +364,21 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					contrato = new Contrato();
 				}
 				
-				contrato.setAgente(acmInterfaceContrato.getAgente());
-				contrato.setCodigoPostal(acmInterfaceContrato.getCodigoPostal());
-				contrato.setDireccion(acmInterfaceContrato.getDireccion());
-				contrato.setDocumento(acmInterfaceContrato.getDocumento());
+				contrato.setAgente(acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null);
+				contrato.setCodigoPostal(acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null);
+				contrato.setDireccion(acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null);
+				contrato.setDocumento(acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null);
 				contrato.setDocumentoTipo(acmInterfaceContrato.getDocumentoTipo());
-				contrato.setEquipo(acmInterfaceContrato.getEquipo());
+				contrato.setEquipo(acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null);
 				contrato.setFechaFinContrato(acmInterfaceContrato.getFechaFinContrato());
-				contrato.setLocalidad(acmInterfaceContrato.getLocalidad());
+				contrato.setLocalidad(acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null);
 				contrato.setMid(acmInterfaceContrato.getMid());
-				contrato.setNombre(acmInterfaceContrato.getNombre());
+				contrato.setNombre(acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null);
 				contrato.setNumeroCliente(acmInterfaceContrato.getNumeroCliente());
 				contrato.setNumeroContrato(acmInterfaceContrato.getNumeroContrato());
-				contrato.setObservaciones(observaciones);
-				contrato.setTipoContratoCodigo(acmInterfaceContrato.getTipoContratoCodigo());
-				contrato.setTipoContratoDescripcion(acmInterfaceContrato.getTipoContratoDescripcion());
+				contrato.setObservaciones(observaciones != "" ? observaciones : null);
+				contrato.setTipoContratoCodigo(acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null);
+				contrato.setTipoContratoDescripcion(acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null);
 				
 				contrato.setEmpresa(empresa);
 				contrato.setEstado(estado);

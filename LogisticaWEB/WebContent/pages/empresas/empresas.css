@@ -1,0 +1,14 @@
+#divIFrameEmpresa {
+	position: absolute;
+	top: 100px;
+	left: 100px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameEmpresa{
+	width: 550px;
+	height: 350px;
+	border: none;
+}

@@ -48,7 +48,7 @@ public class SeguridadDWR {
 				
 				Usuario usuario = iUsuarioBean.getById(usuarioId);
 				
-				result = UsuarioDWR.transform(usuario);
+				result = UsuarioDWR.transform(usuario, true);
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
@@ -57,17 +57,21 @@ public class SeguridadDWR {
 		return result;
 	}
 	
-	public void login(String login, String contrasena) throws Exception {
+	public UsuarioTO login(String login, String contrasena) throws Exception {
+		UsuarioTO result = null;
+		
 		try {
 			ISeguridadBean iSeguridadBean = this.lookupBean();
 			
 			SeguridadAuditoria seguridadAuditoria = iSeguridadBean.login(login, contrasena);
-			
+		
 			if (seguridadAuditoria != null) {
 				HttpSession httpSession = WebContextFactory.get().getSession(true);
 				
 				if (httpSession.getAttribute("sesion") == null) {
 					httpSession.setAttribute("sesion", seguridadAuditoria.getUsuario().getId());
+					
+					result = UsuarioDWR.transform(seguridadAuditoria.getUsuario(), true);
 				}
 			} else {
 				throw new Exception("Usuario o contraseña incorrecta.");
@@ -75,6 +79,8 @@ public class SeguridadDWR {
 		} catch (Exception e) {
 			throw e;
 		}
+		
+		return result;
 	}
 	
 	public void logout() {

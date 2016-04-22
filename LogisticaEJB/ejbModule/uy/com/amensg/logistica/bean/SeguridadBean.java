@@ -49,7 +49,7 @@ public class SeguridadBean implements ISeguridadBean {
 				
 				seguridadAuditoria.setFact(date);
 				seguridadAuditoria.setTerm(new Long(1));
-				seguridadAuditoria.setUact(new Long(1));
+				seguridadAuditoria.setUact(usuario.getId());
 				
 				entityManager.persist(seguridadAuditoria);
 				
@@ -82,7 +82,7 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			seguridadAuditoria.setFact(date);
 			seguridadAuditoria.setTerm(new Long(1));
-			seguridadAuditoria.setUact(new Long(1));
+			seguridadAuditoria.setUact(usuario.getId());
 			
 			entityManager.persist(seguridadAuditoria);
 		} catch (Exception e) {
@@ -110,7 +110,7 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			seguridadAuditoria.setFact(date);
 			seguridadAuditoria.setTerm(new Long(1));
-			seguridadAuditoria.setUact(new Long(1));
+			seguridadAuditoria.setUact(usuario.getId());
 			
 			entityManager.persist(seguridadAuditoria);
 		} catch (Exception e) {

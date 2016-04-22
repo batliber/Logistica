@@ -12,6 +12,8 @@ public class ContratoRoutingHistoryTO extends BaseTO {
 	private EmpresaTO empresa;
 	private RolTO rol;
 	private UsuarioTO usuario;
+	private EstadoTO estado;
+	private UsuarioTO usuarioAct;
 
 	public Date getFecha() {
 		return fecha;
@@ -51,5 +53,21 @@ public class ContratoRoutingHistoryTO extends BaseTO {
 
 	public void setUsuario(UsuarioTO usuario) {
 		this.usuario = usuario;
+	}
+	
+	public EstadoTO getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoTO estado) {
+		this.estado = estado;
+	}
+
+	public UsuarioTO getUsuarioAct() {
+		return usuarioAct;
+	}
+
+	public void setUsuarioAct(UsuarioTO usuarioAct) {
+		this.usuarioAct = usuarioAct;
 	}
 }

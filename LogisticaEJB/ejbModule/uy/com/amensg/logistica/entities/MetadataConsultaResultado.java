@@ -1,9 +1,12 @@
 package uy.com.amensg.logistica.entities;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class MetadataConsultaResultado {
+public class MetadataConsultaResultado implements Serializable {
 
+	private static final long serialVersionUID = -2756993869895704750L;
+	
 	private Long cantidadRegistros;
 	private Collection<Object> registrosMuestra;
 

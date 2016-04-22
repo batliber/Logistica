@@ -1,4 +1,24 @@
+var grid = null;
+
 $(document).ready(function() {
+	grid = new Grid(
+			document.getElementById("divTableProcesos"),
+			{
+				tdFechaInicio: { campo: "fechaInicio", descripcion: "Fecha de inicio", abreviacion: "Inicio", tipo: __TIPO_CAMPO_FECHA },
+				tdFechaFin: { campo: "fechaFin", descripcion: "Fecha de fin", abreviacion: "Fin", tipo: __TIPO_CAMPO_FECHA },
+				tdObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING, ancho: 400 },
+				tdCantidadRegistrosParaProcesar: { campo: "cantidadRegistrosParaProcesar", descripcion: "Para procesar", abreviacion: "Para procesar", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+				tdCantidadRegistrosEnProceso: { campo: "cantidadRegistrosEnProceso", descripcion: "En proceso", abreviacion: "En proceso", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+				tdCantidadRegistrosParaProcesarPrioritario: { campo: "cantidadRegistrosParaProcesarPrioritario", descripcion: "Para procesar prioritario", abreviacion: "Prioritarios", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+				tdCantidadRegistrosProcesado: { campo: "cantidadRegistrosProcesado", descripcion: "Procesados", abreviacion: "Procesados", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+				tdCantidadRegistrosListaVacia: { campo: "cantidadRegistrosListaVacia", descripcion: "Lista vacía", abreviacion: "Lista vacía", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 }
+			}, 
+			reloadData,
+			trProcesoOnClick
+		);
+		
+	grid.rebuild();
+	
 	reloadData();
 });
 
@@ -6,41 +26,69 @@ function reloadData() {
 	ACMInterfaceProcesoDWR.listEstadisticas(
 		{
 			callback: function(data) {
-				$("#tableProcesos > tbody:last > tr").remove();
+				var registros = {
+						cantidadRegistros: data.length,
+						registrosMuestra: []
+					};
+					
+				var ordered = data;
 				
-				for (var i=0; i<data.length; i++) {
-					$("#tableProcesos > tbody:last").append(
-						"<tr>"
-							+ "<td class='tdProcesoFechaInicio'><div class='divProcesoFechaInicio'>" 
-								+ (data[i].fechaInicio != null ? formatLongDate(data[i].fechaInicio) : "&nbsp;")
-							+ "</div></td>"
-							+ "<td class='tdProcesoFechaFin'><div class='divProcesoFechaFin'>" 
-								+ (data[i].fechaFin != null ? formatLongDate(data[i].fechaFin) : "&nbsp;")
-							+ "</div></td>"
-							+ "<td class='tdProcesoObservaciones'><div class='divProcesoObservaciones'>" 
-								+ (data[i].observaciones != null ? data[i].observaciones : "&nbsp;")
-							+ "</div></td>"
-							+ "<td class='tdProcesoCantidadRegistrosParaProcesar'><div class='divProcesoCantidadRegistrosParaProcesar'>" 
-								+ (data[i].cantidadRegistrosParaProcesar != null ? data[i].cantidadRegistrosParaProcesar : "0") 
-							+ "</div></td>"
-							+ "<td class='tdProcesoCantidadRegistrosEnProceso'><div class='divProcesoCantidadRegistrosEnProceso'>" 
-								+ (data[i].cantidadRegistrosEnProceso != null ? data[i].cantidadRegistrosEnProceso : "0")
-							+ "</div></td>"
-							+ "<td class='tdProcesoCantidadRegistrosParaProcesarPrioritario'><div class='divProcesoCantidadRegistrosParaProcesarPrioritario'>" 
-								+ (data[i].cantidadRegistrosParaProcesarPrioritario != null ? data[i].cantidadRegistrosParaProcesarPrioritario : "0")
-							+ "</div></td>"
-							+ "<td class='tdProcesoCantidadRegistrosProcesado'><div class='divProcesoCantidadRegistrosProcesado'>" 
-								+ (data[i].cantidadRegistrosProcesado != null ? data[i].cantidadRegistrosProcesado : "0")
-							+ "</div></td>"
-							+ "<td class='tdProcesoCantidadRegistrosListaVacia'><div class='divProcesoCantidadRegistrosListaVacia'>" 
-								+ (data[i].cantidadRegistrosListaVacia != null ? data[i].cantidadRegistrosListaVacia : "0")
-							+ "</div></td>"
-						+ "</tr>"
-					);
+				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
+				if (ordenaciones.length > 0 && data != null) {
+					ordered = data.sort(function(a, b) {
+						var result = 0;
+						
+						for (var i=0; i<ordenaciones.length; i++) {
+							var aValue = null;
+							try {
+								aValue = eval("a." + ordenaciones[i].campo);
+						    } catch(e) {
+						        aValue = null;
+						    }
+						    
+						    var bValue = null;
+						    try {
+								bValue = eval("b." + ordenaciones[i].campo);
+						    } catch(e) {
+						        bValue = null;
+						    }
+							
+							if (aValue < bValue) {
+								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
+								
+								break;
+							} else if (aValue > bValue) {
+								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
+								
+								break;
+							}
+						}
+						
+						return result;
+					});
 				}
+				
+				for (var i=0; i<ordered.length; i++) {
+					registros.registrosMuestra[registros.registrosMuestra.length] = {
+						fechaInicio: ordered[i].fechaInicio,
+						fechaFin: ordered[i].fechaFin,
+						observaciones: ordered[i].observaciones,
+						cantidadRegistrosParaProcesar: ordered[i].cantidadRegistrosParaProcesar,
+						cantidadRegistrosEnProceso: ordered[i].cantidadRegistrosEnProceso,
+						cantidadRegistrosParaProcesarPrioritario: ordered[i].cantidadRegistrosParaProcesarPrioritario,
+						cantidadRegistrosProcesado: ordered[i].cantidadRegistrosProcesado,
+						cantidadRegistrosListaVacia: ordered[i].cantidadRegistrosListaVacia
+					};
+				}
+				
+				grid.reload(registros);
 			}, async: false
 		}
 	);
+}
+
+function trProcesoOnClick() {
+	
 }
 
 function inputActualizarOnClick(event) {

@@ -29,6 +29,9 @@
 				<div style="float: left;width: 70px;"><input type="submit" id="inputAcceder" value="Acceder" onclick="javascript:inputAccederOnClick(event, this)"/></div>
 				<div id="divError">&nbsp;</div>
 			</div>
+			<div class="divVersionBar">
+				<div class="divVersionBarText">Versi&oacute;n 0.91 - 14/04/2016</div>
+			</div>
 		</div>
 	</div>
 </body>

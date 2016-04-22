@@ -14,6 +14,7 @@ public class ContratoTO extends BaseTO {
 	private String documento;
 	private Long numeroCliente;
 	private String nombre;
+	private Date fechaNacimiento;
 	private String direccion;
 	private String localidad;
 	private String codigoPostal;
@@ -32,16 +33,26 @@ public class ContratoTO extends BaseTO {
 	private String nuevoPlan;
 	private String numeroSerie;
 	private String observaciones;
+	private String resultadoEntregaDistribucionObservaciones;
+	private String resultadoEntregaDistribucionURLAnverso;
+	private String resultadoEntregaDistribucionURLReverso;
+	private Double resultadoEntregaDistribucionLatitud;
+	private Double resultadoEntregaDistribucionLongitud;
+	private Double resultadoEntregaDistribucionPrecision;
 	private Date fechaVenta;
 	private Date fechaRechazo;
 	private Date fechaBackoffice;
 	private Date fechaEntregaDistribuidor;
 	private Date fechaDevolucionDistribuidor;
+	private Date fechaEnvioAntel;
 	private Date fechaActivacion;
 	private Date fechaActivarEn;
+	private Date fechaCoordinacion;
+	private BarrioTO barrio;
 	private ZonaTO zona;
 	private TurnoTO turno;
 	private ProductoTO producto;
+	private ResultadoEntregaDistribucionTO resultadoEntregaDistribucion;
 	private EstadoTO estado;
 	private EmpresaTO empresa;
 	private RolTO rol;
@@ -50,6 +61,7 @@ public class ContratoTO extends BaseTO {
 	private UsuarioTO backoffice;
 	private UsuarioTO distribuidor;
 	private UsuarioTO activador;
+	private UsuarioTO coordinador;
 
 	public Long getMid() {
 		return mid;
@@ -105,6 +117,14 @@ public class ContratoTO extends BaseTO {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Date getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(Date fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
 	}
 
 	public String getDireccion() {
@@ -267,6 +287,67 @@ public class ContratoTO extends BaseTO {
 		this.observaciones = observaciones;
 	}
 
+	public String getResultadoEntregaDistribucionObservaciones() {
+		return resultadoEntregaDistribucionObservaciones;
+	}
+
+	public void setResultadoEntregaDistribucionObservaciones(
+			String resultadoEntregaDistribucionObservaciones) {
+		this.resultadoEntregaDistribucionObservaciones = resultadoEntregaDistribucionObservaciones;
+	}
+
+	public String getResultadoEntregaDistribucionURLAnverso() {
+		return resultadoEntregaDistribucionURLAnverso;
+	}
+
+	public void setResultadoEntregaDistribucionURLAnverso(String resultadoEntregaDistribucionURLAnverso) {
+		this.resultadoEntregaDistribucionURLAnverso = resultadoEntregaDistribucionURLAnverso;
+	}
+	
+	public String getResultadoEntregaDistribucionURLReverso() {
+		return resultadoEntregaDistribucionURLReverso;
+	}
+
+	public void setResultadoEntregaDistribucionURLReverso(
+			String resultadoEntregaDistribucionURLReverso) {
+		this.resultadoEntregaDistribucionURLReverso = resultadoEntregaDistribucionURLReverso;
+	}
+
+	public Double getResultadoEntregaDistribucionLatitud() {
+		return resultadoEntregaDistribucionLatitud;
+	}
+
+	public void setResultadoEntregaDistribucionLatitud(
+			Double resultadoEntregaDistribucionLatitud) {
+		this.resultadoEntregaDistribucionLatitud = resultadoEntregaDistribucionLatitud;
+	}
+
+	public Double getResultadoEntregaDistribucionLongitud() {
+		return resultadoEntregaDistribucionLongitud;
+	}
+
+	public void setResultadoEntregaDistribucionLongitud(
+			Double resultadoEntregaDistribucionLongitud) {
+		this.resultadoEntregaDistribucionLongitud = resultadoEntregaDistribucionLongitud;
+	}
+
+	public Double getResultadoEntregaDistribucionPrecision() {
+		return resultadoEntregaDistribucionPrecision;
+	}
+
+	public void setResultadoEntregaDistribucionPrecision(
+			Double resultadoEntregaDistribucionPrecision) {
+		this.resultadoEntregaDistribucionPrecision = resultadoEntregaDistribucionPrecision;
+	}
+
+	public BarrioTO getBarrio() {
+		return barrio;
+	}
+
+	public void setBarrio(BarrioTO barrio) {
+		this.barrio = barrio;
+	}
+
 	public ZonaTO getZona() {
 		return zona;
 	}
@@ -289,6 +370,15 @@ public class ContratoTO extends BaseTO {
 
 	public void setProducto(ProductoTO producto) {
 		this.producto = producto;
+	}
+
+	public ResultadoEntregaDistribucionTO getResultadoEntregaDistribucion() {
+		return resultadoEntregaDistribucion;
+	}
+
+	public void setResultadoEntregaDistribucion(
+			ResultadoEntregaDistribucionTO resultadoEntregaDistribucion) {
+		this.resultadoEntregaDistribucion = resultadoEntregaDistribucion;
 	}
 
 	public EstadoTO getEstado() {
@@ -347,6 +437,14 @@ public class ContratoTO extends BaseTO {
 		this.fechaDevolucionDistribuidor = fechaDevolucionDistribuidor;
 	}
 
+	public Date getFechaEnvioAntel() {
+		return fechaEnvioAntel;
+	}
+
+	public void setFechaEnvioAntel(Date fechaEnvioAntel) {
+		this.fechaEnvioAntel = fechaEnvioAntel;
+	}
+
 	public Date getFechaActivacion() {
 		return fechaActivacion;
 	}
@@ -363,6 +461,14 @@ public class ContratoTO extends BaseTO {
 		this.fechaActivarEn = fechaActivarEn;
 	}
 
+	public Date getFechaCoordinacion() {
+		return fechaCoordinacion;
+	}
+
+	public void setFechaCoordinacion(Date fechaCoordinacion) {
+		this.fechaCoordinacion = fechaCoordinacion;
+	}
+	
 	public UsuarioTO getVendedor() {
 		return vendedor;
 	}
@@ -394,4 +500,12 @@ public class ContratoTO extends BaseTO {
 	public void setActivador(UsuarioTO activador) {
 		this.activador = activador;
 	}
+
+	public UsuarioTO getCoordinador() {
+		return coordinador;
+	}
+
+	public void setCoordinador(UsuarioTO coordinador) {
+		this.coordinador = coordinador;
+	}	
 }

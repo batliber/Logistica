@@ -12,7 +12,11 @@ function inputAccederOnClick(event, element) {
 		$("#inputContrasena").val(),
 		{
 			callback: function(data) {
-				window.location = "/LogisticaWEB";
+				if (data != null && data.menus != null && data.menus.length > 0) {
+					window.location = data.menus[0].url;
+				} else {
+					window.location = "/LogisticaWEB";
+				}
 			}, 
 			errorHandler: function(data) {
 				$("#divError").text(data);

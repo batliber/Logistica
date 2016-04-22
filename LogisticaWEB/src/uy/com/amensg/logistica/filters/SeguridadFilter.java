@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -20,7 +21,6 @@ import uy.com.amensg.logistica.bean.IUsuarioBean;
 import uy.com.amensg.logistica.bean.UsuarioBean;
 import uy.com.amensg.logistica.dwr.UsuarioDWR;
 import uy.com.amensg.logistica.entities.MenuTO;
-import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioTO;
 
 public class SeguridadFilter implements Filter {
@@ -35,6 +35,7 @@ public class SeguridadFilter implements Filter {
 			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 			HttpSession httpSession = httpServletRequest.getSession(false);
 			String requestedPage = httpServletRequest.getRequestURI();
+			String userAgent = httpServletRequest.getHeader("User-Agent");
 			
 			String pageName = requestedPage.substring(requestedPage.lastIndexOf("/") + 1);
 			
@@ -60,6 +61,7 @@ public class SeguridadFilter implements Filter {
 				|| requestedPage.contains("Barcode")
 				|| requestedPage.endsWith("Upload")
 				|| requestedPage.contains("Download")
+				|| requestedPage.contains("Stream")
 				|| requestedPage.contains("login.jsp")) {
 				filterChain.doFilter(request, response);
 				
@@ -67,30 +69,28 @@ public class SeguridadFilter implements Filter {
 			}
 			
 			if ((httpSession == null) || (httpSession.getAttribute("sesion") == null)) {
-				httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/login/login.jsp");
+				if (userAgent.toLowerCase().contains("mobile")) {
+					httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/mobile/mlogin.jsp");
+				} else {
+					httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/login/login.jsp");
+				}
 				return;
 			} else {
 				Long usuarioId = (Long) httpSession.getAttribute("sesion");
 				
-				String EARName = "Logistica";
-				String beanName = UsuarioBean.class.getSimpleName();
-				String remoteInterfaceName = IUsuarioBean.class.getName();
-				String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
-				Context context = new InitialContext();
+				IUsuarioBean iUsuarioBean = (IUsuarioBean) this.lookupUsuarioBean();
 				
-				IUsuarioBean iUsuarioBean = (IUsuarioBean) context.lookup(lookupName);
-				
-				Usuario usuario = iUsuarioBean.getById(usuarioId);
-				
-				UsuarioTO usuarioTO = UsuarioDWR.transform(usuario);
+				UsuarioTO usuarioTO = UsuarioDWR.transform(iUsuarioBean.getById(usuarioId), true);
 				
 				boolean allowed = 
-					requestedPage.endsWith("main.jsp")
-					|| requestedPage.equals("/LogisticaWEB/")
+					requestedPage.equals("/LogisticaWEB/")
+					|| pageName.contains("main.jsp")
+					|| pageName.contains("menu.jsp")
 					|| pageName.contains("contrato.jsp")
-					|| pageName.contains("contrato_print.jsp")
+					|| pageName.contains("_print.jsp")
 					|| pageName.contains("historico.jsp")
-					|| pageName.contains("usuario_edit.jsp");
+					|| pageName.contains("_edit.jsp")
+					|| pageName.contains("mobile");
 				for (MenuTO menu : usuarioTO.getMenus()) {
 					if (menu.getUrl().equals(requestedPage)) {
 						allowed = true;
@@ -111,5 +111,15 @@ public class SeguridadFilter implements Filter {
 
 	public void init(FilterConfig arg0) throws ServletException {
 		
+	}
+
+	private IUsuarioBean lookupUsuarioBean() throws NamingException {
+		String EARName = "Logistica";
+		String beanName = UsuarioBean.class.getSimpleName();
+		String remoteInterfaceName = IUsuarioBean.class.getName();
+		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		Context context = new InitialContext();
+		
+		return (IUsuarioBean) context.lookup(lookupName);
 	}
 }

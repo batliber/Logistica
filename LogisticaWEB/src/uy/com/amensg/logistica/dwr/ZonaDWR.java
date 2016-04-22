@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IZonaBean;
@@ -59,9 +63,54 @@ public class ZonaDWR {
 		return result;
 	}
 	
+	public ZonaTO getById(Long id) {
+		ZonaTO result = null;
+		
+		try {
+			IZonaBean iZonaBean = lookupBean();
+			
+			result = transform(iZonaBean.getById(id));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public void add(ZonaTO zonaTO) {
+		try {
+			IZonaBean iZonaBean = lookupBean();
+			
+			iZonaBean.save(transform(zonaTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void remove(ZonaTO zonaTO) {
+		try {
+			IZonaBean iZonaBean = lookupBean();
+			
+			iZonaBean.remove(transform(zonaTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void update(ZonaTO zonaTO) {
+		try {
+			IZonaBean iZonaBean = lookupBean();
+			
+			iZonaBean.update(transform(zonaTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static ZonaTO transform(Zona zona) {
 		ZonaTO zonaTO = new ZonaTO();
 		
+		zonaTO.setDetalle(zona.getDetalle());
 		zonaTO.setNombre(zona.getNombre());
 		
 		zonaTO.setDepartamento(DepartamentoDWR.transform(zona.getDepartamento()));
@@ -77,14 +126,21 @@ public class ZonaDWR {
 	public static Zona transform(ZonaTO zonaTO) {
 		Zona zona = new Zona();
 		
+		zona.setDetalle(zonaTO.getDetalle());
 		zona.setNombre(zonaTO.getNombre());
 		
 		zona.setDepartamento(DepartamentoDWR.transform(zonaTO.getDepartamento()));
 		
-		zona.setFact(zonaTO.getFact());
+		Date date = GregorianCalendar.getInstance().getTime();
+		
+		zona.setFact(date);
 		zona.setId(zonaTO.getId());
-		zona.setTerm(zonaTO.getTerm());
-		zona.setUact(zonaTO.getUact());
+		zona.setTerm(new Long(1));
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		zona.setUact(usuarioId);
 		
 		return zona;
 	}

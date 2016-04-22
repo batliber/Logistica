@@ -12,4 +12,10 @@ public interface IEmpresaBean {
 	public Collection<Empresa> list();
 
 	public Empresa getById(Long id);
+	
+	public void save(Empresa empresa);
+	
+	public void remove(Empresa empresa);
+	
+	public void update(Empresa empresa);
 }

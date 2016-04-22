@@ -20,6 +20,9 @@ public class StockMovimiento extends BaseEntity {
 	@Column(name = "cantidad")
 	private Long cantidad;
 
+	@Column(name = "documento_id")
+	private Long documentoId;
+	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto_id", nullable = false)
 	private Producto producto;
@@ -27,6 +30,10 @@ public class StockMovimiento extends BaseEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "empresa_id", nullable = false)
 	private Empresa empresa;
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "stock_tipo_movimiento_id", nullable = false)
+	private StockTipoMovimiento stockTipoMovimiento;
 
 	public Date getFecha() {
 		return fecha;
@@ -44,6 +51,14 @@ public class StockMovimiento extends BaseEntity {
 		this.cantidad = cantidad;
 	}
 
+	public Long getDocumentoId() {
+		return documentoId;
+	}
+
+	public void setDocumentoId(Long documentoId) {
+		this.documentoId = documentoId;
+	}
+
 	public Producto getProducto() {
 		return producto;
 	}
@@ -58,5 +73,13 @@ public class StockMovimiento extends BaseEntity {
 
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
+	}
+
+	public StockTipoMovimiento getStockTipoMovimiento() {
+		return stockTipoMovimiento;
+	}
+
+	public void setStockTipoMovimiento(StockTipoMovimiento stockTipoMovimiento) {
+		this.stockTipoMovimiento = stockTipoMovimiento;
 	}
 }

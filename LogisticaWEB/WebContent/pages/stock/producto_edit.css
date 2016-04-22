@@ -1,0 +1,9 @@
+#divProductoDescripcion {
+	float: left;
+	width: 60%;
+}
+
+#inputProductoDescripcion {
+	margin-left: 2px;
+	width: 100%;
+}

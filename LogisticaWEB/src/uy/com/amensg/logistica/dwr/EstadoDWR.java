@@ -1,13 +1,48 @@
 package uy.com.amensg.logistica.dwr;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.directwebremoting.annotations.RemoteProxy;
 
+import uy.com.amensg.logistica.bean.EstadoBean;
+import uy.com.amensg.logistica.bean.IEstadoBean;
 import uy.com.amensg.logistica.entities.Estado;
 import uy.com.amensg.logistica.entities.EstadoTO;
 
 @RemoteProxy
 public class EstadoDWR {
 
+	private IEstadoBean lookupBean() throws NamingException {
+		String EARName = "Logistica";
+		String beanName = EstadoBean.class.getSimpleName();
+		String remoteInterfaceName = IEstadoBean.class.getName();
+		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		Context context = new InitialContext();
+		
+		return (IEstadoBean) context.lookup(lookupName);
+	}
+	
+	public Collection<EstadoTO> list() {
+		Collection<EstadoTO> result = new LinkedList<EstadoTO>();
+		
+		try {
+			IEstadoBean iEstadoBean = lookupBean();
+			
+			for (Estado estado : iEstadoBean.list()) {
+				result.add(transform(estado));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public static EstadoTO transform(Estado estado) {
 		EstadoTO estadoTO = new EstadoTO();
 		

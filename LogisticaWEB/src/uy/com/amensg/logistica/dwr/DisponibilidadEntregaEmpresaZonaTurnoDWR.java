@@ -29,6 +29,28 @@ public class DisponibilidadEntregaEmpresaZonaTurnoDWR {
 		
 		return (IDisponibilidadEntregaEmpresaZonaTurnoBean) context.lookup(lookupName);
 	}
+
+	public Collection<DisponibilidadEntregaEmpresaZonaTurnoTO> listByEmpresaZona(EmpresaTO empresaTO, ZonaTO zonaTO) {
+		Collection<DisponibilidadEntregaEmpresaZonaTurnoTO> result = new LinkedList<DisponibilidadEntregaEmpresaZonaTurnoTO>();
+		
+		try {
+			IDisponibilidadEntregaEmpresaZonaTurnoBean iDisponibilidadEntregaEmpresaZonaTurnoBean = lookupBean();
+			
+			Collection<DisponibilidadEntregaEmpresaZonaTurno> disponibilidadEntregaEmpresaZonaTurnos = 
+				iDisponibilidadEntregaEmpresaZonaTurnoBean.listByEmpresaZona(
+					EmpresaDWR.transform(empresaTO), 
+					ZonaDWR.transform(zonaTO)
+				);
+			
+			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurno : disponibilidadEntregaEmpresaZonaTurnos) {
+				result.add(transform(disponibilidadEntregaEmpresaZonaTurno));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
 	public Collection<DisponibilidadEntregaEmpresaZonaTurnoTO> listByEmpresaZonaTurno(EmpresaTO empresaTO, ZonaTO zonaTO, TurnoTO turnoTO) {
 		Collection<DisponibilidadEntregaEmpresaZonaTurnoTO> result = new LinkedList<DisponibilidadEntregaEmpresaZonaTurnoTO>();
@@ -36,14 +58,14 @@ public class DisponibilidadEntregaEmpresaZonaTurnoDWR {
 		try {
 			IDisponibilidadEntregaEmpresaZonaTurnoBean iDisponibilidadEntregaEmpresaZonaTurnoBean = lookupBean();
 			
-			Collection<DisponibilidadEntregaEmpresaZonaTurno> disponibilidadEntregaEmpresaZonaTunos = 
+			Collection<DisponibilidadEntregaEmpresaZonaTurno> disponibilidadEntregaEmpresaZonaTurnos = 
 				iDisponibilidadEntregaEmpresaZonaTurnoBean.listByEmpresaZonaTurno(
 					EmpresaDWR.transform(empresaTO), 
 					ZonaDWR.transform(zonaTO), 
 					TurnoDWR.transform(turnoTO)
 				);
 			
-			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurno : disponibilidadEntregaEmpresaZonaTunos) {
+			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurno : disponibilidadEntregaEmpresaZonaTurnos) {
 				result.add(transform(disponibilidadEntregaEmpresaZonaTurno));
 			}
 		} catch (Exception e) {

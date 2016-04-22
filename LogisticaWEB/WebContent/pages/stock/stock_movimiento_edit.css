@@ -1,0 +1,39 @@
+#divEmpresa {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectEmpresa {
+	width: 60%;
+}
+
+#divProducto {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectProducto {
+	width: 60%;
+}
+
+#divStockTipoMovimiento {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectStockTipoMovimiento {
+	width: 60%;
+}
+
+#divCantidad {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+}
+}

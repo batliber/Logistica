@@ -38,8 +38,41 @@
 			<input type="password" id="inputUsuarioContrasena" disabled="disabled"/>
 			<input type="checkbox" id="inputCambiarContrasena" onchange="javascript:inputCambiarContrasenaOnChange(event, this)"/>
 		</div>
-		<div class="divFormLabel">Empresa:</div><div id="divEmpresa"><select id="selectEmpresa"></select></div>
-		<div class="divFormLabel">Rol:</div><div id="divRol"><select id="selectRol"></select></div>
+		<div class="divFormLabel">Roles:</div>
+		<div class="divEmpresasRoles">
+			<div id="divEmpresas">
+				<table id="tableEmpresas" border="0" cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<td class="tdEmpresaNombre">Empresa</td>
+							<td class="tdEmpresaCheck">&nbsp;</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="divRoles">
+				<table id="tableRoles" border="0" cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<td class="tdRolNombre">Rol</td>
+							<td class="tdRolCheck">&nbsp;</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

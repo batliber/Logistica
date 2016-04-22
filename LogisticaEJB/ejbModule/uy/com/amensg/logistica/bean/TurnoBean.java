@@ -20,7 +20,12 @@ public class TurnoBean implements ITurnoBean {
 		Collection<Turno> result = new LinkedList<Turno>();
 		
 		try {
-			TypedQuery<Turno> query = entityManager.createQuery("SELECT t FROM Turno t", Turno.class);
+			TypedQuery<Turno> query = entityManager.createQuery(
+				"SELECT t"
+				+ " FROM Turno t"
+				+ " ORDER BY t.nombre", 
+				Turno.class
+			);
 			
 			for (Turno turno : query.getResultList()) {
 				result.add(turno);

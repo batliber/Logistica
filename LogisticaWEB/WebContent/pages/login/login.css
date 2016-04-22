@@ -1,14 +1,11 @@
-body {
-	width: 1400px;
-	height: 780px;
-}
-
 .divLoginForm {
-	position: relative;
-	top: 100px;
-	left: 100px;
+	margin: auto;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
 	width: 275px;
-	height: 230px;
+	margin-top: 150px;
 	border: solid 1px black;
 }
 
@@ -60,4 +57,17 @@ body {
 	color: red;
 	padding-top: 5px;
 	text-align: right;
+}
+
+.divVersionBar {
+	width: 100%;
+	height: 20px;
+	background-color: black;
+	text-align: right;
+}
+
+.divVersionBarText {
+	padding-top: 2px;
+	padding-right: 2px;
+	color: white;
 }

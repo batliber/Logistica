@@ -6,6 +6,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 public class ZonaTO extends BaseTO {
 
 	private String nombre;
+	private String detalle;
 	private DepartamentoTO departamento;
 
 	public String getNombre() {
@@ -14,6 +15,14 @@ public class ZonaTO extends BaseTO {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getDetalle() {
+		return detalle;
+	}
+
+	public void setDetalle(String detalle) {
+		this.detalle = detalle;
 	}
 
 	public DepartamentoTO getDepartamento() {

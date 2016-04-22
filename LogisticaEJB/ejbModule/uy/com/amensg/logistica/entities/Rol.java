@@ -10,9 +10,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 @Entity
 @Table(name = "seguridad_rol")
 public class Rol extends BaseEntity {
@@ -27,7 +24,6 @@ public class Rol extends BaseEntity {
 		joinColumns=@JoinColumn(name = "seguridad_rol_id"),
 		inverseJoinColumns=@JoinColumn(name = "seguridad_menu_id")
 	)
-	@LazyCollection(LazyCollectionOption.FALSE)
 	private Collection<Menu> menus;
 	
 	@OneToMany
@@ -35,7 +31,6 @@ public class Rol extends BaseEntity {
 		joinColumns=@JoinColumn(name = "rol_id"),
 		inverseJoinColumns=@JoinColumn(name = "rol_subordinado_id")
 	)
-	@LazyCollection(LazyCollectionOption.FALSE)
 	private Collection<Rol> subordinados;
 	
 	public String getNombre() {

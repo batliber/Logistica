@@ -58,6 +58,33 @@
 	width: 60%;
 }
 
+#divResultadoEntregaDistribucionObservaciones {
+	float: left;
+	width: 60%;
+}
+
+#textareaResultadoEntregaDistribucionObservaciones {
+	width: 100%;
+}
+
+#divResultadoEntregaDistribucionURLAnverso {
+	float: left;
+	width: 50%;
+}
+
+#imgResultadoEntregaDistribucionURLAnverso {
+	width: 100%;
+}
+
+#divResultadoEntregaDistribucionURLReverso {
+	float: left;
+	width: 50%;
+}
+
+#imgResultadoEntregaDistribucionURLReverso {
+	width: 100%;
+}
+
 #divDocumento {
 	float: left;
 	width: 60%;
@@ -95,11 +122,6 @@
 	width: 100%;
 }
 
-#divDepartamento {
-	float: left;
-	width: 60%;
-}
-
 #divTelefonoContacto {
 	float: left;
 	width: 60%;
@@ -126,6 +148,15 @@
 
 #selectDepartamento {
 	width: 56.5%;
+}
+
+#divBarrio {
+	float: left;
+	width: 61.5%;
+}
+
+#selectBarrio {
+	width: 100%;
 }
 
 #divZona {
@@ -162,4 +193,8 @@
 
 #textareaObservaciones {
 	width: 100%;
+}
+
+#divIFramePrint {
+	display: none;
 }

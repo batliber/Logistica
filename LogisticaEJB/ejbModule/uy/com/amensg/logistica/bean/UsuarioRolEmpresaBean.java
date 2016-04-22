@@ -32,15 +32,11 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 		
 		return result;
 	}
-
-	public Collection<UsuarioRolEmpresa> listVendedoresByUsuario(Usuario usuario) {
+	
+	public Collection<UsuarioRolEmpresa> listByRolUsuario(Rol rol, Usuario usuario) {
 		Collection<UsuarioRolEmpresa> result = new LinkedList<UsuarioRolEmpresa>();
 		
 		try {
-			Rol rol = iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Vendedor"))
-			);
-			
 			Usuario usuarioManaged = iUsuarioBean.getById(usuario.getId());
 			
 			Collection<Empresa> empresas = new LinkedList<Empresa>();
@@ -53,7 +49,8 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 				+ " FROM UsuarioRolEmpresa ure"
 				+ " WHERE ure.rol = :rol"
 				+ " AND ure.empresa IN :empresas"
-				+ " AND ure.usuario.fechaBaja IS NULL",
+				+ " AND ure.usuario.fechaBaja IS NULL"
+				+ " ORDER BY ure.usuario.nombre ASC",
 				UsuarioRolEmpresa.class
 			);
 			query.setParameter("rol", rol);
@@ -67,113 +64,37 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 		}
 		
 		return result;
+	}
+
+	public Collection<UsuarioRolEmpresa> listVendedoresByUsuario(Usuario usuario) {
+		Rol rol = iRolBean.getById(
+			new Long(Configuration.getInstance().getProperty("rol.Vendedor"))
+		);
+		
+		return this.listByRolUsuario(rol, usuario);
 	}
 	
 	public Collection<UsuarioRolEmpresa> listBackofficesByUsuario(Usuario usuario) {
-		Collection<UsuarioRolEmpresa> result = new LinkedList<UsuarioRolEmpresa>();
+		Rol rol = iRolBean.getById(
+			new Long(Configuration.getInstance().getProperty("rol.Backoffice"))
+		);
 		
-		try {
-			Rol rol = iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Backoffice"))
-			);
-			
-			Usuario usuarioManaged = iUsuarioBean.getById(usuario.getId());
-			
-			Collection<Empresa> empresas = new LinkedList<Empresa>();
-			for (UsuarioRolEmpresa usuarioRolEmpresa : usuarioManaged.getUsuarioRolEmpresas()) {
-				empresas.add(usuarioRolEmpresa.getEmpresa());
-			}
-			
-			TypedQuery<UsuarioRolEmpresa> query = entityManager.createQuery(
-				"SELECT ure"
-				+ " FROM UsuarioRolEmpresa ure"
-				+ " WHERE ure.rol = :rol"
-				+ " AND ure.empresa IN :empresas"
-				+ " AND ure.usuario.fechaBaja IS NULL",
-				UsuarioRolEmpresa.class
-			);
-			query.setParameter("rol", rol);
-			query.setParameter("empresas", empresas);
-			
-			for (UsuarioRolEmpresa usuarioRolEmpresaResult : query.getResultList()) {
-				result.add(usuarioRolEmpresaResult);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
+		return this.listByRolUsuario(rol, usuario);
 	}
 	
 	public Collection<UsuarioRolEmpresa> listDistribuidoresByUsuario(Usuario usuario) {
-		Collection<UsuarioRolEmpresa> result = new LinkedList<UsuarioRolEmpresa>();
-		
-		try {
-			Rol rol = iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Distribuidor"))
-			);
+		Rol rol = iRolBean.getById(
+			new Long(Configuration.getInstance().getProperty("rol.Distribuidor"))
+		);
 			
-			Usuario usuarioManaged = iUsuarioBean.getById(usuario.getId());
-			
-			Collection<Empresa> empresas = new LinkedList<Empresa>();
-			for (UsuarioRolEmpresa usuarioRolEmpresa : usuarioManaged.getUsuarioRolEmpresas()) {
-				empresas.add(usuarioRolEmpresa.getEmpresa());
-			}
-			
-			TypedQuery<UsuarioRolEmpresa> query = entityManager.createQuery(
-				"SELECT ure"
-				+ " FROM UsuarioRolEmpresa ure"
-				+ " WHERE ure.rol = :rol"
-				+ " AND ure.empresa IN :empresas"
-				+ " AND ure.usuario.fechaBaja IS NULL",
-				UsuarioRolEmpresa.class
-			);
-			query.setParameter("rol", rol);
-			query.setParameter("empresas", empresas);
-			
-			for (UsuarioRolEmpresa usuarioRolEmpresaResult : query.getResultList()) {
-				result.add(usuarioRolEmpresaResult);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
+		return this.listByRolUsuario(rol, usuario);
 	}
 	
 	public Collection<UsuarioRolEmpresa> listActivadoresByUsuario(Usuario usuario) {
-		Collection<UsuarioRolEmpresa> result = new LinkedList<UsuarioRolEmpresa>();
+		Rol rol = iRolBean.getById(
+			new Long(Configuration.getInstance().getProperty("rol.Activador"))
+		);
 		
-		try {
-			Rol rol = iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Activador"))
-			);
-			
-			Usuario usuarioManaged = iUsuarioBean.getById(usuario.getId());
-			
-			Collection<Empresa> empresas = new LinkedList<Empresa>();
-			for (UsuarioRolEmpresa usuarioRolEmpresa : usuarioManaged.getUsuarioRolEmpresas()) {
-				empresas.add(usuarioRolEmpresa.getEmpresa());
-			}
-			
-			TypedQuery<UsuarioRolEmpresa> query = entityManager.createQuery(
-				"SELECT ure"
-				+ " FROM UsuarioRolEmpresa ure"
-				+ " WHERE ure.rol = :rol"
-				+ " AND ure.empresa IN :empresas"
-				+ " AND ure.usuario.fechaBaja IS NULL",
-				UsuarioRolEmpresa.class
-			);
-			query.setParameter("rol", rol);
-			query.setParameter("empresas", empresas);
-			
-			for (UsuarioRolEmpresa usuarioRolEmpresaResult : query.getResultList()) {
-				result.add(usuarioRolEmpresaResult);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
+		return this.listByRolUsuario(rol, usuario);
 	}
 }

@@ -5,15 +5,25 @@
 	<title>Procesos</title>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceProcesoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
-	<script type="text/javascript" src="./procesos.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/pages/procesos/procesos.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
-	<link rel="stylesheet" type="text/css" href="./procesos.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/procesos/procesos.css"/>
 </head>
 <body>
+	<div class="divMenuBar">
+<%@ include file="/includes/menu.jsp" %>	
+	</div>
 	<div class="divButtonBar">
 		<div class="divButton"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
@@ -24,34 +34,7 @@
 	</div>
 	<div class="divMainWindow">
 		<div id="divProcesos">
-			<div id="divTableProcesos">
-				<table id="tableProcesos" border="0" cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td class="tdProcesoFechaInicio">Fecha inicio</td>
-							<td class="tdProcesoFechaFin">Fecha fin</td>
-							<td class="tdProcesoObservaciones">Observaciones</td>
-							<td class="tdProcesoCantidadRegistrosParaProcesar">Para procesar</td>
-							<td class="tdProcesoCantidadRegistrosEnProceso">En proceso</td>
-							<td class="tdProcesoCantidadRegistrosParaProcesarPrioritario">Prioritarios</td>
-							<td class="tdProcesoCantidadRegistrosProcesado">Procesados</td>
-							<td class="tdProcesoCantidadRegistrosProcesado">Lista Vac&iacute;a</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+			<div id="divTableProcesos">&nbsp;</div>
 		</div>
 	</div>
 	<div id="divModalBackground">&nbsp;</div>

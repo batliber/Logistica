@@ -11,9 +11,15 @@
 	background-color: white;
 }
 
+#divFormularioContrato {
+	width: 800px;
+	height: 450px;
+	border: none;
+}
+
 #iFrameContrato {
 	width: 800px;
-	height: 400px;
+	height: 475px;
 	border: none;
 }
 
@@ -27,8 +33,8 @@
 }
 
 #iFrameHistorico {
-	width: 615px;
-	height: 330px;
+	width: 680px;
+	height: 420px;
 	border: none;
 }
 

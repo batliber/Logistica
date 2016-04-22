@@ -1,0 +1,9 @@
+#divEmpresaNombre {
+	float: left;
+	width: 70%;
+}
+
+#inputEmpresaNombre {
+	margin-left: 2px;
+	width: 100%;
+}

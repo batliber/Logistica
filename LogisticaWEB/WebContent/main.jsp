@@ -9,13 +9,17 @@
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/main.css"/>
 </head>
 <body>
-	<div class="divMenuBar">&nbsp;</div>
-	<div id="divIFrameActivePage"><iframe id="iFrameActivePage" src="#" frameborder="0"></iframe></div>
+	<div class="divMenuBar">
+<%@ include file="/includes/menu.jsp" %>
+	</div>
+	<div id="divIFrameActivePage">&nbsp;</div>
 	<div id="divModalBackground">&nbsp;</div>
 </body>
 </html>

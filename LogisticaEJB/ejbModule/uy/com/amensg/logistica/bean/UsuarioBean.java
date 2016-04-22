@@ -26,12 +26,18 @@ public class UsuarioBean implements IUsuarioBean {
 		try {
 			TypedQuery<Usuario> query = 
 				entityManager.createQuery(
-					"SELECT u FROM Usuario u WHERE u.fechaBaja IS NULL",
+					"SELECT u"
+					+ " FROM Usuario u"
+					+ " WHERE u.fechaBaja IS NULL"
+					+ " ORDER BY u.login ASC",
 					Usuario.class
 				);
 			
 			for (Usuario usuario : query.getResultList()) {
 				result.add(usuario);
+				for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
+					usuarioRolEmpresa.getRol().getMenus().size();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -54,6 +60,10 @@ public class UsuarioBean implements IUsuarioBean {
 			List<Usuario> resultList = query.getResultList();
 			if (!resultList.isEmpty()) {
 				result = resultList.get(0);
+				
+				for (UsuarioRolEmpresa usuarioRolEmpresa : result.getUsuarioRolEmpresas()) {
+					usuarioRolEmpresa.getRol().getMenus().size();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,6 +83,9 @@ public class UsuarioBean implements IUsuarioBean {
 			List<Usuario> resultList = query.getResultList();
 			if (!resultList.isEmpty()) {
 				result = resultList.get(0);
+				for (UsuarioRolEmpresa usuarioRolEmprsa : result.getUsuarioRolEmpresas()) {
+					usuarioRolEmprsa.getRol().getMenus().size();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,22 +96,12 @@ public class UsuarioBean implements IUsuarioBean {
 	
 	public void save(Usuario usuario) {
 		try {
-			Date date = GregorianCalendar.getInstance().getTime();
-			
 			Collection<UsuarioRolEmpresa> usuarioRolEmpresas = usuario.getUsuarioRolEmpresas();
-			
-			usuario.setFact(date);
-			usuario.setTerm(new Long(1));
-			usuario.setUact(new Long(1));
 			
 			entityManager.persist(usuario);
 			
 			for (UsuarioRolEmpresa usuarioRolEmpresa : usuarioRolEmpresas) {
 				usuarioRolEmpresa.setUsuario(usuario);
-				
-				usuarioRolEmpresa.setFact(date);
-				usuarioRolEmpresa.setTerm(new Long(1));
-				usuarioRolEmpresa.setUact(new Long(1));
 				
 				entityManager.persist(usuarioRolEmpresa);
 			}
@@ -114,9 +117,10 @@ public class UsuarioBean implements IUsuarioBean {
 			Usuario managedUsuario = entityManager.find(Usuario.class, usuario.getId());
 			
 			managedUsuario.setFechaBaja(date);
-			managedUsuario.setFact(date);
-			managedUsuario.setTerm(new Long(1));
-			managedUsuario.setUact(new Long(1));
+			
+			managedUsuario.setFact(usuario.getFact());
+			managedUsuario.setTerm(usuario.getTerm());
+			managedUsuario.setUact(usuario.getUact());
 			
 			entityManager.merge(managedUsuario);
 		} catch (Exception e) {
@@ -126,8 +130,6 @@ public class UsuarioBean implements IUsuarioBean {
 
 	public void update(Usuario usuario) {
 		try {
-			Date date = GregorianCalendar.getInstance().getTime();
-			
 			Usuario managedUsuario = entityManager.find(Usuario.class, usuario.getId());
 			
 			for (UsuarioRolEmpresa usuarioRolEmpresa : managedUsuario.getUsuarioRolEmpresas()) {
@@ -140,20 +142,21 @@ public class UsuarioBean implements IUsuarioBean {
 			
 			managedUsuario.setLogin(usuario.getLogin());
 			managedUsuario.setNombre(usuario.getNombre());
-			managedUsuario.setFact(date);
-			managedUsuario.setTerm(new Long(1));
-			managedUsuario.setUact(new Long(1));
+			
+			managedUsuario.setFact(usuario.getFact());
+			managedUsuario.setTerm(usuario.getTerm());
+			managedUsuario.setUact(usuario.getUact());
 			
 			entityManager.merge(managedUsuario);
 			
 			for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
 				usuarioRolEmpresa.setUsuario(usuario);
 				
-				usuarioRolEmpresa.setFact(date);
-				usuarioRolEmpresa.setTerm(new Long(1));
-				usuarioRolEmpresa.setUact(new Long(1));
+				usuarioRolEmpresa.setFact(usuario.getFact());
+				usuarioRolEmpresa.setTerm(usuario.getTerm());
+				usuarioRolEmpresa.setUact(usuario.getUact());
 				
-				entityManager.persist(usuarioRolEmpresa);
+				entityManager.merge(usuarioRolEmpresa);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

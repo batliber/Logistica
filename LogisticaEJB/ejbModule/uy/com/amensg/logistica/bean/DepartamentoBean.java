@@ -20,7 +20,13 @@ public class DepartamentoBean implements IDepartamentoBean {
 		Collection<Departamento> result = new LinkedList<Departamento>();
 		
 		try {
-			TypedQuery<Departamento> query = entityManager.createQuery("SELECT d FROM Departamento d", Departamento.class);
+			TypedQuery<Departamento> query = 
+				entityManager.createQuery(
+					"SELECT d"
+					+ " FROM Departamento d"
+					+ " ORDER BY d.nombre", 
+					Departamento.class
+				);
 			
 			for (Departamento departamento : query.getResultList()) {
 				result.add(departamento);

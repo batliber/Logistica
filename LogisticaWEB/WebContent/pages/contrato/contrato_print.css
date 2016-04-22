@@ -4,16 +4,17 @@ body {
 }
 
 .divA4Sheet {
-	font-size: 11pt;
+	font-size: 10pt;
 	width: 205mm;
-	height: 297mm;
+	height: 255mm;
+	/* background-color: red; */
 	/* border: solid 1px black; */
 }
 
 .divA4SheetContent {
 	margin-top: 15mm;
 	margin-left: 15mm;
-	width: 175mm;
+	width: 174mm;
 }
 
 .divHeader {
@@ -40,7 +41,8 @@ body {
 
 .divBarCode {
 	float: left;
-	width: 150px;
-	height: 50px;
-	background-position: -28px 0px;
+	width: 200px;
+	height: 75px;
+	background-position: -5px 0px;
+	background-repeat: no-repeat;
 }

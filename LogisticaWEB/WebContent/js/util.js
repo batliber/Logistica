@@ -49,3 +49,11 @@ function parseShortDate(string) {
 	
 	return new Date(parts[2], parts[1] - 1, parts[0]);
 }
+
+function parseLongDate(string) {
+	var parts = string.split(" ");
+	var dateParts = parts[0].split("/");
+	var hourParts = parts[1].split(":");
+	
+	return new Date(2000 + parseInt(dateParts[2]), dateParts[1] - 1, dateParts[0], hourParts[0], hourParts[1], hourParts.length > 2 ? hourParts[2] : 0, 0);
+}

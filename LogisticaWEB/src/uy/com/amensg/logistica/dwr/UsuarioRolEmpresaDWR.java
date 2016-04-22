@@ -1,7 +1,12 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -45,9 +50,24 @@ public class UsuarioRolEmpresaDWR {
 				
 				UsuarioTO usuario = new UsuarioDWR().getById(usuarioId);
 				
+				Map<Long, EmpresaTO> empresas = new HashMap<Long, EmpresaTO>();
 				for (UsuarioRolEmpresaTO usuarioRolEmpresaTO : usuario.getUsuarioRolEmpresas()) {
-					result.add(usuarioRolEmpresaTO.getEmpresa());
+					empresas.put(
+						usuarioRolEmpresaTO.getEmpresa().getId(), 
+						usuarioRolEmpresaTO.getEmpresa()
+					);
 				}
+				
+				List<EmpresaTO> toOrder = new LinkedList<EmpresaTO>();
+				toOrder.addAll(empresas.values());
+				
+				Collections.sort(toOrder, new Comparator<EmpresaTO>() {
+					public int compare(EmpresaTO o1, EmpresaTO o2) {
+						return o1.getNombre().toLowerCase().compareTo(o2.getNombre().toLowerCase());
+					}					
+				});
+				
+				result.addAll(toOrder);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -70,9 +90,22 @@ public class UsuarioRolEmpresaDWR {
 				
 				IUsuarioRolEmpresaBean iUsuarioRolEmpresaBean = lookupBean();
 				
+				Map<Long, UsuarioTO> usuarios = new HashMap<Long, UsuarioTO>();
 				for (UsuarioRolEmpresa usuarioRolEmpresa : iUsuarioRolEmpresaBean.listVendedoresByUsuario(usuario)) {
-					result.add(UsuarioDWR.transform(usuarioRolEmpresa.getUsuario()));
+					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
+						usuarios.put(
+							usuarioRolEmpresa.getUsuario().getId(), 
+							UsuarioDWR.transform(usuarioRolEmpresa.getUsuario(), false)
+						);
+					}
 				}
+				
+				List<UsuarioTO> toOrder = new LinkedList<UsuarioTO>();
+				toOrder.addAll(usuarios.values());
+				
+				Collections.sort(toOrder, new ComparatorUsuarioTO());
+				
+				result.addAll(toOrder);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,9 +128,22 @@ public class UsuarioRolEmpresaDWR {
 				
 				IUsuarioRolEmpresaBean iUsuarioRolEmpresaBean = lookupBean();
 				
+				Map<Long, UsuarioTO> usuarios = new HashMap<Long, UsuarioTO>();
 				for (UsuarioRolEmpresa usuarioRolEmpresa : iUsuarioRolEmpresaBean.listBackofficesByUsuario(usuario)) {
-					result.add(UsuarioDWR.transform(usuarioRolEmpresa.getUsuario()));
+					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
+						usuarios.put(
+							usuarioRolEmpresa.getUsuario().getId(), 
+							UsuarioDWR.transform(usuarioRolEmpresa.getUsuario(), false)
+						);
+					}
 				}
+				
+				List<UsuarioTO> toOrder = new LinkedList<UsuarioTO>();
+				toOrder.addAll(usuarios.values());
+				
+				Collections.sort(toOrder, new ComparatorUsuarioTO());
+				
+				result.addAll(toOrder);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -120,9 +166,22 @@ public class UsuarioRolEmpresaDWR {
 				
 				IUsuarioRolEmpresaBean iUsuarioRolEmpresaBean = lookupBean();
 				
+				Map<Long, UsuarioTO> usuarios = new HashMap<Long, UsuarioTO>();
 				for (UsuarioRolEmpresa usuarioRolEmpresa : iUsuarioRolEmpresaBean.listDistribuidoresByUsuario(usuario)) {
-					result.add(UsuarioDWR.transform(usuarioRolEmpresa.getUsuario()));
+					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
+						usuarios.put(
+							usuarioRolEmpresa.getUsuario().getId(), 
+							UsuarioDWR.transform(usuarioRolEmpresa.getUsuario(), false)
+						);
+					}
 				}
+				
+				List<UsuarioTO> toOrder = new LinkedList<UsuarioTO>();
+				toOrder.addAll(usuarios.values());
+				
+				Collections.sort(toOrder, new ComparatorUsuarioTO());
+				
+				result.addAll(toOrder);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,9 +204,22 @@ public class UsuarioRolEmpresaDWR {
 				
 				IUsuarioRolEmpresaBean iUsuarioRolEmpresaBean = lookupBean();
 				
+				Map<Long, UsuarioTO> usuarios = new HashMap<Long, UsuarioTO>();
 				for (UsuarioRolEmpresa usuarioRolEmpresa : iUsuarioRolEmpresaBean.listActivadoresByUsuario(usuario)) {
-					result.add(UsuarioDWR.transform(usuarioRolEmpresa.getUsuario()));
+					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
+						usuarios.put(
+							usuarioRolEmpresa.getUsuario().getId(), 
+							UsuarioDWR.transform(usuarioRolEmpresa.getUsuario(), false)
+						);
+					}
 				}
+				
+				List<UsuarioTO> toOrder = new LinkedList<UsuarioTO>();
+				toOrder.addAll(usuarios.values());
+				
+				Collections.sort(toOrder, new ComparatorUsuarioTO());
+				
+				result.addAll(toOrder);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -197,4 +269,15 @@ public class UsuarioRolEmpresaDWR {
 		
 		return usuarioRolEmpresa;
 	}
+}
+
+class ComparatorUsuarioTO implements Comparator<UsuarioTO> {
+	
+	public ComparatorUsuarioTO() {
+		
+	}
+	
+	public int compare(UsuarioTO o1, UsuarioTO o2) {
+		return o1.getNombre().toLowerCase().compareTo(o2.getNombre().toLowerCase());
+	}	
 }

@@ -42,6 +42,7 @@ public class RolBean implements IRolBean {
 		
 		try {
 			result = entityManager.find(Rol.class, id);
+			result.getSubordinados();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

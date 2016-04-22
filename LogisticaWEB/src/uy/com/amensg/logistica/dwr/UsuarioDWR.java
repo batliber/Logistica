@@ -3,6 +3,8 @@ package uy.com.amensg.logistica.dwr;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,14 +65,14 @@ public class UsuarioDWR {
 				for (Usuario usuario : iUsuarioBean.list()) {
 					for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
 						if (adminsEmpresas.contains(usuarioRolEmpresa.getEmpresa().getId())) {
-							result.add(transform(usuario));
+							result.add(transform(usuario, true));
 							break;
 						}
 					}
 				}
 				
 				if (result.size() == 0) {
-					result.add(transform(usuarioLogged));
+					result.add(transform(usuarioLogged, true));
 				}
 			}
 		} catch (Exception e) {
@@ -86,7 +88,7 @@ public class UsuarioDWR {
 		try {
 			IUsuarioBean iUsuarioBean = lookupBean();
 			
-			result = transform(iUsuarioBean.getById(id));
+			result = transform(iUsuarioBean.getById(id), true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -100,7 +102,7 @@ public class UsuarioDWR {
 		try {
 			IUsuarioBean iUsuarioBean = lookupBean();
 			
-			result = transform(iUsuarioBean.getByLogin(login));
+			result = transform(iUsuarioBean.getByLogin(login), true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -122,13 +124,47 @@ public class UsuarioDWR {
 		try {
 			IUsuarioBean iUsuarioBean = lookupBean();
 			
-			Usuario usuario = new Usuario();
-			usuario.setId(usuarioTO.getId());
-			
-			iUsuarioBean.remove(usuario);
+			iUsuarioBean.remove(transform(usuarioTO));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String cambiarContrasena(String actual, String nueva, String confirma) {
+		String result = null;
+		
+		try {
+			if (!nueva.equals(confirma)) {
+				result = "Las contraseñas no coinciden";
+			} else {
+				HttpSession httpSession = WebContextFactory.get().getSession(false);
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IUsuarioBean iUsuarioBean = lookupBean();
+				
+				Usuario usuario = iUsuarioBean.getById(usuarioId);
+				
+				if (usuario.getContrasena().equals(MD5Utils.stringToMD5(actual))) {
+					usuario.setContrasena(MD5Utils.stringToMD5(nueva));
+					
+					usuario.setFact(GregorianCalendar.getInstance().getTime());
+					usuario.setTerm(new Long(1));
+					usuario.setUact(usuarioId);
+					
+					iUsuarioBean.update(usuario);
+					
+					result = "Operación exitosa.";
+				} else {
+					result = "Contraseña incorrecta";
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			result = "Error en la operación.";
+		}
+		
+		return result;
 	}
 	
 	public void update(UsuarioTO usuarioTO) {
@@ -141,36 +177,38 @@ public class UsuarioDWR {
 		}
 	}
 
-	public static UsuarioTO transform(Usuario usuario) {
+	public static UsuarioTO transform(Usuario usuario, boolean transformCollections) {
 		UsuarioTO usuarioTO = new UsuarioTO();
 		
 		usuarioTO.setLogin(usuario.getLogin());
 		usuarioTO.setContrasena(usuario.getContrasena());
 		usuarioTO.setNombre(usuario.getNombre());
 
-		Map<Long, MenuTO> menus = new HashMap<Long, MenuTO>();
-		Collection<UsuarioRolEmpresaTO> usuarioRolEmpresas = new LinkedList<UsuarioRolEmpresaTO>();
-		for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
-			usuarioRolEmpresas.add(UsuarioRolEmpresaDWR.transform(usuarioRolEmpresa));
-			
-			for (Menu menu : usuarioRolEmpresa.getRol().getMenus()) {
-				if (!menus.containsKey(menu.getId())) {
-					menus.put(menu.getId(), MenuDWR.transform(menu));
+		if (transformCollections) {
+			Map<Long, MenuTO> menus = new HashMap<Long, MenuTO>();
+			Collection<UsuarioRolEmpresaTO> usuarioRolEmpresas = new LinkedList<UsuarioRolEmpresaTO>();
+			for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
+				usuarioRolEmpresas.add(UsuarioRolEmpresaDWR.transform(usuarioRolEmpresa));
+				
+				for (Menu menu : usuarioRolEmpresa.getRol().getMenus()) {
+					if (!menus.containsKey(menu.getId())) {
+						menus.put(menu.getId(), MenuDWR.transform(menu));
+					}
 				}
 			}
+			usuarioTO.setUsuarioRolEmpresas(usuarioRolEmpresas);
+		
+			List<MenuTO> menusToOrder = new LinkedList<MenuTO>();
+			menusToOrder.addAll(menus.values());
+			
+			Collections.sort(menusToOrder, new Comparator<MenuTO>() {
+				public int compare(MenuTO arg0, MenuTO arg1) {
+					return arg0.getOrden().compareTo(arg1.getOrden());
+				}
+			});
+			
+			usuarioTO.setMenus(menusToOrder);
 		}
-		usuarioTO.setUsuarioRolEmpresas(usuarioRolEmpresas);
-		
-		List<MenuTO> menusToOrder = new LinkedList<MenuTO>();
-		menusToOrder.addAll(menus.values());
-		
-		Collections.sort(menusToOrder, new Comparator<MenuTO>() {
-			public int compare(MenuTO arg0, MenuTO arg1) {
-				return arg0.getOrden().compareTo(arg1.getOrden());
-			}
-		});
-		
-		usuarioTO.setMenus(menusToOrder);
 		
 		usuarioTO.setFact(usuario.getFact());
 		usuarioTO.setId(usuario.getId());
@@ -198,10 +236,16 @@ public class UsuarioDWR {
 			usuario.setUsuarioRolEmpresas(usuarioRolEmpresas);
 		}
 		
+		Date date = GregorianCalendar.getInstance().getTime();
+		
+		usuario.setFact(date);
 		usuario.setId(usuarioTO.getId());
-		usuario.setFact(usuarioTO.getFact());
-		usuario.setTerm(usuarioTO.getTerm());
-		usuario.setUact(usuarioTO.getUact());
+		usuario.setTerm(new Long(1));
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		usuario.setUact(usuarioId);
 		
 		return usuario;
 	}

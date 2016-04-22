@@ -12,5 +12,7 @@ import uy.com.amensg.logistica.entities.Zona;
 @Remote
 public interface IDisponibilidadEntregaEmpresaZonaTurnoBean {
 
+	public Collection<DisponibilidadEntregaEmpresaZonaTurno> listByEmpresaZona(Empresa empresa, Zona zona);
+	
 	public Collection<DisponibilidadEntregaEmpresaZonaTurno> listByEmpresaZonaTurno(Empresa empresa, Zona zona, Turno turno);
 }

@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IProductoBean;
@@ -34,14 +38,7 @@ public class ProductoDWR {
 			IProductoBean iProductoBean = lookupBean();
 			
 			for (Producto producto : iProductoBean.list()) {
-				ProductoTO productoTO = new ProductoTO();
-				productoTO.setDescripcion(producto.getDescripcion());
-				productoTO.setFact(producto.getFact());
-				productoTO.setId(producto.getId());
-				productoTO.setTerm(producto.getTerm());
-				productoTO.setUact(producto.getUact());
-				
-				result.add(productoTO);
+				result.add(transform(producto));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -54,13 +51,7 @@ public class ProductoDWR {
 		try {
 			IProductoBean iProductoBean = lookupBean();
 			
-			Producto producto = new Producto();
-			producto.setDescripcion(productoTO.getDescripcion());
-			producto.setFact(productoTO.getFact());
-			producto.setTerm(productoTO.getTerm());
-			producto.setUact(productoTO.getUact());
-			
-			iProductoBean.save(producto);
+			iProductoBean.save(transform(productoTO));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -70,10 +61,7 @@ public class ProductoDWR {
 		try {
 			IProductoBean iProductoBean = lookupBean();
 			
-			Producto producto = new Producto();
-			producto.setId(productoTO.getId());
-			
-			iProductoBean.remove(producto);
+			iProductoBean.remove(transform(productoTO));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -83,14 +71,7 @@ public class ProductoDWR {
 		try {
 			IProductoBean iProductoBean = lookupBean();
 			
-			Producto producto = new Producto();
-			producto.setDescripcion(productoTO.getDescripcion());
-			producto.setFact(productoTO.getFact());
-			producto.setId(productoTO.getId());
-			producto.setTerm(productoTO.getTerm());
-			producto.setUact(productoTO.getUact());
-			
-			iProductoBean.save(producto);
+			iProductoBean.save(transform(productoTO));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -100,6 +81,7 @@ public class ProductoDWR {
 		ProductoTO productoTO = new ProductoTO();
 		
 		productoTO.setDescripcion(producto.getDescripcion());
+		productoTO.setFechaBaja(producto.getFechaBaja());
 		
 		productoTO.setFact(producto.getFact());
 		productoTO.setId(producto.getId());
@@ -107,5 +89,25 @@ public class ProductoDWR {
 		productoTO.setUact(producto.getUact());
 		
 		return productoTO;
+	}
+	
+	public static Producto transform(ProductoTO productoTO) {
+		Producto producto = new Producto();
+		
+		producto.setDescripcion(productoTO.getDescripcion());
+		producto.setFechaBaja(productoTO.getFechaBaja());
+		
+		Date date = GregorianCalendar.getInstance().getTime();
+		
+		producto.setFact(date);
+		producto.setId(productoTO.getId());
+		producto.setTerm(new Long(1));
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		producto.setUact(usuarioId);
+		
+		return producto;
 	}
 }

@@ -5,7 +5,6 @@
 	<title>Hist&oacute;rico</title>
 	<script type="text/javascript">
 		var id = <%= request.getParameter("cid") != null ? request.getParameter("cid") : "null" %>;
-		var crhid = <%= request.getParameter("crhid") != null ? request.getParameter("crhid") : "null" %>;
 	</script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
@@ -13,9 +12,13 @@
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
-	<script type="text/javascript" src="./historico.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/pages/monitoreo/historico.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
-	<link rel="stylesheet" type="text/css" href="./historico.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/monitoreo/historico.css"/>
 </head>
 <body>
 	<div class="divButtonBar">
@@ -28,6 +31,7 @@
 	<div class="divMainWindow">
 		<div id="divHistorico">
 			<div id="divTableHistorico">
+				<!-- 
 				<table id="tableHistorico" border="0" cellspacing="0" cellpadding="0">
 					<thead>
 						<tr>
@@ -48,6 +52,8 @@
 						</tr>
 					</tbody>
 				</table>
+				-->
+				&nbsp;
 			</div>
 		</div>
 	</div>

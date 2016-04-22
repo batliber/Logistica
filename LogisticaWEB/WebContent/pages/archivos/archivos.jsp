@@ -5,15 +5,25 @@
 	<title>Administraci&oacute;n de archivos</title>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/FileManagerDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/pages/archivos/archivos.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
-	<link rel="stylesheet" type="text/css" href="./archivos.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/archivos/archivos.css"/>
 </head>
 <body>
+	<div class="divMenuBar">
+<%@ include file="/includes/menu.jsp" %>	
+	</div>
 	<div class="divButtonBar">
 		<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
@@ -23,20 +33,7 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divMainWindow">
-		<div id="divArchivos">
-			<table id="tableArchivos" border="0" cellspacing="0" cellpadding="0">
-				<thead>
-					<tr>
-						<td class="tdArchivosNombre">Archivo</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+		<div id="divTableArchivos">&nbsp;</div>
 	</div>
 </body>
 </html>

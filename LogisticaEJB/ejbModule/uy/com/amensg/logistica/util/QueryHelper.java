@@ -49,6 +49,14 @@ public class QueryHelper {
 					where, 
 					criteriaBuilder.equal(campo, parameterExpression)
 				);
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_CLAVE_IGUAL)) {
+				ParameterExpression<?> parameterExpression = 
+					criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
+				
+				where = criteriaBuilder.and(
+					where, 
+					criteriaBuilder.equal(campo, parameterExpression)
+				);
 			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_IGUAL)) {
 				ParameterExpression<?> parameterExpression = 
 					criteriaBuilder.parameter(campo.getJavaType(), "p" + i);

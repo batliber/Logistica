@@ -8,15 +8,38 @@ $(document).ready(function() {
 	EmpresaDWR.list(
 		{
 			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>"
-					+ " <option value='*'>Todas</option>";
+				$("#tableEmpresas > tbody:last > tr").remove();
+				
+				html = "";
 				
 				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+					html += 
+						"<tr>"
+							+ "<td><div class='divEmpresaNombre'>" + data[i].nombre + "</div></td>"
+							+ "<td><div><input type='checkbox' id='" + data[i].id + "'/></div></td>"
+						+ "</tr>";
 				}
 				
-				$("#selectEmpresa").append(html);
+				$("#tableEmpresas > tbody:last").append(html);
+				
+				$("#tableEmpresas > tbody:last > tr:odd").css("background-color", "#F8F8F8");
+				$("#tableEmpresas > tbody:last > tr:odd").hover(
+					function() {
+						$(this).css("background-color", "orange");
+					},
+					function() {
+						$(this).css("background-color", "#F8F8F8");
+					}
+				);
+				$("#tableEmpresas > tbody:last > tr:even").css("background-color", "#FFFFFF");
+				$("#tableEmpresas > tbody:last > tr:even").hover(
+					function() {
+						$(this).css("background-color", "orange");
+					},
+					function() {
+						$(this).css("background-color", "#FFFFFF");
+					}
+				);
 			}, async: false
 		}
 	);
@@ -24,14 +47,38 @@ $(document).ready(function() {
 	RolDWR.list(
 		{
 			callback: function(data) {
-				var html =
-					"<option id='0'>Seleccione...</option>";
+				$("#tableRoles > tbody:last > tr").remove();
+				
+				html = "";
 				
 				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+					html += 
+						"<tr>"
+							+ "<td><div class='divRolNombre'>" + data[i].nombre + "</div></td>"
+							+ "<td><div><input type='checkbox' id='" + data[i].id + "'/></div></td>"
+						+ "</tr>";
 				}
 				
-				$("#selectRol").append(html);
+				$("#tableRoles > tbody:last").append(html);
+				
+				$("#tableRoles > tbody:last > tr:odd").css("background-color", "#F8F8F8");
+				$("#tableRoles > tbody:last > tr:odd").hover(
+					function() {
+						$(this).css("background-color", "orange");
+					},
+					function() {
+						$(this).css("background-color", "#F8F8F8");
+					}
+				);
+				$("#tableRoles > tbody:last > tr:even").css("background-color", "#FFFFFF");
+				$("#tableRoles > tbody:last > tr:even").hover(
+					function() {
+						$(this).css("background-color", "orange");
+					},
+					function() {
+						$(this).css("background-color", "#FFFFFF");
+					}
+				);
 			}, async: false
 		}
 	);
@@ -44,46 +91,20 @@ $(document).ready(function() {
 					$("#inputUsuarioLogin").val(data.login);
 					$("#inputUsuarioNombre").val(data.nombre);
 					
-					if (data.usuarioRolEmpresas.length == 0) {
-						if ($("#selectEmpresa").length > 0) {
-							$("#selectEmpresa").val(0); 
-						}
-					} else if (data.usuarioRolEmpresas.length == 1) {
-						if ($("#selectEmpresa").length > 0) { 
-							$("#selectEmpresa").val(data.usuarioRolEmpresas[0].empresa.id); 
-						} else {
-							$("#divEmpresa").attr("eid", data.usuarioRolEmpresas[0].empresa.id);
-							$("#divEmpresa").html(data.usuarioRolEmpresas[0].empresa.nombre);
-						}
-						
-						if ($("#selectRol").length > 0) { 
-							$("#selectRol").val(data.usuarioRolEmpresas[0].rol.id);
-						} else {
-							$("#divRol").attr("rid", data.usuarioRolEmpresas[0].rol.id);
-							$("#divRol").html(data.usuarioRolEmpresas[0].rol.nombre);
-						}
-					} else if (data.usuarioRolEmpresas.length > 1) {
-						if ($("#selectEmpresa").length > 0) { 
-							$("#selectEmpresa").val("*");
-						} else {
-							$("#divEmpresa").append("<div id='t' style='float: left;'>Todas</div>");
-							
-							for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-								$("#divEmpresa").append("<div style='display: none;' eid='" + data.usuarioRolEmpresas[i].empresa.id + "'></div>");
-							}
-						}
-						
-						if ($("#selectRol").length > 0) { 
-							$("#selectRol").val(data.usuarioRolEmpresas[0].rol.id);
-						} else {
-							$("#divRol").attr("rid", data.usuarioRolEmpresas[0].rol.id);
-							$("#divRol").html(data.usuarioRolEmpresas[0].rol.nombre);
-						}
+					for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+						$("#tableEmpresas > tbody > tr > td > div > input[id=" + data.usuarioRolEmpresas[i].empresa.id + "]").prop("checked", true);
+						$("#tableRoles > tbody > tr > td > div > input[id=" + data.usuarioRolEmpresas[i].rol.id + "]").prop("checked", true);
 					}
 					
 					if (mode == __FORM_MODE_ADMIN) {
+						$("#tableEmpresas > tbody > tr > td > div > input").prop("disabled", false);
+						$("#tableRoles > tbody > tr > td > div > input").prop("disabled", false);
+						
 						$("#divEliminarUsuario").show();
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+					} else {
+						$("#tableEmpresas > tbody > tr > td > div > input").prop("disabled", true);
+						$("#tableRoles > tbody > tr > td > div > input").prop("disabled", true);
 					}
 				}, async: false
 			}
@@ -118,43 +139,23 @@ function inputGuardarOnClick(event) {
 		usuarioRolEmpresas: []
 	};
 	
-	if ($("#selectEmpresa").length > 0 && $("#selectEmpresa").val() != 0 && $("#selectEmpresa").val() != "*") {
-		usuario.usuarioRolEmpresas = [{
-			usuario: { id: id },
-			rol: { 
-				id: $("#selectRol").length > 0 ? $("#selectRol").val() : $("#divRol").attr("rid")
-			},
-			empresa: { 
-				id: $("#selectEmpresa").length > 0 ? $("#selectEmpresa").val() : $("#divEmpresa").attr("eid")
+	var checksEmpresas = $("#tableEmpresas > tbody > tr > td > div > input");
+	for (var i=0; i<checksEmpresas.length; i++) {
+		if ($(checksEmpresas[i]).prop("checked")) {
+			var checksRoles = $("#tableRoles > tbody > tr > td > div > input");
+			for (var j=0; j<checksRoles.length; j++) {
+				if ($(checksRoles[j]).prop("checked")) {
+					usuario.usuarioRolEmpresas[usuario.usuarioRolEmpresas.length] = {
+						usuario: { id: id },
+						rol: { 
+							id: $(checksRoles[j]).attr("id")
+						},
+						empresa: { 
+							id: $(checksEmpresas[i]).attr("id")
+						}
+					};
+				}
 			}
-		}];
-	} else if ($("#selectEmpresa").length > 0 && $("#selectEmpresa").val() == "*") {
-		var options = $("#selectEmpresa > option");
-		
-		for (var i=2; i<options.length; i++) {
-			usuario.usuarioRolEmpresas[usuario.usuarioRolEmpresas.length] = {
-				usuario: { id: id },
-				rol: {
-					id: $("#selectRol").length > 0 ? $("#selectRol").val() : $("#divRol").attr("rid")
-				},
-				empresa: {
-					id: $(options[i]).val()
-				}
-			};
-		}
-	} else if ($("#selectEmpresa").length == 0) {
-		var empresas = $("#divEmpresa > div");
-		
-		for (var i=1; i<empresas.length; i++) {
-			usuario.usuarioRolEmpresas[usuario.usuarioRolEmpresas.length] = {
-				usuario: { id: id },
-				rol: {
-					id: $("#selectRol").length > 0 ? $("#selectRol").val() : $("#divRol").attr("rid")
-				},
-				empresa: {
-					id: $(empresas[i]).attr("eid")
-				}
-			};
 		}
 	}
 	
@@ -176,13 +177,24 @@ function inputGuardarOnClick(event) {
 	} else {
 		usuario.contrasena = $("#inputUsuarioContrasena").val();
 		
-		UsuarioDWR.add(
-			usuario,
+		UsuarioDWR.getByLogin(
+			usuario.login,
 			{
 				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarUsuario").prop("disabled", false);
+					if (data == null) {
+						UsuarioDWR.add(
+							usuario,
+							{
+								callback: function(data) {
+									alert("Operación exitosa");
+									
+									$("#inputEliminarUsuario").prop("disabled", false);
+								}, async: false
+							}
+						);
+					} else {
+						alert("Ya existe un usuario con ese login.");
+					}
 				}, async: false
 			}
 		);

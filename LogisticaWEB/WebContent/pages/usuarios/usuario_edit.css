@@ -39,13 +39,54 @@
 	width: 60%;
 }
 
-#divRol {
+.divEmpresasRoles {
 	float: left;
+	width: 71%;
 	margin-top: 2px;
 	margin-left: 2px;
-	width: 70%;
 }
 
-#selectRol {
-	width: 60%;
+#divEmpresas {
+	float: left;
+	width: 49%;
+	margin-top: 2px;
+}
+
+#tableEmpresas {
+	
+}
+
+#tableEmpresas thead tr .tdEmpresaNombre {
+	width: 150px;
+}
+
+#tableEmpresas thead tr .tdEmpresaCheck {
+	width: 20px;
+}
+
+#tableEmpresas tbody tr td .divEmpresaNombre {
+	margin-left: 2px;
+}
+
+#divRoles {
+	float: left;
+	width: 49%;
+	margin-top: 2px;
+	margin-left: 2px;
+}
+
+#tableRoles {
+	
+}
+
+#tableRoles thead tr .tdRolNombre {
+	width: 150px;
+}
+
+#tableRoles thead tr .tdCheck {
+	width: 20px;
+}
+
+#tableRoles tbody tr td .divRolNombre {
+	margin-left: 2px;
 }

@@ -1,0 +1,21 @@
+#divFormulario {
+	width: 325px;
+	margin: auto;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+}
+
+#inputActual {
+	width: 100%;
+}
+
+#inputNueva {
+	width: 100%;
+}
+
+#inputConfirma {
+	width: 100%;
+}

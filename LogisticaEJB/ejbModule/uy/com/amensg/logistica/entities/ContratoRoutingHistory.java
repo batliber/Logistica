@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "contrato_routing_history")
@@ -34,6 +35,13 @@ public class ContratoRoutingHistory extends BaseEntity {
 	@JoinColumn(name = "usuario_id", nullable = true)
 	private Usuario usuario;
 
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "estado_id")
+	private Estado estado;
+	
+	@Transient
+	private Usuario usuarioAct;
+	
 	public Date getFecha() {
 		return fecha;
 	}
@@ -70,7 +78,23 @@ public class ContratoRoutingHistory extends BaseEntity {
 		return usuario;
 	}
 
+	public Estado getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Estado estado) {
+		this.estado = estado;
+	}
+
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public Usuario getUsuarioAct() {
+		return usuarioAct;
+	}
+
+	public void setUsuarioAct(Usuario usuarioAct) {
+		this.usuarioAct = usuarioAct;
 	}
 }

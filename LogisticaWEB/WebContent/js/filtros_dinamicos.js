@@ -40,7 +40,10 @@ FiltroDinamico.prototype.agregarFiltro = function(event, element) {
 	for (var campo in this.campos) {
 		if (!this.campos[campo].oculto) {
 			html +=
-				"<option value='" + this.campos[campo].campo + "'>" + this.campos[campo].descripcion + "</option>";
+				"<option value='" + this.campos[campo].campo + "'"
+					+ (this.campos[campo].clave != null ? " key='" + this.campos[campo].clave + "'" : "") + ">" 
+					+ this.campos[campo].descripcion 
+				+ "</option>";
 		}
 	}
 				
@@ -54,7 +57,7 @@ FiltroDinamico.prototype.agregarFiltro = function(event, element) {
 	$("#divFiltros").append(html);
 };
 
-FiltroDinamico.prototype.campoOnChange = function(event, element, index) {
+FiltroDinamico.prototype.campoOnChange = function(event, element, index, preventReload) {
 	var divCondicionValoresAnterior = $("#divCondicionValores" + index);
 	
 	if (divCondicionValoresAnterior.length > 0) {
@@ -65,18 +68,20 @@ FiltroDinamico.prototype.campoOnChange = function(event, element, index) {
 	
 	divCondicion.empty();
 	
-	var html = 
-		"<select id='selectCondicion" + index + "' onchange='javascript:grid.filtroDinamico.condicionOnChange(event, this, " + index + ")'>"
-			+ "<option value=''>Seleccione...</option>";
-	
 	var selectedFieldValue = $("#selectCampo" + index).val();
 	
+	var campo = null;
 	var tipoCampo = -1;
-	for (var campo in this.campos) {
+	for (campo in this.campos) {
 		if (this.campos[campo].campo == selectedFieldValue) {
 			tipoCampo = this.campos[campo].tipo;
+			break;
 		}
 	}
+	
+	var html = 
+		"<select id='selectCondicion" + index + "' onchange='javascript:grid.filtroDinamico.condicionOnChange(event, this, " + index + ", false, \"" + selectedFieldValue + "\")'>"
+			+ "<option value=''>Seleccione...</option>";
 	
 	if (tipoCampo == __TIPO_CAMPO_NUMERICO) {
 		html += 
@@ -107,20 +112,29 @@ FiltroDinamico.prototype.campoOnChange = function(event, element, index) {
 			+ "<option value='lt'>Menor que</option>"
 			+ "<option value='nl'>Vac&iacute;o</option>"
 			+ "<option value='nnl'>No vac&iacute;o</option>";
+	} else if (tipoCampo == __TIPO_CAMPO_RELACION) {
+		html += 
+			"<option value='keq'>Es igual a</option>"
+			+ "<option value='like'>Contiene</option>"
+			+ "<option value='nlike'>No contiene</option>"
+			+ "<option value='nl'>Vac&iacute;o</option>"
+			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else {
 		html += 
 			"<option value='eq'>Es igual a</option>";
 	}
 	
 	html +=
-		+ "</select>";
+		"</select>";
 	
 	divCondicion.append(html);
 	
-	this.reloadListener();
+	if (!preventReload) {
+		this.reloadListener();
+	}
 };
 
-FiltroDinamico.prototype.condicionOnChange = function(event, element, index) {
+FiltroDinamico.prototype.condicionOnChange = function(event, element, index, preventReload, selectedFieldValue) {
 	var divCondicionValoresAnterior = $("#divCondicionValores" + index);
 	
 	if (divCondicionValoresAnterior.length > 0) {
@@ -134,24 +148,66 @@ FiltroDinamico.prototype.condicionOnChange = function(event, element, index) {
 			html +=
 				"<div class='divFormLabel'>Valor:</div>"
 				+ "<div id='divValorMin" + index + "' style='float: left'>"
-					+ "<input type='text' id='inputValorMin" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this)'/>"
+					+ "<input type='text' id='inputValorMin" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this, " + index + ", " + false + ")'/>"
 				+ "</div>"
 				+ "<div class='divFormLabel' style='width: 50px;'>y:</div>"
 				+ "<div id='divValorMax" + index + "' style='float: left;'>"
-					+ "<input type='text' id='inputValorMax" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this)'/>"
+					+ "<input type='text' id='inputValorMax" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this, " + index + ", " + false + ")'/>"
 				+ "</div>";
 			break;
 		case "nl":
 		case "nnl":
-			this.reloadListener();
+			if (!preventReload) {
+				this.reloadListener();
+			}
 			
 			break;
 		case "in":
 			if ($("#selectCampo" + index).val() == "contrato.tipoContratoDescripcion") {
-				this.reloadListener();
+				if (!preventReload) {
+					this.reloadListener();
+				}
 				
 				return;
 			}
+			
+			break;
+		case "keq":
+			var campo = null;
+			for (campo in this.campos) {
+				if (this.campos[campo].campo == selectedFieldValue) {
+					break;
+				}
+			}
+			
+			html += 
+				"<div class='divFormLabel'>Valor:</div>"
+				+ "<div id='divValor" + index + "' style='float: left;'>"
+					+ "<select id='inputValor" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this, " + index + ", " + false + ")'>"
+						+ "<option value=''>Seleccione...</option>";
+			
+			var values = this.campos[campo].dataSource.funcion(); 
+			for (var i = 0; i<values.length; i++) {
+				var keyValue = null;
+				var value = null;
+				
+				try {
+					keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
+					value = eval("values[i]." + this.campos[campo].dataSource.valor);
+				} catch (e) {
+					keyValue = null;
+					value = null;
+				}
+				
+				if (keyValue != null) {
+					html += 
+						"<option value='" + keyValue + "'>" + value + "</option>";
+				}
+			}
+			
+			html +=
+					"</select>"
+				+ "</div>";	
 			
 			break;
 		case "gt":
@@ -164,7 +220,7 @@ FiltroDinamico.prototype.condicionOnChange = function(event, element, index) {
 				html += 
 					"<div class='divFormLabel'>Valor:</div>"
 					+ "<div id='divValor" + index + "' style='float: left;'>"
-						+ "<select id='inputValor" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this)'>"
+						+ "<select id='inputValor" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this, " + index + ", " + false + ")'>"
 							+ "<option value=''>Seleccione...</option>"
 							+ "<option value='1'>Persona</option>"
 							+ "<option value='2'>Empresa</option>"
@@ -176,7 +232,7 @@ FiltroDinamico.prototype.condicionOnChange = function(event, element, index) {
 				html += 
 					"<div class='divFormLabel'>Valor:</div>"
 					+ "<div id='divValor" + index + "' style='float: left;'>"
-						+ "<input type='text' id='inputValor" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this)'/>"
+						+ "<input type='text' id='inputValor" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this, " + index + ", " + false + ")'/>"
 					+ "</div>";
 			}
 
@@ -189,12 +245,20 @@ FiltroDinamico.prototype.condicionOnChange = function(event, element, index) {
 	$("#divFiltro" + index).append(html);
 };
 
-FiltroDinamico.prototype.valorOnChange = function(event, element, index) {
-	this.reloadListener();
+FiltroDinamico.prototype.valorOnChange = function(event, element, index, preventReload) {
+	if (!preventReload) {
+		this.reloadListener();
+	}
 };
 
 FiltroDinamico.prototype.quitarFiltro = function(event, element, index) {
 	$("#divFiltro" + index).remove();
+	
+	this.reloadListener();
+};
+
+FiltroDinamico.prototype.limpiarFiltros = function(event, element) {
+	$(".divFiltro").remove();
 	
 	this.reloadListener();
 };
@@ -208,13 +272,14 @@ FiltroDinamico.prototype.calcularCondiciones = function() {
 			&& ($("#selectCondicion" + i).length > 0)
 			&& ($("#selectCondicion" + i).val() != "")) {
 			var metadataCondicion = {
-				campo: $("#selectCampo" + i).val(),
 				operador: $("#selectCondicion" + i).val()
 			};
 			
 			var filtroValido = false;
 			switch ($("#selectCondicion" + i).val()) {
 				case "btw":
+					metadataCondicion.campo = $("#selectCampo" + i).val();
+					
 					var valorMin = $("#inputValorMin" + i).val();
 					var valorMax = $("#inputValorMax" + i).val();
 					
@@ -227,12 +292,16 @@ FiltroDinamico.prototype.calcularCondiciones = function() {
 					break;
 				case "nl":
 				case "nnl":
+					metadataCondicion.campo = $("#selectCampo" + i).val();
+					
 					metadataCondicion.valores = [];
 					
 					filtroValido = true;
 					
 					break;
 				case "in":
+					metadataCondicion.campo = $("#selectCampo" + i).val();
+					
 					var valoresMultiples = $(("#divFiltro" + i) + " .divValorMultiple");
 					
 					metadataCondicion.valores = [];
@@ -244,12 +313,23 @@ FiltroDinamico.prototype.calcularCondiciones = function() {
 					filtroValido = true;
 					
 					break;
+				case "keq":
+					metadataCondicion.campo = 
+						$("#selectCampo" + i + " option:selected").attr("key");
+					
+					metadataCondicion.valores = [$("#inputValor" + i).val()];
+
+					filtroValido = metadataCondicion.valores[0] != "";
+					
+					break;
 				case "gt":
 				case "lt":
 				case "like":
 				case "nlike":
 				case "eq": 
 				default:
+					metadataCondicion.campo = $("#selectCampo" + i).val();
+				
 					metadataCondicion.valores = [$("#inputValor" + i).val()];
 
 					filtroValido = metadataCondicion.valores[0] != "";
@@ -260,7 +340,8 @@ FiltroDinamico.prototype.calcularCondiciones = function() {
 			if (filtroValido) {
 				if (metadataCondicion.valores != null) {
 					for (var k = 0; k < metadataCondicion.valores.length; k++) {
-						if (metadataCondicion.valores[k].indexOf("/") > 0) {
+						if (typeof(metadataCondicion.valores[k]) == "string"
+							&& metadataCondicion.valores[k].indexOf("/") > 0) {
 							metadataCondicion.valores[k] = 
 								(metadataCondicion.valores[k] + " 00:00")
 									.substring(0, 16);
@@ -324,4 +405,10 @@ FiltroDinamico.prototype.calcularMetadataConsulta = function() {
 	metadataConsulta.metadataCondiciones = this.calcularCondiciones();
 	
 	return metadataConsulta;
+};
+
+FiltroDinamico.prototype.showMenu = function(event, element) {
+	var divMenu = $(".divTableHeaderMenu");
+	divMenu.show();
+	divMenu.offset({ top: divMenu.offset().top, left: $(element).position().left });
 };

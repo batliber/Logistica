@@ -18,7 +18,13 @@
 
 #divAgregarFiltro {
 	float: left;
-	width: 50%;
+	width: 150px;
+	height: 24px;
+}
+
+#divLimpiarFiltros {
+	float: left;
+	width: 55%;
 	height: 24px;
 }
 

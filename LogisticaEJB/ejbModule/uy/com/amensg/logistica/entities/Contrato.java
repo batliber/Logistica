@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -35,6 +36,9 @@ public class Contrato extends BaseEntity {
 	@Column(name = "nombre")
 	private String nombre;
 
+	@Column(name = "fecha_nacimiento")
+	private Date fechaNacimiento;
+	
 	@Column(name = "direccion")
 	private String direccion;
 
@@ -89,6 +93,24 @@ public class Contrato extends BaseEntity {
 	@Column(name = "observaciones")
 	private String observaciones;
 
+	@Column(name = "resultado_entrega_distribucion_observaciones")
+	private String resultadoEntregaDistribucionObservaciones;
+	
+	@Column(name = "resultado_entrega_distribucion_url_anverso")
+	private String resultadoEntregaDistribucionURLAnverso;
+	
+	@Column(name = "resultado_entrega_distribucion_url_reverso")
+	private String resultadoEntregaDistribucionURLReverso;
+	
+	@Column(name = "resultado_entrega_distribucion_latitud")
+	private Double resultadoEntregaDistribucionLatitud;
+	
+	@Column(name = "resultado_entrega_distribucion_longitud")
+	private Double resultadoEntregaDistribucionLongitud;
+	
+	@Column(name = "resultado_entrega_distribucion_precision")
+	private Double resultadoEntregaDistribucionPrecision;
+	
 	@Column(name = "fecha_venta")
 	private Date fechaVenta;
 
@@ -104,55 +126,73 @@ public class Contrato extends BaseEntity {
 	@Column(name = "fecha_devolucion_distribuidor")
 	private Date fechaDevolucionDistribuidor;
 
+	@Column (name = "fecha_envio_antel")
+	private Date fechaEnvioAntel;
+	
 	@Column(name = "fecha_activacion")
 	private Date fechaActivacion;
 
 	@Column(name = "fecha_activar_en")
 	private Date fechaActivarEn;
 	
-	@ManyToOne(optional = true)
+	@Column(name = "fecha_coordinacion")
+	private Date fechaCoordinacion;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "barrio_id", nullable = true)
+	private Barrio barrio;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "zona_id", nullable = true)
 	private Zona zona;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "turno_id", nullable = true)
 	private Turno turno;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "producto_id", nullable = true)
 	private Producto producto;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "estado_id", nullable = true)
 	private Estado estado;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "resultado_entrega_distribucion_id", nullable = true)
+	private ResultadoEntregaDistribucion resultadoEntregaDistribucion;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "empresa_id", nullable = true)
 	private Empresa empresa;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "rol_id", nullable = true)
 	private Rol rol;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "usuario_id", nullable = true)
 	private Usuario usuario;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "vendedor_id", nullable = true)
 	private Usuario vendedor;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "backoffice_id", nullable = true)
 	private Usuario backoffice;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "distribuidor_id", nullable = true)
 	private Usuario distribuidor;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "activador_id", nullable = true)
 	private Usuario activador;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "coordinador_id", nullable = true)
+	private Usuario coordinador;
 
 	public Long getMid() {
 		return mid;
@@ -208,6 +248,14 @@ public class Contrato extends BaseEntity {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Date getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(Date fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
 	}
 
 	public String getDireccion() {
@@ -370,6 +418,66 @@ public class Contrato extends BaseEntity {
 		this.observaciones = observaciones;
 	}
 
+	public String getResultadoEntregaDistribucionObservaciones() {
+		return resultadoEntregaDistribucionObservaciones;
+	}
+
+	public void setResultadoEntregaDistribucionObservaciones(
+			String resultadoEntregaDistribucionObservaciones) {
+		this.resultadoEntregaDistribucionObservaciones = resultadoEntregaDistribucionObservaciones;
+	}
+
+	public String getResultadoEntregaDistribucionURLAnverso() {
+		return resultadoEntregaDistribucionURLAnverso;
+	}
+
+	public void setResultadoEntregaDistribucionURLAnverso(String resultadoEntregaDistribucionURLAnverso) {
+		this.resultadoEntregaDistribucionURLAnverso = resultadoEntregaDistribucionURLAnverso;
+	}
+	
+	public String getResultadoEntregaDistribucionURLReverso() {
+		return resultadoEntregaDistribucionURLReverso;
+	}
+
+	public void setResultadoEntregaDistribucionURLReverso(String resultadoEntregaDistribucionURLReverso) {
+		this.resultadoEntregaDistribucionURLReverso = resultadoEntregaDistribucionURLReverso;
+	}
+
+	public Double getResultadoEntregaDistribucionLatitud() {
+		return resultadoEntregaDistribucionLatitud;
+	}
+
+	public void setResultadoEntregaDistribucionLatitud(
+			Double resultadoEntregaDistribucionLatitud) {
+		this.resultadoEntregaDistribucionLatitud = resultadoEntregaDistribucionLatitud;
+	}
+
+	public Double getResultadoEntregaDistribucionLongitud() {
+		return resultadoEntregaDistribucionLongitud;
+	}
+
+	public void setResultadoEntregaDistribucionLongitud(
+			Double resultadoEntregaDistribucionLongitud) {
+		this.resultadoEntregaDistribucionLongitud = resultadoEntregaDistribucionLongitud;
+	}
+
+	public Double getResultadoEntregaDistribucionPrecision() {
+		return resultadoEntregaDistribucionPrecision;
+	}
+
+	public void setResultadoEntregaDistribucionPrecision(
+			Double resultadoEntregaDistribucionPrecision) {
+		this.resultadoEntregaDistribucionPrecision = resultadoEntregaDistribucionPrecision;
+	}
+
+	public Barrio getBarrio() {
+		return barrio;
+	}
+
+	public void setBarrio(Barrio barrio) {
+		this.barrio = barrio;
+	}
+
 	public Zona getZona() {
 		return zona;
 	}
@@ -392,6 +500,15 @@ public class Contrato extends BaseEntity {
 
 	public void setProducto(Producto producto) {
 		this.producto = producto;
+	}
+
+	public ResultadoEntregaDistribucion getResultadoEntregaDistribucion() {
+		return resultadoEntregaDistribucion;
+	}
+
+	public void setResultadoEntregaDistribucion(
+			ResultadoEntregaDistribucion resultadoEntregaDistribucion) {
+		this.resultadoEntregaDistribucion = resultadoEntregaDistribucion;
 	}
 
 	public Estado getEstado() {
@@ -450,6 +567,14 @@ public class Contrato extends BaseEntity {
 		this.fechaDevolucionDistribuidor = fechaDevolucionDistribuidor;
 	}
 
+	public Date getFechaEnvioAntel() {
+		return fechaEnvioAntel;
+	}
+
+	public void setFechaEnvioAntel(Date fechaEnvioAntel) {
+		this.fechaEnvioAntel = fechaEnvioAntel;
+	}
+
 	public Date getFechaActivacion() {
 		return fechaActivacion;
 	}
@@ -464,6 +589,14 @@ public class Contrato extends BaseEntity {
 
 	public void setFechaActivarEn(Date fechaActivarEn) {
 		this.fechaActivarEn = fechaActivarEn;
+	}
+
+	public Date getFechaCoordinacion() {
+		return fechaCoordinacion;
+	}
+
+	public void setFechaCoordinacion(Date fechaCoordinacion) {
+		this.fechaCoordinacion = fechaCoordinacion;
 	}
 
 	public Usuario getVendedor() {
@@ -496,5 +629,13 @@ public class Contrato extends BaseEntity {
 
 	public void setActivador(Usuario activador) {
 		this.activador = activador;
+	}
+
+	public Usuario getCoordinador() {
+		return coordinador;
+	}
+	
+	public void setCoordinador(Usuario coordinador) {
+		this.coordinador = coordinador;
 	}
 }

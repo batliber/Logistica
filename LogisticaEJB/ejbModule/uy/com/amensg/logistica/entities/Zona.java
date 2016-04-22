@@ -16,6 +16,9 @@ public class Zona extends BaseEntity {
 	@Column(name = "nombre")
 	private String nombre;
 
+	@Column(name = "detalle")
+	private String detalle;
+	
 	@ManyToOne(optional = false, fetch=FetchType.EAGER)
 	@JoinColumn(name = "departamento_id", nullable = false)
 	private Departamento departamento;
@@ -26,6 +29,14 @@ public class Zona extends BaseEntity {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getDetalle() {
+		return detalle;
+	}
+
+	public void setDetalle(String detalle) {
+		this.detalle = detalle;
 	}
 
 	public Departamento getDepartamento() {
