@@ -1,14 +1,19 @@
 #divIFrameUsuario {
-	position: absolute;
+	position: relative;
 	top: 100px;
 	left: 100px;
+	width: 550px;
+	height: 441px;
 	z-index: 3;
 	border: solid 1px black;
 	background-color: white;
 }
 
 #iFrameUsuario {
-	width: 550px;
-	height: 420px;
+	position: absolute;
+	top: 21px;
+	left: 0;
 	border: none;
+	width: 100%;
+	height: 420px;
 }

@@ -255,7 +255,7 @@ $(document).ready(function() {
 							$("#divDireccionEntrega").html("&nbsp;"));
 					$("#inputTelefonoContacto").length > 0 ? 
 						$("#inputTelefonoContacto").val(data.telefonoContacto) : 
-						(data.telefonoContrato != null && data.telefonoContrato != "" ? 
+						(data.telefonoContacto != null && data.telefonoContacto != "" ? 
 							$("#divTelefonoContacto").html(data.telefonoContacto) : 
 							$("#divTelefonoContacto").html("&nbsp;"));
 					$("#inputEmail").length > 0 ? 

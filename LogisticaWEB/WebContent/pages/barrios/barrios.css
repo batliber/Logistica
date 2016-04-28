@@ -1,14 +1,19 @@
 #divIFrameBarrio {
-	position: absolute;
+	position: relative;
 	top: 100px;
 	left: 100px;
+	width: 550px;
+	height: 350px;
 	z-index: 3;
 	border: solid 1px black;
 	background-color: white;
 }
 
 #iFrameBarrio {
-	width: 550px;
-	height: 320px;
+	position: absolute;
+	top: 21px;
+	left: 0;
 	border: none;
+	width: 100%;
+	height: 329px;
 }

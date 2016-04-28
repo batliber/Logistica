@@ -2240,7 +2240,7 @@ public class ContratoBean implements IContratoBean {
 //				+ ";Rol"
 				+ ";Usuario"
 				+ ";Vendedor"
-//				+ ";Back-office"
+				+ ";Back-office"
 				+ ";Distribuidor"
 //				+ ";Activador"
 //				+ ";Coordinador"
@@ -2385,9 +2385,9 @@ public class ContratoBean implements IContratoBean {
 						: "")
 					+ ";" + (contrato.getVendedor() != null ?
 						contrato.getVendedor().getNombre()
-//						: "")
-//					+ ";" + (contrato.getBackoffice() != null ?
-//						contrato.getBackoffice().getNombre()
+						: "")
+					+ ";" + (contrato.getBackoffice() != null ?
+						contrato.getBackoffice().getNombre()
 //						: "")
 					+ ";" + (contrato.getDistribuidor() != null ?
 						contrato.getDistribuidor().getNombre()
