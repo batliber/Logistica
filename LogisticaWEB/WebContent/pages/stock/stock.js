@@ -5,13 +5,15 @@ var grid = null;
 
 $(document).ready(function() {
 	$("#divButtonAgregarProducto").hide();
+	$("#divButtonAgregarEmpresaService").hide();
 	$("#divButtonNuevoStockMovimiento").hide();
 	
 	grid = new Grid(
 		document.getElementById("divTableStockMovimientos"),
 		{
-			tdEmpresaNombre: { campo: "empresa.nombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_STRING},
-			tdProductoDescripcion: { campo: "producto.descripcion", descripcion: "Producto", abreviacion: "Producto", tipo: __TIPO_CAMPO_STRING},
+			tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 80 },
+			tdProducto: { campo: "producto.descripcion", clave: "producto.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listProductos, clave: "id", valor: "descripcion" }, ancho: 80 },
+			tdProductoFechaBaja: { campo: "producto.fechaBaja", descripcion: "Fecha baja", abreviacion: "Fecha baja", tipo: __TIPO_CAMPO_FECHA, ancho: 80 },
 			tdCantidad: { campo: "cantidad", descripcion: "Cantidad", abreviacion: "Cantidad", tipo: __TIPO_CAMPO_NUMERICO }
 		},
 		reloadData,
@@ -29,8 +31,9 @@ $(document).ready(function() {
 						mode = __FORM_MODE_ADMIN;
 						
 						$("#divButtonAgregarProducto").show();
+						$("#divButtonAgregarEmpresaService").show();
 						$("#divButtonNuevoStockMovimiento").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleFourfoldSize");
 						
 						break;
 					}
@@ -43,7 +46,40 @@ $(document).ready(function() {
 	
 	$("#divIFrameStockMovimiento").draggable();
 	$("#divIFrameProducto").draggable();
+	$("#divIFrameEmpresaService").draggable();
 });
+
+function listEmpresas() {
+	var result = [];
+	
+	EmpresaDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listProductos() {
+	var result = [];
+	
+	ProductoDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
 
 function reloadData() {
 	StockMovimientoDWR.listStockActual(
@@ -92,17 +128,21 @@ function reloadData() {
 				}
 				
 				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						cantidad: ordered[i].cantidad,
-						empresa: {
-							id: ordered[i].empresa.id,
-							nombre: ordered[i].empresa.nombre,
-						},
-						producto: {
-							id: ordered[i].producto.id,
-							descripcion: ordered[i].producto.descripcion,
-						}
-					};
+					if ($("#inputMostrarFechaBaja").prop("checked")
+						|| ordered[i].producto.fechaBaja == null) {
+						registros.registrosMuestra[registros.registrosMuestra.length] = {
+							cantidad: ordered[i].cantidad,
+							empresa: {
+								id: ordered[i].empresa.id,
+								nombre: ordered[i].empresa.nombre,
+							},
+							producto: {
+								id: ordered[i].producto.id,
+								descripcion: ordered[i].producto.descripcion,
+								fechaBaja: ordered[i].producto.fechaBaja
+							}
+						};
+					}
 				}
 				
 				grid.reload(registros);
@@ -111,11 +151,19 @@ function reloadData() {
 	);
 }
 
+function inputMostrarFechaBajaOnClick(event, element) {
+	reloadData();
+}
+
 function trStockMovimientoOnClick(eventObject) {
 	var target = eventObject.currentTarget;
+	var productoId = $(target).children("[campo='tdProducto']").attr("clave");
 	
-	document.getElementById("iFrameStockMovimientoHistorico").src = "./stock_movimiento_historico.jsp?m=" + mode + "&eid=" + $(target).attr("eid") + "&pid=" + $(target).attr("pid");
-	showPopUp(document.getElementById("divIFrameStockMovimientoHistorico"));
+//	document.getElementById("iFrameStockMovimientoHistorico").src = "./stock_movimiento_historico.jsp?m=" + mode + "&eid=" + $(target).attr("eid") + "&pid=" + $(target).attr("pid");
+//	showPopUp(document.getElementById("divIFrameStockMovimientoHistorico"));
+	
+	document.getElementById("iFrameProducto").src = "./producto_edit.jsp?m=" + mode + "&id=" + productoId;
+	showPopUp(document.getElementById("divIFrameProducto"));
 }
 
 function inputActualizarOnClick() {
@@ -130,6 +178,11 @@ function inputNuevoStockMovimientoOnClick(event, element) {
 function inputAgregarProductoOnClick(event, element) {
 	document.getElementById("iFrameProducto").src = "./producto_edit.jsp";
 	showPopUp(document.getElementById("divIFrameProducto"));
+}
+
+function inputAgregarEmpresaServiceOnClick(event, element) {
+	document.getElementById("iFrameEmpresaService").src = "./empresa_service_edit.jsp";
+	showPopUp(document.getElementById("divIFrameEmpresaService"));
 }
 
 function divCloseOnClick(event, element) {

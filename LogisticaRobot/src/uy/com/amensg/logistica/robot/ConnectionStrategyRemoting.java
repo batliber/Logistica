@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 import uy.com.amensg.logistica.bean.ACMInterfaceBean;
 import uy.com.amensg.logistica.bean.IACMInterfaceBean;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
+import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
 import uy.com.amensg.logistica.robot.util.Configuration;
@@ -149,8 +150,11 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
 			
+			ACMInterfaceEstado estado = new ACMInterfaceEstado();
+			estado.setId(new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia")));
+			
 			ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
-			acmInterfaceMid.setEstado(new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia")));
+			acmInterfaceMid.setEstado(estado);
 			acmInterfaceMid.setMid(new Long(mid));
 						
 			iACMInterfaceBean.update(acmInterfaceMid);

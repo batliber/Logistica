@@ -1,0 +1,29 @@
+#divEmpresaServiceNombre {
+	float: left;
+	width: 60%;
+}
+
+#inputEmpresaServiceNombre {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divEmpresaServiceDireccion {
+	float: left;
+	width: 60%;
+}
+
+#inputEmpresaServiceDireccion {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divEmpresaServiceTelefono {
+	float: left;
+	width: 60%;
+}
+
+#inputEmpresaServiceTelefono {
+	margin-left: 2px;
+	width: 100%;
+}

@@ -118,8 +118,52 @@ function inputSubmitOnClick(event, element) {
 		false
 	);
 	
-	var formData = new FormData(document.getElementById("formResultadoEntregaDistribucion"));
+	formData = new FormData();
+	formData.append("caller", "mobile");
+	formData.append("inputNumeroTramite", $("#inputNumeroTramite").val());
+	formData.append("selectResultadoEntregaDistribucion", $("#selectResultadoEntregaDistribucion").val());
+	formData.append("textareaObservaciones", $("#textareaObservaciones").val());
+	formData.append("inputLatitud", $("#inputLatitud").val());
+	formData.append("inputLongitud", $("#inputLongitud").val());
+	formData.append("inputPrecision", $("#inputPrecision").val());
+	
+	xmlHTTPRequest.send(formData);
+	
+	if (xmlHTTPRequest.status != 200) {
+		alert(xmlHTTPRequest.responseText);
+		
+		return;
+	}
+	
+	xmlHTTPRequest = new XMLHttpRequest();
+	xmlHTTPRequest.open(
+		"POST",
+		"/LogisticaWEB/Upload",
+		false
+	);
+	
+	formData = new FormData(document.getElementById("formResultadoEntregaDistribucionAnverso"));
+	formData.append("caller", "mobile");
+	formData.append("inputNumeroTramite", $("#inputNumeroTramite").val());
 
+	xmlHTTPRequest.send(formData);
+	
+	if (xmlHTTPRequest.status != 200) {
+		alert(xmlHTTPRequest.responseText);
+		return;
+	}
+	
+	xmlHTTPRequest = new XMLHttpRequest();
+	xmlHTTPRequest.open(
+		"POST",
+		"/LogisticaWEB/Upload",
+		false
+	);
+	
+	formData = new FormData(document.getElementById("formResultadoEntregaDistribucionReverso"));
+	formData.append("caller", "mobile");
+	formData.append("inputNumeroTramite", $("#inputNumeroTramite").val());
+	
 	xmlHTTPRequest.send(formData);
 	
 	if (xmlHTTPRequest.status == 200) {

@@ -38,6 +38,18 @@ public class ProductoBean implements IProductoBean {
 		return result;
 	}
 
+	public Producto getById(Long id) {
+		Producto result = null;
+		
+		try {
+			result = entityManager.find(Producto.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public void save(Producto producto) {
 		try {
 			entityManager.persist(producto);
@@ -66,7 +78,18 @@ public class ProductoBean implements IProductoBean {
 
 	public void update(Producto producto) {
 		try {
-			this.save(producto);
+			Producto productoManaged = entityManager.find(Producto.class, producto.getId());
+			
+			productoManaged.setDescripcion(producto.getDescripcion());
+			productoManaged.setEmpresaService(producto.getEmpresaService());
+			productoManaged.setMarca(producto.getMarca());
+			
+			productoManaged.setFact(producto.getFact());
+			productoManaged.setFechaBaja(producto.getFechaBaja());
+			productoManaged.setTerm(producto.getTerm());
+			productoManaged.setUact(producto.getUact());
+			
+			entityManager.merge(productoManaged);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

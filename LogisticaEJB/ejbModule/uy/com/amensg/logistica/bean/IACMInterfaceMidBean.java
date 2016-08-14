@@ -11,6 +11,8 @@ public interface IACMInterfaceMidBean {
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
+	public Long count(MetadataConsulta metadataConsulta);
+	
 	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
 	
 	public void agregarAListaNegra(MetadataConsulta metadataConsulta);

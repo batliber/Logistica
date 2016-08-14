@@ -94,7 +94,11 @@ public class EmpresaDWR {
 	public static EmpresaTO transform(Empresa empresa) {
 		EmpresaTO empresaTO = new EmpresaTO();
 		
+		empresaTO.setCodigoPromotor(empresa.getCodigoPromotor());
+		empresaTO.setLogoURL(empresa.getLogoURL());
 		empresaTO.setNombre(empresa.getNombre());
+		empresaTO.setNombreContrato(empresa.getNombreContrato());
+		empresaTO.setNombreSucursal(empresa.getNombreSucursal());
 		
 		empresaTO.setFact(empresa.getFact());
 		empresaTO.setId(empresa.getId());
@@ -107,7 +111,11 @@ public class EmpresaDWR {
 	public static Empresa transform(EmpresaTO empresaTO) {
 		Empresa empresa = new Empresa();
 		
+		empresa.setCodigoPromotor(empresaTO.getCodigoPromotor());
+		empresa.setLogoURL(empresaTO.getLogoURL());
 		empresa.setNombre(empresaTO.getNombre());
+		empresa.setNombreContrato(empresaTO.getNombreContrato());
+		empresa.setNombreSucursal(empresaTO.getNombreSucursal());
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		

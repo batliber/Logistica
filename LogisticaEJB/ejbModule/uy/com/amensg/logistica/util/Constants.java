@@ -15,4 +15,8 @@ public class Constants {
 	public static String __METADATA_CONDICION_OPERADOR_INCLUIDO = "in";
 	public static String __METADATA_CONDICION_OPERADOR_NULL = "nl";
 	public static String __METADATA_CONDICION_OPERADOR_NOT_NULL = "nnl";
+	
+	public static final int __COMPROBACION_IMPORTACION_IMPORTAR = 0;
+	public static final int __COMPROBACION_IMPORTACION_SOBREESCRIBIR = 1;
+	public static final int __COMPROBACION_IMPORTACION_OMITIR = 2;
 }

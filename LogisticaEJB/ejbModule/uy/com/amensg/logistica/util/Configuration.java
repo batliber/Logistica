@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class Configuration {
 
-private static Configuration instance = null;
+	private static Configuration instance = null;
 	
 	private Properties properties = null;
 	

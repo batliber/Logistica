@@ -2,10 +2,13 @@ function Grid(element, campos, reloadListener, trOnClickListener) {
 	this.__ANCHO_BORDE = 1;
 	this.__ANCHO_SCROLL_VERTICAL = 20;
 	this.__ANCHO_CAMPO_NUMERICO = 55 + this.__ANCHO_BORDE;
+	this.__ANCHO_CAMPO_DECIMAL = 55 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_STRING = 110 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_FECHA = 65 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_FECHA_HORA = 85 + this.__ANCHO_BORDE;
+	this.__ANCHO_CAMPO_FECHA_MES_ANO = 65 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_RELACION = 110 + this.__ANCHO_BORDE;
+	this.__ANCHO_CAMPO_MULTIPLE = 110 + this.__ANCHO_BORDE;
 	this.__ANCHO_ETIQUETA_CANTIDAD_REGISTROS = 120;
 	
 	this.__STATUS_LOADING = 0;
@@ -41,6 +44,10 @@ Grid.prototype.rebuild = function() {
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_NUMERICO;
 					
 					break;
+				case __TIPO_CAMPO_DECIMAL:
+					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_DECIMAL;
+					
+					break;
 				case __TIPO_CAMPO_STRING:
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_STRING;
 					
@@ -53,8 +60,16 @@ Grid.prototype.rebuild = function() {
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_HORA;
 					
 					break;
+				case __TIPO_CAMPO_FECHA_MES_ANO:
+					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_MES_ANO;
+					
+					break;
 				case __TIPO_CAMPO_RELACION:
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_RELACION;
+					
+					break;
+				case __TIPO_CAMPO_MULTIPLE:
+					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_MULTIPLE;
 					
 					break;
 			}
@@ -169,6 +184,10 @@ Grid.prototype.reload = function(data) {
 					formattedValue = value != null && value !== "" ? value : "&nbsp;";
 					
 					break;
+				case __TIPO_CAMPO_DECIMAL:
+					formattedValue = value != null && value !== "" ? formatDecimal(value, 2) : "&nbsp;";
+					
+					break;
 				case __TIPO_CAMPO_STRING:
 					formattedValue = value != null && value != "" ? value : "&nbsp;";
 					
@@ -181,7 +200,15 @@ Grid.prototype.reload = function(data) {
 					formattedValue = value != null && value != "" ? formatLongDate(value) : "&nbsp;";
 					
 					break;
+				case __TIPO_CAMPO_FECHA_MES_ANO:
+					formattedValue = value != null && value != "" ? formatMonthYearDate(value) : "&nbsp;";
+					
+					break;
 				case __TIPO_CAMPO_RELACION:
+					formattedValue = value != null && value != "" ? value : "&nbsp;";
+					
+					break;
+				case __TIPO_CAMPO_MULTIPLE:
 					formattedValue = value != null && value != "" ? value : "&nbsp;";
 					
 					break;
@@ -240,6 +267,10 @@ Grid.prototype.reload = function(data) {
 
 Grid.prototype.setCount = function(data) {
 	$("#divCantidadRegistrosValue").text(data != null ? data : 0);
+};
+
+Grid.prototype.getCount = function() {
+	return $("#divCantidadRegistrosValue").text();
 };
 
 Grid.prototype.setStatus = function(status) {

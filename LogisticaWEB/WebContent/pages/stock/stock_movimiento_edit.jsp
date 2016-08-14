@@ -30,10 +30,10 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divMainWindow">
-		<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa"><select id="selectEmpresa"></select></div>
-		<div class="divFormLabelExtended">Producto:</div><div id="divProducto"><select id="selectProducto"></select></div>
-		<div class="divFormLabelExtended">Tipo de movimiento:</div><div id="divStockTipoMovimiento"><select id="selectStockTipoMovimiento"></select></div>
-		<div class="divFormLabelExtended">Cantidad:</div><div id="divCantidad"><input type="text" id="inputCantidad"/></div>
+		<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa"></select></div>
+		<div class="divFormLabelExtended">Producto:</div><div id="divProducto" class="divFormValue"><select id="selectProducto"></select></div>
+		<div class="divFormLabelExtended">Tipo de movimiento:</div><div id="divStockTipoMovimiento" class="divFormValue"><select id="selectStockTipoMovimiento"></select></div>
+		<div class="divFormLabelExtended">Cantidad:</div><div id="divCantidad" class="divFormValue"><input type="text" id="inputCantidad"/></div>
 	</div>
 </body>
 </html>

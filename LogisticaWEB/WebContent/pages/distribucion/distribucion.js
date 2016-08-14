@@ -1,6 +1,9 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_SUPERVISOR_DISTRIBUCION = 7;
 var __ROL_COORDINADOR_DISTRIBUCION = 11;
+var __ROL_DISTRIBUIDOR = 8;
+
+var rol = __ROL_DISTRIBUIDOR;
 
 var grid = null;
 
@@ -24,33 +27,22 @@ $(document).ready(function() {
 								tdContratoNumeroTramite: { campo: "numeroTramite", descripcion: "Número de trámite", abreviacion: "Trámite", tipo: __TIPO_CAMPO_NUMERICO },
 								tdContratoMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
 								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 80 },
-//								tdEmpresa: { campo: "empresa.nombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
 								tdContratoEquipo: { campo: "producto.descripcion", clave: "producto.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listProductos, clave: "id", valor: "descripcion" }, ancho: 80 },
-//								tdContratoEquipo: { campo: "producto.descripcion", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
 								tdContratoPrecio: { campo: "precio", descripcion: "Precio", abreviacion: "Precio", tipo: __TIPO_CAMPO_NUMERICO },
 								tdContratoFechaEntrega: { campo: "fechaEntrega", descripcion: "Fecha de entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_FECHA },
 								tdContratoDireccionEntrega: { campo: "direccionEntrega", descripcion: "Dirección entrega", abreviacion: "Dir. entrega", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
 								tdContratoDepartamento: { campo: "zona.departamento.nombre", clave: "zona.departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"}, ancho: 80 },
-//								tdContratoDepartamento: { campo: "zona.departamento.nombre", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
 								tdContratoBarrio: { campo: "barrio.nombre", clave: "barrio.id", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listBarrios, clave: "id", valor: "nombre" }, ancho: 80 },
-//								tdContratoBarrio: { campo: "barrio.nombre", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
 								tdContratoZona: { campo: "zona.nombre", clave: "zona.id", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listZonas, clave: "id", valor: "nombre"}, ancho: 80 },
-//								tdContratoZona: { campo: "zona.nombre", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
 								tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
 								tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 80 },
-//								tdUsuario: { campo: "usuario.nombre", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
 								tdFechaBackoffice: { campo: "fechaBackoffice", descripcion: "Fecha de armado", abreviacion: "Armado", tipo: __TIPO_CAMPO_FECHA },
 								tdFechaEntregaDistribuidor: { campo: "fechaEntregaDistribuidor", descripcion: "Entregado", abreviacion: "Entregado", tipo: __TIPO_CAMPO_FECHA },
 								tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto", abreviacion: "Devuelto", tipo: __TIPO_CAMPO_FECHA },
 								tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", clave: "resultadoEntregaDistribucion.id", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listResultadoEntregaDistribuciones, clave: "id", valor: "descripcion" } },
-//								tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_STRING},
 								tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
 								tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 80 },
-//								tdDistribuidor: { campo: "distribuidor.nombre", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
-//								tdActivador: { campo: "activador.nombre", descripcion: "Activador", abreviacion: "Activador", tipo: __TIPO_CAMPO_STRING },
 								tdEstado: { campo: "estado.nombre", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "nombre" }, ancho: 80 },
-//								tdEstado: { campo: "estado.nombre", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
-//								tdEstadoId: { campo: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_NUMERICO, oculto: true }
 							}, 
 							reloadData,
 							trContratoOnClick
@@ -84,30 +76,28 @@ $(document).ready(function() {
 						
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
 						
+						rol = data.usuarioRolEmpresas[i].rol.id;
+						
 						break;
 					}
 				}
 				
 				if (grid == null) {
+					$("#divButtonExportarAExcel").show();
+					
 					grid = new Grid(
 						document.getElementById("divTableContratos"),
 						{
 							tdContratoNumeroTramite: { campo: "numeroTramite", descripcion: "Número de trámite", abreviacion: "Trámite", tipo: __TIPO_CAMPO_NUMERICO },
 							tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" } },
-//							tdEmpresa: { campo: "empresa.nombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_STRING },
 							tdContratoMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
 							tdContratoDepartamento: { campo: "zona.departamento.nombre", clave: "zona.departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"} },
-//							tdContratoDepartamento: { campo: "zona.departamento.nombre", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_STRING },
 							tdContratoBarrio: { campo: "barrio.nombre", clave: "barrio.id", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listBarrios, clave: "id", valor: "nombre" }, ancho: 80 },
-//							tdContratoBarrio: { campo: "barrio.nombre", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_STRING },
 							tdFechaBackoffice: { campo: "fechaBackoffice", descripcion: "Fecha de armado", abreviacion: "Armado", tipo: __TIPO_CAMPO_FECHA },
 							tdFechaEntregaDistribuidor: { campo: "fechaEntregaDistribuidor", descripcion: "Entregado", abreviacion: "Entregado", tipo: __TIPO_CAMPO_FECHA },
 							tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto", abreviacion: "Devuelto", tipo: __TIPO_CAMPO_FECHA },
 							tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", clave: "resultadoEntregaDistribucion.id", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listResultadoEntregaDistribuciones, clave: "id", valor: "descripcion" } },
-//							tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_STRING},
 							tdEstado: { campo: "estado.nombre", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "nombre" }, ancho: 90 },
-//							tdEstado: { campo: "estado.nombre", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_STRING },
-//							tdEstadoId: { campo: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_NUMERICO, oculto: true }
 						}, 
 						reloadData,
 						trContratoOnClick
@@ -145,6 +135,22 @@ function listProductos() {
 	var result = [];
 	
 	ProductoDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listPlanes() {
+	var result = [];
+	
+	PlanDWR.list(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -302,8 +308,14 @@ function trContratoOnClick(eventObject) {
 	var formMode = __FORM_MODE_READ;
 	if (estadoId == __ESTADO_DISTRIBUIR) {
 		formMode = __FORM_MODE_DISTRIBUCION;
+	} else if (estadoId == __ESTADO_REDISTRIBUIR) {
+		formMode = __FORM_MODE_REDISTRIBUCION;
 	} else if (estadoId == __ESTADO_RECOORDINAR || estadoId == __ESTADO_FALTA_DOCUMENTACION) {
 		formMode = __FORM_MODE_RECOORDINACION;
+	}
+	
+	if (rol == __ROL_DISTRIBUIDOR) {
+		formMode = __FORM_MODE_READ;
 	}
 	
 	document.getElementById("iFrameContrato").src = "/LogisticaWEB/pages/contrato/contrato.jsp?m=" + formMode + "&cid=" + $(target).attr("id");

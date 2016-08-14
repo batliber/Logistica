@@ -31,10 +31,11 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divMainWindow">
-		<div class="divFormLabel">Login:</div><div id="divUsuarioLogin"><input type="text" id="inputUsuarioLogin"/></div>
-		<div class="divFormLabel">Nombre:</div><div id="divUsuarioNombre"><input type="text" id="inputUsuarioNombre"/></div>
+		<div class="divFormLabel">Login:</div><div id="divUsuarioLogin" class="divFormValue"><input type="text" id="inputUsuarioLogin"/></div>
+		<div class="divFormLabel">Nombre:</div><div id="divUsuarioNombre" class="divFormValue"><input type="text" id="inputUsuarioNombre"/></div>
+		<div class="divFormLabel">Documento:</div><div id="divUsuarioDocumento" class="divFormValue"><input type="text" id="inputUsuarioDocumento"/></div>
 		<div class="divFormLabel">Contrase&ntilde;a:</div>
-		<div id="divUsuarioContrasena">
+		<div id="divUsuarioContrasena" class="divFormValue">
 			<input type="password" id="inputUsuarioContrasena" disabled="disabled"/>
 			<input type="checkbox" id="inputCambiarContrasena" onchange="javascript:inputCambiarContrasenaOnChange(event, this)"/>
 		</div>

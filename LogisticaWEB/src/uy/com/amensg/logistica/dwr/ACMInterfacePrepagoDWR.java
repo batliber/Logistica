@@ -77,10 +77,27 @@ public class ACMInterfacePrepagoDWR {
 		
 		return result;
 	}
+
+	public String preprocesarExportacionByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO) {
+		String result = null;
+		
+		try {
+			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+			
+			result = iACMInterfacePrepagoBean.preprocesarExportacion(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				),
+				EmpresaDWR.transform(empresaTO)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
-	public String exportarAExcelByEmpresa(
-		MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones
-	) {
+	public String exportarAExcelByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones) {
 		String result = null;
 		
 		try {

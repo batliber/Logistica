@@ -180,8 +180,9 @@ public class UsuarioDWR {
 	public static UsuarioTO transform(Usuario usuario, boolean transformCollections) {
 		UsuarioTO usuarioTO = new UsuarioTO();
 		
-		usuarioTO.setLogin(usuario.getLogin());
 		usuarioTO.setContrasena(usuario.getContrasena());
+		usuarioTO.setDocumento(usuario.getDocumento());
+		usuarioTO.setLogin(usuario.getLogin());
 		usuarioTO.setNombre(usuario.getNombre());
 
 		if (transformCollections) {
@@ -221,11 +222,12 @@ public class UsuarioDWR {
 	public static Usuario transform(UsuarioTO usuarioTO) {
 		Usuario usuario = new Usuario();
 		
-		usuario.setLogin(usuarioTO.getLogin());
-		
 		if (usuarioTO.getContrasena() != null) {
 			usuario.setContrasena(MD5Utils.stringToMD5(usuarioTO.getContrasena()));
 		}
+		
+		usuario.setDocumento(usuarioTO.getDocumento());
+		usuario.setLogin(usuarioTO.getLogin());
 		usuario.setNombre(usuarioTO.getNombre());
 		
 		if (usuarioTO.getUsuarioRolEmpresas() != null) {

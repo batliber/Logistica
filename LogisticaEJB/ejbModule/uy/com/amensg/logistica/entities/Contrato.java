@@ -36,6 +36,9 @@ public class Contrato extends BaseEntity {
 	@Column(name = "nombre")
 	private String nombre;
 
+	@Column(name = "apellido")
+	private String apellido;
+	
 	@Column(name = "fecha_nacimiento")
 	private Date fechaNacimiento;
 	
@@ -79,17 +82,20 @@ public class Contrato extends BaseEntity {
 	private String email;
 	
 	@Column(name = "numero_factura")
-	private Long numeroFactura;
+	private String numeroFactura;
 
 	@Column(name = "precio")
 	private Double precio;
 
-	@Column(name = "nuevo_plan")
-	private String nuevoPlan;
-
 	@Column(name = "numero_serie")
 	private String numeroSerie;
 
+	@Column(name = "nuevo_plan")
+	private String nuevoPlanString;
+	
+	@Column (name = "numero_factura_river_green")
+	private String numeroFacturaRiverGreen;
+	
 	@Column(name = "observaciones")
 	private String observaciones;
 
@@ -138,6 +144,88 @@ public class Contrato extends BaseEntity {
 	@Column(name = "fecha_coordinacion")
 	private Date fechaCoordinacion;
 	
+	@Column(name = "numero_chip")
+	private String numeroChip;
+	
+	@Column(name = "numero_bloqueo")
+	private String numeroBloqueo;
+	
+	@Column(name = "direccion_entrega_calle")
+	private String direccionEntregaCalle;
+	
+	@Column(name = "direccion_entrega_numero")
+	private Long direccionEntregaNumero;
+	
+	@Column(name = "direccion_entrega_bis")
+	private Boolean direccionEntregaBis;
+	
+	@Column(name = "direccion_entrega_block")
+	private String direccionEntregaBlock;
+	
+	@Column(name = "direccion_entrega_apto")
+	private String direccionEntregaApto;
+	
+	@Column(name = "direccion_entrega_solar")
+	private String direccionEntregaSolar;
+	
+	@Column(name = "direccion_entrega_manzana")
+	private Long direccionEntregaManzana;
+	
+	@Column(name = "direccion_entrega_codigo_postal")
+	private Long direccionEntregaCodigoPostal;
+	
+	@Column(name = "direccion_entrega_localidad")
+	private String direccionEntregaLocalidad;
+	
+	@Column(name = "direccion_entrega_observaciones")
+	private String direccionEntregaObservaciones;
+	
+	@Column(name = "direccion_factura_calle")
+	private String direccionFacturaCalle;
+	
+	@Column(name = "direccion_factura_numero")
+	private Long direccionFacturaNumero;
+	
+	@Column(name = "direccion_factura_bis")
+	private Boolean direccionFacturaBis;
+	
+	@Column(name = "direccion_factura_block")
+	private String direccionFacturaBlock;
+	
+	@Column(name = "direccion_factura_apto")
+	private String direccionFacturaApto;
+	
+	@Column(name = "direccion_factura_solar")
+	private String direccionFacturaSolar;
+	
+	@Column(name = "direccion_factura_manzana")
+	private Long direccionFacturaManzana;
+	
+	@Column(name = "direccion_factura_codigo_postal")
+	private Long direccionFacturaCodigoPostal;
+	
+	@Column(name = "direccion_factura_localidad")
+	private String direccionFacturaLocalidad;
+	
+	@Column(name = "direccion_factura_observaciones")
+	private String direccionFacturaObservaciones;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "direccion_entrega_departamento_id", nullable = true)
+	private Departamento direccionEntregaDepartamento;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "direccion_factura_departamento_id", nullable = true)
+	private Departamento direccionFacturaDepartamento;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "tipo_documento_id", nullable = true)
+	private TipoDocumento tipoDocumento;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "sexo_id", nullable = true)
+	private Sexo sexo;
+	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "barrio_id", nullable = true)
 	private Barrio barrio;
@@ -153,6 +241,14 @@ public class Contrato extends BaseEntity {
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "producto_id", nullable = true)
 	private Producto producto;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "nuevo_plan_id", nullable = true)
+	private Plan nuevoPlan;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "motivo_cambio_plan_id", nullable = true)
+	private MotivoCambioPlan motivoCambioPlan;
 
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "estado_id", nullable = true)
@@ -250,6 +346,14 @@ public class Contrato extends BaseEntity {
 		this.nombre = nombre;
 	}
 
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
+
 	public Date getFechaNacimiento() {
 		return fechaNacimiento;
 	}
@@ -304,6 +408,14 @@ public class Contrato extends BaseEntity {
 
 	public void setNumeroContrato(Long numeroContrato) {
 		this.numeroContrato = numeroContrato;
+	}
+
+	public String getNuevoPlanString() {
+		return nuevoPlanString;
+	}
+
+	public void setNuevoPlanString(String nuevoPlanString) {
+		this.nuevoPlanString = nuevoPlanString;
 	}
 
 	public String getAgente() {
@@ -362,12 +474,20 @@ public class Contrato extends BaseEntity {
 		this.email = email;
 	}
 
-	public Long getNumeroFactura() {
+	public String getNumeroFactura() {
 		return numeroFactura;
 	}
 
-	public void setNumeroFactura(Long numeroFactura) {
+	public void setNumeroFactura(String numeroFactura) {
 		this.numeroFactura = numeroFactura;
+	}
+
+	public String getNumeroFacturaRiverGreen() {
+		return numeroFacturaRiverGreen;
+	}
+
+	public void setNumeroFacturaRiverGreen(String numeroFacturaRiverGreen) {
+		this.numeroFacturaRiverGreen = numeroFacturaRiverGreen;
 	}
 
 	public Double getPrecio() {
@@ -394,12 +514,20 @@ public class Contrato extends BaseEntity {
 		this.fechaRechazo = fechaRechazo;
 	}
 
-	public String getNuevoPlan() {
+	public Plan getNuevoPlan() {
 		return nuevoPlan;
 	}
 
-	public void setNuevoPlan(String nuevoPlan) {
+	public void setNuevoPlan(Plan nuevoPlan) {
 		this.nuevoPlan = nuevoPlan;
+	}
+
+	public MotivoCambioPlan getMotivoCambioPlan() {
+		return motivoCambioPlan;
+	}
+
+	public void setMotivoCambioPlan(MotivoCambioPlan motivoCambioPlan) {
+		this.motivoCambioPlan = motivoCambioPlan;
 	}
 
 	public String getNumeroSerie() {
@@ -416,6 +544,22 @@ public class Contrato extends BaseEntity {
 
 	public void setObservaciones(String observaciones) {
 		this.observaciones = observaciones;
+	}
+
+	public String getNumeroChip() {
+		return numeroChip;
+	}
+
+	public void setNumeroChip(String numeroChip) {
+		this.numeroChip = numeroChip;
+	}
+
+	public String getNumeroBloqueo() {
+		return numeroBloqueo;
+	}
+
+	public void setNumeroBloqueo(String numeroBloqueo) {
+		this.numeroBloqueo = numeroBloqueo;
 	}
 
 	public String getResultadoEntregaDistribucionObservaciones() {
@@ -470,6 +614,200 @@ public class Contrato extends BaseEntity {
 		this.resultadoEntregaDistribucionPrecision = resultadoEntregaDistribucionPrecision;
 	}
 
+	public String getDireccionEntregaCalle() {
+		return direccionEntregaCalle;
+	}
+
+	public void setDireccionEntregaCalle(String direccionEntregaCalle) {
+		this.direccionEntregaCalle = direccionEntregaCalle;
+	}
+
+	public Long getDireccionEntregaNumero() {
+		return direccionEntregaNumero;
+	}
+
+	public void setDireccionEntregaNumero(Long direccionEntregaNumero) {
+		this.direccionEntregaNumero = direccionEntregaNumero;
+	}
+
+	public Boolean getDireccionEntregaBis() {
+		return direccionEntregaBis;
+	}
+
+	public void setDireccionEntregaBis(Boolean direccionEntregaBis) {
+		this.direccionEntregaBis = direccionEntregaBis;
+	}
+
+	public String getDireccionEntregaBlock() {
+		return direccionEntregaBlock;
+	}
+
+	public void setDireccionEntregaBlock(String direccionEntregaBlock) {
+		this.direccionEntregaBlock = direccionEntregaBlock;
+	}
+
+	public String getDireccionEntregaApto() {
+		return direccionEntregaApto;
+	}
+
+	public void setDireccionEntregaApto(String direccionEntregaApto) {
+		this.direccionEntregaApto = direccionEntregaApto;
+	}
+
+	public String getDireccionEntregaSolar() {
+		return direccionEntregaSolar;
+	}
+
+	public void setDireccionEntregaSolar(String direccionEntregaSolar) {
+		this.direccionEntregaSolar = direccionEntregaSolar;
+	}
+
+	public Long getDireccionEntregaManzana() {
+		return direccionEntregaManzana;
+	}
+
+	public void setDireccionEntregaManzana(Long direccionEntregaManzana) {
+		this.direccionEntregaManzana = direccionEntregaManzana;
+	}
+
+	public Long getDireccionEntregaCodigoPostal() {
+		return direccionEntregaCodigoPostal;
+	}
+
+	public void setDireccionEntregaCodigoPostal(Long direccionEntregaCodigoPostal) {
+		this.direccionEntregaCodigoPostal = direccionEntregaCodigoPostal;
+	}
+
+	public String getDireccionEntregaLocalidad() {
+		return direccionEntregaLocalidad;
+	}
+
+	public void setDireccionEntregaLocalidad(String direccionEntregaLocalidad) {
+		this.direccionEntregaLocalidad = direccionEntregaLocalidad;
+	}
+
+	public String getDireccionEntregaObservaciones() {
+		return direccionEntregaObservaciones;
+	}
+
+	public void setDireccionEntregaObservaciones(
+			String direccionEntregaObservaciones) {
+		this.direccionEntregaObservaciones = direccionEntregaObservaciones;
+	}
+
+	public String getDireccionFacturaCalle() {
+		return direccionFacturaCalle;
+	}
+
+	public void setDireccionFacturaCalle(String direccionFacturaCalle) {
+		this.direccionFacturaCalle = direccionFacturaCalle;
+	}
+
+	public Long getDireccionFacturaNumero() {
+		return direccionFacturaNumero;
+	}
+
+	public void setDireccionFacturaNumero(Long direccionFacturaNumero) {
+		this.direccionFacturaNumero = direccionFacturaNumero;
+	}
+
+	public Boolean getDireccionFacturaBis() {
+		return direccionFacturaBis;
+	}
+
+	public void setDireccionFacturaBis(Boolean direccionFacturaBis) {
+		this.direccionFacturaBis = direccionFacturaBis;
+	}
+
+	public String getDireccionFacturaBlock() {
+		return direccionFacturaBlock;
+	}
+
+	public void setDireccionFacturaBlock(String direccionFacturaBlock) {
+		this.direccionFacturaBlock = direccionFacturaBlock;
+	}
+
+	public String getDireccionFacturaApto() {
+		return direccionFacturaApto;
+	}
+
+	public void setDireccionFacturaApto(String direccionFacturaApto) {
+		this.direccionFacturaApto = direccionFacturaApto;
+	}
+
+	public String getDireccionFacturaSolar() {
+		return direccionFacturaSolar;
+	}
+
+	public void setDireccionFacturaSolar(String direccionFacturaSolar) {
+		this.direccionFacturaSolar = direccionFacturaSolar;
+	}
+
+	public Long getDireccionFacturaManzana() {
+		return direccionFacturaManzana;
+	}
+
+	public void setDireccionFacturaManzana(Long direccionFacturaManzana) {
+		this.direccionFacturaManzana = direccionFacturaManzana;
+	}
+
+	public Long getDireccionFacturaCodigoPostal() {
+		return direccionFacturaCodigoPostal;
+	}
+
+	public void setDireccionFacturaCodigoPostal(Long direccionFacturaCodigoPostal) {
+		this.direccionFacturaCodigoPostal = direccionFacturaCodigoPostal;
+	}
+
+	public String getDireccionFacturaLocalidad() {
+		return direccionFacturaLocalidad;
+	}
+
+	public void setDireccionFacturaLocalidad(String direccionFacturaLocalidad) {
+		this.direccionFacturaLocalidad = direccionFacturaLocalidad;
+	}
+
+	public String getDireccionFacturaObservaciones() {
+		return direccionFacturaObservaciones;
+	}
+
+	public void setDireccionFacturaObservaciones(
+			String direccionFacturaObservaciones) {
+		this.direccionFacturaObservaciones = direccionFacturaObservaciones;
+	}
+	
+	public Departamento getDireccionEntregaDepartamento() {
+		return direccionEntregaDepartamento;
+	}
+
+	public void setDireccionEntregaDepartamento(Departamento direccionEntregaDepartamento) {
+		this.direccionEntregaDepartamento = direccionEntregaDepartamento;
+	}
+
+	public Departamento getDireccionFacturaDepartamento() {
+		return direccionFacturaDepartamento;
+	}
+
+	public void setDireccionFacturaDepartamento(Departamento direccionFacturaDepartamento) {
+		this.direccionFacturaDepartamento = direccionFacturaDepartamento;
+	}
+
+	public TipoDocumento getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	public void setTipoDocumento(TipoDocumento tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
+	public Sexo getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(Sexo sexo) {
+		this.sexo = sexo;
+	}
+	
 	public Barrio getBarrio() {
 		return barrio;
 	}

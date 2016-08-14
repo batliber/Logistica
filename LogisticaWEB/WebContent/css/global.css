@@ -238,11 +238,20 @@ tr:hover {
 .divFormLabel {
 	float: left;
 	width: 100px;
+	height: 20px;
 	text-align: right;
 	margin-top: 2px;
 }
 
 .divFormLabelExtended {
+	float: left;
+	width: 120px;
+	height: 20px;
+	text-align: right;
+	margin-top: 2px;
+}
+
+.divFormLabelExtendedPrint {
 	float: left;
 	width: 120px;
 	text-align: right;
@@ -252,6 +261,22 @@ tr:hover {
 .divFormValue {
 	float: left;
 	width: 200px;
+	height: 20px;
+	text-align: left;
+	margin-top: 2px;
+}
+
+.divFormValuePrint {
+	float: left;
+	width: 200px;
+	text-align: left;
+	margin-top: 2px;
+}
+
+.divFormValueDoubleHeightPrint {
+	float: left;
+	width: 200px;
+	height: 38px;
 	text-align: left;
 	margin-top: 2px;
 }

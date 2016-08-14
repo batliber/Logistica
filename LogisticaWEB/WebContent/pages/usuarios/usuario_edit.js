@@ -90,6 +90,7 @@ $(document).ready(function() {
 				callback: function(data) {
 					$("#inputUsuarioLogin").val(data.login);
 					$("#inputUsuarioNombre").val(data.nombre);
+					$("#inputUsuarioDocumento").val(data.documento);
 					
 					for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 						$("#tableEmpresas > tbody > tr > td > div > input[id=" + data.usuarioRolEmpresas[i].empresa.id + "]").prop("checked", true);
@@ -134,6 +135,7 @@ function inputCambiarContrasenaOnChange(event, element) {
 
 function inputGuardarOnClick(event) {
 	var usuario = {
+		documento: $("#inputUsuarioDocumento").val(),
 		login: $("#inputUsuarioLogin").val(),
 		nombre: $("#inputUsuarioNombre").val(),
 		usuarioRolEmpresas: []

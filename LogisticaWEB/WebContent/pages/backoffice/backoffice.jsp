@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PlanDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ZonaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/BarrioDWR.js"></script>
@@ -50,7 +51,7 @@
 			<div class="divFormLabelExtended">Tama&ntilde;o de muestra:</div>
 			<div id="divTamanoMuestra"><input type="text" id="inputTamanoMuestra" value="50" onchange="javascript:grid.filtroDinamico.tamanoMuestraOnChange(event)"/></div>
 			<div class="divFormLabelExtended">Tama&ntilde;o subconjunto:</div>
-			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="500" onchange="javascript:grid.filtroDinamico.tamanoSubconjuntoOnChange(event)"/></div>
+			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="1" onchange="javascript:grid.filtroDinamico.tamanoSubconjuntoOnChange(event)"/></div>
 			<div id="divAgregarFiltroContainer">
 				<div class="divFormLabelExtended">Agregar filtro:</div>
 				<div id="divAgregarFiltro"><input type="submit" value="Agregar" id="inputAgregarFiltro" onclick="javascript:grid.filtroDinamico.agregarFiltro(event, this)"/></div>
@@ -85,8 +86,8 @@
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divMainWindow">
-				<div class="divFormLabelExtended">Backoffice:</div><div id="divBackoffice"><select id="selectBackoffice"></select></div>
-				<div class="divFormLabelExtended">Observaciones:</div><div id="divObservaciones"><textarea id="textareaObservaciones"></textarea></div>
+				<div class="divFormLabelExtended">Backoffice:</div><div id="divBackoffice" class="divFormValue"><select id="selectBackoffice"></select></div>
+				<div class="divFormLabelExtended">Observaciones:</div><div id="divObservaciones" class="divFormValue"><textarea id="textareaObservaciones"></textarea></div>
 			</div>
 		</div>
 	</div>

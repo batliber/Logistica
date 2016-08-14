@@ -28,7 +28,16 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divMainWindow">
-		<div class="divFormLabel">Nombre:</div><div id="divEmpresaNombre"><input type="text" id="inputEmpresaNombre"/></div>
+		<form id="formEmpresa" method="POST" action="/LogisticaWEB/Upload" enctype="multipart/form-data">
+			<input type="hidden" name="caller" value="/LogisticaWEB/pages/empresas/empresa_edit.jsp"/>
+			<input type="hidden" name="inputEmpresaId" id="inputEmpresaId"/>
+			<div class="divFormLabelExtended">Nombre:</div><div id="divEmpresaNombre" class="divFormValue"><input type="text" id="inputEmpresaNombre" name="inputEmpresaNombre"/></div>
+			<div class="divFormLabelExtended">C&oacute;d. promotor:</div><div id="divEmpresaCodigoPromotor" class="divFormValue"><input type="text" id="inputEmpresaCodigoPromotor" name="inputEmpresaCodigoPromotor"/></div>
+			<div class="divFormLabelExtended">Nombre (contrato):</div><div id="divEmpresaNombreContrato" class="divFormValue"><input type="text" id="inputEmpresaNombreContrato" name="inputEmpresaNombreContrato"/></div>
+			<div class="divFormLabelExtended">Nombre sucursal:</div><div id="divEmpresaNombreSucursal" class="divFormValue"><input type="text" id="inputEmpresaNombreSucursal" name="inputEmpresaNombreSucursal"/></div>
+			<div class="divFormLabelExtended">Logo:</div><div id="divEmpresaLogo" class="divFormValue"><img id="imgEmpresaLogo" src="#"/></div>
+			<div class="divFormLabelExtended">&nbsp;</div><div id="divEmpresaLogoArchivo" class="divFormValue"><input type="file" id="inputEmpresaLogo" name="inputEmpresaLogo"/></div>
+		</form>
 	</div>
 </body>
 </html>

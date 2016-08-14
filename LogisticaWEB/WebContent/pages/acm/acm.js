@@ -932,29 +932,34 @@ function inputAceptarOnClick(event) {
 					);
 			}
 			
-			if (confirm("Se exportarán " 
-				+ (metadataConsulta.tamanoSubconjunto != null ?
-					metadataConsulta.tamanoSubconjunto
-					: $("#divContratoCantidadRegistros").text()) + " registros.")) {
-				ACMInterfaceContratoDWR.exportarAExcelByEmpresa(
-					metadataConsulta,
-					empresa,
-					$("#textareaObservaciones").val(),
-					{
-						callback: function(data) {
-							alert("Archivo generado: " + data);
-							
-							closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
-							
-							$("#inputTamanoSubconjuntoAsignacion").val(0);
-							$("#selectEmpresa").val("0");
-							$("#textareaObservaciones").val("");
-							
-							reloadData();
+			ACMInterfaceContratoDWR.preprocesarExportacionByEmpresa(
+				metadataConsulta,
+				empresa,
+				{
+					callback: function(data) {
+						if (confirm(data.replace(new RegExp("\\|", "g"), "\n"))) {
+							ACMInterfaceContratoDWR.exportarAExcelByEmpresa(
+								metadataConsulta,
+								empresa,
+								$("#textareaObservaciones").val(),
+								{
+									callback: function(data) {
+										alert("Archivo generado: " + data);
+										
+										closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
+										
+										$("#inputTamanoSubconjuntoAsignacion").val(0);
+										$("#selectEmpresa").val("0");
+										$("#textareaObservaciones").val("");
+										
+										reloadData();
+									}, async: false
+								}
+							);
 						}
-					}
-				);
-			}
+					}, async: false
+				}
+			);
 		} else if ($("#selectTipoRegistro").val() == "prepago") {
 			if ($("#inputTamanoSubconjuntoAsignacion").val() != 0) {
 				metadataConsulta.tamanoSubconjunto = 
@@ -964,28 +969,34 @@ function inputAceptarOnClick(event) {
 					);
 			}
 			
-			if (confirm("Se exportarán " 
-				+ (metadataConsulta.tamanoSubconjunto != null ?
-					metadataConsulta.tamanoSubconjunto
-					: $("#divPrepagoCantidadRegistros").text()) + " registros.")) {
-				ACMInterfacePrepagoDWR.exportarAExcelByEmpresa(
-					metadataConsulta,
-					empresa,
-					$("#textareaObservaciones").val(),
-					{
-						callback: function(data) {
-							alert("Archivo generado: " + data);
-							
-							closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
-							
-							$("#selectEmpresa").val("0");
-							$("#textareaObservaciones").val("");
-							
-							reloadData();
+			ACMInterfacePrepagoDWR.preprocesarExportacionByEmpresa(
+				metadataConsulta,
+				empresa,
+				{
+					callback: function(data) {
+						if (confirm(data.replace(new RegExp("\\|", "g"), "\n"))) {
+							ACMInterfacePrepagoDWR.exportarAExcelByEmpresa(
+								metadataConsulta,
+								empresa,
+								$("#textareaObservaciones").val(),
+								{
+									callback: function(data) {
+										alert("Archivo generado: " + data);
+										
+										closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
+										
+										$("#inputTamanoSubconjuntoAsignacion").val(0);
+										$("#selectEmpresa").val("0");
+										$("#textareaObservaciones").val("");
+										
+										reloadData();
+									}, async: false
+								}
+							);
 						}
-					}
-				);
-			}
+					}, async: false
+				}
+			);
 		} else {
 			alert("Funcionalidad no habilitada para el tipo de registro.");
 		}

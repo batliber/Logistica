@@ -6,6 +6,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
+import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
 import uy.com.amensg.logistica.util.Configuration;
@@ -22,7 +23,7 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 		try {
 			TypedQuery<ACMInterfaceMid> query = entityManager.createQuery(
 				"SELECT a FROM ACMInterfaceMid a"
-				+ " WHERE a.estado in ("
+				+ " WHERE a.estado.id in ("
 						+ " :paraProcesar, :paraProcesarPrioritario"
 				+ " )"
 				+ " ORDER BY a.estado DESC"
@@ -34,8 +35,6 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			query.setMaxResults(1);
 			
 			result =  query.getResultList().get(0);
-			
-			result.setEstado(new Long(1));
 			
 			entityManager.merge(result);
 		} catch (Exception e) {
@@ -50,9 +49,11 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			entityManager.merge(acmInterfaceContrato);
 			
 			ACMInterfaceMid acmInterfaceMid = entityManager.find(ACMInterfaceMid.class, acmInterfaceContrato.getMid());
-			acmInterfaceMid.setEstado(
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
-			);
+			
+			ACMInterfaceEstado estado = 
+				entityManager.find(ACMInterfaceEstado.class, new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado")));
+			
+			acmInterfaceMid.setEstado(estado);
 			
 			entityManager.merge(acmInterfaceMid);
 		} catch (Exception e) {
@@ -65,9 +66,11 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			entityManager.merge(acmInterfacePrepago);
 			
 			ACMInterfaceMid acmInterfaceMid = entityManager.find(ACMInterfaceMid.class, acmInterfacePrepago.getMid());
-			acmInterfaceMid.setEstado(
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
-			);
+			
+			ACMInterfaceEstado estado = 
+				entityManager.find(ACMInterfaceEstado.class, new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado")));
+			
+			acmInterfaceMid.setEstado(estado);
 			
 			entityManager.merge(acmInterfaceMid);
 		} catch (Exception e) {

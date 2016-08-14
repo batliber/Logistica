@@ -23,45 +23,63 @@
 			<div class="divHeader">
 				Contrato
 			</div>
-			<div class="divColumn">
-				<!--
-				<div class="divFormLabelExtended" id="divLabelEmpresa">Empresa:</div><div id="divEmpresa" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelRol">Rol:</div><div id="divRol" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelUsuario">Usuario:</div><div id="divUsuario" class="divFormValue">&nbsp;</div>
-				-->
-				<div class="divFormLabelExtended" id="divLabelNumeroTramite">Tr&aacute;mite:</div><div id="divNumeroTramite" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelNumeroTramiteBarCode">C&oacute;digo de barras:</div><div class="divFormValue"><div id="divNumeroTramiteBarCode" class="divBarCode">&nbsp;</div></div>
-				<div class="divFormLabelExtended" id="divLabelMid">MID:</div><div id="divMid" class="divFormValue">&nbsp;</div>
-				<!-- 
-				<div class="divFormLabelExtended" id="divLabelEstado">Estado:</div><div id="divEstado" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelFechaVenta">Fecha de venta:</div><div id="divFechaVenta" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelLocalidad">Localidad:</div><div id="divLocalidad" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelCodigoPostal">C&oacute;digo postal:</div><div id="divCodigoPostal" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelFechaVencimiento">Fecha de vencimiento:</div><div id="divFechaVencimiento" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelNumeroContrato">N&uacute;mero de contrato:</div><div id="divNumeroContrato" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelPlan">Plan:</div><div id="divPlan" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelNuevoPlan">Nuevo plan:</div><div id="divNuevoPlan" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelEquipo">Equipo:</div><div id="divEquipo" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelNumeroSerie" id="divLabelNumeroSerie">Nº de serie:</div><div id="divNumeroSerie" class="divFormValue">&nbsp;</div>
-				-->
-				<div class="divFormLabelExtended" id="divLabelDocumento">Documento:</div><div id="divDocumento" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelNombre">Nombre:</div><div id="divNombre" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelNumeroFactura" id="divLabelNumeroFactura">N&uacute;mero factura:</div><div id="divNumeroFactura" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelDireccionFactura">Direcci&oacute;n factura:</div><div id="divDireccionFactura" class="divFormValue">&nbsp;</div>
+			<div class="divRow">
+				<div class="divColumn">
+					<!--
+					<div class="divFormLabelExtendedPrint" id="divLabelEmpresa">Empresa:</div><div id="divEmpresa" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelRol">Rol:</div><div id="divRol" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelUsuario">Usuario:</div><div id="divUsuario" class="divFormValuePrint">&nbsp;</div>
+					-->
+					
+					<div class="divFormLabelExtendedPrint" id="divLabelNumeroTramite">Tr&aacute;mite:</div><div id="divNumeroTramite" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelNumeroTramiteBarCode">C&oacute;digo de barras:</div><div class="divFormValuePrint"><div id="divNumeroTramiteBarCode" class="divBarCode">&nbsp;</div></div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDireccionEntrega">Direcci&oacute;n entrega:</div><div id="divDireccionEntrega" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDepartamento">Departamento:</div><div class="divFormValuePrint divDepartamento">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelZona">Zona:</div><div class="divFormValuePrint divZona">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint divObservaciones" id="divLabelObservaciones">Observaciones:</div><div id="divObservaciones" class="divFormValuePrint divObservaciones">&nbsp;</div>
+					
+					<!-- 
+					<div class="divFormLabelExtendedPrint" id="divLabelEstado">Estado:</div><div id="divEstado" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelFechaVenta">Fecha de venta:</div><div id="divFechaVenta" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelLocalidad">Localidad:</div><div id="divLocalidad" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelCodigoPostal">C&oacute;digo postal:</div><div id="divCodigoPostal" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelNumeroContrato">N&uacute;mero de contrato:</div><div id="divNumeroContrato" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelNumeroSerie" id="divLabelNumeroSerie">Nº de serie:</div><div id="divNumeroSerie" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelNumeroFactura" id="divLabelNumeroFactura">N&uacute;mero factura:</div><div id="divNumeroFactura" class="divFormValuePrint">&nbsp;</div>
+					-->
+				</div>
+				<div class="divColumn">
+					<div class="divFormLabelExtendedPrint" id="divLabelMid">MID:</div><div id="divMid" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelMidBarCode">C&oacute;digo de barras:</div><div class="divFormValuePrint"><div id="divMidBarCode" class="divBarCode">&nbsp;</div></div>
+					<div class="divFormLabelExtendedPrint" id="divLabelNombre">Nombre:</div><div id="divNombre" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelTelefonoContacto">Tel&eacute;fono contacto:</div><div id="divTelefonoContacto" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelNumeroFacturaRiverGreen">No. fac. River Green:</div><div id="divNumeroFacturaRiverGreen" class="divFormValueDoubleHeightPrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelBarrio">Barrio:</div><div class="divFormValuePrint divBarrio">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelTurno">Turno:</div><div id="divTurno" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelFechaEntrega">Fecha de entrega:</div><div id="divFechaEntrega" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelPrecio divPrecio">Precio:</div><div id="divPrecio" class="divFormValuePrint divPrecio">&nbsp;</div>
+					
+					<!--
+					<div class="divFormLabelExtended" id="divLabelEmail">E-Mail:</div><div id="divEmail" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtended" id="divLabelFechaActivarEn" id="divLabelFechaActivarEn">Activar en:</div><div id="divFechaActivarEn" class="divFormValuePrint">&nbsp;</div>
+					 -->
+				</div>
 			</div>
-			<div class="divColumn">
-				<div class="divFormLabelExtended" id="divLabelDireccionEntrega">Direcci&oacute;n entrega:</div><div id="divDireccionEntrega" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelTelefonoContacto">Tel&eacute;fono contacto:</div><div id="divTelefonoContacto" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelEmail">E-Mail:</div><div id="divEmail" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelPrecio">Precio:</div><div id="divPrecio" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelDepartamento">Departamento:</div><div id="divDepartamento" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelZona">Zona:</div><div id="divZona" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelTurno">Turno:</div><div id="divTurno" class="divFormValue">&nbsp;</div>
-				<!--
-				<div class="divFormLabelExtended" id="divLabelFechaEntrega">Fecha de entrega:</div><div id="divFechaEntrega" class="divFormValue">&nbsp;</div>
-				<div class="divFormLabelExtended" id="divLabelFechaActivarEn" id="divLabelFechaActivarEn">Activar en:</div><div id="divFechaActivarEn" class="divFormValue">&nbsp;</div>
-				 -->
-				<div class="divFormLabelExtended" id="divLabelObservaciones">Observaciones:</div><div id="divObservaciones" class="divFormValue">&nbsp;</div>
+			<div class="divRow">
+				<div class="divColumn" style="border-top: solid 2px black;padding-top: 40px;">
+					<div class="divFormLabelExtendedPrint" id="divLabelDocumento">Documento:</div><div id="divDocumento" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelPlan">Plan anterior:</div><div id="divPlan" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelNuevoPlan">Nuevo plan:</div><div id="divNuevoPlan" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDireccionFactura">Direcci&oacute;n factura:</div><div id="divDireccionFactura" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelVendedor">Vendedor:</div><div id="divVendedor" class="divFormValuePrint">&nbsp;</div>
+				</div>
+				<div class="divColumn" style="border-top: solid 2px black;padding-top: 40px;">
+					<div class="divFormLabelExtendedPrint" id="divLabelFechaNacimiento">Fecha de nac.:</div><div id="divFechaNacimiento" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelFechaVencimiento">Fecha de venc.:</div><div id="divFechaVencimiento" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelEquipo">Equipo:</div><div id="divEquipo" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDepartamento">Departamento:</div><div class="divFormValuePrint divDepartamento">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelBarrio">Barrio:</div><div class="divFormValuePrint divBarrio">&nbsp;</div>
+				</div>
 			</div>
 		</div>
 	</div>

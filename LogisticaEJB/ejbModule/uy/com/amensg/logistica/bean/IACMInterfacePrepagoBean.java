@@ -14,6 +14,8 @@ public interface IACMInterfacePrepagoBean {
 
 	public Collection<ACMInterfacePrepago> list();
 	
+	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
+	
 	public String exportarAExcel(MetadataConsulta metadataConsulta);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);

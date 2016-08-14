@@ -1,0 +1,224 @@
+.divFormLabelExtraExtended {
+	float: left;
+	width: 350px;
+	text-align: right;
+	margin-top: 2px;
+}
+
+.requiredFormLabelExtraExtended {
+	font-weight: bold;
+	float: left;
+	width: 350px;
+	text-align: right;
+	margin-top: 2px;
+}
+
+#divPlanDescripcion {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanDescripcion {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divPlanAbreviacion {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanAbreviacion {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divPlanConsumoMinimo {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanConsumoMinimo {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanDuracion {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanDuracion {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanPrecioMinutoDestinosAntelHorarioNormal {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanPrecioMinutoDestinosAntelHorarioNormal {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanPrecioMinutoDestinosAntelHorarioReducido {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanPrecioMinutoDestinosAntelHorarioReducido {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanRendimientoMinutosMensualDestinosAntelHorarioNormal {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanRendimientoMinutosMensualDestinosAntelHorarioReducido {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanPrecioMinutoOtrasOperadoras {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanPrecioMinutoOtrasOperadoras {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanRendimientoMinutosMensualOtrasOperadoras {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanRendimientoMinutosMensualOtrasOperadoras {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanPrecioSms {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanPrecioSms {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanMontoNavegacionCelular {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanMontoNavegacionCelular {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanPrecioConsumoFueraBono {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanPrecioConsumoFueraBono {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanTopeFacturacionMensualTraficoDatos {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanTopeFacturacionMensualTraficoDatos {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanDestinosGratis {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanDestinosGratis {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanMinutosGratisMesCelularesAntel {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanMinutosGratisMesCelularesAntel {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanCantidadCelularesAntelMinutosGratis {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanCantidadCelularesAntelMinutosGratis {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanSmsGratisMesCelularesAntel {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanSmsGratisMesCelularesAntel {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanCantidadCelularesAntelSmsGratis {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanCantidadCelularesAntelSmsGratis {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanMinutosGratisMesFijosAntel {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanMinutosGratisMesFijosAntel {
+	margin-left: 2px;
+	width: 25%;
+}
+
+#divPlanCantidadFijosAntelMinutosGratis {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanCantidadFijosAntelMinutosGratis {
+	margin-left: 2px;
+	width: 25%;
+}

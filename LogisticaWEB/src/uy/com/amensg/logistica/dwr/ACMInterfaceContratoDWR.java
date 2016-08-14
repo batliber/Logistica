@@ -80,9 +80,26 @@ public class ACMInterfaceContratoDWR {
 		return result;
 	}
 	
-	public String exportarAExcelByEmpresa(
-		MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones
-	) {
+	public String preprocesarExportacionByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO) {
+		String result = null;
+		
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			result = iACMInterfaceContratoBean.preprocesarExportacion(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				),
+				EmpresaDWR.transform(empresaTO)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String exportarAExcelByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones) {
 		String result = null;
 		
 		try {

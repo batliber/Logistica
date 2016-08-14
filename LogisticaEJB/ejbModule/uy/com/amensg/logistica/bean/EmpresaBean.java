@@ -77,7 +77,11 @@ public class EmpresaBean implements IEmpresaBean {
 		try {
 			Empresa managedEmpresa = entityManager.find(Empresa.class, empresa.getId());
 			
+			managedEmpresa.setCodigoPromotor(empresa.getCodigoPromotor());
+			managedEmpresa.setLogoURL(empresa.getLogoURL());
 			managedEmpresa.setNombre(empresa.getNombre());
+			managedEmpresa.setNombreContrato(empresa.getNombreContrato());
+			managedEmpresa.setNombreSucursal(empresa.getNombreSucursal());
 			
 			managedEmpresa.setFact(empresa.getFact());
 			managedEmpresa.setTerm(empresa.getTerm());

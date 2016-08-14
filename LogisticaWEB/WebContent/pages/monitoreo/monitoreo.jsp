@@ -55,7 +55,7 @@
 			<div class="divFormLabelExtended">Tama&ntilde;o de muestra:</div>
 			<div id="divTamanoMuestra"><input type="text" id="inputTamanoMuestra" value="50" onchange="javascript:grid.filtroDinamico.tamanoMuestraOnChange(event)"/></div>
 			<div class="divFormLabelExtended">Tama&ntilde;o subconjunto:</div>
-			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="500" onchange="javascript:grid.filtroDinamico.tamanoSubconjuntoOnChange(event)"/></div>
+			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="1" onchange="javascript:grid.filtroDinamico.tamanoSubconjuntoOnChange(event)"/></div>
 			<div id="divAgregarFiltroContainer">
 				<div class="divFormLabelExtended">Agregar filtro:</div>
 				<div id="divAgregarFiltro"><input type="submit" value="Agregar" id="inputAgregarFiltro" onclick="javascript:grid.filtroDinamico.agregarFiltro(event, this)"/></div>
@@ -134,8 +134,8 @@
 			<div class="divMainWindow">
 				<form id="formSubirArchivo" method="POST" action="/LogisticaWEB/Upload" enctype="multipart/form-data">
 					<input type="hidden" name="caller" value="/LogisticaWEB/pages/monitoreo/monitoreo.jsp"/>
-					<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa"><select id="selectEmpresa" name="selectEmpresa"></select></div>
-					<div class="divFormLabelExtended">Archivo:</div><div id="divArchivo"><input type="file" id="inputArchivo" name="inputArchivo"/></div>
+					<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa" name="selectEmpresa"></select></div>
+					<div class="divFormLabelExtended">Archivo:</div><div id="divArchivo" class="divFormValue"><input type="file" id="inputArchivo" name="inputArchivo"/></div>
 				</form>
 			</div>
 		</div>

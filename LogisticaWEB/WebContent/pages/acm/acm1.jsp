@@ -6,6 +6,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceEstadoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceContratoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfacePrepagoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceListaNegraDWR.js"></script>
@@ -17,17 +18,12 @@
 	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/pages/acm/acm.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/pages/acm/acm1.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
-	<link rel="stylesheet" type="text/css" href="./acm.css"/>
-	<link rel="stylesheet" type="text/css" href="./contrato.css"/>
-	<link rel="stylesheet" type="text/css" href="./prepago.css"/>
-	<link rel="stylesheet" type="text/css" href="./listaNegra.css"/>
-	<link rel="stylesheet" type="text/css" href="./enProceso.css"/>
-	<link rel="stylesheet" type="text/css" href="./sinDatos.css"/>
+	<link rel="stylesheet" type="text/css" href="./acm1.css"/>
 </head>
 <body>
 	<div class="divMenuBar">
@@ -69,156 +65,17 @@
 				</select>
 			</div>
 			<div class="divFormLabelExtended">Tama&ntilde;o de muestra:</div>
-			<div id="divTamanoMuestra"><input type="text" id="inputTamanoMuestra" value="50" onchange="javascript:inputTamanoMuestraOnChange(event)"/></div>
+			<div id="divTamanoMuestra"><input type="text" id="inputTamanoMuestra" value="50" onchange="javascript:grid.filtroDinamico.tamanoMuestraOnChange(event)"/></div>
 			<div class="divFormLabelExtended">Tama&ntilde;o subconjunto:</div>
-			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="500"/></div>
+			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="50" onchange="javascript:grid.filtroDinamico.tamanoSubconjuntoOnChange(event)"/></div>
 			<div id="divAgregarFiltroContainer">
-				<div class="divFormLabel">Agregar filtro:</div>
-				<div id="divAgregarFiltro"><input type="submit" value="Agregar" id="inputAgregarFiltro" onclick="javascript:inputAgregarFiltroOnClick(event)"/></div>
+				<div class="divFormLabelExtended">Agregar filtro:</div>
+				<div id="divAgregarFiltro"><input type="submit" value="Agregar" id="inputAgregarFiltro" onclick="javascript:grid.filtroDinamico.agregarFiltro(event, this)"/></div>
+				<div class="divFormLabelExtended">Limpiar filtros:</div>
+				<div id="divLimpiarFiltros"><input type="submit" value="Limpiar" id="inputLimpiarFiltros" onclick="javascript:grid.filtroDinamico.limpiarFiltros(event, this)"/></div>
 			</div>
 		</div>
-		<div id="divContratos">
-			<div id="divTableContratos">
-				<!-- 
-				<table id="tableContratos" border="0" cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td class="tdContratoMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">MID</td>
-							<td class="tdContratoFinContratoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Fin</td>
-							<td class="tdContratoTipoContratoDescripcionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Tipo</td>
-							<td class="tdContratoDocumentoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Documento</td>
-							<td class="tdContratoNumeroClienteNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Cliente</td>
-							<td class="tdContratoNumeroContratoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Contrato</td>
-							<td class="tdContratoNombreNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Nombre</td>
-							<td class="tdContratoDireccionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Direcci&oacute;n</td>
-							<td class="tdContratoCodigoPostalNOO" onclick="javascript:tableTheadTdOnClick(event, this)">CP</td>
-							<td class="tdContratoLocalidadNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Localidad</td>
-							<td class="tdContratoEquipoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Equipo</td>
-							<td class="tdContratoAgenteNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Agente</td>
-							<td class="tdContratoFechaExportacionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Asignado</td>
-							<td class="tdContratoFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Obtenido</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-					</tbody>
-					<tfoot>
-						<tr>
-							<td id="tdContratoCantidadRegistrosLabel"><div>Cantidad de registros:</div></td>
-							<td id="tdContratoCantidadRegistrosValor"><div id="divContratoCantidadRegistros">&nbsp;</div></td>
-						</tr>
-					</tfoot>
-				</table>
-				 -->&nbsp;
-			</div>
-		</div>
-		<div id="divPrepagos">
-			<div id="divTablePrepagos">
-				<!--
-				<table id="tablePrepagos" border="0" cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td class="tdPrepagoMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">MID</td>
-							<td class="tdPrepagoMesAnoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Mes/A&ntilde;o</td>
-							<td class="tdPrepagoMontoMesActualNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Monto actual</td>
-							<td class="tdPrepagoMontoMesAnterior1NOO" onclick="javascript:tableTheadTdOnClick(event, this)">Monto ant. 1</td>
-							<td class="tdPrepagoMontoMesAnterior2NOO" onclick="javascript:tableTheadTdOnClick(event, this)">Monto ant. 2</td>
-							<td class="tdPrepagoMontoPromedioNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Monto prom.</td>
-							<td class="tdPrepagoFechaExportacionNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Asignado</td>
-							<td class="tdPrepagoFechaActivacionKitNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Activaci&oacute;n</td>
-							<td class="tdPrepagoFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Obtenido</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-					</tbody>
-					<tfoot>
-						<tr>
-							<td id="tdPrepagoCantidadRegistrosLabel"><div>Cantidad de registros:</div></td>
-							<td id="tdPrepagoCantidadRegistrosValor"><div id="divPrepagoCantidadRegistros">&nbsp;</div></td>
-						</tr>
-					</tfoot>
-				</table>
-				 --> &nbsp;
-			</div>
-		</div>
-		<div id="divListaNegra">
-			<div id="divTableListaNegra">
-				<table id="tableListaNegra" border="0" cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td class="tdListaNegraMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">MID</td>
-							<td class="tdListaNegraObservacionesNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Observaciones</td>
-							<td class="tdListaNegraFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Fecha</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-					</tbody>
-					<tfoot>
-						<tr>
-							<td id="tdListaNegraCantidadRegistrosLabel"><div>Cantidad de registros:</div></td>
-							<td id="tdListaNegraCantidadRegistrosValor"><div id="divListaNegraCantidadRegistros">&nbsp;</div></td>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
-		</div>
-		<div id="divSinDatos">
-			<div id="divTableSinDatos">
-				<table id="tableSinDatos" border="0" cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td class="tdSinDatosMidNOO" onclick="javascript:tableTheadTdOnClick(event, this)">MID</td>
-							<td class="tdSinDatosEstadoNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Estado</td>
-							<td class="tdSinDatosFactNOO" onclick="javascript:tableTheadTdOnClick(event, this)">Modificado</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-					</tbody>
-					<tfoot>
-						<tr>
-							<td id="tdSinDatosCantidadRegistrosLabel"><div>Registros:</div></td>
-							<td id="tdSinDatosCantidadRegistrosValor"><div id="divSinDatosCantidadRegistros">&nbsp;</div></td>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
-		</div>
+		<div id="divTabla">&nbsp;</div>
 	</div>
 	<div id="divIFrameSeleccionEmpresa" style="display: none;">
 		<div class="divTitleBar">
@@ -237,8 +94,8 @@
 			</div>
 			<div class="divMainWindow">
 				<div class="divFormLabelExtended" style="display: none;">Tama&ntilde;o subconjunto:</div><div style="display: none;"><input type="hidden" id="inputTamanoSubconjuntoAsignacion"/></div>
-				<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa"><select id="selectEmpresa"></select></div>
-				<div class="divFormLabelExtended">Observaciones:</div><div id="divObservaciones"><textarea id="textareaObservaciones"></textarea></div>
+				<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa"></select></div>
+				<div class="divFormLabelExtended">Observaciones:</div><div id="divObservaciones" class="divFormValue"><textarea id="textareaObservaciones"></textarea></div>
 			</div>
 		</div>
 	</div>

@@ -3,6 +3,62 @@
 	width: 50%;
 }
 
+.divLayoutColumnFull {
+	float: left;
+	width: 100%;
+}
+
+.divTabbedPanel {
+	float: left;
+	width: 99%;
+}
+
+.divTabHeader {
+	float: left;
+	width: 780px;
+}
+
+.divTabTitle {
+	float: left;
+	width: 175px;
+	height: 23px;
+	border-top: solid 1px black;
+	border-left: solid 1px black;
+	border-bottom: solid 1px black;
+	text-align: center;
+	cursor: pointer;
+}
+
+.divTabTitleSelected {
+	float: left;
+	width: 175px;
+	height: 23px;
+	border-top: solid 1px black;
+	border-left: solid 1px black;
+	border-bottom: solid 1px transparent;
+	text-align: center;
+	cursor: pointer;
+}
+
+.divTabTitleFiller {
+	float: left;
+	width: 427px;
+	height: 23px;
+	border-top: solid 1px transparent;
+	border-left: solid 1px black;
+	border-bottom: solid 1px black;
+}
+
+.divTab {
+	float: left;
+	width: 779px;
+	height: 145px;
+	padding-top: 5px;
+	border-left: solid 1px black;
+	border-bottom: solid 1px black;
+	border-right: solid 1px black;
+}
+
 #divMid {
 	float: left;
 	width: 60%;
@@ -67,6 +123,45 @@
 	width: 100%;
 }
 
+#divResultadoEntregaDistribucionDocumentos {
+	float: left;
+	width: 50%;
+	height: 150px;
+}
+
+.divGalleryLeft {
+	float: left;
+	width: 9%;
+	height: 100%;
+	cursor: pointer;
+	text-align: center;
+}
+
+.divGalleryContent {
+	float: left;
+	width: 80%;
+	height: 100%;
+}
+
+.imgGalleryActive {
+	float: left;
+	width: 100%;
+}
+
+.imgGalleryInactive {
+	float: left;
+	display: none;
+	width: 100%;
+}
+
+.divGalleryRight {
+	float: left;
+	width: 9%;
+	height: 100%;
+	cursor: pointer;
+	text-align: center;
+}
+
 #divResultadoEntregaDistribucionURLAnverso {
 	float: left;
 	width: 50%;
@@ -85,6 +180,15 @@
 	width: 100%;
 }
 
+#divTipoDocumento {
+	float: left;
+	width: 60%;
+}
+
+#selectTipoDocumento {
+	width: 53.5%;
+}
+
 #divDocumento {
 	float: left;
 	width: 60%;
@@ -99,7 +203,30 @@
 	width: 100%;
 }
 
+#divApellido {
+	float: left;
+	width: 60%;
+}
+
+#inputApellido {
+	width: 100%;
+}
+
+#divSexo {
+	float: left;
+	width: 60%;
+}
+
+#selectSexo {
+	width: 53.5%;
+}
+
 #divNumeroFactura {
+	float: left;
+	width: 60%;
+}
+
+#divNumeroFacturaRiverGreen {
 	float: left;
 	width: 60%;
 }
@@ -147,7 +274,7 @@
 }
 
 #selectDepartamento {
-	width: 56.5%;
+	width: 53.5%;
 }
 
 #divBarrio {
@@ -189,9 +316,42 @@
 #divObservaciones {
 	float: left;
 	width: 60%;
+	height: 57px;
 }
 
 #textareaObservaciones {
+	width: 100%;
+}
+
+#divDireccionFacturaCalle {
+	width: 80%;
+}
+
+#inputDireccionFacturaCalle {
+	width: 100%;
+}
+
+#divDireccionFacturaObservaciones {
+	width: 80%;
+}
+
+#inputDireccionFacturaObservaciones {
+	width: 100%;
+}
+
+#divDireccionEntregaCalle {
+	width: 80%;
+}
+
+#inputDireccionEntregaCalle {
+	width: 100%;
+}
+
+#divDireccionEntregaObservaciones {
+	width: 80%;
+}
+
+#inputDireccionEntregaObservaciones {
 	width: 100%;
 }
 

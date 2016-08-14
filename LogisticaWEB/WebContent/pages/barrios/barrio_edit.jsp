@@ -30,9 +30,9 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divMainWindow">
-		<div class="divFormLabel">Nombre:</div><div id="divBarrioNombre"><input type="text" id="inputBarrioNombre"/></div>
-		<div class="divFormLabel">Departamento:</div><div id="divDepartamento"><select id="selectDepartamento" onchange="javascript:selectDepartamentoOnChange(this)"></select></div>
-		<div class="divFormLabel">Zona:</div><div id="divZona"><select id="selectZona"></select></div>
+		<div class="divFormLabel">Nombre:</div><div id="divBarrioNombre" class="divFormValue"><input type="text" id="inputBarrioNombre"/></div>
+		<div class="divFormLabel">Departamento:</div><div id="divDepartamento" class="divFormValue"><select id="selectDepartamento" onchange="javascript:selectDepartamentoOnChange(this)"></select></div>
+		<div class="divFormLabel">Zona:</div><div id="divZona" class="divFormValue"><select id="selectZona"></select></div>
 	</div>
 </body>
 </html>

@@ -2,7 +2,7 @@ var ordenSufijos = [ "NOO", "ASC", "DES" ];
 
 function FiltroDinamico(campos, reloadListener) {
 	this.tamanoMuestra = 50;
-	this.tamanoSubconjunto = 50;
+	this.tamanoSubconjunto = 1;
 	this.campos = campos;
 	this.filtros = 0;
 	this.ordenes = {};
@@ -91,6 +91,14 @@ FiltroDinamico.prototype.campoOnChange = function(event, element, index, prevent
 			+ "<option value='lt'>Menor que</option>"
 			+ "<option value='nl'>Vac&iacute;o</option>"
 			+ "<option value='nnl'>No vac&iacute;o</option>";
+	} else if (tipoCampo == __TIPO_CAMPO_DECIMAL) {
+		html += 
+			"<option value='eq'>Es igual a</option>"
+			+ "<option value='btw'>Entre</option>"
+			+ "<option value='gt'>Mayor que</option>"
+			+ "<option value='lt'>Menor que</option>"
+			+ "<option value='nl'>Vac&iacute;o</option>"
+			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if (tipoCampo == __TIPO_CAMPO_STRING) {
 		html += 
 			"<option value='like'>Contiene</option>"
@@ -100,11 +108,19 @@ FiltroDinamico.prototype.campoOnChange = function(event, element, index, prevent
 			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if (tipoCampo == __TIPO_CAMPO_MULTIPLE) {
 		html += 
-			+ "<option value='eq'>Es igual a</option>"
+			"<option value='eq'>Es igual a</option>"
 			+ "<option value='in'>Incluido en</option>"
 			+ "<option value='nl'>Vac&iacute;o</option>"
 			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if (tipoCampo == __TIPO_CAMPO_FECHA) {
+		html += 
+			"<option value='eq'>Es igual a</option>"
+			+ "<option value='btw'>Entre</option>"
+			+ "<option value='gt'>Mayor que</option>"
+			+ "<option value='lt'>Menor que</option>"
+			+ "<option value='nl'>Vac&iacute;o</option>"
+			+ "<option value='nnl'>No vac&iacute;o</option>";
+	} else if (tipoCampo == __TIPO_CAMPO_FECHA_MES_ANO) {
 		html += 
 			"<option value='eq'>Es igual a</option>"
 			+ "<option value='btw'>Entre</option>"
@@ -163,16 +179,8 @@ FiltroDinamico.prototype.condicionOnChange = function(event, element, index, pre
 			
 			break;
 		case "in":
-			if ($("#selectCampo" + index).val() == "contrato.tipoContratoDescripcion") {
-				if (!preventReload) {
-					this.reloadListener();
-				}
-				
-				return;
-			}
+			$("#divFiltro" + index).css("height", "78px");
 			
-			break;
-		case "keq":
 			var campo = null;
 			for (campo in this.campos) {
 				if (this.campos[campo].campo == selectedFieldValue) {
@@ -183,11 +191,14 @@ FiltroDinamico.prototype.condicionOnChange = function(event, element, index, pre
 			html += 
 				"<div class='divFormLabel'>Valor:</div>"
 				+ "<div id='divValor" + index + "' style='float: left;'>"
-					+ "<select id='inputValor" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this, " + index + ", " + false + ")'>"
-						+ "<option value=''>Seleccione...</option>";
+					+ "<select id='inputValor" + index 
+						+ "' onchange='javascript:grid.filtroDinamico.valorMultipleOnChange(event, this, " + index + ", false)'>"
+						+ "<option value=''>Seleccione...</option>"
+						+ "<option value='Todos'>Todos</option>"
+						+ "<option value='Ninguno'>Ninguno</option>";
 			
-			var values = this.campos[campo].dataSource.funcion(); 
-			for (var i = 0; i<values.length; i++) {
+			var values = this.campos[campo].dataSource.funcion();
+			for (var i=0; i<values.length; i++) {
 				var keyValue = null;
 				var value = null;
 				
@@ -207,7 +218,69 @@ FiltroDinamico.prototype.condicionOnChange = function(event, element, index, pre
 			
 			html +=
 					"</select>"
-				+ "</div>";	
+				+ "</div>";
+			
+			html += 
+				"<div id='divValores" + index + "' class='divValoresMultiples' style='float: left;'>";
+				
+			for (var i=0; i<values.length; i++) {
+				keyValue = null;
+				value = null;
+				
+				try {
+					keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
+					value = eval("values[i]." + this.campos[campo].dataSource.valor);
+				} catch (e) {
+					keyValue = null;
+					value = null;
+				}
+				
+				html += 
+					"<div class='divValorMultiple' onclick='javascript:grid.filtroDinamico.valorMultipleOnClick(event, this, " + index + ", false)'>"
+						+ value
+					+ "</div>";
+			}
+			
+			html +=
+				"</div>";
+			
+			break;
+		case "keq":
+			var campo = null;
+			for (campo in this.campos) {
+				if (this.campos[campo].campo == selectedFieldValue) {
+					break;
+				}
+			}
+			
+			html += 
+				"<div class='divFormLabel'>Valor:</div>"
+				+ "<div id='divValor" + index + "' style='float: left;'>"
+					+ "<select id='inputValor" + index + "' onchange='javascript:grid.filtroDinamico.valorOnChange(event, this, " + index + ", " + false + ")'>"
+						+ "<option value=''>Seleccione...</option>";
+			
+			var values = this.campos[campo].dataSource.funcion();
+			for (var i=0; i<values.length; i++) {
+				var keyValue = null;
+				var value = null;
+				
+				try {
+					keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
+					value = eval("values[i]." + this.campos[campo].dataSource.valor);
+				} catch (e) {
+					keyValue = null;
+					value = null;
+				}
+				
+				if (keyValue != null) {
+					html += 
+						"<option value='" + keyValue + "'>" + value + "</option>";
+				}
+			}
+			
+			html +=
+					"</select>"
+				+ "</div>";
 			
 			break;
 		case "gt":
@@ -246,6 +319,42 @@ FiltroDinamico.prototype.condicionOnChange = function(event, element, index, pre
 };
 
 FiltroDinamico.prototype.valorOnChange = function(event, element, index, preventReload) {
+	if (!preventReload) {
+		this.reloadListener();
+	}
+};
+
+FiltroDinamico.prototype.valorMultipleOnChange = function(event, element, index, preventReload) {
+	if ($("#inputValor" + index).val() == "Todos") {
+		var options = $("#inputValor" + index + " option");
+		
+		for (var i=0; i<options.length; i++) {
+			if (i > 2) {
+				$("#divValores" + index).append(
+					"<div class='divValorMultiple' onclick='javascript:grid.filtroDinamico.valorMultipleOnClick(event, this, " + index + ", false)'>"
+						+ $(options[i]).val()
+					+ "</div>"
+				);
+			}
+		}
+	} else if ($("#inputValor" + index).val() == "Ninguno") {
+		$("#divValores" + index + " div").remove();
+	} else {
+		$("#divValores" + index).append(
+			"<div class='divValorMultiple' onclick='javascript:grid.filtroDinamico.valorMultipleOnClick(event, this, " + index + ", false)'>"
+				+ $("#inputValor" + index).val()
+			+ "</div>"
+		);
+	}
+	
+	if (!preventReload) {
+		this.reloadListener();
+	}
+};
+
+FiltroDinamico.prototype.valorMultipleOnClick = function(event, element, index, preventReload) {
+	$(element).remove();
+	
 	if (!preventReload) {
 		this.reloadListener();
 	}

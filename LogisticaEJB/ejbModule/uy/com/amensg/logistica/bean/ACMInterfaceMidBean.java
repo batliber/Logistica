@@ -13,15 +13,18 @@ import java.util.Random;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
 import uy.com.amensg.logistica.entities.ACMInterfaceListaNegra;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
@@ -30,6 +33,7 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
@@ -63,25 +67,35 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 			}
 			
 			result.setRegistrosMuestra(registrosMuestra);
-			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long count(MetadataConsulta metadataConsulta) {
+		Long result = null;
+		
+		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			
-			// Query para obtener la cantidad de registros
 			CriteriaQuery<Long> criteriaQueryCount = criteriaBuilder.createQuery(Long.class);
 			
-			criteriaQueryCount.select(
-				criteriaBuilder.count(criteriaQueryCount.from(ACMInterfaceMid.class))
-			);
+			Root<ACMInterfaceMid> rootCount = criteriaQueryCount.from(ACMInterfaceMid.class);
+			rootCount.alias("root");
 			
-			criteriaQueryCount.where(criteriaQuery.getRestriction());
+			Predicate where = new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, rootCount);
+			
+			criteriaQueryCount
+				.select(criteriaBuilder.count(rootCount))
+				.where(where);
 			
 			TypedQuery<Long> queryCount = entityManager.createQuery(criteriaQueryCount);
 			
-			for (Parameter<?> parameter : queryMuestra.getParameters()) {
-				queryCount.setParameter(parameter.getName(), queryMuestra.getParameterValue(parameter));
-			}
+			this.setQueryParameters(criteriaQueryCount, queryCount, metadataConsulta);
 			
-			result.setCantidadRegistros(queryCount.getSingleResult());
+			result = queryCount.getSingleResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -104,27 +118,8 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 			
 			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
 			
-			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-			
-			// Query para generar los criterios
-			TypedQuery<ACMInterfaceMid> query = this.construirQuery(metadataConsulta);
-			
-			// Query para obtener la cantidad de registros
-			CriteriaQuery<Long> criteriaQueryCount = criteriaBuilder.createQuery(Long.class);
-			
-			criteriaQueryCount.select(
-				criteriaBuilder.count(criteriaQueryCount.from(ACMInterfaceMid.class))
-			);
-			
-			criteriaQueryCount.where(criteriaQuery.getRestriction());
-			
-			TypedQuery<Long> queryCount = entityManager.createQuery(criteriaQueryCount);
-			
-			for (Parameter<?> parameter : query.getParameters()) {
-				queryCount.setParameter(parameter.getName(), query.getParameterValue(parameter));
-			}
-			
-			Long cantidadRegistros = queryCount.getSingleResult();
+			// Obtener la cantidad de registros.
+			Long cantidadRegistros = this.count(metadataConsulta);
 			
 			Long cantidadFinal =
 				metadataConsulta.getTamanoSubconjunto() != null ? 
@@ -134,6 +129,9 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 			Long cantidadRegistrosPagina = new Long(Configuration.getInstance().getProperty("acmInterfaceMid.cantidadRegistrosPagina"));
 			Long cantidadPaginas = cantidadRegistros / cantidadRegistrosPagina;
 			
+			// Query para generar los criterios
+			TypedQuery<ACMInterfaceMid> query = this.construirQuery(metadataConsulta);
+						
 			query.setMaxResults(cantidadRegistrosPagina.intValue());
 			
 			Map<Long, ACMInterfaceMid> resultMap = new HashMap<Long, ACMInterfaceMid>();
@@ -155,13 +153,16 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 				i = (i + random.nextInt(cantidadPaginas.intValue())) % cantidadPaginas.intValue();
 			}
 			
-			for (ACMInterfaceMid acmInterfaceMid : resultMap.values()) {
-				acmInterfaceMid.setEstado(
-					new Long(
-						Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")
-					)
+			ACMInterfaceEstado estado = 
+				entityManager.find(
+					ACMInterfaceEstado.class, 
+					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
 				);
+			
+			for (ACMInterfaceMid acmInterfaceMid : resultMap.values()) {
 				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
+				
+				acmInterfaceMid.setEstado(estado);
 				
 				acmInterfaceMid.setUact(new Long(1));
 				acmInterfaceMid.setFact(hoy);
@@ -183,14 +184,15 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 			
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
+			ACMInterfaceEstado estado = 
+				entityManager.find(ACMInterfaceEstado.class, new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra")));
+			
 			for (ACMInterfaceMid acmInterfaceMid : query.getResultList()) {
-				if (!acmInterfaceMid.getEstado().equals(
+				if (!acmInterfaceMid.getEstado().getId().equals(
 						new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
 					)
 				) {
-					acmInterfaceMid.setEstado(
-						new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
-					);
+					acmInterfaceMid.setEstado(estado);
 					
 					acmInterfaceMid.setUact(new Long(1));
 					acmInterfaceMid.setFact(hoy);
@@ -235,10 +237,29 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		List<Order> orders = new LinkedList<Order>();
 		
 		for (MetadataOrdenacion metadataOrdenacion : metadataConsulta.getMetadataOrdenaciones()) {
+			String[] campos = metadataOrdenacion.getCampo().split("\\.");
+			
+			Join<?, ?> join = null;
+			for (int j=0; j<campos.length - 1; j++) {
+				if (join != null) {
+					join = join.join(campos[j], JoinType.LEFT);
+				} else {
+					join = root.join(campos[j], JoinType.LEFT);
+				}
+			}
+			
 			if (metadataOrdenacion.getAscendente()) {
-				orders.add(criteriaBuilder.asc(root.get(metadataOrdenacion.getCampo())));
+				orders.add(
+					criteriaBuilder.asc(
+						join != null ? join.get(campos[campos.length - 1]) : root.get(campos[campos.length - 1])
+					)
+				);
 			} else {
-				orders.add(criteriaBuilder.desc(root.get(metadataOrdenacion.getCampo())));
+				orders.add(
+					criteriaBuilder.desc(
+						join != null ? join.get(campos[campos.length - 1]) : root.get(campos[campos.length - 1])
+					)
+				);
 			}
 		}
 		
@@ -254,7 +275,23 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 			for (String valor : metadataCondicion.getValores()) {
-				Path<?> campo = root.get(metadataCondicion.getCampo());
+				String[] campos = metadataCondicion.getCampo().split("\\.");
+				
+				Path<ACMInterfaceMid> campo = root;
+				Join<?, ?> join = null;
+				for (int j=0; j<campos.length - 1; j++) {
+					if (join != null) {
+						join = join.join(campos[j], JoinType.LEFT);
+					} else {
+						join = root.join(campos[j], JoinType.LEFT);
+					}
+				}
+				
+				if (join != null) {
+					campo = join.get(campos[campos.length - 1]);
+				} else {
+					campo = root.get(campos[campos.length - 1]);
+				}
 				
 				try {
 					if (campo.getJavaType().equals(Date.class)) {
@@ -291,5 +328,69 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		}
 		
 		return query;
+	}
+
+	private void setQueryParameters(CriteriaQuery<?> criteriaQuery, TypedQuery<?> query, MetadataConsulta metadataConsulta) {
+		Root<?> root = criteriaQuery.getRoots().iterator().next();
+		
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		// Setear los parámetros según las condiciones del filtro
+		int i = 0;
+		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
+			if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
+				for (String valor : metadataCondicion.getValores()) {
+					String[] campos = metadataCondicion.getCampo().split("\\.");
+					
+					Path<?> field = root;
+					Join<?, ?> join = null;
+					for (int j=0; j<campos.length - 1; j++) {
+						if (join != null) {
+							join = join.join(campos[j], JoinType.LEFT);
+						} else {
+							join = root.join(campos[j], JoinType.LEFT);
+						}
+					}
+					
+					if (join != null) {
+						field = join.get(campos[campos.length - 1]);
+					} else {
+						field = root.get(campos[campos.length - 1]);
+					}
+					
+					try {
+						if (field.getJavaType().equals(Date.class)) {
+							query.setParameter(
+								"p" + i,
+								format.parse(valor)
+							);
+						} else if (field.getJavaType().equals(Long.class)) {
+							query.setParameter(
+								"p" + i,
+								new Long(valor)
+							);
+						} else if (field.getJavaType().equals(String.class)) {
+							query.setParameter(
+								"p" + i,
+								valor
+							);
+						} else if (field.getJavaType().equals(Double.class)) {
+							query.setParameter(
+								"p" + i,
+								new Double(valor)
+							);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					i++;
+				}
+				
+				if (metadataCondicion.getValores().size() == 0) {
+					i++;
+				}
+			}
+		}
 	}
 }

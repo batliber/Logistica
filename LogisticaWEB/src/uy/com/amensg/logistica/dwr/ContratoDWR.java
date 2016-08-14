@@ -18,14 +18,19 @@ import uy.com.amensg.logistica.bean.IContratoBean;
 import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.ContratoTO;
+import uy.com.amensg.logistica.entities.Departamento;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Estado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
+import uy.com.amensg.logistica.entities.MotivoCambioPlan;
+import uy.com.amensg.logistica.entities.Plan;
 import uy.com.amensg.logistica.entities.Producto;
 import uy.com.amensg.logistica.entities.ResultadoEntregaDistribucion;
 import uy.com.amensg.logistica.entities.Rol;
+import uy.com.amensg.logistica.entities.Sexo;
+import uy.com.amensg.logistica.entities.TipoDocumento;
 import uy.com.amensg.logistica.entities.Turno;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioTO;
@@ -449,7 +454,6 @@ public class ContratoDWR {
 				
 				result = iContratoBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
 			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -471,10 +475,31 @@ public class ContratoDWR {
 		ContratoTO contratoTO = new ContratoTO();
 		
 		contratoTO.setAgente(contrato.getAgente());
+		contratoTO.setApellido(contrato.getApellido());
 		contratoTO.setCodigoPostal(contrato.getCodigoPostal());
 		contratoTO.setDireccion(contrato.getDireccion());
 		contratoTO.setDireccionEntrega(contrato.getDireccionEntrega());
+		contratoTO.setDireccionEntregaApto(contrato.getDireccionEntregaApto());
+		contratoTO.setDireccionEntregaBis(contrato.getDireccionEntregaBis());
+		contratoTO.setDireccionEntregaBlock(contrato.getDireccionEntregaBlock());
+		contratoTO.setDireccionEntregaCalle(contrato.getDireccionEntregaCalle());
+		contratoTO.setDireccionEntregaCodigoPostal(contrato.getDireccionEntregaCodigoPostal());
+		contratoTO.setDireccionEntregaLocalidad(contrato.getDireccionEntregaLocalidad());
+		contratoTO.setDireccionEntregaManzana(contrato.getDireccionEntregaManzana());
+		contratoTO.setDireccionEntregaNumero(contrato.getDireccionEntregaNumero());
+		contratoTO.setDireccionEntregaObservaciones(contrato.getDireccionEntregaObservaciones());
+		contratoTO.setDireccionEntregaSolar(contrato.getDireccionEntregaSolar());
 		contratoTO.setDireccionFactura(contrato.getDireccionFactura());
+		contratoTO.setDireccionFacturaApto(contrato.getDireccionFacturaApto());
+		contratoTO.setDireccionFacturaBis(contrato.getDireccionFacturaBis());
+		contratoTO.setDireccionFacturaBlock(contrato.getDireccionFacturaBlock());
+		contratoTO.setDireccionFacturaCalle(contrato.getDireccionFacturaCalle());
+		contratoTO.setDireccionFacturaCodigoPostal(contrato.getDireccionFacturaCodigoPostal());
+		contratoTO.setDireccionFacturaLocalidad(contrato.getDireccionFacturaLocalidad());
+		contratoTO.setDireccionFacturaManzana(contrato.getDireccionFacturaManzana());
+		contratoTO.setDireccionFacturaNumero(contrato.getDireccionFacturaNumero());
+		contratoTO.setDireccionFacturaObservaciones(contrato.getDireccionFacturaObservaciones());
+		contratoTO.setDireccionFacturaSolar(contrato.getDireccionFacturaSolar());
 		contratoTO.setDocumentoTipo(contrato.getDocumentoTipo());
 		contratoTO.setDocumento(contrato.getDocumento());
 		contratoTO.setEmail(contrato.getEmail());
@@ -494,10 +519,13 @@ public class ContratoDWR {
 		contratoTO.setLocalidad(contrato.getLocalidad());
 		contratoTO.setMid(contrato.getMid());
 		contratoTO.setNombre(contrato.getNombre());
-		contratoTO.setNuevoPlan(contrato.getNuevoPlan());
+		contratoTO.setNuevoPlanString(contrato.getNuevoPlanString());
+		contratoTO.setNumeroBloqueo(contrato.getNumeroBloqueo());
+		contratoTO.setNumeroChip(contrato.getNumeroChip());
 		contratoTO.setNumeroCliente(contrato.getNumeroCliente());
 		contratoTO.setNumeroContrato(contrato.getNumeroContrato());
 		contratoTO.setNumeroFactura(contrato.getNumeroFactura());
+		contratoTO.setNumeroFacturaRiverGreen(contrato.getNumeroFacturaRiverGreen());
 		contratoTO.setNumeroSerie(contrato.getNumeroSerie());
 		contratoTO.setNumeroTramite(contrato.getNumeroTramite());
 		contratoTO.setObservaciones(contrato.getObservaciones());
@@ -512,20 +540,14 @@ public class ContratoDWR {
 		contratoTO.setTipoContratoCodigo(contrato.getTipoContratoCodigo());
 		contratoTO.setTipoContratoDescripcion(contrato.getTipoContratoDescripcion());
 		
-		if (contrato.getProducto() != null) {
-			contratoTO.setProducto(ProductoDWR.transform(contrato.getProducto()));
-		}
-		if (contrato.getResultadoEntregaDistribucion() != null) {
-			contratoTO.setResultadoEntregaDistribucion(ResultadoEntregaDistribucionDWR.transform(contrato.getResultadoEntregaDistribucion()));
-		}
-		if (contrato.getTurno() != null) {
-			contratoTO.setTurno(TurnoDWR.transform(contrato.getTurno()));
-		}
 		if (contrato.getBarrio() != null) {
 			contratoTO.setBarrio(BarrioDWR.transform(contrato.getBarrio()));
 		}
-		if (contrato.getZona() != null) {
-			contratoTO.setZona(ZonaDWR.transform(contrato.getZona()));
+		if (contrato.getDireccionEntregaDepartamento() != null) {
+			contratoTO.setDireccionEntregaDepartamento(DepartamentoDWR.transform(contrato.getDireccionEntregaDepartamento()));
+		}
+		if (contrato.getDireccionFacturaDepartamento() != null) {
+			contratoTO.setDireccionFacturaDepartamento(DepartamentoDWR.transform(contrato.getDireccionFacturaDepartamento()));
 		}
 		if (contrato.getEstado() != null) {
 			contratoTO.setEstado(EstadoDWR.transform(contrato.getEstado()));
@@ -533,12 +555,37 @@ public class ContratoDWR {
 		if (contrato.getEmpresa() != null) {
 			contratoTO.setEmpresa(EmpresaDWR.transform(contrato.getEmpresa()));
 		}
+		if (contrato.getNuevoPlan() != null) {
+			contratoTO.setNuevoPlan(PlanDWR.transform(contrato.getNuevoPlan()));
+		}
+		if (contrato.getMotivoCambioPlan() != null) {
+			contratoTO.setMotivoCambioPlan(MotivoCambioPlanDWR.transform(contrato.getMotivoCambioPlan()));
+		}
+		if (contrato.getProducto() != null) {
+			contratoTO.setProducto(ProductoDWR.transform(contrato.getProducto()));
+		}
+		if (contrato.getResultadoEntregaDistribucion() != null) {
+			contratoTO.setResultadoEntregaDistribucion(ResultadoEntregaDistribucionDWR.transform(contrato.getResultadoEntregaDistribucion()));
+		}
 		if (contrato.getRol() != null) {
 			contratoTO.setRol(RolDWR.transform(contrato.getRol()));
+		}
+		if (contrato.getTipoDocumento() != null) {
+			contratoTO.setTipoDocumento(TipoDocumentoDWR.transform(contrato.getTipoDocumento()));
+		}
+		if (contrato.getSexo() != null) {
+			contratoTO.setSexo(SexoDWR.transform(contrato.getSexo()));
+		}
+		if (contrato.getTurno() != null) {
+			contratoTO.setTurno(TurnoDWR.transform(contrato.getTurno()));
 		}
 		if (contrato.getUsuario() != null) {
 			contratoTO.setUsuario(UsuarioDWR.transform(contrato.getUsuario(), false));
 		}
+		if (contrato.getZona() != null) {
+			contratoTO.setZona(ZonaDWR.transform(contrato.getZona()));
+		}
+		
 		if (contrato.getActivador() != null) {
 			contratoTO.setActivador(UsuarioDWR.transform(contrato.getActivador(), false));
 		}
@@ -567,10 +614,31 @@ public class ContratoDWR {
 		Contrato contrato = new Contrato();
 		
 		contrato.setAgente(contratoTO.getAgente());
+		contrato.setApellido(contratoTO.getApellido());
 		contrato.setCodigoPostal(contratoTO.getCodigoPostal());
 		contrato.setDireccion(contratoTO.getDireccion());
 		contrato.setDireccionEntrega(contratoTO.getDireccionEntrega());
+		contrato.setDireccionEntregaApto(contratoTO.getDireccionEntregaApto());
+		contrato.setDireccionEntregaBis(contratoTO.getDireccionEntregaBis());
+		contrato.setDireccionEntregaBlock(contratoTO.getDireccionEntregaBlock());
+		contrato.setDireccionEntregaCalle(contratoTO.getDireccionEntregaCalle());
+		contrato.setDireccionEntregaCodigoPostal(contratoTO.getDireccionEntregaCodigoPostal());
+		contrato.setDireccionEntregaLocalidad(contratoTO.getDireccionEntregaLocalidad());
+		contrato.setDireccionEntregaManzana(contratoTO.getDireccionEntregaManzana());
+		contrato.setDireccionEntregaNumero(contratoTO.getDireccionEntregaNumero());
+		contrato.setDireccionEntregaObservaciones(contratoTO.getDireccionEntregaObservaciones());
+		contrato.setDireccionEntregaSolar(contratoTO.getDireccionEntregaSolar());
 		contrato.setDireccionFactura(contratoTO.getDireccionFactura());
+		contrato.setDireccionFacturaApto(contratoTO.getDireccionFacturaApto());
+		contrato.setDireccionFacturaBis(contratoTO.getDireccionFacturaBis());
+		contrato.setDireccionFacturaBlock(contratoTO.getDireccionFacturaBlock());
+		contrato.setDireccionFacturaCalle(contratoTO.getDireccionFacturaCalle());
+		contrato.setDireccionFacturaCodigoPostal(contratoTO.getDireccionFacturaCodigoPostal());
+		contrato.setDireccionFacturaLocalidad(contratoTO.getDireccionFacturaLocalidad());
+		contrato.setDireccionFacturaManzana(contratoTO.getDireccionFacturaManzana());
+		contrato.setDireccionFacturaNumero(contratoTO.getDireccionFacturaNumero());
+		contrato.setDireccionFacturaObservaciones(contratoTO.getDireccionFacturaObservaciones());
+		contrato.setDireccionFacturaSolar(contratoTO.getDireccionFacturaSolar());
 		contrato.setDocumentoTipo(contratoTO.getDocumentoTipo());
 		contrato.setDocumento(contratoTO.getDocumento());
 		contrato.setEmail(contratoTO.getEmail());
@@ -590,10 +658,13 @@ public class ContratoDWR {
 		contrato.setLocalidad(contratoTO.getLocalidad());
 		contrato.setMid(contratoTO.getMid());
 		contrato.setNombre(contratoTO.getNombre());
-		contrato.setNuevoPlan(contratoTO.getNuevoPlan());
+		contrato.setNuevoPlanString(contratoTO.getNuevoPlanString());
+		contrato.setNumeroBloqueo(contratoTO.getNumeroBloqueo());
+		contrato.setNumeroChip(contratoTO.getNumeroChip());
 		contrato.setNumeroCliente(contratoTO.getNumeroCliente());
 		contrato.setNumeroContrato(contratoTO.getNumeroContrato());
 		contrato.setNumeroFactura(contratoTO.getNumeroFactura());
+		contrato.setNumeroFacturaRiverGreen(contratoTO.getNumeroFacturaRiverGreen());
 		contrato.setNumeroSerie(contratoTO.getNumeroSerie());
 		contrato.setNumeroTramite(contratoTO.getNumeroTramite());
 		contrato.setObservaciones(contratoTO.getObservaciones());
@@ -608,17 +679,53 @@ public class ContratoDWR {
 		contrato.setTipoContratoCodigo(contratoTO.getTipoContratoCodigo());
 		contrato.setTipoContratoDescripcion(contratoTO.getTipoContratoDescripcion());
 		
+		if (contratoTO.getDireccionEntregaDepartamento() != null) {
+			Departamento direccionEntregaDepartamento = new Departamento();
+			direccionEntregaDepartamento.setId(contratoTO.getDireccionEntregaDepartamento().getId());
+			
+			contrato.setDireccionEntregaDepartamento(direccionEntregaDepartamento);
+		}
+		if (contratoTO.getDireccionFacturaDepartamento() != null) {
+			Departamento direccionFacturaDepartamento = new Departamento();
+			direccionFacturaDepartamento.setId(contratoTO.getDireccionFacturaDepartamento().getId());
+			
+			contrato.setDireccionFacturaDepartamento(direccionFacturaDepartamento);
+		}
 		if (contratoTO.getProducto() != null) {
 			Producto producto = new Producto();
 			producto.setId(contratoTO.getProducto().getId());
 			
 			contrato.setProducto(producto);
 		}
+		if (contratoTO.getNuevoPlan() != null) {
+			Plan nuevoPlan = new Plan();
+			nuevoPlan.setId(contratoTO.getNuevoPlan().getId());
+			
+			contrato.setNuevoPlan(nuevoPlan);
+		}
+		if (contratoTO.getMotivoCambioPlan() != null) {
+			MotivoCambioPlan motivoCambioPlan = new MotivoCambioPlan();
+			motivoCambioPlan.setId(contratoTO.getMotivoCambioPlan().getId());
+			
+			contrato.setMotivoCambioPlan(motivoCambioPlan);
+		}
 		if (contratoTO.getResultadoEntregaDistribucion() != null) {
 			ResultadoEntregaDistribucion resultadoEntregaDistribucion = new ResultadoEntregaDistribucion();
 			resultadoEntregaDistribucion.setId(contratoTO.getResultadoEntregaDistribucion().getId());
 			
 			contrato.setResultadoEntregaDistribucion(resultadoEntregaDistribucion);
+		}
+		if (contratoTO.getTipoDocumento() != null) {
+			TipoDocumento tipoDocumento = new TipoDocumento();
+			tipoDocumento.setId(contratoTO.getTipoDocumento().getId());
+			
+			contrato.setTipoDocumento(tipoDocumento);
+		}
+		if (contratoTO.getSexo() != null) {
+			Sexo sexo = new Sexo();
+			sexo.setId(contratoTO.getSexo().getId());
+			
+			contrato.setSexo(sexo);
 		}
 		if (contratoTO.getTurno() != null) {
 			Turno turno = new Turno();

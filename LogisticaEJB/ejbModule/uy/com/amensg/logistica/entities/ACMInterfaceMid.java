@@ -5,7 +5,10 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,8 +21,8 @@ public class ACMInterfaceMid implements Serializable {
 	@Column(name = "mid")
 	private Long mid;
 
-	@Column(name = "estado")
-	private Long estado;
+//	@Column(name = "estado")
+//	private Long estado;
 
 	@Column(name = "proceso_id")
 	private Long procesoId;
@@ -33,6 +36,10 @@ public class ACMInterfaceMid implements Serializable {
 	@Column(name = "term")
 	private Long term;
 
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "estado", nullable = true)
+	private ACMInterfaceEstado estado;
+	
 	public Long getMid() {
 		return mid;
 	}
@@ -41,11 +48,11 @@ public class ACMInterfaceMid implements Serializable {
 		this.mid = mid;
 	}
 
-	public Long getEstado() {
+	public ACMInterfaceEstado getEstado() {
 		return estado;
 	}
 
-	public void setEstado(Long estado) {
+	public void setEstado(ACMInterfaceEstado estado) {
 		this.estado = estado;
 	}
 

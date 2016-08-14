@@ -45,7 +45,7 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 			}
 			
 			Query queryMid = entityManager.createQuery(
-				"SELECT m.procesoId, m.estado, count(m)"
+				"SELECT m.procesoId, m.estado.id, count(m)"
 				+ " FROM ACMInterfaceMid m"
 				+ " GROUP BY m.procesoId, m.estado"
 			);
@@ -105,7 +105,7 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 				"SELECT DISTINCT m.procesoId"
 				+ " FROM ACMInterfaceMid m"
 				+ " WHERE m.procesoId IS NOT NULL"
-				+ " AND m.estado NOT IN ("
+				+ " AND m.estado.id NOT IN ("
 					+ " :estadoIdProcesado, :estadoIdListaVacia, :estadoIdListaNegra"
 				+ " )"
 			);
@@ -131,7 +131,7 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 				"SELECT m.procesoId, max(m.fact)"
 				+ " FROM ACMInterfaceMid m"
 				+ " WHERE m.procesoId IS NOT NULL"
-				+ " AND m.estado IN ("
+				+ " AND m.estado.id IN ("
 					+ " :estadoIdProcesado, :estadoIdListaVacia"
 				+ " )"
 				+ " GROUP BY m.procesoId"

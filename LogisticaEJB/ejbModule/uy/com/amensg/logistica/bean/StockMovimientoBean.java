@@ -25,7 +25,6 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 			Query query = entityManager.createQuery(
 				"SELECT s.empresa.id, s.producto.id, SUM(s.cantidad) AS cantidad"
 				+ " FROM StockMovimiento s"
-				+ " WHERE s.producto.fechaBaja IS NULL"
 				+ " GROUP BY s.empresa.id, s.producto.id"
 			);
 			

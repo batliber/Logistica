@@ -8,11 +8,11 @@ import org.directwebremoting.annotations.DataTransferObject;
 public class ACMInterfaceMidTO {
 
 	private Long mid;
-	private Long estado;
 	private Long procesoId;
 	private Long uact;
 	private Date fact;
 	private Long term;
+	private ACMInterfaceEstadoTO estado;
 
 	public Long getMid() {
 		return mid;
@@ -22,11 +22,11 @@ public class ACMInterfaceMidTO {
 		this.mid = mid;
 	}
 
-	public Long getEstado() {
+	public ACMInterfaceEstadoTO getEstado() {
 		return estado;
 	}
 
-	public void setEstado(Long estado) {
+	public void setEstado(ACMInterfaceEstadoTO estado) {
 		this.estado = estado;
 	}
 

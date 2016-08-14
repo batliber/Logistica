@@ -15,6 +15,8 @@ import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IProductoBean;
 import uy.com.amensg.logistica.bean.ProductoBean;
+import uy.com.amensg.logistica.entities.EmpresaService;
+import uy.com.amensg.logistica.entities.Marca;
 import uy.com.amensg.logistica.entities.Producto;
 import uy.com.amensg.logistica.entities.ProductoTO;
 
@@ -47,6 +49,20 @@ public class ProductoDWR {
 		return result;
 	}
 	
+	public ProductoTO getById(Long id) {
+		ProductoTO result = null;
+		
+		try {
+			IProductoBean iProductoBean = lookupBean();
+			
+			result = transform(iProductoBean.getById(id));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public void add(ProductoTO productoTO) {
 		try {
 			IProductoBean iProductoBean = lookupBean();
@@ -71,7 +87,7 @@ public class ProductoDWR {
 		try {
 			IProductoBean iProductoBean = lookupBean();
 			
-			iProductoBean.save(transform(productoTO));
+			iProductoBean.update(transform(productoTO));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,6 +98,14 @@ public class ProductoDWR {
 		
 		productoTO.setDescripcion(producto.getDescripcion());
 		productoTO.setFechaBaja(producto.getFechaBaja());
+		
+		if (producto.getEmpresaService() != null) {
+			productoTO.setEmpresaService(EmpresaServiceDWR.transform(producto.getEmpresaService()));
+		}
+		
+		if (producto.getMarca() != null) {
+			productoTO.setMarca(MarcaDWR.transform(producto.getMarca()));
+		}
 		
 		productoTO.setFact(producto.getFact());
 		productoTO.setId(producto.getId());
@@ -96,6 +120,20 @@ public class ProductoDWR {
 		
 		producto.setDescripcion(productoTO.getDescripcion());
 		producto.setFechaBaja(productoTO.getFechaBaja());
+		
+		if (productoTO.getEmpresaService() != null) {
+			EmpresaService empresaService = new EmpresaService();
+			empresaService.setId(productoTO.getEmpresaService().getId());
+			
+			producto.setEmpresaService(empresaService);
+		}
+		
+		if (productoTO.getMarca() != null) {
+			Marca marca = new Marca();
+			marca.setId(productoTO.getMarca().getId());
+			
+			producto.setMarca(marca);
+		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		

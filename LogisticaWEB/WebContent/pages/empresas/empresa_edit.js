@@ -9,6 +9,13 @@ $(document).ready(function() {
 			{
 				callback: function(data) {
 					$("#inputEmpresaNombre").val(data.nombre);
+					$("#inputEmpresaCodigoPromotor").val(data.codigoPromotor);
+					$("#inputEmpresaNombreContrato").val(data.nombreContrato);
+					$("#inputEmpresaNombreSucursal").val(data.nombreSucursal);
+					$("#inputEmpresaId").val(data.id);
+					if (data.logoURL != null) {
+						$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + data.logoURL);
+					}
 					
 					if (mode == __FORM_MODE_ADMIN) {
 						$("#divEliminarEmpresa").show();
@@ -29,32 +36,25 @@ function refinarForm() {
 }
 
 function inputGuardarOnClick(event) {
-	var empresa = {
-		nombre: $("#inputEmpresaNombre").val()
-	};
+	var xmlHTTPRequest = new XMLHttpRequest();
+	xmlHTTPRequest.open(
+		"POST",
+		"/LogisticaWEB/Upload",
+		false
+	);
 	
-	if (id != null) {
-		empresa.id = id;
+	var formData = new FormData(document.getElementById("formEmpresa"));
+	
+	xmlHTTPRequest.send(formData);
+	
+	if (xmlHTTPRequest.status == 200) {
+		var response = JSON.parse(xmlHTTPRequest.responseText);
 		
-		EmpresaDWR.update(
-			empresa,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		alert(response.message);
+		
+		$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + response.fileName);
 	} else {
-		EmpresaDWR.add(
-			empresa,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarEmpresa").prop("disabled", false);
-				}, async: false
-			}
-		);
+		alert(xmlHTTPRequest.responseText);
 	}
 }
 

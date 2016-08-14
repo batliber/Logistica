@@ -1,5 +1,8 @@
 package uy.com.amensg.logistica.bean;
 
+import java.util.Collection;
+import java.util.Map;
+
 import javax.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Contrato;
@@ -22,6 +25,8 @@ public interface IContratoBean {
 	public Contrato getByNumeroTramite(Long numeroTramite);
 	
 	public String preprocesarArchivoEmpresa(String fileName, Long empresaId);
+	
+	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids, Long empresaId);
 	
 	public String procesarArchivoEmpresa(String fileName, Long empresaId, Long loggedUsuarioId);
 	

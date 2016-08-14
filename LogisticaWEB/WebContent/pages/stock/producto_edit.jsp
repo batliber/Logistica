@@ -10,6 +10,8 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaServiceDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
@@ -28,7 +30,9 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divMainWindow">
-		<div class="divFormLabelExtended">Descripci&oacute;n:</div><div id="divProductoDescripcion"><input type="text" id="inputProductoDescripcion"/></div>
+		<div class="divFormLabelExtended">Descripci&oacute;n:</div><div id="divProductoDescripcion" class="divFormValue"><input type="text" id="inputProductoDescripcion"/></div>
+		<div class="divFormLabelExtended">Marca:</div><div id="divProductoMarca" class="divFormValue"><select id="selectProductoMarca"/></select></div>
+		<div class="divFormLabelExtended">Service:</div><div id="divProductoEmpresaService" class="divFormValue"><select id="selectProductoEmpresaService"/></select></div>
 	</div>
 </body>
 </html>

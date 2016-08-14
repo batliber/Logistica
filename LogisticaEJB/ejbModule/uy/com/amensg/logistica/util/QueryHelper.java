@@ -16,9 +16,7 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 
 public class QueryHelper {
 
-	public Predicate construirWhere(
-		MetadataConsulta metadataConsulta, CriteriaBuilder criteriaBuilder, Root<?> root
-	) {
+	public Predicate construirWhere(MetadataConsulta metadataConsulta, CriteriaBuilder criteriaBuilder, Root<?> root) {
 		Predicate where = criteriaBuilder.conjunction();
 		
 		int i = 0;

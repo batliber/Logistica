@@ -12,8 +12,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import javax.ejb.EJB;
@@ -376,7 +379,7 @@ public class ContratoBean implements IContratoBean {
 	 * @return String que informa cuántos MIDs se importarán, cuántos se sobreescribirán y cuántos se omitirán. 
 	 */
 	public String preprocesarArchivoEmpresa(String fileName, Long empresaId) {
-		String result = "";
+		String result = null;
 		
 		BufferedReader bufferedReader = null;
 		
@@ -397,6 +400,58 @@ public class ContratoBean implements IContratoBean {
 				mids.add(mid);
 			}
 			
+			Map<Long, Integer> map = this.preprocesarConjunto(mids, empresaId);
+			
+			Long importar = new Long(0);
+			Long sobreescribir = new Long(0);
+			Long omitir = new Long(0);
+			for (Entry<Long, Integer> entry : map.entrySet()) {
+				switch (entry.getValue()) {
+					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
+						importar++;
+						
+						break;
+					case Constants.__COMPROBACION_IMPORTACION_OMITIR:
+						omitir++;
+						
+						break;
+					case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
+						sobreescribir++;
+						
+						break;
+				}
+			}
+			
+			result =
+				"Se importarán " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
+				+ "Se omitirán " + omitir + " MIDs.";
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Procesa un conjunto de MIDs para la empresa empresaId.
+	 * 
+	 * @param empresaId ID de la empresa a la cual asignar los MIDs.
+	 * @param Colección de MIDs a procesar.
+	 * @return Map indicando para cada MID si se importará, sobreescribirá u omitirá.
+	 */
+	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids, Long empresaId) {
+		Map<Long, Integer> result = new HashMap<Long, Integer>();
+		
+		try {
 			Long estadoLlamarId = 
 				new Long(Configuration.getInstance().getProperty("estado.LLAMAR"));
 			Long estadoVendidoId = 
@@ -422,7 +477,7 @@ public class ContratoBean implements IContratoBean {
 			
 			TypedQuery<Long> queryVendidos = 
 				entityManager.createQuery(
-					"SELECT COUNT(c) AS cantidad"
+					"SELECT c.mid"
 					+ " FROM Contrato c"
 					+ " WHERE c.estado.id IN ("
 						+ " :estadoVendidoId, :estadoDistribuirId, :estadoActivarId, :estadoFaltaDocumentacionId,"
@@ -444,16 +499,13 @@ public class ContratoBean implements IContratoBean {
 			queryVendidos.setParameter("estadoReagendarId", estadoReagendarId);
 			queryVendidos.setParameter("mids", mids);
 			
-			Long noSobreescribir = new Long(0);
-			
-			List<Long> resultList = queryVendidos.getResultList();
-			if (resultList.size() > 0) {
-				noSobreescribir = resultList.get(0);
+			for (Long mid : queryVendidos.getResultList()) {
+				result.put(mid, Constants.__COMPROBACION_IMPORTACION_OMITIR);
 			}
 			
 			TypedQuery<Long> queryLlamar = 
 				entityManager.createQuery(
-					"SELECT COUNT(c) AS cantidad"
+					"SELECT mid"
 					+ " FROM Contrato c"
 					+ " WHERE c.empresa.id = :empresaId"
 					+ " AND c.estado.id = :estadoLlamarId"
@@ -464,30 +516,17 @@ public class ContratoBean implements IContratoBean {
 			queryLlamar.setParameter("estadoLlamarId", estadoLlamarId);
 			queryLlamar.setParameter("mids", mids);
 			
-			Long sobreescribir = new Long(0);
-			
-			resultList = queryLlamar.getResultList();
-			if (resultList.size() > 0) {
-				sobreescribir = resultList.get(0);
+			for (Long mid : queryLlamar.getResultList()) {
+				result.put(mid, Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR);
 			}
 			
-			Long nuevos = Math.max(0, mids.size() - sobreescribir - noSobreescribir);
-			sobreescribir = Math.max(0, mids.size() - nuevos - noSobreescribir);
-			
-			return 
-				"Se importarán " + nuevos + " MIDs nuevos.|"
-				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
-				+ "Se omitirán " + noSobreescribir + " MIDs.";
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (Exception e) {
-					e.printStackTrace();
+			for (Long mid : mids) {
+				if (!result.containsKey(mid)) {
+					result.put(mid, Constants.__COMPROBACION_IMPORTACION_IMPORTAR);
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return result;
@@ -892,7 +931,7 @@ public class ContratoBean implements IContratoBean {
 	 * @return String con el resultado de la operación.
 	 */
 	public String addAsignacionManual(Long empresaId, Contrato contrato, Long loggedUsuarioId) {
-		String result = "Operación exitosa.";
+		String result = null;
 		
 		try {
 			Empresa empresa = iEmpresaBean.getById(empresaId);
@@ -994,6 +1033,8 @@ public class ContratoBean implements IContratoBean {
 				contratoRoutingHistoryNew.setUact(loggedUsuarioId);
 				
 				entityManager.persist(contratoRoutingHistoryNew);
+				
+				result = "Operación exitosa.";
 			} else {
 				result = "El MID ya fue vendido. No se puede asignar.";
 			}
@@ -1345,8 +1386,10 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			contrato.setFechaVenta(date);
-			contrato.setVendedor(contrato.getUsuario());
+			contrato.setVendedor(uact);
 			contrato.setEstado(estado);
 			contrato.setRol(rol);
 			contrato.setUsuario(null);
@@ -1371,7 +1414,7 @@ public class ContratoBean implements IContratoBean {
 			
 			stockMovimiento.setFact(date);
 			stockMovimiento.setTerm(new Long(1));
-			stockMovimiento.setUact(contrato.getUact());
+			stockMovimiento.setUact(uact.getId());
 			
 			iStockMovimientoBean.save(stockMovimiento);
 			
@@ -1424,11 +1467,11 @@ public class ContratoBean implements IContratoBean {
 				
 				contratoOtraEmpresa.setFact(date);
 				contratoOtraEmpresa.setTerm(new Long(1));
-				contratoOtraEmpresa.setUact(contrato.getUact());
+				contratoOtraEmpresa.setUact(uact.getId());
 				
 				Contrato contratoOtraEmpresaManaged = this.update(contratoOtraEmpresa);
 				
-				this.asignar(null, rolGerenteDeEmpresa, contratoOtraEmpresaManaged, contrato.getUact());
+				this.asignar(null, rolGerenteDeEmpresa, contratoOtraEmpresaManaged, uact.getId());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1457,6 +1500,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
@@ -1485,7 +1530,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, contrato.getRol(), contratoManaged, contrato.getUact());
+			this.asignar(null, contrato.getRol(), contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1505,6 +1550,8 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.RELLAMAR"))
 				);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
@@ -1512,7 +1559,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Contrato contratoManaged = this.update(contrato);
 			
-			this.asignar(null, contratoManaged.getRol(), contratoManaged, contrato.getUact());
+			this.asignar(null, contratoManaged.getRol(), contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1536,13 +1583,15 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
 			contrato.setVendedor(contratoManaged.getVendedor());
 			
 			contrato.setFechaBackoffice(date);
-			contrato.setBackoffice(contrato.getUsuario());
+			contrato.setBackoffice(uact);
 			contrato.setEstado(estado);
 			contrato.setRol(rol);
 			contrato.setUsuario(null);
@@ -1552,7 +1601,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1575,6 +1624,8 @@ public class ContratoBean implements IContratoBean {
 			Rol rol = iRolBean.getById(
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion"))
 			);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
@@ -1599,7 +1650,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1627,6 +1678,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
@@ -1634,7 +1687,7 @@ public class ContratoBean implements IContratoBean {
 				
 				contrato.setRol(rolSupervisorCallCenter);
 				
-				contrato.setVendedor(contrato.getUsuario());
+				contrato.setVendedor(uact);
 			} else if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Backoffice")))) {
 				// Si estaba asignado a un Back-office lo dejamos en la "bandeja" de Supervisores de Back-office.
 				
@@ -1643,7 +1696,7 @@ public class ContratoBean implements IContratoBean {
 				contrato.setFechaVenta(contratoManaged.getFechaVenta());
 				contrato.setVendedor(contratoManaged.getVendedor());
 				contrato.setFechaBackoffice(date);
-				contrato.setBackoffice(contratoManaged.getUsuario());
+				contrato.setBackoffice(uact);
 			}
 			
 			contrato.setEstado(estado);
@@ -1655,7 +1708,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, contrato.getRol(), contratoManaged, contrato.getUact());
+			this.asignar(null, contrato.getRol(), contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1683,6 +1736,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
@@ -1690,7 +1745,7 @@ public class ContratoBean implements IContratoBean {
 				
 				contrato.setRol(rolSupervisorCallCenter);
 				
-				contrato.setVendedor(contrato.getUsuario());
+				contrato.setVendedor(uact);
 			} else if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Backoffice")))) {
 				// Si estaba asignado a un Back-office lo dejamos en la "bandeja" de Supervisores de Back-office.
 				
@@ -1699,7 +1754,7 @@ public class ContratoBean implements IContratoBean {
 				contrato.setFechaVenta(contratoManaged.getFechaVenta());
 				contrato.setVendedor(contratoManaged.getVendedor());
 				contrato.setFechaBackoffice(date);
-				contrato.setBackoffice(contratoManaged.getUsuario());
+				contrato.setBackoffice(uact);
 			}
 			
 			contrato.setEstado(estado);
@@ -1711,7 +1766,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			asignar(null, contrato.getRol(), contratoManaged, contrato.getUact());
+			asignar(null, contrato.getRol(), contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1732,6 +1787,8 @@ public class ContratoBean implements IContratoBean {
 				iEstadoBean.getById(
 					new Long(Configuration.getInstance().getProperty("estado.REAGENDAR"))
 				);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
 			
 			contrato.setEstado(estado);
 			
@@ -1770,7 +1827,7 @@ public class ContratoBean implements IContratoBean {
 				
 				contrato.setFechaVenta(contratoManaged.getFechaVenta());
 				contrato.setVendedor(contratoManaged.getVendedor());
-				contrato.setBackoffice(contratoManaged.getUsuario());
+				contrato.setBackoffice(uact);
 				contrato.setFechaBackoffice(date);
 				
 				contrato.setRol(contratoRoutingHistoryVendedor.getRol());
@@ -1804,6 +1861,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -1813,7 +1872,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			
 			contrato.setFechaDevolucionDistribuidor(date);
-			contrato.setDistribuidor(contrato.getUsuario());
+			contrato.setDistribuidor(contratoManaged.getUsuario());
 			contrato.setEstado(estado);
 			contrato.setRol(rol);
 			contrato.setUsuario(null);
@@ -1823,7 +1882,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1831,6 +1890,7 @@ public class ContratoBean implements IContratoBean {
 	
 	/**
 	 * Actualiza el Contrato a estado "NO FIRMA".
+	 * Mantiene el Distribuidor al que estaba asignado.
 	 * 
 	 * @param contrato a actualizar.
 	 */
@@ -1852,7 +1912,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			
 			contrato.setFechaDevolucionDistribuidor(date);
-			contrato.setDistribuidor(contrato.getUsuario());
+			contrato.setDistribuidor(contratoManaged.getUsuario());
 			contrato.setEstado(estado);
 			contrato.setRol(contratoManaged.getRol());
 			contrato.setUsuario(contrato.getUsuario());
@@ -1884,16 +1944,18 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
 			contrato.setVendedor(contratoManaged.getVendedor());
 			contrato.setBackoffice(contratoManaged.getBackoffice());
 			contrato.setFechaBackoffice(contratoManaged.getFechaBackoffice());
-			
 			contrato.setFechaEntregaDistribuidor(null);
 			contrato.setFechaDevolucionDistribuidor(null);
-			contrato.setDistribuidor(null);
+			contrato.setDistribuidor(contratoManaged.getDistribuidor());
+			
 			contrato.setEstado(estado);
 			contrato.setRol(rol);
 			contrato.setUsuario(null);
@@ -1903,7 +1965,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			asignar(null, rol, contratoManaged, contrato.getUact());
+			asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1927,6 +1989,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.Activador"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -1946,7 +2010,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			asignar(contratoManaged.getUsuario(), rol, contratoManaged, contrato.getUact());
+			asignar(contratoManaged.getUsuario(), rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1966,6 +2030,8 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.CONTROLANTEL"))
 				);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -1977,7 +2043,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
 			
 			contrato.setFechaEnvioAntel(date);
-			contrato.setActivador(contrato.getUsuario());
+			contrato.setActivador(uact);
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
@@ -2003,6 +2069,8 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.ACM"))
 				);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -2015,7 +2083,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
 			
 			contrato.setFechaActivacion(date);
-			contrato.setActivador(contrato.getUsuario());
+			contrato.setActivador(uact);
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
@@ -2045,6 +2113,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -2066,7 +2136,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2090,6 +2160,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.Activador"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -2099,20 +2171,20 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
-			contrato.setActivador(contrato.getActivador());
+			contrato.setActivador(contratoManaged.getActivador());
 			
-			contrato.setCoordinador(contrato.getUsuario());
+			contrato.setCoordinador(uact);
 			contrato.setEstado(estado);
 			contrato.setFechaCoordinacion(date);
 			contrato.setRol(rol);
-			contrato.setUsuario(contrato.getActivador());
+			contrato.setUsuario(contratoManaged.getActivador());
 			
 			contrato.setFact(date);
 			contrato.setTerm(new Long(1));
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(contratoManaged.getActivador(), rol, contratoManaged, contrato.getUact());
+			this.asignar(contratoManaged.getActivador(), rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2132,11 +2204,11 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.NORECOORDINA"))
 				);
 			
-			contrato.setEstado(estado);
-			
 			Rol rol = iRolBean.getById(
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion"))
 			);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
@@ -2149,7 +2221,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
 			contrato.setActivador(contratoManaged.getActivador());
 			
-			contrato.setCoordinador(contrato.getUsuario());
+			contrato.setCoordinador(uact);
 			contrato.setEstado(estado);
 			contrato.setFechaCoordinacion(date);
 			contrato.setRol(rol);
@@ -2160,7 +2232,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2217,7 +2289,8 @@ public class ContratoBean implements IContratoBean {
 //				+ ";Teléfono de contacto"
 				+ ";E-mail"
 //				+ ";Número de factura"
-//				+ ";Precio"
+				+ ";Número de factura River Green"
+				+ ";Precio"
 				+ ";Nuevo plan"
 				+ ";Número de serie"
 				+ ";Observaciones"
@@ -2317,11 +2390,14 @@ public class ContratoBean implements IContratoBean {
 //					+ ";" + (contrato.getNumeroFactura() != null ?
 //						contrato.getNumeroFactura()
 //						: "")
-//					+ ";" + (contrato.getPrecio() != null ?
-//						contrato.getPrecio()
-//						: "")
+					+ ";" + (contrato.getNumeroFacturaRiverGreen() != null ?
+						contrato.getNumeroFacturaRiverGreen()
+						: "")
+					+ ";" + (contrato.getPrecio() != null ?
+						contrato.getPrecio()
+						: "")
 					+ ";" + (contrato.getNuevoPlan() != null ?
-						contrato.getNuevoPlan()
+						contrato.getNuevoPlan().getAbreviacion()
 						: "")
 					+ ";" + (contrato.getNumeroSerie() != null ?
 						contrato.getNumeroSerie()

@@ -272,7 +272,7 @@ public class TestProceso {
 		
 		contrato.setFechaEntrega(GregorianCalendar.getInstance().getTime());
 		contrato.setFechaNacimiento(GregorianCalendar.getInstance().getTime());
-		contrato.setNuevoPlan("NUEVO PLAN");
+//		contrato.setNuevoPlan("NUEVO PLAN");
 		contrato.setNumeroContrato(new Long(1));
 		contrato.setObservaciones("VENTA");
 		contrato.setPrecio(new Double(1.0));
@@ -425,7 +425,7 @@ public class TestProceso {
 			contrato = ((Contrato) registro);
 		}
 		
-		contrato.setNumeroFactura(new Long(1));
+		contrato.setNumeroFactura("1");
 		contrato.setNumeroSerie("123456");
 		
 		iContratoBean.distribuir(contrato);

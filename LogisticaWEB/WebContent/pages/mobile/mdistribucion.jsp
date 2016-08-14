@@ -17,36 +17,39 @@
 <%@ include file="./mtitle.jsp" %>
 	<div id="divIFrameActivePage">
 		<div id="divFormularioResultadoEntregaDistribucion">
-			<form id="formResultadoEntregaDistribucion" method="POST" action="/LogisticaWEB/Upload" enctype="multipart/form-data">
-				<div id="divFormularioControles">
-					<div class="divFormLabel">Tr&aacute;mite:</div>
-					<div class="divFormValue">
-						<input type="text" id="inputNumeroTramite" name="inputNumeroTramite" onchange="javascript:inputNumeroTramiteOnChange(event, this)"/>
-						<a href="zxing://scan/?ret=http%3A%2F%2F557f04881ee7.sn.mynetname.net:8080/LogisticaWEB/pages/mobile/mdistribucion.jsp?code=%7BCODE%7D&SCAN_FORMATS=UPC_A,EAN_13,128">
-							<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
-						</a>
-					</div>
-					<div class="divFormLabel">MID:</div><div class="divFormValue" id="divMID"><a id="aMID" name="aMID" href="#">&nbsp;</a></div>
-					<div class="divFormLabel">Opci&oacute;n:</div>
-					<div class="divFormValue">
-						<select id="selectResultadoEntregaDistribucion" name="selectResultadoEntregaDistribucion"></select>
-					</div>
-					<div class="divFormLabel">Anverso:</div><div class="divFormValue"><input type="file" id="inputAnverso" name="inputAnverso"/></div>
-					<div class="divFormLabel">Reverso:</div><div class="divFormValue"><input type="file" id="inputReverso" name="inputReverso"/></div>
-					<div class="divFormLabel">Comentarios:</div><div class="divFormValue"><textarea id="textareaObservaciones" name="textareaObservaciones"></textarea></div>
-					<div class="divFormLabel" style="display: none;">Posici&oacute;n:</div>
-					<input type="hidden" name="caller" value="/pages/mobile/mdistribucion.jsp"/>
-					<div class="divFormLabel">&nbsp;</div><div class="divFormValue">
-						<input type="button" id="inputSubmit" value="Enviar" onclick="javascript:inputSubmitOnClick(event, this)"/>
-						<input type="button" id="inputLimpiar" value="Limpiar" onclick="javascript:inputLimpiarOnClick(event, this)"/>
-					</div>
-					<div class="divFormValue" id="divLatitud" style="display: none;"><input type="text" id="inputLatitud" name="inputLatitud"/></div>
-					<div class="divFormValue" id="divLongitud" style="display: none;"><input type="text" id="inputLongitud" name="inputLongitud"/></div>
-					<div class="divFormValue" id="divPrecision" style="display: none;"><input type="text" id="inputPrecision" name="inputPrecision"/></div>
+			<div id="divFormularioControles">
+				<div class="divFormLabel">Tr&aacute;mite:</div>
+				<div class="divFormValue">
+					<input type="text" id="inputNumeroTramite" name="inputNumeroTramite" onchange="javascript:inputNumeroTramiteOnChange(event, this)"/>
+					<a href="zxing://scan/?ret=http%3A%2F%2F557f04881ee7.sn.mynetname.net:9090/LogisticaWEB/pages/mobile/mdistribucion.jsp?code=%7BCODE%7D&SCAN_FORMATS=UPC_A,EAN_13,128">
+						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
+					</a>
+					<!--
+					<a href="zxing://scan/?ret=http%3A%2F%2Ftosteaun.no-ip.biz:8080/LogisticaWEB/pages/mobile/mdistribucion.jsp?code=%7BCODE%7D&SCAN_FORMATS=UPC_A,EAN_13,128">
+						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
+					</a>
+					 -->
 				</div>
+				<div class="divFormLabel">MID:</div><div class="divFormValue" id="divMID"><a id="aMID" name="aMID" href="#">&nbsp;</a></div>
+				<div class="divFormLabel">Opci&oacute;n:</div>
+				<div class="divFormValue">
+					<select id="selectResultadoEntregaDistribucion" name="selectResultadoEntregaDistribucion"></select>
+				</div>
+				<div class="divFormLabel">Comentarios:</div><div class="divFormValue"><textarea id="textareaObservaciones" name="textareaObservaciones"></textarea></div>
+				<div class="divFormLabel">Anverso:</div><div class="divFormValue"><form method="POST" action="/LogisticaWEB/Upload" id="formResultadoEntregaDistribucionAnverso"><input type="file" id="inputAnverso" name="inputAnverso"/></form></div>
+				<div class="divFormLabel">Reverso:</div><div class="divFormValue"><form method="POST" action="/LogisticaWEB/Upload" id="formResultadoEntregaDistribucionReverso"><input type="file" id="inputReverso" name="inputReverso"/></form></div>
+				<div class="divFormLabel" style="display: none;">Posici&oacute;n:</div>
+				<input type="hidden" name="caller" value="/pages/mobile/mdistribucion.jsp"/>
+				<div class="divFormLabel">&nbsp;</div><div class="divFormValue">
+					<input type="button" id="inputSubmit" value="Enviar" onclick="javascript:inputSubmitOnClick(event, this)"/>
+					<input type="button" id="inputLimpiar" value="Limpiar" onclick="javascript:inputLimpiarOnClick(event, this)"/>
+				</div>
+				<div class="divFormValue" id="divLatitud" style="display: none;"><input type="text" id="inputLatitud" name="inputLatitud"/></div>
+				<div class="divFormValue" id="divLongitud" style="display: none;"><input type="text" id="inputLongitud" name="inputLongitud"/></div>
+				<div class="divFormValue" id="divPrecision" style="display: none;"><input type="text" id="inputPrecision" name="inputPrecision"/></div>
 				<div>&nbsp;</div>
 				<div id="divMap">&nbsp;</div>
-			</form>
+			</div>
 		</div>
 	</div>
 <%@ include file="./mfooter.jsp" %>

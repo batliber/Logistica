@@ -7,3 +7,23 @@
 	margin-left: 2px;
 	width: 100%;
 }
+
+#divProductoMarca {
+	float: left;
+	width: 60%;
+}
+
+#selectProductoMarca {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divProductoEmpresaService {
+	float: left;
+	width: 60%;
+}
+
+#selectProductoEmpresaService {
+	margin-left: 2px;
+	width: 100%;
+}
