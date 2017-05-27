@@ -6,6 +6,7 @@ $(document).ready(function() {
 		{
 			tdNombre: { campo: "nombre", descripcion: "Archivo", abreviacion: "Archivo", tipo: __TIPO_CAMPO_STRING, ancho: 400 }
 		}, 
+		false,
 		reloadData,
 		trArchivoOnClick
 	);

@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -21,22 +23,25 @@
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/procesos/procesos.css"/>
 </head>
 <body>
-	<div class="divMenuBar">
-<%@ include file="/includes/menu.jsp" %>	
+	<div class="divMenuBarContainer">
+<%@ include file="/includes/menu.jsp" %>
 	</div>
-	<div class="divButtonBar">
-		<div class="divButton"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
-		<div class="divButtonBarSeparator">&nbsp;</div>
-	</div>
-	<div class="divButtonTitleBar">
-		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
-		<div class="divButtonTitleBarSeparator">&nbsp;</div>
-	</div>
-	<div class="divMainWindow">
-		<div id="divProcesos">
-			<div id="divTableProcesos">&nbsp;</div>
+	<div class="divBodyContainer">
+		<div class="divBody">
+			<div class="divButtonBar">
+				<div class="divButton"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divMainWindow">
+				<div id="divProcesos">
+					<div id="divTableProcesos">&nbsp;</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="divModalBackground">&nbsp;</div>
-</body>
-</html>
+<%@ include file="/includes/footer.jsp" %>

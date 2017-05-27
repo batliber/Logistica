@@ -140,6 +140,7 @@ public class UsuarioBean implements IUsuarioBean {
 				managedUsuario.setContrasena(usuario.getContrasena());
 			}
 			
+			managedUsuario.setDocumento(usuario.getDocumento());
 			managedUsuario.setLogin(usuario.getLogin());
 			managedUsuario.setNombre(usuario.getNombre());
 			

@@ -18,10 +18,12 @@ import uy.com.amensg.logistica.entities.TurnoTO;
 public class TurnoDWR {
 
 	private ITurnoBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = TurnoBean.class.getSimpleName();
 		String remoteInterfaceName = ITurnoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (ITurnoBean) context.lookup(lookupName);

@@ -3,6 +3,7 @@ package uy.com.amensg.logistica.dwr;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.WebContextFactory;
@@ -20,13 +21,27 @@ import uy.com.amensg.logistica.entities.UsuarioTO;
 public class SeguridadDWR {
 
 	private ISeguridadBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = SeguridadBean.class.getSimpleName();
 		String remoteInterfaceName = ISeguridadBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (ISeguridadBean) context.lookup(lookupName);
+	}
+	
+	private IUsuarioBean lookupUsuarioBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
+		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
+		String beanName = UsuarioBean.class.getSimpleName();
+		String remoteInterfaceName = IUsuarioBean.class.getName();
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
+		Context context = new InitialContext();
+		
+		return (IUsuarioBean) context.lookup(lookupName);
 	}
 	
 	public UsuarioTO getActiveUserData() {
@@ -38,13 +53,7 @@ public class SeguridadDWR {
 			Long usuarioId = (Long) httpSession.getAttribute("sesion");
 			
 			try {
-				String EARName = "Logistica";
-				String beanName = UsuarioBean.class.getSimpleName();
-				String remoteInterfaceName = IUsuarioBean.class.getName();
-				String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
-				Context context = new InitialContext();
-				
-				IUsuarioBean iUsuarioBean = (IUsuarioBean) context.lookup(lookupName);
+				IUsuarioBean iUsuarioBean = lookupUsuarioBean();
 				
 				Usuario usuario = iUsuarioBean.getById(usuarioId);
 				
@@ -66,10 +75,17 @@ public class SeguridadDWR {
 			SeguridadAuditoria seguridadAuditoria = iSeguridadBean.login(login, contrasena);
 		
 			if (seguridadAuditoria != null) {
+				HttpServletRequest httpRequest = WebContextFactory.get().getHttpServletRequest();
 				HttpSession httpSession = WebContextFactory.get().getSession(true);
+				
+				String userAgent = httpRequest.getHeader("User-Agent");
 				
 				if (httpSession.getAttribute("sesion") == null) {
 					httpSession.setAttribute("sesion", seguridadAuditoria.getUsuario().getId());
+					
+					if (userAgent.toLowerCase().contains("mobile")) {
+						httpSession.setMaxInactiveInterval(-1);
+					}
 					
 					result = UsuarioDWR.transform(seguridadAuditoria.getUsuario(), true);
 				}
@@ -87,15 +103,17 @@ public class SeguridadDWR {
 		try {
 			HttpSession httpSession = WebContextFactory.get().getSession(false);
 			
-			Long usuarioId = (Long) httpSession.getAttribute("sesion");
-			
-			if (usuarioId != null) {
-				ISeguridadBean iSeguridadBean = this.lookupBean();
+			if (httpSession != null) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
 				
-				iSeguridadBean.logout(usuarioId);
-				
-				httpSession.removeAttribute("sesion");
-				httpSession.invalidate();
+				if (usuarioId != null) {
+					ISeguridadBean iSeguridadBean = this.lookupBean();
+					
+					iSeguridadBean.logout(usuarioId);
+					
+					httpSession.removeAttribute("sesion");
+					httpSession.invalidate();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

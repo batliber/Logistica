@@ -18,6 +18,15 @@
 	width: 100%;
 }
 
+#divUsuarioDocumento {
+	float: left;
+	width: 70%;
+}
+
+#inputUsuarioDocumento {
+	margin-left: 2px;
+}
+
 #divUsuarioContrasena {
 	float: left;
 	width: 70%;

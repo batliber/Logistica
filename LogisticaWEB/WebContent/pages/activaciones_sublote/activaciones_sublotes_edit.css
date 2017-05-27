@@ -1,0 +1,10 @@
+#divPuntoVentaBarrio {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectPuntoVentaBarrio {
+	width: 60%;
+}

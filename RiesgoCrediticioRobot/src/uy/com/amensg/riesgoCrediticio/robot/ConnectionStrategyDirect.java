@@ -14,6 +14,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosRiesgoCrediticioACM(
+		String empresaId,
 		String documento,
 		String fechaCelular,
 		String deudaCelular,
@@ -31,6 +32,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			DataProcessingTemplateMethod dataProcessingTemplateMethod = new ACMInterfaceRiesgoCrediticio();
 			
 			Collection<String> data = new LinkedList<String>();
+			data.add(empresaId);
 			data.add(documento);
 			data.add(fechaCelular);
 			data.add(deudaCelular);
@@ -51,6 +53,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String empresaId,
 		String documento,
 		String periodo,
 		String nombreCompleto,
@@ -69,6 +72,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			DataProcessingTemplateMethod dataProcessingTemplateMethod = new BCUInterfaceRiesgoCrediticio();
 			
 			Collection<String> data = new LinkedList<String>();
+			data.add(empresaId);
 			data.add(documento);
 			data.add(periodo);
 			data.add(nombreCompleto);
@@ -90,6 +94,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String empresaId,
 		String documento,
 		String institucionFinanciera,
 		String calificacion,
@@ -102,6 +107,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			DataProcessingTemplateMethod dataProcessingTemplateMethod = new BCUInterfaceRiesgoCrediticioInstitucionFinanciera();
 			
 			Collection<String> data = new LinkedList<String>();
+			data.add(empresaId);
 			data.add(documento);
 			data.add(institucionFinanciera);
 			data.add(calificacion);

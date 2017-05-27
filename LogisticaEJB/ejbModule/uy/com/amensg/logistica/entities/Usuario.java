@@ -23,6 +23,9 @@ public class Usuario extends BaseEntity {
 	@Column(name = "nombre")
 	private String nombre;
 	
+	@Column(name = "documento")
+	private String documento;
+	
 	@Column(name = "fecha_baja")
 	private Date fechaBaja;
 
@@ -53,6 +56,14 @@ public class Usuario extends BaseEntity {
 		this.nombre = nombre;
 	}
 	
+	public String getDocumento() {
+		return documento;
+	}
+
+	public void setDocumento(String documento) {
+		this.documento = documento;
+	}
+
 	public Date getFechaBaja() {
 		return fechaBaja;
 	}

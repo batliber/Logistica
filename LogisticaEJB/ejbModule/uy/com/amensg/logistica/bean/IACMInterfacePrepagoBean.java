@@ -14,15 +14,19 @@ public interface IACMInterfacePrepagoBean {
 
 	public Collection<ACMInterfacePrepago> list();
 	
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
+	
+	public Long count(MetadataConsulta metadataConsulta);
+	
 	public String exportarAExcel(MetadataConsulta metadataConsulta);
+	
+	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
 	
-	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
-	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
 	
-	public void agregarAListaNegra(MetadataConsulta metadataConsulta);
+	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
 	
-	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
+	public void agregarAListaNegra(MetadataConsulta metadataConsulta);
 }

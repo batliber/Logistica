@@ -1,5 +1,6 @@
 package uy.com.amensg.logistica.entities;
 
+import java.util.Collection;
 import java.util.Date;
 
 import org.directwebremoting.annotations.DataTransferObject;
@@ -14,6 +15,7 @@ public class ContratoTO extends BaseTO {
 	private String documento;
 	private Long numeroCliente;
 	private String nombre;
+	private String apellido;
 	private Date fechaNacimiento;
 	private String direccion;
 	private String localidad;
@@ -21,6 +23,7 @@ public class ContratoTO extends BaseTO {
 	private String tipoContratoCodigo;
 	private String tipoContratoDescripcion;
 	private Long numeroContrato;
+	private String nuevoPlanString;
 	private String agente;
 	private String equipo;
 	private Date fechaEntrega;
@@ -28,10 +31,13 @@ public class ContratoTO extends BaseTO {
 	private String direccionFactura;
 	private String telefonoContacto;
 	private String email;
-	private Long numeroFactura;
+	private String numeroFactura;
 	private Double precio;
-	private String nuevoPlan;
+	private Long cuotas;
 	private String numeroSerie;
+	private String numeroChip;
+	private String numeroBloqueo;
+	private String numeroFacturaRiverGreen;
 	private String observaciones;
 	private String resultadoEntregaDistribucionObservaciones;
 	private String resultadoEntregaDistribucionURLAnverso;
@@ -48,10 +54,48 @@ public class ContratoTO extends BaseTO {
 	private Date fechaActivacion;
 	private Date fechaActivarEn;
 	private Date fechaCoordinacion;
+	private String direccionEntregaCalle;
+	private Long direccionEntregaNumero;
+	private Boolean direccionEntregaBis;
+	private String direccionEntregaBlock;
+	private String direccionEntregaApto;
+	private String direccionEntregaSolar;
+	private Long direccionEntregaManzana;
+	private Long direccionEntregaCodigoPostal;
+	private String direccionEntregaLocalidad;
+	private String direccionEntregaObservaciones;
+	private String direccionFacturaCalle;
+	private Long direccionFacturaNumero;
+	private Boolean direccionFacturaBis;
+	private String direccionFacturaBlock;
+	private String direccionFacturaApto;
+	private String direccionFacturaSolar;
+	private Long direccionFacturaManzana;
+	private Long direccionFacturaCodigoPostal;
+	private String direccionFacturaLocalidad;
+	private String direccionFacturaObservaciones;
+	private Double intereses;
+	private Double gastosAdministrativos;
+	private Double gastosConcesion;
+	private Double gastosAdministrativosTotales;
+	private Double valorCuota;
+	private Double valorUnidadIndexada;
+	private Double valorTasaInteresEfectivaAnual;
+	private DepartamentoTO direccionEntregaDepartamento;
+	private DepartamentoTO direccionFacturaDepartamento;
+	private TipoDocumentoTO tipoDocumento;
+	private SexoTO sexo;
 	private BarrioTO barrio;
 	private ZonaTO zona;
 	private TurnoTO turno;
+	private MarcaTO marca;
+	private ModeloTO modelo;
 	private ProductoTO producto;
+	private PlanTO nuevoPlan;
+	private MotivoCambioPlanTO motivoCambioPlan;
+	private MonedaTO moneda;
+	private FormaPagoTO formaPago;
+	private TarjetaCreditoTO tarjetaCredito;
 	private ResultadoEntregaDistribucionTO resultadoEntregaDistribucion;
 	private EstadoTO estado;
 	private EmpresaTO empresa;
@@ -62,6 +106,7 @@ public class ContratoTO extends BaseTO {
 	private UsuarioTO distribuidor;
 	private UsuarioTO activador;
 	private UsuarioTO coordinador;
+	private Collection<ContratoArchivoAdjuntoTO> archivosAdjuntos;
 
 	public Long getMid() {
 		return mid;
@@ -119,6 +164,14 @@ public class ContratoTO extends BaseTO {
 		this.nombre = nombre;
 	}
 
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
+	
 	public Date getFechaNacimiento() {
 		return fechaNacimiento;
 	}
@@ -173,6 +226,14 @@ public class ContratoTO extends BaseTO {
 
 	public void setNumeroContrato(Long numeroContrato) {
 		this.numeroContrato = numeroContrato;
+	}
+
+	public String getNuevoPlanString() {
+		return nuevoPlanString;
+	}
+
+	public void setNuevoPlanString(String nuevoPlanString) {
+		this.nuevoPlanString = nuevoPlanString;
 	}
 
 	public String getAgente() {
@@ -231,11 +292,11 @@ public class ContratoTO extends BaseTO {
 		this.email = email;
 	}
 
-	public Long getNumeroFactura() {
+	public String getNumeroFactura() {
 		return numeroFactura;
 	}
 
-	public void setNumeroFactura(Long numeroFactura) {
+	public void setNumeroFactura(String numeroFactura) {
 		this.numeroFactura = numeroFactura;
 	}
 
@@ -245,6 +306,14 @@ public class ContratoTO extends BaseTO {
 
 	public void setPrecio(Double precio) {
 		this.precio = precio;
+	}
+
+	public Long getCuotas() {
+		return cuotas;
+	}
+
+	public void setCuotas(Long cuotas) {
+		this.cuotas = cuotas;
 	}
 
 	public Date getFechaVenta() {
@@ -263,12 +332,44 @@ public class ContratoTO extends BaseTO {
 		this.fechaRechazo = fechaRechazo;
 	}
 
-	public String getNuevoPlan() {
+	public PlanTO getNuevoPlan() {
 		return nuevoPlan;
 	}
 
-	public void setNuevoPlan(String nuevoPlan) {
+	public void setNuevoPlan(PlanTO nuevoPlan) {
 		this.nuevoPlan = nuevoPlan;
+	}
+
+	public MotivoCambioPlanTO getMotivoCambioPlan() {
+		return motivoCambioPlan;
+	}
+
+	public void setMotivoCambioPlan(MotivoCambioPlanTO motivoCambioPlan) {
+		this.motivoCambioPlan = motivoCambioPlan;
+	}
+
+	public MonedaTO getMoneda() {
+		return moneda;
+	}
+
+	public void setMoneda(MonedaTO moneda) {
+		this.moneda = moneda;
+	}
+
+	public FormaPagoTO getFormaPago() {
+		return formaPago;
+	}
+
+	public void setFormaPago(FormaPagoTO formaPago) {
+		this.formaPago = formaPago;
+	}
+
+	public TarjetaCreditoTO getTarjetaCredito() {
+		return tarjetaCredito;
+	}
+
+	public void setTarjetaCredito(TarjetaCreditoTO tarjetaCredito) {
+		this.tarjetaCredito = tarjetaCredito;
 	}
 
 	public String getNumeroSerie() {
@@ -279,12 +380,36 @@ public class ContratoTO extends BaseTO {
 		this.numeroSerie = numeroSerie;
 	}
 
+	public String getNumeroFacturaRiverGreen() {
+		return numeroFacturaRiverGreen;
+	}
+
+	public void setNumeroFacturaRiverGreen(String numeroFacturaRiverGreen) {
+		this.numeroFacturaRiverGreen = numeroFacturaRiverGreen;
+	}
+
 	public String getObservaciones() {
 		return observaciones;
 	}
 
 	public void setObservaciones(String observaciones) {
 		this.observaciones = observaciones;
+	}
+
+	public String getNumeroChip() {
+		return numeroChip;
+	}
+
+	public void setNumeroChip(String numeroChip) {
+		this.numeroChip = numeroChip;
+	}
+
+	public String getNumeroBloqueo() {
+		return numeroBloqueo;
+	}
+
+	public void setNumeroBloqueo(String numeroBloqueo) {
+		this.numeroBloqueo = numeroBloqueo;
 	}
 
 	public String getResultadoEntregaDistribucionObservaciones() {
@@ -340,6 +465,258 @@ public class ContratoTO extends BaseTO {
 		this.resultadoEntregaDistribucionPrecision = resultadoEntregaDistribucionPrecision;
 	}
 
+	public String getDireccionEntregaCalle() {
+		return direccionEntregaCalle;
+	}
+
+	public void setDireccionEntregaCalle(String direccionEntregaCalle) {
+		this.direccionEntregaCalle = direccionEntregaCalle;
+	}
+
+	public Long getDireccionEntregaNumero() {
+		return direccionEntregaNumero;
+	}
+
+	public void setDireccionEntregaNumero(Long direccionEntregaNumero) {
+		this.direccionEntregaNumero = direccionEntregaNumero;
+	}
+
+	public Boolean getDireccionEntregaBis() {
+		return direccionEntregaBis;
+	}
+
+	public void setDireccionEntregaBis(Boolean direccionEntregaBis) {
+		this.direccionEntregaBis = direccionEntregaBis;
+	}
+
+	public String getDireccionEntregaBlock() {
+		return direccionEntregaBlock;
+	}
+
+	public void setDireccionEntregaBlock(String direccionEntregaBlock) {
+		this.direccionEntregaBlock = direccionEntregaBlock;
+	}
+
+	public String getDireccionEntregaApto() {
+		return direccionEntregaApto;
+	}
+
+	public void setDireccionEntregaApto(String direccionEntregaApto) {
+		this.direccionEntregaApto = direccionEntregaApto;
+	}
+
+	public String getDireccionEntregaSolar() {
+		return direccionEntregaSolar;
+	}
+
+	public void setDireccionEntregaSolar(String direccionEntregaSolar) {
+		this.direccionEntregaSolar = direccionEntregaSolar;
+	}
+
+	public Long getDireccionEntregaManzana() {
+		return direccionEntregaManzana;
+	}
+
+	public void setDireccionEntregaManzana(Long direccionEntregaManzana) {
+		this.direccionEntregaManzana = direccionEntregaManzana;
+	}
+
+	public Long getDireccionEntregaCodigoPostal() {
+		return direccionEntregaCodigoPostal;
+	}
+
+	public void setDireccionEntregaCodigoPostal(Long direccionEntregaCodigoPostal) {
+		this.direccionEntregaCodigoPostal = direccionEntregaCodigoPostal;
+	}
+
+	public String getDireccionEntregaLocalidad() {
+		return direccionEntregaLocalidad;
+	}
+
+	public void setDireccionEntregaLocalidad(String direccionEntregaLocalidad) {
+		this.direccionEntregaLocalidad = direccionEntregaLocalidad;
+	}
+
+	public String getDireccionEntregaObservaciones() {
+		return direccionEntregaObservaciones;
+	}
+
+	public void setDireccionEntregaObservaciones(
+			String direccionEntregaObservaciones) {
+		this.direccionEntregaObservaciones = direccionEntregaObservaciones;
+	}
+
+	public String getDireccionFacturaCalle() {
+		return direccionFacturaCalle;
+	}
+
+	public void setDireccionFacturaCalle(String direccionFacturaCalle) {
+		this.direccionFacturaCalle = direccionFacturaCalle;
+	}
+
+	public Long getDireccionFacturaNumero() {
+		return direccionFacturaNumero;
+	}
+
+	public void setDireccionFacturaNumero(Long direccionFacturaNumero) {
+		this.direccionFacturaNumero = direccionFacturaNumero;
+	}
+
+	public Boolean getDireccionFacturaBis() {
+		return direccionFacturaBis;
+	}
+
+	public void setDireccionFacturaBis(Boolean direccionFacturaBis) {
+		this.direccionFacturaBis = direccionFacturaBis;
+	}
+
+	public String getDireccionFacturaBlock() {
+		return direccionFacturaBlock;
+	}
+
+	public void setDireccionFacturaBlock(String direccionFacturaBlock) {
+		this.direccionFacturaBlock = direccionFacturaBlock;
+	}
+
+	public String getDireccionFacturaApto() {
+		return direccionFacturaApto;
+	}
+
+	public void setDireccionFacturaApto(String direccionFacturaApto) {
+		this.direccionFacturaApto = direccionFacturaApto;
+	}
+
+	public String getDireccionFacturaSolar() {
+		return direccionFacturaSolar;
+	}
+
+	public void setDireccionFacturaSolar(String direccionFacturaSolar) {
+		this.direccionFacturaSolar = direccionFacturaSolar;
+	}
+
+	public Long getDireccionFacturaManzana() {
+		return direccionFacturaManzana;
+	}
+
+	public void setDireccionFacturaManzana(Long direccionFacturaManzana) {
+		this.direccionFacturaManzana = direccionFacturaManzana;
+	}
+
+	public Long getDireccionFacturaCodigoPostal() {
+		return direccionFacturaCodigoPostal;
+	}
+
+	public void setDireccionFacturaCodigoPostal(Long direccionFacturaCodigoPostal) {
+		this.direccionFacturaCodigoPostal = direccionFacturaCodigoPostal;
+	}
+
+	public String getDireccionFacturaLocalidad() {
+		return direccionFacturaLocalidad;
+	}
+
+	public void setDireccionFacturaLocalidad(String direccionFacturaLocalidad) {
+		this.direccionFacturaLocalidad = direccionFacturaLocalidad;
+	}
+
+	public String getDireccionFacturaObservaciones() {
+		return direccionFacturaObservaciones;
+	}
+
+	public void setDireccionFacturaObservaciones(
+			String direccionFacturaObservaciones) {
+		this.direccionFacturaObservaciones = direccionFacturaObservaciones;
+	}
+
+	public Double getIntereses() {
+		return intereses;
+	}
+
+	public void setIntereses(Double intereses) {
+		this.intereses = intereses;
+	}
+
+	public Double getGastosAdministrativos() {
+		return gastosAdministrativos;
+	}
+
+	public void setGastosAdministrativos(Double gastosAdministrativos) {
+		this.gastosAdministrativos = gastosAdministrativos;
+	}
+
+	public Double getGastosConcesion() {
+		return gastosConcesion;
+	}
+
+	public void setGastosConcesion(Double gastosConcesion) {
+		this.gastosConcesion = gastosConcesion;
+	}
+
+	public Double getGastosAdministrativosTotales() {
+		return gastosAdministrativosTotales;
+	}
+
+	public void setGastosAdministrativosTotales(Double gastosAdministrativosTotales) {
+		this.gastosAdministrativosTotales = gastosAdministrativosTotales;
+	}
+
+	public Double getValorCuota() {
+		return valorCuota;
+	}
+
+	public void setValorCuota(Double valorCuota) {
+		this.valorCuota = valorCuota;
+	}
+
+	public Double getValorUnidadIndexada() {
+		return valorUnidadIndexada;
+	}
+
+	public void setValorUnidadIndexada(Double valorUnidadIndexada) {
+		this.valorUnidadIndexada = valorUnidadIndexada;
+	}
+
+	public Double getValorTasaInteresEfectivaAnual() {
+		return valorTasaInteresEfectivaAnual;
+	}
+
+	public void setValorTasaInteresEfectivaAnual(Double valorTasaInteresEfectivaAnual) {
+		this.valorTasaInteresEfectivaAnual = valorTasaInteresEfectivaAnual;
+	}
+
+	public DepartamentoTO getDireccionEntregaDepartamento() {
+		return direccionEntregaDepartamento;
+	}
+
+	public void setDireccionEntregaDepartamento(
+			DepartamentoTO direccionEntregaDepartamento) {
+		this.direccionEntregaDepartamento = direccionEntregaDepartamento;
+	}
+
+	public DepartamentoTO getDireccionFacturaDepartamento() {
+		return direccionFacturaDepartamento;
+	}
+
+	public void setDireccionFacturaDepartamento(
+			DepartamentoTO direccionFacturaDepartamento) {
+		this.direccionFacturaDepartamento = direccionFacturaDepartamento;
+	}
+
+	public TipoDocumentoTO getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	public void setTipoDocumento(TipoDocumentoTO tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
+	public SexoTO getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(SexoTO sexo) {
+		this.sexo = sexo;
+	}
+	
 	public BarrioTO getBarrio() {
 		return barrio;
 	}
@@ -362,6 +739,22 @@ public class ContratoTO extends BaseTO {
 
 	public void setTurno(TurnoTO turno) {
 		this.turno = turno;
+	}
+
+	public MarcaTO getMarca() {
+		return marca;
+	}
+
+	public void setMarca(MarcaTO marca) {
+		this.marca = marca;
+	}
+
+	public ModeloTO getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(ModeloTO modelo) {
+		this.modelo = modelo;
 	}
 
 	public ProductoTO getProducto() {
@@ -507,5 +900,13 @@ public class ContratoTO extends BaseTO {
 
 	public void setCoordinador(UsuarioTO coordinador) {
 		this.coordinador = coordinador;
-	}	
+	}
+
+	public Collection<ContratoArchivoAdjuntoTO> getArchivosAdjuntos() {
+		return archivosAdjuntos;
+	}
+
+	public void setArchivosAdjuntos(Collection<ContratoArchivoAdjuntoTO> archivosAdjuntos) {
+		this.archivosAdjuntos = archivosAdjuntos;
+	}
 }

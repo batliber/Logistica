@@ -17,15 +17,19 @@ import uy.com.amensg.logistica.bean.EmpresaBean;
 import uy.com.amensg.logistica.bean.IEmpresaBean;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EmpresaTO;
+import uy.com.amensg.logistica.entities.FormaPago;
+import uy.com.amensg.logistica.entities.FormaPagoTO;
 
 @RemoteProxy
 public class EmpresaDWR {
 
 	private IEmpresaBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = EmpresaBean.class.getSimpleName();
 		String remoteInterfaceName = IEmpresaBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IEmpresaBean) context.lookup(lookupName);
@@ -54,6 +58,22 @@ public class EmpresaDWR {
 			IEmpresaBean iEmpresaBean = lookupBean();
 			
 			result = transform(iEmpresaBean.getById(id));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<FormaPagoTO> listFormasPagoById(Long id) {
+		Collection<FormaPagoTO> result = new LinkedList<FormaPagoTO>();
+		
+		try {
+			IEmpresaBean iEmpresaBean = lookupBean();
+			
+			for (FormaPago formaPago : iEmpresaBean.listFormasPagoById(id)) {
+				result.add(FormaPagoDWR.transform(formaPago));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,7 +114,21 @@ public class EmpresaDWR {
 	public static EmpresaTO transform(Empresa empresa) {
 		EmpresaTO empresaTO = new EmpresaTO();
 		
+		empresaTO.setCodigoPromotor(empresa.getCodigoPromotor());
+		empresaTO.setLogoURL(empresa.getLogoURL());
 		empresaTO.setNombre(empresa.getNombre());
+		empresaTO.setNombreContrato(empresa.getNombreContrato());
+		empresaTO.setNombreSucursal(empresa.getNombreSucursal());
+		
+		if (empresa.getFormaPagos() != null) {
+			Collection<FormaPagoTO> formaPagos = new LinkedList<FormaPagoTO>();
+			
+			for (FormaPago formaPago : empresa.getFormaPagos()) {
+				formaPagos.add(FormaPagoDWR.transform(formaPago));
+			}
+			
+			empresaTO.setFormaPagos(formaPagos);
+		}
 		
 		empresaTO.setFact(empresa.getFact());
 		empresaTO.setId(empresa.getId());
@@ -107,7 +141,25 @@ public class EmpresaDWR {
 	public static Empresa transform(EmpresaTO empresaTO) {
 		Empresa empresa = new Empresa();
 		
+		empresa.setCodigoPromotor(empresaTO.getCodigoPromotor());
+		empresa.setLogoURL(empresaTO.getLogoURL());
 		empresa.setNombre(empresaTO.getNombre());
+		empresa.setNombreContrato(empresaTO.getNombreContrato());
+		empresa.setNombreSucursal(empresaTO.getNombreSucursal());
+		
+		if (empresaTO.getFormaPagos() != null) {
+			Collection<FormaPago> formaPagos = new LinkedList<FormaPago>();
+			
+			for (FormaPagoTO formaPagoTO : empresaTO.getFormaPagos()) {
+				FormaPago formaPago = new FormaPago();
+				
+				formaPago.setId(formaPagoTO.getId());
+				
+				formaPagos.add(formaPago);
+			}
+			
+			empresa.setFormaPagos(formaPagos);
+		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		

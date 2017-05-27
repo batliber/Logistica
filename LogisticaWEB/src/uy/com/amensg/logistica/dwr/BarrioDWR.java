@@ -18,10 +18,12 @@ import uy.com.amensg.logistica.entities.BarrioTO;
 public class BarrioDWR {
 
 	private IBarrioBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = BarrioBean.class.getSimpleName();
 		String remoteInterfaceName = IBarrioBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IBarrioBean) context.lookup(lookupName);

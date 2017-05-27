@@ -1,7 +1,11 @@
 package uy.com.amensg.logistica.entities;
 
-public class TipoContrato {
+import java.io.Serializable;
 
+public class TipoContrato implements Serializable {
+
+	private static final long serialVersionUID = -8491393708369187518L;
+	
 	private String tipoContratoCodigo;
 	private String tipoContratoDescripcion;
 

@@ -1,0 +1,9 @@
+#divMarcaNombre {
+	float: left;
+	width: 60%;
+}
+
+#inputMarcaNombre {
+	margin-left: 2px;
+	width: 100%;
+}

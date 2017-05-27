@@ -6,7 +6,9 @@ import java.util.LinkedList;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.ACMInterfaceContratoBean;
@@ -24,10 +26,12 @@ import uy.com.amensg.logistica.entities.TipoContratoTO;
 public class ACMInterfaceContratoDWR {
 
 	private IACMInterfaceContratoBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
-		String beanName = ACMInterfaceContratoBean.class.getSimpleName();
+		String appName = "LogisticaEJB";
 		String remoteInterfaceName = IACMInterfaceContratoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String beanName = ACMInterfaceContratoBean.class.getSimpleName();
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IACMInterfaceContratoBean) context.lookup(lookupName);
@@ -62,6 +66,65 @@ public class ACMInterfaceContratoDWR {
 		return result;
 	}
 	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iACMInterfaceContratoBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object acmInterfaceContrato : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(transform((ACMInterfaceContrato) acmInterfaceContrato));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+				
+				result = 
+					iACMInterfaceContratoBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
 		String result = null;
 		
@@ -80,9 +143,26 @@ public class ACMInterfaceContratoDWR {
 		return result;
 	}
 	
-	public String exportarAExcelByEmpresa(
-		MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones
-	) {
+	public String preprocesarExportacionByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO) {
+		String result = null;
+		
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			result = iACMInterfaceContratoBean.preprocesarExportacion(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				),
+				EmpresaDWR.transform(empresaTO)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String exportarAExcelByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones) {
 		String result = null;
 		
 		try {
@@ -102,6 +182,20 @@ public class ACMInterfaceContratoDWR {
 		return result;
 	}
 	
+	public void deshacerAsignacion(MetadataConsultaTO metadataConsultaTO) {
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			iACMInterfaceContratoBean.deshacerAsignacion(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void reprocesar(MetadataConsultaTO metadataConsultaTO, String observaciones) {
 		try {
 			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
@@ -111,20 +205,6 @@ public class ACMInterfaceContratoDWR {
 					metadataConsultaTO
 				),
 				observaciones
-			);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void deshacerAsignacion(MetadataConsultaTO metadataConsultaTO) {
-		try {
-			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
-			
-			iACMInterfaceContratoBean.deshacerAsignacion(
-				MetadataConsultaDWR.transform(
-					metadataConsultaTO
-				)
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -185,6 +265,10 @@ public class ACMInterfaceContratoDWR {
 		acmInterfaceContratoTO.setTipoContratoCodigo(acmInterfaceContrato.getTipoContratoCodigo());
 		acmInterfaceContratoTO.setTipoContratoDescripcion(acmInterfaceContrato.getTipoContratoDescripcion());
 		acmInterfaceContratoTO.setFechaExportacion(acmInterfaceContrato.getFechaExportacion());
+		
+		if (acmInterfaceContrato.getAcmInterfacePersona() != null) {
+			acmInterfaceContratoTO.setAcmInterfacePersona(ACMInterfacePersonaDWR.transform(acmInterfaceContrato.getAcmInterfacePersona()));
+		}
 		
 		acmInterfaceContratoTO.setFact(acmInterfaceContrato.getFact());
 		acmInterfaceContratoTO.setUact(acmInterfaceContrato.getUact());

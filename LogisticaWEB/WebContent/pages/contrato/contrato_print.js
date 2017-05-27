@@ -10,6 +10,7 @@ $(document).ready(function() {
 				$("#divMid").html(
 					data.mid != null ? data.mid : "&nbsp;"
 				);
+				$("#divMidBarCode").css("background-image", "url(/LogisticaWEB/Barcode?code=" + data.mid + ")");
 				$("#divEstado").html(
 					data.estado != null ? data.estado.nombre : "&nbsp;"
 				);
@@ -28,14 +29,20 @@ $(document).ready(function() {
 				$("#divNumeroContrato").html(
 					data.numeroContrato != null ? data.numeroContrato : "&nbsp;"
 				);
+				$("#divNumeroFacturaRiverGreen").html(
+					data.numeroFacturaRiverGreen != null ? data.numeroFacturaRiverGreen : "&nbsp;"
+				);
 				$("#divPlan").html(
 					data.tipoContratoDescripcion != null ? data.tipoContratoDescripcion : "&nbsp;"
 				); 
 				$("#divNuevoPlan").html(
-					data.nuevoPlan != null ? data.nuevoPlan : "&nbsp;"
+					data.nuevoPlan != null ? data.nuevoPlan.descripcion : "&nbsp;"
 				);
 				$("#divEquipo").html(
-					data.producto != null ? data.producto.descripcion : "&nbsp;"
+					data.producto != null ? data.producto.descripcion 
+						: (data.modelo != null ?
+							data.modelo.descripcion 
+							: "&nbsp;")
 				);
 				$("#divNumeroSerie").html(
 					data.numeroSerie != null ? data.numeroSerie : "&nbsp;"
@@ -43,18 +50,75 @@ $(document).ready(function() {
 				$("#divDocumento").html(
 					data.documento != null ? data.documento : "&nbsp;"
 				);
-				$("#divNombre").html(
-					data.nombre != null ? data.nombre : "&nbsp;"
-				);
+				
+				var nombre = "";
+				if (data.nombre != null) {
+					nombre += data.nombre;
+				}
+				if (data.apellido != null) {
+					nombre += " " + data.apellido;
+				}
+				$("#divNombre").html(nombre != "" ? nombre : "&nbsp;");
 				$("#divNumeroFactura").html(
 					data.numeroFactura != null ? data.numeroFactura : "&nbsp;"
 				); 
-				$("#divDireccionFactura").html(
-					data.direccionFactura != null ? data.direccionFactura : "&nbsp;"
-				);
-				$("#divDireccionEntrega").html(
-					data.direccionEntrega != null ? data.direccionEntrega : "&nbsp;"
-				);
+//				$("#divDireccionFactura").html(
+//					data.direccionFactura != null && data.direccionFactura != "" ? data.direccionFactura : "&nbsp;"
+//				);
+//				$("#divDireccionEntrega").html(
+//					data.direccionEntrega != null && data.direccionEntrega != "" ? data.direccionEntrega : "&nbsp;"
+//				);
+				
+				var direccionFactura = "";
+				if (data.direccionFacturaCalle != null && data.direccionFacturaCalle != "") {
+					direccionFactura += data.direccionFacturaCalle;
+				}
+				if (data.direccionFacturaNumero != null && data.direccionFacturaNumero != "") {
+					direccionFactura += " " + data.direccionFacturaNumero;
+				}
+				if (data.direccionFacturaBis != null && data.direccionFacturaBis) {
+					direccionFactura += " BIS";
+				}
+				if (data.direccionFacturaBlock != null && data.direccionFacturaBlock != "") {
+					direccionFactura += " Block " + data.direccionFacturaBlock;
+				}
+				if (data.direccionFacturaApto != null && data.direccionFacturaApto != "") {
+					direccionFactura += " Apto. " + data.direccionFacturaApto;
+				}
+				if (data.direccionFacturaSolar != null && data.direccionFacturaSolar != "") {
+					direccionFactura += " Solar " + data.direccionFacturaSolar;
+				}
+				if (data.direccionFacturaManzana != null && data.direccionFacturaManzana != "") {
+					direccionFactura += " Manzana " + data.direccionFacturaManzana;
+				}
+				
+				$("#divDireccionFactura").html(direccionFactura != "" ? direccionFactura : "&nbsp;");
+				
+				var direccionEntrega = "";
+				if (data.direccionEntregaCalle != null && data.direccionEntregaCalle != "") {
+					direccionEntrega += data.direccionEntregaCalle;
+				}
+				if (data.direccionEntregaNumero != null && data.direccionEntregaNumero != "") {
+					direccionEntrega += " " + data.direccionEntregaNumero;
+				}
+				if (data.direccionEntregaBis != null && data.direccionEntregaBis) {
+					direccionEntrega += " BIS";
+				}
+				if (data.direccionEntregaBlock != null && data.direccionEntregaBlock != "") {
+					direccionEntrega += " Block " + data.direccionEntregaBlock;
+				}
+				if (data.direccionEntregaApto != null && data.direccionEntregaApto != "") {
+					direccionEntrega += " Apto. " + data.direccionEntregaApto;
+				}
+				if (data.direccionEntregaSolar != null && data.direccionEntregaSolar != "") {
+					direccionEntrega += " Solar " + data.direccionEntregaSolar;
+				}
+				if (data.direccionEntregaManzana != null && data.direccionEntregaManzana != "") {
+					direccionEntrega += " Manzana " + data.direccionEntregaManzana;
+				}
+				
+				$("#divDireccionEntrega").html(direccionEntrega != "" ? direccionEntrega : "&nbsp;");
+				
 				$("#divTelefonoContacto").html(
 					data.telefonoContacto != null ? data.telefonoContacto : "&nbsp;"
 				);
@@ -64,14 +128,20 @@ $(document).ready(function() {
 				$("#divPrecio").html(
 					data.precio != null ? data.precio : "&nbsp;"
 				);
-				$("#divDepartamento").html(
+				$(".divDepartamento").html(
 					data.zona != null ? data.zona.departamento.nombre : "&nbsp;"
 				);
-				$("#divZona").html(
+				$(".divBarrio").html(
+					data.barrio != null ? data.barrio.nombre : "&nbsp"
+				);
+				$(".divZona").html(
 					data.zona != null ? data.zona.nombre : "&nbsp"
 				);
 				$("#divTurno").html(
 					data.turno != null ? data.turno.nombre : "&nbsp;"
+				);
+				$("#divFechaNacimiento").html(
+					data.fechaNacimiento != null ? formatShortDate(data.fechaNacimiento) : "&nbsp;"
 				);
 				$("#divFechaEntrega").html(
 					data.fechaEntrega != null ? formatShortDate(data.fechaEntrega) : "&nbsp;"
@@ -81,6 +151,10 @@ $(document).ready(function() {
 				);
 				$("#divObservaciones").html(
 					data.observaciones != null ? data.observaciones : "&nbsp;"
+				);
+				
+				$("#divVendedor").html(
+					data.vendedor != null ? data.vendedor.nombre : "&nbsp;"
 				);
 				
 				/*

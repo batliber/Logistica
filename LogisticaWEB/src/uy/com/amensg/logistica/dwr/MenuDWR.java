@@ -12,6 +12,7 @@ public class MenuDWR {
 		MenuTO menuTO = new MenuTO();
 		
 		menuTO.setOrden(menu.getOrden());
+		menuTO.setPadre(menu.getPadre());
 		menuTO.setTitulo(menu.getTitulo());
 		menuTO.setUrl(menu.getUrl());
 		

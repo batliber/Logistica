@@ -5,6 +5,7 @@ public interface IConnectionStrategy {
 	public String getSiguienteDocumentoParaControlar();
 
 	public void actualizarDatosRiesgoCrediticioACM(
+		String empresaId,
 		String documento,
 		String fechaCelular,
 		String deudaCelular,
@@ -20,6 +21,7 @@ public interface IConnectionStrategy {
 	);
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String empresaId,
 		String documento,
 		String periodo,
 		String nombreCompleto,
@@ -36,6 +38,7 @@ public interface IConnectionStrategy {
 	);
 
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String empresaId,
 		String documento,
 		String institucionFinanciera,
 		String calificacion,

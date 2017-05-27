@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -16,10 +18,10 @@
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/main.css"/>
 </head>
 <body>
-	<div class="divMenuBar">
+	<div class="divMenuBarContainer">
 <%@ include file="/includes/menu.jsp" %>
 	</div>
-	<div id="divIFrameActivePage">&nbsp;</div>
-	<div id="divModalBackground">&nbsp;</div>
-</body>
-</html>
+	<div class="divBodyContainer">
+		<div class="divBody">&nbsp;</div>
+	</div>
+<%@ include file="/includes/footer.jsp" %>

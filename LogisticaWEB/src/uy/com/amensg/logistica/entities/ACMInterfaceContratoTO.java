@@ -25,6 +25,7 @@ public class ACMInterfaceContratoTO {
 	private Long uact;
 	private Date fact;
 	private Long term;
+	private ACMInterfacePersonaTO acmInterfacePersona;
 
 	public Long getMid() {
 		return mid;
@@ -168,5 +169,13 @@ public class ACMInterfaceContratoTO {
 
 	public void setTerm(Long term) {
 		this.term = term;
+	}
+
+	public ACMInterfacePersonaTO getAcmInterfacePersona() {
+		return acmInterfacePersona;
+	}
+
+	public void setAcmInterfacePersona(ACMInterfacePersonaTO acmInterfacePersona) {
+		this.acmInterfacePersona = acmInterfacePersona;
 	}
 }

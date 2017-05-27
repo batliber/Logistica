@@ -18,10 +18,12 @@ import uy.com.amensg.logistica.entities.EstadoTO;
 public class EstadoDWR {
 
 	private IEstadoBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = EstadoBean.class.getSimpleName();
 		String remoteInterfaceName = IEstadoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IEstadoBean) context.lookup(lookupName);

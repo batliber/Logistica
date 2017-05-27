@@ -1,0 +1,19 @@
+#divIFrameActivacionSublote {
+	position: relative;
+	top: 100px;
+	left: 100px;
+	width: 735px;
+	height: 600px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameActivacionSublote {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 579px;
+}

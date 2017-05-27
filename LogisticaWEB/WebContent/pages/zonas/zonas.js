@@ -13,6 +13,7 @@ $(document).ready(function() {
 			tdUsuarioDetalle: { campo: "detalle", descripcion: "Detalle", abreviacion: "Detalle", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
 			tdZonaDepartamento: { campo: "departamento.nombre", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_STRING, ancho: 200 } 
 		}, 
+		false,
 		reloadData,
 		trZonaOnClick
 	);

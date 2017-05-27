@@ -12,77 +12,219 @@ var meses = [
 	"Noviembre",
 	"Diciembre"
 ];
+var usuario = null;
 
 $(document).ready(function() {
+	SeguridadDWR.getActiveUserData(
+		{
+			callback: function(data) {
+				usuario = data;
+			}, async: false
+		}
+	);
+	
 	ContratoDWR.getById(
 		id,
 		{
 			callback: function(data) {
-				$("#spanDia").text(data.fechaVenta.getDate());
-				$("#spanMes").text(meses[data.fechaVenta.getMonth()]);
-				$("#spanAno").text(data.fechaVenta.getFullYear());
-				$("#spanDepartamento").text(data.barrio.departamento.nombre);
-				$("#spanDuracionContrato").text("N a�os");
-				$("#spanNombre").text(data.nombre);
-				$("#spanClienteNombre").text(data.nombre);
-				$("#spanClienteApellido").text(data.nombre);
+				var fecha = new Date();
 				
-				for (var i=0; i<data.documento.length; i++) {
-					$($(".divColumnaDigit")[i]).text(data.documento[i]);
+				$(".inputDia").val(fecha.getDate());
+				$(".inputMes").val(meses[fecha.getMonth()]);
+				$(".inputAno").val(fecha.getFullYear());
+//				$(".inputDepartamento").val(data.barrio.departamento.nombre);
+//				$(".inputDepartamento").val(data.direccionEntregaLocalidad != null ? data.direccionEntregaLocalidad : "");
+				$(".inputDepartamento").val(data.direccionFacturaLocalidad != null ? data.direccionFacturaLocalidad : "");
+				$(".inputDuracionContrato").val(data.nuevoPlan.duracion + " años");
+				$(".inputNombre").val(data.nombre.toUpperCase() + " " + data.apellido.toUpperCase());
+				
+				$(".inputClienteNombre").val(data.nombre.toUpperCase());
+				$(".inputClienteApellido").val(data.apellido.toUpperCase());
+				
+				if (data.tipoDocumento != null) {
+					$(".divTipoDocumento" + data.tipoDocumento.id).text("X");
 				}
 				
-				$("#spanMID").text(data.mid);
-				$("#spanNumeroChip").text("Chip");
-				$("#spanMarca").text(data.producto.descripcion);
-				$("#spanNumeroSerie").text(data.numeroSerie);
-				$("#spanModelo").text(data.producto.descripcion);
-				$("#spanCodigoBloqueo").text("Cod. Bloqueo");
-				$("#spanDireccionCalle").text(data.direccionEntrega);
-				$("#spanDireccionNumero").text(data.direccionEntrega);
-				$("#spanDireccionBis").text(data.direccionEntrega);
-				$("#spanDireccionApto").text(data.direccionEntrega);
-				$("#spanDireccionBlock").text(data.direccionEntrega);
-				$("#spanDireccionManzana").text(data.direccionEntrega);
-				$("#spanDireccionSolar").text(data.direccionEntrega);
-				$("#spanDireccionLocalidad").text(data.barrio.departamento.nombre);
-				$("#spanDireccionDepartamento").text(data.barrio.departamento.nombre);
-				$("#spanDireccionCodigoPostal").text(data.codigoPostal);
-				$("#spanDireccionObservaciones").text("Obs.");
-				$("#spanDireccionFacturaCalle").text(data.direccionFactura);
-				$("#spanDireccionFacturaNumero").text(data.direccionFactura);
-				$("#spanDireccionFacturaBis").text(data.direccionFactura);
-				$("#spanDireccionFacturaApto").text(data.direccionFactura);
-				$("#spanDireccionFacturaBlock").text(data.direccionFactura);
-				$("#spanDireccionFacturaManzana").text(data.direccionFactura);
-				$("#spanDireccionFacturaSolar").text(data.direccionFactura);
-				$("#spanDireccionFacturaLocalidad").text(data.barrio.departamento.nombre);
-				$("#spanDireccionFacturaDepartamento").text(data.barrio.departamento.nombre);
-				$("#spanDireccionFacturaCodigoPostal").text(data.codigoPostal);
-				$("#spanDireccionFacturaObservaciones").text("Obs.");
-				$("#spanUsuarioNombre").text(data.nombre);
-				$("#spanUsuarioApellido").text(data.nombre);
-				$("#spanUsuarioDocumento").text(data.documento);
-				$("#spanUsuarioEmail").text(data.email);
-				$("#spanPlan").text(data.nuevoPlan);
-				$("#spanPromotor").text(data.empresa.nombre);
-				$("#spanAyudaEconomica").text("S�");
-				$("#spanCantidadMinutos").text("Cant. minutos");
-				$("#spanDesde").text("Desde");
-				$("#spanHasta").text("Hasta");
-				$("#spanFiadorSolidarioNombre").text("Fiador solidario");
-				$("#spanFiadorSolidarioNumeroCuenta").text("Nro. cuenta");
-				$("#spanFiadorSolidarioDocumento").text("Documento");
-				$("#spanFiadorSolidarioTelefonoContacto").text("Tel");
-				$("#spanFiadorSolidarioDireccion").text("Dir.");
-				$("#spanFiadorSolidarioDepositoGarantia").text("Monto");
-				$("#spanObservaciones").text(data.observaciones);
-				$("#spanAgenteVentaNombre").text(data.empresa.nombre);
-				$("#spanAgenteVentaCodigo").text(data.empresa.id);
-				$("#spanAgenteVentaSucursal").text("Sucursal");
-				$("#spanVendedorNombre").text(data.vendedor.nombre);
-				$("#spanVendedorDocumento").text("Documento");
-				$("#spanControlCuentaCliente").text(formatShortDate(data.fechaVenta));
+				for (var i=0; i<data.documento.length; i++) {
+					$(".divColumnaDigit" + (i + 1)).text(data.documento[i]);
+				}
+				
+				$(".inputClienteSexo").val(data.sexo != null ? data.sexo.descripcion : "");
+				$(".inputClienteFechaNacimiento").val(data.fechaNacimiento != null ? formatShortDate(data.fechaNacimiento) : "");
+				$(".inputClienteTipoCliente").val("1");
+				$(".inputClienteActividad").val("5");
+				$(".inputClienteTelefonoContacto").val(data.telefonoContacto);
+				
+				$(".inputMID").val(data.mid);
+				$(".inputNumeroChip").val(data.numeroChip);
+				
+				if (data.marca != null) {
+					$(".inputMarca").val(data.marca.nombre);
+				}
+				if (data.modelo != null) {
+					$(".inputModelo").val(data.modelo.descripcion);
+				}
+				
+				$(".inputNumeroSerie").val(data.numeroSerie);
+				$(".inputCodigoBloqueo").val(data.numeroBloqueo);
+				$(".inputDireccionCalle").val(data.direccionFacturaCalle != null ? data.direccionFacturaCalle.toUpperCase() : "");
+				$(".inputDireccionNumero").val(data.direccionFacturaNumero);
+				$(".inputDireccionBis").val(data.direccionFacturaBis ? "Sí" : "");
+				$(".inputDireccionApto").val(data.direccionFacturaApto);
+				$(".inputDireccionBlock").val(data.direccionFacturaBlock);
+				$(".inputDireccionManzana").val(data.direccionFacturaManzana);
+				$(".inputDireccionSolar").val(data.direccionFacturaSolar);
+				$(".inputDireccionLocalidad").val(data.direccionFacturaLocalidad != null ? data.direccionFacturaLocalidad.toUpperCase() : "");
+				$(".inputDireccionDepartamento").val(data.direccionFacturaDepartamento != null ? data.direccionFacturaDepartamento.nombre : "");
+				$(".inputDireccionCodigoPostal").val(data.direccionFacturaCodigoPostal);
+				$(".inputDireccionObservaciones").val(data.direccionFacturaObservaciones != null ? data.direccionFacturaObservaciones.toUpperCase() : "");
+				
+				$(".inputDireccionFacturaCalle").val("IDEM");
+//				$(".inputDireccionFacturaCalle").val(data.direccionFacturaCalle);
+//				$(".inputDireccionFacturaNumero").val(data.direccionFacturaNumero);
+//				$(".inputDireccionFacturaBis").val(data.direccionFacturaBis ? "Sí" : "");
+//				$(".inputDireccionFacturaApto").val(data.direccionFacturaApto);
+//				$(".inputDireccionFacturaBlock").val(data.direccionFacturaBlock);
+//				$(".inputDireccionFacturaManzana").val(data.direccionFacturaManzana);
+//				$(".inputDireccionFacturaSolar").val(data.direccionFacturaSolar);
+//				$(".inputDireccionFacturaLocalidad").val(data.direccionFacturaLocalidad);
+//				$(".inputDireccionFacturaDepartamento").val(data.direccionFacturaDepartamento != null ? data.direccionFacturaDepartamento.nombre : "");
+//				$(".inputDireccionFacturaCodigoPostal").val(data.direccionFacturaCodigoPostal);
+//				$(".inputDireccionFacturaObservaciones").val(data.direccionFacturaObservaciones);
+				
+//				$(".inputUsuarioNombre").val(data.nombre);
+//				$(".inputUsuarioApellido").val(data.nombre);
+//				$(".inputUsuarioDocumento").val(data.documento);
+//				$(".inputUsuarioEmail").val(data.email);
+				
+				$(".inputPlan").val(data.nuevoPlan.descripcion);
+				$(".inputPromotor").val("1");
+				$(".inputAyudaEconomica").val("Sí");
+//				$(".inputCantidadMinutos").val("Cant. minutos");
+//				$(".inputDesde").val("Desde");
+//				$(".inputHasta").val("Hasta");
+				
+				if (data.motivoCambioPlan != null) {
+					$(".inputMotivosCambioPlan").val(data.motivoCambioPlan.descripcion);
+				}
+				
+//				$(".inputFiadorSolidarioNombre").val("Fiador solidario");
+//				$(".inputFiadorSolidarioNumeroCuenta").val("Nro. cuenta");
+//				$(".inputFiadorSolidarioDocumento").val("Documento");
+//				$(".inputFiadorSolidarioTelefonoContacto").val("Tel");
+//				$(".inputFiadorSolidarioDireccion").val("Dir.");
+//				$(".inputFiadorSolidarioDepositoGarantia").val("Monto");
+				
+				$(".textareaObservaciones").val(
+					"Se informa que la fecha de conexión será el próximo "
+				);
+				
+				$(".inputAgenteVentaNombre").val(data.empresa.nombreContrato);
+				$(".inputAgenteVentaCodigo").val(data.empresa.codigoPromotor);
+				$(".inputAgenteVentaSucursal").val(data.empresa.nombreSucursal);
+				
+				$(".inputVendedorNombre").val(data.vendedor != null ? data.vendedor.nombre.toUpperCase() : "");
+				$(".inputVendedorDocumento").val(data.vendedor != null ? data.vendedor.documento : "");
+				
+				$(".inputControlCuentaCliente").val(formatShortDate(fecha));
+				$(".inputControlCuentaBackoffice").val(
+					data.usuario != null ? 
+						data.usuario.nombre : 
+						(usuario != null ? usuario.nombre.toUpperCase() : "")
+				);
+				
+				$(".inputEspecificacionesNumeroContrato").val(data.numeroContrato);
+				$(".inputEspecificacionesPlanComercial").val(data.nuevoPlan.abreviacion);
+				$(".inputEspecificacionesConsumoMinimo").val(data.nuevoPlan.consumoMinimo);
+				$(".inputEspecificacionesDuraccionContractual").val(data.nuevoPlan.duracion);
+				$(".inputEspecificacionesPrecioMinutoHorarioNormal").val(data.nuevoPlan.precioMinutoDestinosAntelHorarioNormal);
+				$(".inputEspecificacionesPrecioMinutoHorarioReducido").val(data.nuevoPlan.precioMinutoDestinosAntelHorarioReducido);
+				$(".inputEspecificacionesRendimientoMinutosAntelHorarioNormal").val(data.nuevoPlan.rendimientoMinutosMensualDestinosAntelHorarioNormal);
+				$(".inputEspecificacionesRendimientoMinutosAntelHorarioReducido").val(data.nuevoPlan.rendimientoMinutosMensualDestinosAntelHorarioReducido);
+				$(".inputEspecificacionesPrecioMinutoOtrasOperadoras").val(data.nuevoPlan.precioMinutoOtrasOperadoras);
+				$(".inputEspecificacionesRendimientoMinutosOtrasOperadoras").val(data.nuevoPlan.rendimientoMinutosMensualOtrasOperadoras);
+				$(".inputEspecificacionesPrecioSMS").val(data.nuevoPlan.precioSms);
+				$(".inputEspecificacionesIncluyeParaNavegacionCelular").val(data.nuevoPlan.montoNavegacionCelular);
+				$(".inputEspecificacionesConsumoFueraBono").val(data.nuevoPlan.precioConsumoFueraBono);
+				$(".inputEspecificacionesTopeFacturacionMensual").val(data.nuevoPlan.topeFacturacionMensualTraficoDatos);
+				$(".inputEspecificacionesDestinosGratis").val(data.nuevoPlan.destinosGratis);
+				$(".inputEspecificacionesMinutosGratisMovil").val(data.nuevoPlan.minutosGratisMesCelularesAntel);
+				$(".inputEspecificacionesMinutosGratisCantidadCelulares").val(data.nuevoPlan.cantidadCelularesAntelMinutosGratis);
+				$(".inputEspecificacionesSMSGratisMovil").val(data.nuevoPlan.smsGratisMesCelularesAntel);
+				$(".inputEspecificacionesSMSGratisCantidadCelulares").val(data.nuevoPlan.cantidadCelularesAntelSmsGratis);
+				$(".inputEspecificacionesMinutosGratisFijo").val(data.nuevoPlan.minutosGratisMesFijosAntel);
+				$(".inputEspecificacionesMinutosGratisCantidadFijos").val(data.nuevoPlan.cantidadFijosAntelMinutosGratis);
+				
+				$(".inputEspecificacionesDepartamento").val(data.barrio.departamento.nombre);
+				$(".inputEspecificacionesDia").val(fecha.getDate());
+				$(".inputEspecificacionesMes").val(meses[fecha.getMonth()]);
+				$(".inputEspecificacionesAno").val(fecha.getFullYear());
+				
+				$(".imgGarantiaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + data.empresa.logoURL);
+				$(".inputGarantiaEmpresa").val(data.empresa.nombreContrato);
+				
+				if (data.producto != null) {
+					$(".inputGarantiaService").val(data.producto.modelo.empresaService != null ? data.producto.modelo.empresaService.nombre : "");
+					$(".inputGarantiaProductoMarca").val(data.producto.marca.nombre);
+					$(".inputGarantiaProductoModelo").val(data.producto.modelo.descripcion);
+					
+					$(".inputGarantiaDatosService").val(
+						(data.producto.modelo.empresaService != null ? data.producto.modelo.empresaService.nombre : "")
+						+ " DIR: " + (data.producto.modelo.empresaService != null ? data.producto.modelo.empresaService.direccion : "") 
+						+ " TEL: " + (data.producto.modelo.empresaService != null ? data.producto.modelo.empresaService.telefono : "")
+						+ " GARANTIA " + data.producto.marca.nombre
+					);
+				} else {
+					if (data.modelo != null) {
+						$(".inputGarantiaService").val(data.modelo.empresaService != null ? data.modelo.empresaService.nombre : "");
+						
+						$(".inputGarantiaProductoMarca").val(data.modelo.marca.nombre);
+						$(".inputGarantiaProductoModelo").val(data.modelo.descripcion);
+						
+						$(".inputGarantiaDatosService").val(
+							(data.modelo.empresaService != null ? data.modelo.empresaService.nombre : "")
+							+ " DIR: " + (data.modelo.empresaService != null ? data.modelo.empresaService.direccion : "") 
+							+ " TEL: " + (data.modelo.empresaService != null ? data.modelo.empresaService.telefono : "")
+							+ " GARANTIA " + data.modelo.marca.nombre
+						);
+					}
+				}
+				
+				
+				
+				$(".inputGarantiaNumeroSerie").val(data.numeroSerie);
+				$(".inputGarantiaNombreApellido").val(data.nombre + ", " + data.apellido);
+				$(".inputGarantiaMID").val(data.mid);
+				
+				if (data.motivoCambioPlan != null) {
+					$(".inputCambioPlanFecha").val(formatShortDate(fecha));
+					$(".inputCambioPlanClienteNombre").val(data.nombre.toUpperCase() + " " + data.apellido.toUpperCase());
+					$(".inputCambioPlanClienteDocumento").val(data.documento);
+					$(".inputCambioPlanNumeroContrato").val(data.numeroContrato);
+					$(".inputCambioPlanMid").val(data.mid);
+					$(".inputCambioPlanPlan").val(data.tipoContratoDescripcion);
+					$(".inputCambioPlanNuevoPlan").val(data.nuevoPlan.descripcion);
+					$(".inputCambioPlanMotivosCambioPlan").val(data.motivoCambioPlan.descripcion);
+//					$(".inputCambioPlanFechaVigencia").val(formatShortDate(fecha));
+					$(".inputCambioPlanPrecioChip").val("");
+					$(".inputCambioPlanBackofficeNombre").val(
+						data.usuario != null ? data.usuario.nombre.toUpperCase() : ""
+					);
+				}
 			}, async: false
 		}
 	);
 });
+
+function inputImprimirOnClick() {
+	$("input[type='text']").css("background-color", "white");
+	$("textarea").css("background-color", "white");
+	$(".divA4Sheet").css("border", "none");
+	$(".divPrintingButtonBar").hide();
+	
+	window.print();
+}
+
+function inputCancelarOnClick() {
+	window.close();
+}

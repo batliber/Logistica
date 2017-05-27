@@ -1,0 +1,50 @@
+#divEmpresa {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectEmpresa {
+	width: 60%;
+}
+
+#divMarca {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectMarca {
+	width: 60%;
+}
+
+#divModelo {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectModelo {
+	width: 60%;
+}
+
+#divMoneda {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectMoneda {
+	width: 60%;
+}
+
+#divPrecio {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}

@@ -1,13 +1,17 @@
 function formatMonthYearDate(date) {
-	var parts = [
- 	    "0" + date.getDate(), 
- 	    "0" + (date.getMonth() + 1), 
- 	    date.getFullYear(),
- 	    "0" + date.getHours(),
- 	    "0" + date.getMinutes()
- 	];
- 	
- 	return parts[1].substring(parts[1].length - 2) + "/" + parts[2];
+	if (date != null) {
+		var parts = [
+	 	    "0" + date.getDate(), 
+	 	    "0" + (date.getMonth() + 1), 
+	 	    date.getFullYear(),
+	 	    "0" + date.getHours(),
+	 	    "0" + date.getMinutes()
+	 	];
+	 	
+	 	return parts[1].substring(parts[1].length - 2) + "/" + parts[2];
+	} else {
+		return "";
+	}
 }
 
 function formatShortDate(date) {
@@ -18,27 +22,47 @@ function formatLongDate(date) {
 	return formatParts(date, 5);
 }
 
-function formatParts(date, size) {
-	var parts = [
-	    "0" + date.getDate(), 
-	    "0" + (date.getMonth() + 1), 
-	    "" + date.getFullYear(),
-	    "0" + date.getHours(),
-	    "0" + date.getMinutes()
-	];
-	
-	for (var i=0; i<size; i++) {
-		if ((i != 2) || (size > 3)) {
-			parts[i] = parts[i].substring(parts[i].length - 2);
-		}
+function formatRawDate(date) {
+	if (date != null) {
+		return date.getTime();
+	} else {
+		return "";
 	}
-	
-	return parts[0] + "/" + parts[1] + "/" + parts[2] + (size > 3 ? " " + parts[3] + ":" + parts[4] : "");
+}
+
+function formatParts(date, size) {
+	if (date != null) {
+		var parts = [
+		    "0" + date.getDate(), 
+		    "0" + (date.getMonth() + 1), 
+		    "" + date.getFullYear(),
+		    "0" + date.getHours(),
+		    "0" + date.getMinutes()
+		];
+		
+		for (var i=0; i<size; i++) {
+			if ((i != 2) || (size > 3)) {
+				parts[i] = parts[i].substring(parts[i].length - 2);
+			}
+		}
+		
+		return parts[0] + "/" + parts[1] + "/" + parts[2] + (size > 3 ? " " + parts[3] + ":" + parts[4] : "");
+	} else {
+		return null;
+	}
 }
 
 function formatDecimal(number, decimals) {
 	if (number != null) {
 		return (new Number(number)).toFixed(decimals);
+	} else {
+		return "";
+	}
+}
+
+function formatBoolean(value) {
+	if (value != null) {
+		return (value ? "SI" : "NO");
 	} else {
 		return "";
 	}

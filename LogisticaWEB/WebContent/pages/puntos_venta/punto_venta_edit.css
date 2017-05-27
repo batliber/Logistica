@@ -1,0 +1,81 @@
+#divPuntoVentaNombre {
+	float: left;
+	width: 60%;
+}
+
+#inputPuntoVentaNombre {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divPuntoVentaDireccion {
+	float: left;
+	width: 60%;
+}
+
+#inputPuntoVentaDireccion {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divPuntoVentaTelefono {
+	float: left;
+	width: 60%;
+}
+
+#inputPuntoVentaTelefono {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divPuntoVentaContacto {
+	float: left;
+	width: 60%;
+}
+
+#inputPuntoVentaContacto {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divPuntoVentaDocumento {
+	float: left;
+	width: 60%;
+}
+
+#inputPuntoVentaDocumento {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divPuntoVentaDepartamento {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectPuntoVentaDepartamento {
+	width: 60%;
+}
+
+#divPuntoVentaBarrio {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectPuntoVentaBarrio {
+	width: 60%;
+}
+
+#inputBusqueda {
+	width: 200px;
+}
+
+#divMapa {
+	width: 325px;
+	height: 300px;
+	margin-left: 125px;
+}

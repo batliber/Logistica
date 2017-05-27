@@ -1,0 +1,23 @@
+package uy.com.amensg.logistica.bean;
+
+import java.util.Collection;
+
+import javax.ejb.Remote;
+
+import uy.com.amensg.logistica.entities.Modelo;
+
+@Remote
+public interface IModeloBean {
+
+	public Collection<Modelo> list();
+	
+	public Collection<Modelo> listByMarcaId(Long marcaId);
+	
+	public Modelo getById(Long id);
+	
+	public void save(Modelo modelo);
+	
+	public void remove(Modelo modelo);
+	
+	public void update(Modelo modelo);
+}

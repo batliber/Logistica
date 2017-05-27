@@ -19,6 +19,9 @@ public class Menu extends BaseEntity {
 	@Column(name = "orden")
 	private Long orden;
 	
+	@Column(name = "padre")
+	private Long padre;
+	
 	public String getTitulo() {
 		return titulo;
 	}
@@ -41,5 +44,13 @@ public class Menu extends BaseEntity {
 
 	public void setOrden(Long orden) {
 		this.orden = orden;
-	}	
+	}
+
+	public Long getPadre() {
+		return padre;
+	}
+
+	public void setPadre(Long padre) {
+		this.padre = padre;
+	}
 }

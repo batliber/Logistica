@@ -1,6 +1,8 @@
 var map = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divTitle").append("Distribuci&oacute;n");
 	
 	ResultadoEntregaDistribucionDWR.list(
@@ -52,7 +54,7 @@ $(document).ready(function() {
 		center, 
 		positionError
 	);
-});
+}
 
 function center(data) {
 	var crd = data.coords;
@@ -65,12 +67,12 @@ function center(data) {
 	new google.maps.InfoWindow({
         map: map,
         position: new google.maps.LatLng(crd.latitude, crd.longitude),
-        content: "Ubicaci�n actual"
+        content: "Ubicación actual"
     });
 }
 
 function positionError(data) {
-	$("#divPosicion").text("No se puede determinar la posici�n.");
+	$("#divPosicion").text("No se puede determinar la posición.");
 }
 
 function initMap() {
@@ -91,26 +93,53 @@ function inputNumeroTramiteOnChange(event, element) {
 				if (data != null) {
 					$("#aMID").attr("href", "tel:0" + data.mid);
 					$("#aMID").text(data.mid);
+				} else {
+					alert("No se encuentra el trámite solicitado.");
+					inputLimpiarOnClick();
 				}
 			}, async: false
 		}
 	);
 }
 
+function inputAgregarArchivoOnClick(event, element) {
+	var divArchivos = $(".divArchivos");
+	var inputCount = $('input[type="file"]').length;
+	
+	divArchivos.append(
+		"<div class='divFormLabel'>Nombre:</div><div class='divFormValue'>"
+			+ "<form method='POST' action='/LogisticaWEB/Upload' id='formArchivo" + inputCount + "'>"
+				+ "<input type='file' id='inputArchivo" + inputCount + "' name='inputArchivo" + inputCount + "'/>"
+			+ "</form>"
+		+ "</div>"
+	);
+}
+
 function inputLimpiarOnClick(event, element) {
-	$("#formResultadoEntregaDistribucion")[0].reset();
+//	$("#formResultadoEntregaDistribucionAnverso")[0].reset();
+//	$("#formResultadoEntregaDistribucionReverso")[0].reset();
+	
+	$(".divArchivos").html("&nbsp");
 	
 	$("#aMID").html("&nbsp;");
 	$("#aMID").prop("href", "#");
 	
-	$("#textareaObservaciones").text("");
+	$("#textareaObservaciones").val("");
 	
+	$("#selectResultadoEntregaDistribucion").val(0);
+	
+	$("#inputNumeroTramite").val(null);
 	$("#inputNumeroTramite").focus();
 	
-	center();
+	navigator.geolocation.getCurrentPosition(
+		center, 
+		positionError
+	);
 }
 
 function inputSubmitOnClick(event, element) {
+	var numeroTramite = $("#inputNumeroTramite").val();
+	
 	var xmlHTTPRequest = new XMLHttpRequest();
 	xmlHTTPRequest.open(
 		"POST",
@@ -118,9 +147,51 @@ function inputSubmitOnClick(event, element) {
 		false
 	);
 	
-	var formData = new FormData(document.getElementById("formResultadoEntregaDistribucion"));
-
+	// POST con la información estructurada.
+	var formData = new FormData();
+	formData.append("caller", "mobile");
+	formData.append("inputNumeroTramite", numeroTramite);
+	formData.append("selectResultadoEntregaDistribucion", $("#selectResultadoEntregaDistribucion").val());
+	formData.append("textareaObservaciones", $("#textareaObservaciones").val());
+	formData.append("inputLatitud", $("#inputLatitud").val());
+	formData.append("inputLongitud", $("#inputLongitud").val());
+	formData.append("inputPrecision", $("#inputPrecision").val());
+	
 	xmlHTTPRequest.send(formData);
+	
+	if (xmlHTTPRequest.status != 200) {
+		alert(xmlHTTPRequest.responseText);
+		
+		return;
+	}
+	
+	// POST con los archivos.
+	
+	var inputs = $('input[type="file"]');
+	for (var i=0; i<inputs.length; i++) {
+		xmlHTTPRequest = new XMLHttpRequest();
+		xmlHTTPRequest.open(
+			"POST",
+			"/LogisticaWEB/Upload",
+			false
+		);
+		
+		formData = new FormData(document.getElementById("formArchivo" + i));
+		formData.append("caller", "mobile");
+		formData.append("inputNumeroTramite", numeroTramite);
+		formData.append("selectResultadoEntregaDistribucion", $("#selectResultadoEntregaDistribucion").val());
+		formData.append("textareaObservaciones", $("#textareaObservaciones").val());
+		formData.append("inputLatitud", $("#inputLatitud").val());
+		formData.append("inputLongitud", $("#inputLongitud").val());
+		formData.append("inputPrecision", $("#inputPrecision").val());
+
+		xmlHTTPRequest.send(formData);
+		
+		if (xmlHTTPRequest.status != 200) {
+			alert(xmlHTTPRequest.responseText);
+			return;
+		}
+	}
 	
 	if (xmlHTTPRequest.status == 200) {
 		alert(JSON.parse(xmlHTTPRequest.responseText).message);

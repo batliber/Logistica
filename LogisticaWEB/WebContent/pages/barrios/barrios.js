@@ -13,6 +13,7 @@ $(document).ready(function() {
 			tdZona: { campo: "zona.nombre", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
 			tdDepartamento: { campo: "departamento.nombre", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
 		}, 
+		false,
 		reloadData,
 		trBarrioOnClick
 	);

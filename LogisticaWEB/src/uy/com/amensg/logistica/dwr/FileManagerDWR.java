@@ -18,10 +18,12 @@ import uy.com.amensg.logistica.entities.ArchivoTO;
 public class FileManagerDWR {
 
 	private IFileManagerBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = FileManagerBean.class.getSimpleName();
 		String remoteInterfaceName = IFileManagerBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IFileManagerBean) context.lookup(lookupName);

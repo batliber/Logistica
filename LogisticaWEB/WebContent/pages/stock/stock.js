@@ -4,16 +4,18 @@ var __ROL_SUPERVISOR_DISTRIBUCION = 7;
 var grid = null;
 
 $(document).ready(function() {
-	$("#divButtonAgregarProducto").hide();
+	$("#divButtonAgregarPorIMEI").hide();
 	$("#divButtonNuevoStockMovimiento").hide();
 	
 	grid = new Grid(
 		document.getElementById("divTableStockMovimientos"),
 		{
-			tdEmpresaNombre: { campo: "empresa.nombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_STRING},
-			tdProductoDescripcion: { campo: "producto.descripcion", descripcion: "Producto", abreviacion: "Producto", tipo: __TIPO_CAMPO_STRING},
-			tdCantidad: { campo: "cantidad", descripcion: "Cantidad", abreviacion: "Cantidad", tipo: __TIPO_CAMPO_NUMERICO }
+			tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
+			tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 80 },
+			tdModelo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Modelo", abreviacion: "Modelo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 200 },
+			tdCantidad: { campo: "cantidad", descripcion: "Cantidad", abreviacion: "Cantidad", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 }
 		},
+		false,
 		reloadData,
 		trStockMovimientoOnClick
 	);
@@ -28,9 +30,9 @@ $(document).ready(function() {
 						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION) {
 						mode = __FORM_MODE_ADMIN;
 						
-						$("#divButtonAgregarProducto").show();
 						$("#divButtonNuevoStockMovimiento").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
+						$("#divButtonAgregarPorIMEI").show();
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						
 						break;
 					}
@@ -42,8 +44,72 @@ $(document).ready(function() {
 	reloadData();
 	
 	$("#divIFrameStockMovimiento").draggable();
-	$("#divIFrameProducto").draggable();
+	$("#divIFrameIMEI").draggable();
 });
+
+function listEmpresas() {
+	var result = [];
+	
+	EmpresaDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listMarcas() {
+	var result = [];
+	
+	MarcaDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listModelos() {
+	var result = [];
+	
+	ModeloDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listProductos() {
+	var result = [];
+	
+	ProductoDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
 
 function reloadData() {
 	StockMovimientoDWR.listStockActual(
@@ -92,17 +158,16 @@ function reloadData() {
 				}
 				
 				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						cantidad: ordered[i].cantidad,
-						empresa: {
-							id: ordered[i].empresa.id,
-							nombre: ordered[i].empresa.nombre,
-						},
-						producto: {
-							id: ordered[i].producto.id,
-							descripcion: ordered[i].producto.descripcion,
-						}
-					};
+//					if ($("#inputMostrarFechaBaja").prop("checked")
+//						|| ordered[i].producto.fechaBaja == null) {
+						registros.registrosMuestra[registros.registrosMuestra.length] = {
+							cantidad: ordered[i].cantidad,
+							empresa: ordered[i].empresa,
+							marca: ordered[i].marca,
+							modelo: ordered[i].modelo,
+							producto: ordered[i].producto
+						};
+//					}
 				}
 				
 				grid.reload(registros);
@@ -111,11 +176,19 @@ function reloadData() {
 	);
 }
 
+function inputMostrarFechaBajaOnClick(event, element) {
+	reloadData();
+}
+
 function trStockMovimientoOnClick(eventObject) {
 	var target = eventObject.currentTarget;
+//	var productoId = $(target).children("[campo='tdProducto']").attr("clave");
 	
-	document.getElementById("iFrameStockMovimientoHistorico").src = "./stock_movimiento_historico.jsp?m=" + mode + "&eid=" + $(target).attr("eid") + "&pid=" + $(target).attr("pid");
-	showPopUp(document.getElementById("divIFrameStockMovimientoHistorico"));
+//	document.getElementById("iFrameStockMovimientoHistorico").src = "./stock_movimiento_historico.jsp?m=" + mode + "&eid=" + $(target).attr("eid") + "&pid=" + $(target).attr("pid");
+//	showPopUp(document.getElementById("divIFrameStockMovimientoHistorico"));
+	
+//	document.getElementById("iFrameProducto").src = "./producto_edit.jsp?m=" + mode + "&id=" + productoId;
+//	showPopUp(document.getElementById("divIFrameProducto"));
 }
 
 function inputActualizarOnClick() {
@@ -125,11 +198,6 @@ function inputActualizarOnClick() {
 function inputNuevoStockMovimientoOnClick(event, element) {
 	document.getElementById("iFrameStockMovimiento").src = "./stock_movimiento_edit.jsp";
 	showPopUp(document.getElementById("divIFrameStockMovimiento"));
-}
-
-function inputAgregarProductoOnClick(event, element) {
-	document.getElementById("iFrameProducto").src = "./producto_edit.jsp";
-	showPopUp(document.getElementById("divIFrameProducto"));
 }
 
 function divCloseOnClick(event, element) {

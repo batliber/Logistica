@@ -6,19 +6,31 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
 import uy.com.amensg.riesgoCrediticio.robot.util.Configuration;
-import uy.com.amensg.riesgoCrediticio.robot.webservices.RiesgoCrediticioWebService;
+import uy.com.amensg.riesgoCrediticio.webservices.RiesgoCrediticioWebService;
 
 public class ConnectionStrategyWebService implements IConnectionStrategy {
 
 	public String getSiguienteDocumentoParaControlar() {
 		String result = "";
 		
-		// TODO Implementar.
+		try {
+			Service service = Service.create(
+				new URL(Configuration.getInstance().getProperty("RiesgoCrediticioWebServiceWSDLURL")), 
+				new QName("http://webservices.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
+			);
+			
+			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
+			
+			result = webService.getSiguienteDocumentoParaControlar();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return result;
 	}
 
 	public void actualizarDatosRiesgoCrediticioACM(
+		String empresaId,
 		String documento,
 		String fechaCelular,
 		String deudaCelular,
@@ -40,6 +52,7 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
 			
 			webService.actualizarDatosRiesgoCrediticioACM(
+				empresaId,
 				documento,
 				fechaCelular,
 				deudaCelular,
@@ -59,6 +72,7 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String empresaId,
 		String documento,
 		String periodo,
 		String nombreCompleto,
@@ -82,6 +96,7 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
 			
 			webService.actualizarDatosRiesgoCrediticioBCU(
+				empresaId,
 				documento,
 				periodo,
 				nombreCompleto,
@@ -102,6 +117,7 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String empresaId,
 		String documento,
 		String institucionFinanciera,
 		String calificacion,
@@ -119,6 +135,7 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
 			
 			webService.actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+				empresaId,
 				documento,
 				institucionFinanciera,
 				calificacion,

@@ -22,10 +22,12 @@ import uy.com.amensg.logistica.entities.ZonaTO;
 public class ZonaDWR {
 
 	private IZonaBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = ZonaBean.class.getSimpleName();
 		String remoteInterfaceName = IZonaBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IZonaBean) context.lookup(lookupName);

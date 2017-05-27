@@ -1,0 +1,19 @@
+#divIFramePrecio {
+	position: relative;
+	top: 100px;
+	left: 100px;
+	width: 475px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFramePrecio {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	width: 100%;
+	height: 279px;
+	border: none;
+}

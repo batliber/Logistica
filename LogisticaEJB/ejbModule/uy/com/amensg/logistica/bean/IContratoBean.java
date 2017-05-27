@@ -1,11 +1,15 @@
 package uy.com.amensg.logistica.bean;
 
+import java.util.Collection;
+import java.util.Map;
+
 import javax.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.entities.Usuario;
 
 @Remote
@@ -21,7 +25,13 @@ public interface IContratoBean {
 	
 	public Contrato getByNumeroTramite(Long numeroTramite);
 	
+	public Collection<TipoContrato> listTipoContratos();
+	
+	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
 	public String preprocesarArchivoEmpresa(String fileName, Long empresaId);
+	
+	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids, Long empresaId);
 	
 	public String procesarArchivoEmpresa(String fileName, Long empresaId, Long loggedUsuarioId);
 	
@@ -71,7 +81,17 @@ public interface IContratoBean {
 	
 	public void noRecoordina(Contrato contrato);
 	
+	public void cerrar(Contrato contrato);
+	
+	public void gestionInterna(Contrato contrato);
+	
+	public void gestionDistribucion(Contrato contrato);
+	
+	public void equipoPerdido(Contrato contrato);
+	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public String exportarAExcelNucleo(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	
 	public Contrato update(Contrato contrato);
 }

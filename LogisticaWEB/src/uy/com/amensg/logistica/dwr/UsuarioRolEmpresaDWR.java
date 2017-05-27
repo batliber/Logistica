@@ -30,10 +30,12 @@ import uy.com.amensg.logistica.entities.UsuarioTO;
 public class UsuarioRolEmpresaDWR {
 
 	private IUsuarioRolEmpresaBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = UsuarioRolEmpresaBean.class.getSimpleName();
 		String remoteInterfaceName = IUsuarioRolEmpresaBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IUsuarioRolEmpresaBean) context.lookup(lookupName);

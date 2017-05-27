@@ -3,8 +3,7 @@ package uy.com.amensg.logistica.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-public class ACMInterfaceProcesoEstadistica implements Serializable,
-		Comparable<ACMInterfaceProcesoEstadistica> {
+public class ACMInterfaceProcesoEstadistica implements Serializable, Comparable<ACMInterfaceProcesoEstadistica> {
 
 	private static final long serialVersionUID = 2201062222502297785L;
 

@@ -272,7 +272,7 @@ public class TestProceso {
 		
 		contrato.setFechaEntrega(GregorianCalendar.getInstance().getTime());
 		contrato.setFechaNacimiento(GregorianCalendar.getInstance().getTime());
-		contrato.setNuevoPlan("NUEVO PLAN");
+//		contrato.setNuevoPlan("NUEVO PLAN");
 		contrato.setNumeroContrato(new Long(1));
 		contrato.setObservaciones("VENTA");
 		contrato.setPrecio(new Double(1.0));
@@ -425,7 +425,7 @@ public class TestProceso {
 			contrato = ((Contrato) registro);
 		}
 		
-		contrato.setNumeroFactura(new Long(1));
+		contrato.setNumeroFactura("1");
 		contrato.setNumeroSerie("123456");
 		
 		iContratoBean.distribuir(contrato);
@@ -596,10 +596,12 @@ public class TestProceso {
 		IContratoBean result = null;
 		
 		try {
+			String prefix = "java:jboss/exported/";
 			String EARName = "Logistica";
+			String appName = "LogisticaEJB";
 			String beanName = ContratoBean.class.getSimpleName();
 			String remoteInterfaceName = IContratoBean.class.getName();
-			String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+			String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 			
 			Properties properties = new Properties();
 			properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -620,10 +622,12 @@ public class TestProceso {
 		IUsuarioBean result = null;
 		
 		try {
+			String prefix = "java:jboss/exported/";
 			String EARName = "Logistica";
+			String appName = "LogisticaEJB";
 			String beanName = UsuarioBean.class.getSimpleName();
 			String remoteInterfaceName = IUsuarioBean.class.getName();
-			String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+			String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 			
 			Properties properties = new Properties();
 			properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -644,10 +648,12 @@ public class TestProceso {
 		IRolBean result = null;
 		
 		try {
+			String prefix = "java:jboss/exported/";
 			String EARName = "Logistica";
+			String appName = "LogisticaEJB";
 			String beanName = RolBean.class.getSimpleName();
 			String remoteInterfaceName = IRolBean.class.getName();
-			String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+			String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 	
 			Properties properties = new Properties();
 			properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -668,10 +674,12 @@ public class TestProceso {
 		IEmpresaBean result = null;
 		
 		try {
+			String prefix = "java:jboss/exported/";
 			String EARName = "Logistica";
+			String appName = "LogisticaEJB";
 			String beanName = EmpresaBean.class.getSimpleName();
 			String remoteInterfaceName = IEmpresaBean.class.getName();
-			String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+			String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 			
 			Properties properties = new Properties();
 			properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -692,10 +700,12 @@ public class TestProceso {
 		IStockMovimientoBean result = null;
 		
 		try {
+			String prefix = "java:jboss/exported/";
 			String EARName = "Logistica";
+			String appName = "LogisticaEJB";
 			String beanName = StockMovimientoBean.class.getSimpleName();
 			String remoteInterfaceName = IStockMovimientoBean.class.getName();
-			String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+			String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 
 			Properties properties = new Properties();
 			properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -716,10 +726,12 @@ public class TestProceso {
 		IDepartamentoBean result = null;
 		
 		try {
+			String prefix = "java:jboss/exported/";
 			String EARName = "Logistica";
+			String appName = "LogisticaEJB";
 			String beanName = DepartamentoBean.class.getSimpleName();
 			String remoteInterfaceName = IDepartamentoBean.class.getName();
-			String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+			String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 			
 			Properties properties = new Properties();
 			properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -740,10 +752,12 @@ public class TestProceso {
 		IBarrioBean result = null;
 		
 		try {
+			String prefix = "java:jboss/exported/";
 			String EARName = "Logistica";
+			String appName = "LogisticaEJB";
 			String beanName = BarrioBean.class.getSimpleName();
 			String remoteInterfaceName = IBarrioBean.class.getName();
-			String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+			String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 			
 			Properties properties = new Properties();
 			properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -764,10 +778,12 @@ public class TestProceso {
 		ITurnoBean result = null;
 		
 		try {
+			String prefix = "java:jboss/exported/";
 			String EARName = "Logistica";
+			String appName = "LogisticaEJB";
 			String beanName = TurnoBean.class.getSimpleName();
 			String remoteInterfaceName = ITurnoBean.class.getName();
-			String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+			String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 
 			Properties properties = new Properties();
 			properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");

@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 import uy.com.amensg.logistica.bean.ACMInterfaceBean;
 import uy.com.amensg.logistica.bean.IACMInterfaceBean;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
+import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
 import uy.com.amensg.logistica.robot.util.Configuration;
@@ -18,10 +19,12 @@ import uy.com.amensg.logistica.robot.util.Configuration;
 public class ConnectionStrategyRemoting implements IConnectionStrategy {
 
 	private IACMInterfaceBean lookupBean() throws NamingException {
-		String EARName = Configuration.getInstance().getProperty("EARName");
+		String prefix = "java:jboss/exported/";
+		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = ACMInterfaceBean.class.getSimpleName();
 		String remoteInterfaceName = IACMInterfaceBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		
 		Properties properties = new Properties();
 		properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -101,7 +104,8 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 		String montoMesActual,
 		String montoMesAnterior1,
 		String montoMesAnterior2,
-		String fechaActivacionKit
+		String fechaActivacionKit,
+		String agente
 	) {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
@@ -112,6 +116,7 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			
 			try {
+				acmInterfacePrepago.setAgente(agente);
 				acmInterfacePrepago.setMesAno(format.parse("01/" + mesAno));
 				acmInterfacePrepago.setMontoMesActual(new Double(montoMesActual));
 				acmInterfacePrepago.setMontoMesAnterior1(new Double(montoMesAnterior1));
@@ -149,11 +154,51 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
 			
+			ACMInterfaceEstado estado = new ACMInterfaceEstado();
+			estado.setId(new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia")));
+			
 			ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
-			acmInterfaceMid.setEstado(new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia")));
+			acmInterfaceMid.setEstado(estado);
 			acmInterfaceMid.setMid(new Long(mid));
 						
 			iACMInterfaceBean.update(acmInterfaceMid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void actualizarDatosPersona(
+		String idCliente,
+		String mid,
+		String pais,
+		String tipoDocumento,
+		String documento,
+		String apellido,
+		String nombre,
+		String razonSocial,
+		String tipoCliente,
+		String actividad,
+		String fechaNacimiento,
+		String sexo,
+		String direccionCalle, 
+		String direccionNumero,
+		String direccionBis,
+		String direccionApartamento,
+		String direccionEsquina,
+		String direccionBlock,
+		String direccionManzana,
+		String direccionSolar,
+		String direccionObservaciones,
+		String direccionLocalidad,
+		String direccionCodigoPostal,
+		String direccionCompleta,
+		String distribuidor,
+		String telefonosFijo,
+		String telefonosAviso,
+		String telefonosFax,
+		String email) {
+		try {
+			// TODO
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

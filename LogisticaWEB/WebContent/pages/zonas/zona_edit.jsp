@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -29,11 +31,12 @@
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Zona</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
-	<div class="divMainWindow">
-		<div class="divFormLabel">Nombre:</div><div id="divZonaNombre"><input type="text" id="inputZonaNombre"/></div>
-		<div class="divFormLabel">Detalle:</div><div id="divZonaDetalle"><input type="text" id="inputZonaDetalle"/></div>
-		<div class="divFormLabel">Departamento:</div><div id="divDepartamento"><select id="selectDepartamento"></select></div>
-		<div id="divDisponibilidadEntrega">
+	<div class="divPopupWindow">
+		<div class="divFormLabel">Nombre:</div><div id="divZonaNombre" class="divFormValue"><input type="text" id="inputZonaNombre"/></div>
+		<div class="divFormLabel">Detalle:</div><div id="divZonaDetalle" class="divFormValue"><input type="text" id="inputZonaDetalle"/></div>
+		<div class="divFormLabel">Departamento:</div><div id="divDepartamento" class="divFormValue"><select id="selectDepartamento"></select></div>
+		<div class="divFormLabel">Disponibilidad:</div>
+		<div id="divDisponibilidadEntrega" class="divFormValue">
 			<div class="divColumnTurno" id="1">
 				<div class="divTitulo">Ma&ntilde;ana</div>
 				<div class="divFormLabel">Domingo:</div><div class="divCheckbox"><input type="checkbox" id="inputMananaDomingo"/></div><div class="divInput"><input type="text" class="inputCantidad" id="inputMananaDomingoCantidad" tid="1" did="1"/></div>

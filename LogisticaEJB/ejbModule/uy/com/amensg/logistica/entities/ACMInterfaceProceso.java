@@ -44,5 +44,4 @@ public class ACMInterfaceProceso extends BaseEntity {
 	public void setObservaciones(String observaciones) {
 		this.observaciones = observaciones;
 	}
-
 }

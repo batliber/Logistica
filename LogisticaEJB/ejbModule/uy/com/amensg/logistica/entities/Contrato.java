@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.entities;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -36,6 +40,9 @@ public class Contrato extends BaseEntity {
 	@Column(name = "nombre")
 	private String nombre;
 
+	@Column(name = "apellido")
+	private String apellido;
+	
 	@Column(name = "fecha_nacimiento")
 	private Date fechaNacimiento;
 	
@@ -79,17 +86,23 @@ public class Contrato extends BaseEntity {
 	private String email;
 	
 	@Column(name = "numero_factura")
-	private Long numeroFactura;
+	private String numeroFactura;
 
 	@Column(name = "precio")
 	private Double precio;
 
-	@Column(name = "nuevo_plan")
-	private String nuevoPlan;
-
+	@Column(name = "cuotas")
+	private Long cuotas;
+	
 	@Column(name = "numero_serie")
 	private String numeroSerie;
 
+	@Column(name = "nuevo_plan")
+	private String nuevoPlanString;
+	
+	@Column (name = "numero_factura_river_green")
+	private String numeroFacturaRiverGreen;
+	
 	@Column(name = "observaciones")
 	private String observaciones;
 
@@ -138,6 +151,109 @@ public class Contrato extends BaseEntity {
 	@Column(name = "fecha_coordinacion")
 	private Date fechaCoordinacion;
 	
+	@Column(name = "numero_chip")
+	private String numeroChip;
+	
+	@Column(name = "numero_bloqueo")
+	private String numeroBloqueo;
+	
+	@Column(name = "direccion_entrega_calle")
+	private String direccionEntregaCalle;
+	
+	@Column(name = "direccion_entrega_numero")
+	private Long direccionEntregaNumero;
+	
+	@Column(name = "direccion_entrega_bis")
+	private Boolean direccionEntregaBis;
+	
+	@Column(name = "direccion_entrega_block")
+	private String direccionEntregaBlock;
+	
+	@Column(name = "direccion_entrega_apto")
+	private String direccionEntregaApto;
+	
+	@Column(name = "direccion_entrega_solar")
+	private String direccionEntregaSolar;
+	
+	@Column(name = "direccion_entrega_manzana")
+	private Long direccionEntregaManzana;
+	
+	@Column(name = "direccion_entrega_codigo_postal")
+	private Long direccionEntregaCodigoPostal;
+	
+	@Column(name = "direccion_entrega_localidad")
+	private String direccionEntregaLocalidad;
+	
+	@Column(name = "direccion_entrega_observaciones")
+	private String direccionEntregaObservaciones;
+	
+	@Column(name = "direccion_factura_calle")
+	private String direccionFacturaCalle;
+	
+	@Column(name = "direccion_factura_numero")
+	private Long direccionFacturaNumero;
+	
+	@Column(name = "direccion_factura_bis")
+	private Boolean direccionFacturaBis;
+	
+	@Column(name = "direccion_factura_block")
+	private String direccionFacturaBlock;
+	
+	@Column(name = "direccion_factura_apto")
+	private String direccionFacturaApto;
+	
+	@Column(name = "direccion_factura_solar")
+	private String direccionFacturaSolar;
+	
+	@Column(name = "direccion_factura_manzana")
+	private Long direccionFacturaManzana;
+	
+	@Column(name = "direccion_factura_codigo_postal")
+	private Long direccionFacturaCodigoPostal;
+	
+	@Column(name = "direccion_factura_localidad")
+	private String direccionFacturaLocalidad;
+	
+	@Column(name = "direccion_factura_observaciones")
+	private String direccionFacturaObservaciones;
+	
+	@Column(name = "intereses")
+	private Double intereses;
+	
+	@Column(name = "gastos_administrativos")
+	private Double gastosAdministrativos;
+	
+	@Column(name = "gastos_concesion")
+	private Double gastosConcesion;
+	
+	@Column(name = "gastos_administrativos_totales")
+	private Double gastosAdministrativosTotales;
+	
+	@Column(name = "valor_cuota")
+	private Double valorCuota;
+	
+	@Column(name = "valor_unidad_indexada")
+	private Double valorUnidadIndexada;
+	
+	@Column(name = "valor_tasa_interes_efectiva_anual")
+	private Double valorTasaInteresEfectivaAnual;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "direccion_entrega_departamento_id", nullable = true)
+	private Departamento direccionEntregaDepartamento;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "direccion_factura_departamento_id", nullable = true)
+	private Departamento direccionFacturaDepartamento;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "tipo_documento_id", nullable = true)
+	private TipoDocumento tipoDocumento;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "sexo_id", nullable = true)
+	private Sexo sexo;
+	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "barrio_id", nullable = true)
 	private Barrio barrio;
@@ -151,9 +267,37 @@ public class Contrato extends BaseEntity {
 	private Turno turno;
 
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "marca_id", nullable = true)
+	private Marca marca;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "modelo_id", nullable = true)
+	private Modelo modelo;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "producto_id", nullable = true)
 	private Producto producto;
-
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "nuevo_plan_id", nullable = true)
+	private Plan nuevoPlan;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "motivo_cambio_plan_id", nullable = true)
+	private MotivoCambioPlan motivoCambioPlan;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "moneda_id", nullable = true)
+	private Moneda moneda;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "forma_pago_id", nullable = true)
+	private FormaPago formaPago;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "tarjeta_credito_id", nullable = true)
+	private TarjetaCredito tarjetaCredito;
+	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "estado_id", nullable = true)
 	private Estado estado;
@@ -194,6 +338,9 @@ public class Contrato extends BaseEntity {
 	@JoinColumn(name = "coordinador_id", nullable = true)
 	private Usuario coordinador;
 
+	@OneToMany(mappedBy = "contrato", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<ContratoArchivoAdjunto> archivosAdjuntos;
+	
 	public Long getMid() {
 		return mid;
 	}
@@ -248,6 +395,14 @@ public class Contrato extends BaseEntity {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
 	}
 
 	public Date getFechaNacimiento() {
@@ -306,6 +461,14 @@ public class Contrato extends BaseEntity {
 		this.numeroContrato = numeroContrato;
 	}
 
+	public String getNuevoPlanString() {
+		return nuevoPlanString;
+	}
+
+	public void setNuevoPlanString(String nuevoPlanString) {
+		this.nuevoPlanString = nuevoPlanString;
+	}
+
 	public String getAgente() {
 		return agente;
 	}
@@ -362,12 +525,20 @@ public class Contrato extends BaseEntity {
 		this.email = email;
 	}
 
-	public Long getNumeroFactura() {
+	public String getNumeroFactura() {
 		return numeroFactura;
 	}
 
-	public void setNumeroFactura(Long numeroFactura) {
+	public void setNumeroFactura(String numeroFactura) {
 		this.numeroFactura = numeroFactura;
+	}
+
+	public String getNumeroFacturaRiverGreen() {
+		return numeroFacturaRiverGreen;
+	}
+
+	public void setNumeroFacturaRiverGreen(String numeroFacturaRiverGreen) {
+		this.numeroFacturaRiverGreen = numeroFacturaRiverGreen;
 	}
 
 	public Double getPrecio() {
@@ -376,6 +547,14 @@ public class Contrato extends BaseEntity {
 
 	public void setPrecio(Double precio) {
 		this.precio = precio;
+	}
+
+	public Long getCuotas() {
+		return cuotas;
+	}
+
+	public void setCuotas(Long cuotas) {
+		this.cuotas = cuotas;
 	}
 
 	public Date getFechaVenta() {
@@ -394,12 +573,44 @@ public class Contrato extends BaseEntity {
 		this.fechaRechazo = fechaRechazo;
 	}
 
-	public String getNuevoPlan() {
+	public Plan getNuevoPlan() {
 		return nuevoPlan;
 	}
 
-	public void setNuevoPlan(String nuevoPlan) {
+	public void setNuevoPlan(Plan nuevoPlan) {
 		this.nuevoPlan = nuevoPlan;
+	}
+
+	public MotivoCambioPlan getMotivoCambioPlan() {
+		return motivoCambioPlan;
+	}
+
+	public void setMotivoCambioPlan(MotivoCambioPlan motivoCambioPlan) {
+		this.motivoCambioPlan = motivoCambioPlan;
+	}
+
+	public Moneda getMoneda() {
+		return moneda;
+	}
+
+	public void setMoneda(Moneda moneda) {
+		this.moneda = moneda;
+	}
+
+	public FormaPago getFormaPago() {
+		return formaPago;
+	}
+
+	public void setFormaPago(FormaPago formaPago) {
+		this.formaPago = formaPago;
+	}
+
+	public TarjetaCredito getTarjetaCredito() {
+		return tarjetaCredito;
+	}
+
+	public void setTarjetaCredito(TarjetaCredito tarjetaCredito) {
+		this.tarjetaCredito = tarjetaCredito;
 	}
 
 	public String getNumeroSerie() {
@@ -416,6 +627,22 @@ public class Contrato extends BaseEntity {
 
 	public void setObservaciones(String observaciones) {
 		this.observaciones = observaciones;
+	}
+
+	public String getNumeroChip() {
+		return numeroChip;
+	}
+
+	public void setNumeroChip(String numeroChip) {
+		this.numeroChip = numeroChip;
+	}
+
+	public String getNumeroBloqueo() {
+		return numeroBloqueo;
+	}
+
+	public void setNumeroBloqueo(String numeroBloqueo) {
+		this.numeroBloqueo = numeroBloqueo;
 	}
 
 	public String getResultadoEntregaDistribucionObservaciones() {
@@ -470,6 +697,256 @@ public class Contrato extends BaseEntity {
 		this.resultadoEntregaDistribucionPrecision = resultadoEntregaDistribucionPrecision;
 	}
 
+	public String getDireccionEntregaCalle() {
+		return direccionEntregaCalle;
+	}
+
+	public void setDireccionEntregaCalle(String direccionEntregaCalle) {
+		this.direccionEntregaCalle = direccionEntregaCalle;
+	}
+
+	public Long getDireccionEntregaNumero() {
+		return direccionEntregaNumero;
+	}
+
+	public void setDireccionEntregaNumero(Long direccionEntregaNumero) {
+		this.direccionEntregaNumero = direccionEntregaNumero;
+	}
+
+	public Boolean getDireccionEntregaBis() {
+		return direccionEntregaBis;
+	}
+
+	public void setDireccionEntregaBis(Boolean direccionEntregaBis) {
+		this.direccionEntregaBis = direccionEntregaBis;
+	}
+
+	public String getDireccionEntregaBlock() {
+		return direccionEntregaBlock;
+	}
+
+	public void setDireccionEntregaBlock(String direccionEntregaBlock) {
+		this.direccionEntregaBlock = direccionEntregaBlock;
+	}
+
+	public String getDireccionEntregaApto() {
+		return direccionEntregaApto;
+	}
+
+	public void setDireccionEntregaApto(String direccionEntregaApto) {
+		this.direccionEntregaApto = direccionEntregaApto;
+	}
+
+	public String getDireccionEntregaSolar() {
+		return direccionEntregaSolar;
+	}
+
+	public void setDireccionEntregaSolar(String direccionEntregaSolar) {
+		this.direccionEntregaSolar = direccionEntregaSolar;
+	}
+
+	public Long getDireccionEntregaManzana() {
+		return direccionEntregaManzana;
+	}
+
+	public void setDireccionEntregaManzana(Long direccionEntregaManzana) {
+		this.direccionEntregaManzana = direccionEntregaManzana;
+	}
+
+	public Long getDireccionEntregaCodigoPostal() {
+		return direccionEntregaCodigoPostal;
+	}
+
+	public void setDireccionEntregaCodigoPostal(Long direccionEntregaCodigoPostal) {
+		this.direccionEntregaCodigoPostal = direccionEntregaCodigoPostal;
+	}
+
+	public String getDireccionEntregaLocalidad() {
+		return direccionEntregaLocalidad;
+	}
+
+	public void setDireccionEntregaLocalidad(String direccionEntregaLocalidad) {
+		this.direccionEntregaLocalidad = direccionEntregaLocalidad;
+	}
+
+	public String getDireccionEntregaObservaciones() {
+		return direccionEntregaObservaciones;
+	}
+
+	public void setDireccionEntregaObservaciones(
+			String direccionEntregaObservaciones) {
+		this.direccionEntregaObservaciones = direccionEntregaObservaciones;
+	}
+
+	public String getDireccionFacturaCalle() {
+		return direccionFacturaCalle;
+	}
+
+	public void setDireccionFacturaCalle(String direccionFacturaCalle) {
+		this.direccionFacturaCalle = direccionFacturaCalle;
+	}
+
+	public Long getDireccionFacturaNumero() {
+		return direccionFacturaNumero;
+	}
+
+	public void setDireccionFacturaNumero(Long direccionFacturaNumero) {
+		this.direccionFacturaNumero = direccionFacturaNumero;
+	}
+
+	public Boolean getDireccionFacturaBis() {
+		return direccionFacturaBis;
+	}
+
+	public void setDireccionFacturaBis(Boolean direccionFacturaBis) {
+		this.direccionFacturaBis = direccionFacturaBis;
+	}
+
+	public String getDireccionFacturaBlock() {
+		return direccionFacturaBlock;
+	}
+
+	public void setDireccionFacturaBlock(String direccionFacturaBlock) {
+		this.direccionFacturaBlock = direccionFacturaBlock;
+	}
+
+	public String getDireccionFacturaApto() {
+		return direccionFacturaApto;
+	}
+
+	public void setDireccionFacturaApto(String direccionFacturaApto) {
+		this.direccionFacturaApto = direccionFacturaApto;
+	}
+
+	public String getDireccionFacturaSolar() {
+		return direccionFacturaSolar;
+	}
+
+	public void setDireccionFacturaSolar(String direccionFacturaSolar) {
+		this.direccionFacturaSolar = direccionFacturaSolar;
+	}
+
+	public Long getDireccionFacturaManzana() {
+		return direccionFacturaManzana;
+	}
+
+	public void setDireccionFacturaManzana(Long direccionFacturaManzana) {
+		this.direccionFacturaManzana = direccionFacturaManzana;
+	}
+
+	public Long getDireccionFacturaCodigoPostal() {
+		return direccionFacturaCodigoPostal;
+	}
+
+	public void setDireccionFacturaCodigoPostal(Long direccionFacturaCodigoPostal) {
+		this.direccionFacturaCodigoPostal = direccionFacturaCodigoPostal;
+	}
+
+	public String getDireccionFacturaLocalidad() {
+		return direccionFacturaLocalidad;
+	}
+
+	public void setDireccionFacturaLocalidad(String direccionFacturaLocalidad) {
+		this.direccionFacturaLocalidad = direccionFacturaLocalidad;
+	}
+
+	public String getDireccionFacturaObservaciones() {
+		return direccionFacturaObservaciones;
+	}
+
+	public void setDireccionFacturaObservaciones(
+			String direccionFacturaObservaciones) {
+		this.direccionFacturaObservaciones = direccionFacturaObservaciones;
+	}
+
+	public Double getIntereses() {
+		return intereses;
+	}
+
+	public void setIntereses(Double intereses) {
+		this.intereses = intereses;
+	}
+
+	public Double getGastosAdministrativos() {
+		return gastosAdministrativos;
+	}
+
+	public void setGastosAdministrativos(Double gastosAdministrativos) {
+		this.gastosAdministrativos = gastosAdministrativos;
+	}
+
+	public Double getGastosConcesion() {
+		return gastosConcesion;
+	}
+
+	public void setGastosConcesion(Double gastosConcesion) {
+		this.gastosConcesion = gastosConcesion;
+	}
+	
+	public Double getGastosAdministrativosTotales() {
+		return gastosAdministrativosTotales;
+	}
+
+	public void setGastosAdministrativosTotales(Double gastosAdministrativosTotales) {
+		this.gastosAdministrativosTotales = gastosAdministrativosTotales;
+	}
+
+	public Double getValorCuota() {
+		return valorCuota;
+	}
+
+	public void setValorCuota(Double valorCuota) {
+		this.valorCuota = valorCuota;
+	}
+
+	public Double getValorUnidadIndexada() {
+		return valorUnidadIndexada;
+	}
+
+	public void setValorUnidadIndexada(Double valorUnidadIndexada) {
+		this.valorUnidadIndexada = valorUnidadIndexada;
+	}
+
+	public Double getValorTasaInteresEfectivaAnual() {
+		return valorTasaInteresEfectivaAnual;
+	}
+
+	public void setValorTasaInteresEfectivaAnual(Double valorTasaInteresEfectivaAnual) {
+		this.valorTasaInteresEfectivaAnual = valorTasaInteresEfectivaAnual;
+	}
+
+	public Departamento getDireccionEntregaDepartamento() {
+		return direccionEntregaDepartamento;
+	}
+
+	public void setDireccionEntregaDepartamento(Departamento direccionEntregaDepartamento) {
+		this.direccionEntregaDepartamento = direccionEntregaDepartamento;
+	}
+
+	public Departamento getDireccionFacturaDepartamento() {
+		return direccionFacturaDepartamento;
+	}
+
+	public void setDireccionFacturaDepartamento(Departamento direccionFacturaDepartamento) {
+		this.direccionFacturaDepartamento = direccionFacturaDepartamento;
+	}
+
+	public TipoDocumento getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	public void setTipoDocumento(TipoDocumento tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
+	public Sexo getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(Sexo sexo) {
+		this.sexo = sexo;
+	}
+	
 	public Barrio getBarrio() {
 		return barrio;
 	}
@@ -492,6 +969,22 @@ public class Contrato extends BaseEntity {
 
 	public void setTurno(Turno turno) {
 		this.turno = turno;
+	}
+
+	public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca marca) {
+		this.marca = marca;
+	}
+
+	public Modelo getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(Modelo modelo) {
+		this.modelo = modelo;
 	}
 
 	public Producto getProducto() {
@@ -637,5 +1130,13 @@ public class Contrato extends BaseEntity {
 	
 	public void setCoordinador(Usuario coordinador) {
 		this.coordinador = coordinador;
+	}
+
+	public Set<ContratoArchivoAdjunto> getArchivosAdjuntos() {
+		return archivosAdjuntos;
+	}
+
+	public void setArchivosAdjuntos(Set<ContratoArchivoAdjunto> archivosAdjuntos) {
+		this.archivosAdjuntos = archivosAdjuntos;
 	}
 }

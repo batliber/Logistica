@@ -1,3 +1,12 @@
+#divEmpresaCodigoPromotor {
+	float: left;
+	width: 70%;
+}
+
+#inputEmpresaCodigoPromotor {
+	margin-left: 2px;
+}
+
 #divEmpresaNombre {
 	float: left;
 	width: 70%;
@@ -6,4 +15,64 @@
 #inputEmpresaNombre {
 	margin-left: 2px;
 	width: 100%;
+}
+
+#divEmpresaNombreContrato {
+	float: left;
+	width: 70%;
+}
+
+#inputEmpresaNombreContrato {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divEmpresaNombreSucursal {
+	float: left;
+	width: 70%;
+}
+
+#inputEmpresaNombreSucursal {
+	margin-left: 2px;
+	width: 100%;
+}
+
+.divEmpresasRoles {
+	float: left;
+	width: 71%;
+	margin-top: 2px;
+	margin-left: 2px;
+}
+
+#divFormasPago {
+	float: left;
+	width: 49%;
+	margin-top: 2px;
+}
+
+#tableFormasPago {
+	
+}
+
+#tableFormasPago thead tr .tdFormaPagoDescripcion {
+	width: 150px;
+}
+
+#tableFormasPago thead tr .tdFormaPagoCheck {
+	width: 20px;
+}
+
+#tableFormasPago tbody tr td .divFormaPagoDescripcion {
+	margin-left: 2px;
+}
+
+#divEmpresaLogo {
+	float: left;
+	width: 70%;
+	height: 150px;
+}
+
+#imgEmpresaLogo {
+	margin-left: 2px;
+	height: 100%;
 }

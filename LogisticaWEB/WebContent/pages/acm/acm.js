@@ -1,5 +1,7 @@
 var accionesHabilitadas = false;
 
+var grid = null;
+
 var estados = [
 	"No procesado", 
 	"En proceso", 
@@ -9,45 +11,6 @@ var estados = [
 	"Prioritario", 
 	"Lista negra"
 ];
-
-var filtros = 0;
-var ordenaciones = 0;
-
-var ordenSufijos = [ "NOO", "ASC", "DES" ];
-
-var ordenes = {};
-
-var campos = {
-	tdPrepagoMid: "mid",
-	tdPrepagoMesAno: "mesAno",
-	tdPrepagoMontoMesActual: "montoMesActual",
-	tdPrepagoMontoMesAnterior1: "montoMesAnterior1",
-	tdPrepagoMontoMesAnterior2: "montoMesAnterior2",
-	tdPrepagoMontoPromedio: "montoPromedio",
-	tdPrepagoFechaExportacion: "fechaExportacion",
-	tdPrepagoFechaActivacionKit: "fechaActivacionKit",
-	tdPrepagoFact: "fact",
-	tdContratoMid: "mid",
-	tdContratoFinContrato: "fechaFinContrato",
-	tdContratoTipoContratoDescripcion: "tipoContratoDescripcion",
-	tdContratoDocumento: "documento",
-	tdContratoNumeroCliente: "numeroCliente",
-	tdContratoNumeroContrato: "numeroContrato",
-	tdContratoNombre: "nombre",
-	tdContratoDireccion: "direccion",
-	tdContratoCodigoPostal: "codigoPostal",
-	tdContratoLocalidad: "localidad",
-	tdContratoEquipo: "equipo",
-	tdContratoAgente: "agente",
-	tdContratoFechaExportacion: "fechaExportacion",
-	tdContratoFact: "fact",
-	tdListaNegraMid: "mid",
-	tdListaNegraObservaciones: "observaciones",
-	tdListaNegraFact: "fact",
-	tdSinDatosMid: "mid",
-	tdSinDatosEstado: "estado",
-	tdSinDatosFact: "fact"
-};
 
 $(document).ready(function() {
 	$("#inputExportarAExcel").prop("disabled", true);
@@ -59,7 +22,7 @@ $(document).ready(function() {
 	$("#inputReprocesarSubconjunto").prop("disabled", true);
 	$("#inputListaNegra").prop("disabled", true);
 	
-	reloadData();
+	selectTipoRegistroOnChange();
 });
 
 function inputActualizarOnClick(event, element) {
@@ -114,207 +77,200 @@ function habilitarAcciones(habilitar, force) {
 }
 
 function selectTipoRegistroOnChange() {
-	$("#divContratos").hide();
-	$("#divPrepagos").hide();
-	$("#divListaNegra").hide();
-	$("#divSinDatos").hide();
-	
 	habilitarAcciones(false, true);
 	
-	var divFiltros = $(".divFiltro");
-	for (var i=0; i<divFiltros.length; i++) {
-		divFiltros[i].remove();
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		grid = new Grid(
+			document.getElementById("divTabla"),
+			{
+				tdContratoMID: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+				tdContratoFinContrato: { campo: "fechaFinContrato", descripcion: "Fecha de fin de contrato", abreviacion: "Fin", tipo: __TIPO_CAMPO_FECHA },
+				tdContratoTipoContratoDescripcion: { campo: "tipoContratoDescripcion", descripcion: "Tipo de contrato", abreviacion: "Tipo", tipo: __TIPO_CAMPO_MULTIPLE, dataSource: { funcion: listTipoContratos, clave: "tipoContratoDescripcion", valor: "tipoContratoDescripcion" }, ancho: 90 },
+				tdContratoDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING, ancho: 90 },
+				tdContratoNumeroCliente: { campo: "numeroCliente", descripcion: "NÃºmero de cliente", abreviacion: "Cliente", tipo: __TIPO_CAMPO_NUMERICO },
+				tdContratoNumeroContrato: { campo: "numeroContrato", descripcion: "NÃºmero de contrato", abreviacion: "Contrato", tipo: __TIPO_CAMPO_NUMERICO },
+				tdContratoNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING },
+				tdContratoDireccion: { campo: "direccion", descripcion: "DirecciÃ³n", abreviacion: "DirecciÃ³n", tipo: __TIPO_CAMPO_STRING },
+				tdContratoCodigoPostal: { campo: "codigoPostal", descripcion: "CÃ³digo postal", abreviacion: "C.P.", tipo: __TIPO_CAMPO_STRING, ancho: 60 },
+				tdContratoLocalidad: { campo: "localidad", descripcion: "Localidad", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING },
+				tdContratoEquipo: { campo: "equipo", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_STRING },
+				tdContratoAgente: { campo: "agente", descripcion: "Agente", abreviacion: "Agente", tipo: __TIPO_CAMPO_STRING },
+				tdContratoFechaExportacion: { campo: "fechaExportacion", descripcion: "Asignado", abreviacion: "Asignado", tipo: __TIPO_CAMPO_FECHA },
+				tdContratoFact: { campo: "fact", descripcion: "Obtenido", abreviacion: "Obtenido", tipo: __TIPO_CAMPO_FECHA },
+				tdContratoPersonaDocumento: { campo: "acmInterfacePersona.documento", descripcion: "Documento (Persona)", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING, ancho: 90, oculto: true },
+				tdContratoPersonaNombre: { campo: "acmInterfacePersona.nombre", descripcion: "Nombre (Persona)", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, oculto: true },
+				tdContratoPersonaApellido: { campo: "acmInterfacePersona.apellido", descripcion: "Apellido (Persona)", abreviacion: "Apellido", tipo: __TIPO_CAMPO_STRING, oculto: true },
+				tdContratoPersonaSexo: { campo: "acmInterfacePersona.sexo", descripcion: "Sexo (Persona)", abreviacion: "Sexo", tipo: __TIPO_CAMPO_STRING, ancho: 60, oculto: true },
+				tdContratoPersonaFechaNacimiento: { campo: "acmInterfacePersona.fechaNacimiento", descripcion: "Fecha de nacimiento (Persona)", abreviacion: "F. Nac.", tipo: __TIPO_CAMPO_STRING, ancho: 70, oculto: true },
+				tdContratoPersonaDireccion: { campo: "acmInterfacePersona.direccion", descripcion: "Direccion (Persona)", abreviacion: "Direccion", tipo: __TIPO_CAMPO_STRING, oculto: true },
+				tdContratoPersonaLocalidad: { campo: "acmInterfacePersona.localidad", descripcion: "Localidad (Persona)", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING, oculto: true }
+			}, 
+			true,
+			reloadData,
+			trContratoOnClick
+		);
+	} else if ($("#selectTipoRegistro").val() == "prepago") {
+		grid = new Grid(
+			document.getElementById("divTabla"),
+			{
+				tdPrepagoMID: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+				tdPrepagoMesAno: { campo: "mesAno", descripcion: "Mes/AÃ±o", abreviacion: "Mes/AÃ±o", tipo: __TIPO_CAMPO_FECHA_MES_ANO },
+				tdPrepagoMontoMesActual: { campo: "montoMesActual", descripcion: "Monto actual", abreviacion: "Monto actual", tipo: __TIPO_CAMPO_DECIMAL, ancho: 80 },
+				tdPrepagoMontoMesAnterior1: { campo: "montoMesAnterior1", descripcion: "Monto mes anterior 1", abreviacion: "Monto ant. 1", tipo: __TIPO_CAMPO_DECIMAL, ancho: 100 },
+				tdPrepagoMontoMesAnterior2: { campo: "montoMesAnterior2", descripcion: "Monto mes anterior 2", abreviacion: "Monto ant. 2", tipo: __TIPO_CAMPO_DECIMAL, ancho: 100 },
+				tdPrepagoMontoPromedio: { campo: "montoPromedio", descripcion: "Monto promedio", abreviacion: "Monto prom.", tipo: __TIPO_CAMPO_DECIMAL, ancho: 100 },
+				tdPrepagoFechaExportacion: { campo: "fechaExportacion", descripcion: "Asignado", abreviacion: "Asignado", tipo: __TIPO_CAMPO_FECHA },
+				tdPrepagoFechaActivacionKit: { campo: "fechaActivacionKit", descripcion: "Fecha de activaciÃ³n del kit", abreviacion: "Activado", tipo: __TIPO_CAMPO_FECHA },
+				tdPrepagoAgente: { campo: "agente", descripcion: "Agente", abreviacion: "Agente", tipo: __TIPO_CAMPO_STRING },
+				tdPrepagoFact: { campo: "fact", descripcion: "Obtenido", abreviacion: "Obtenido", tipo: __TIPO_CAMPO_FECHA },
+				tdPrepagoPersonaDocumento: { campo: "acmInterfacePersona.documento", descripcion: "Documento (Persona)", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING, ancho: 90, oculto: true },
+				tdPrepagoPersonaNombre: { campo: "acmInterfacePersona.nombre", descripcion: "Nombre (Persona)", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, oculto: true },
+				tdPrepagoPersonaApellido: { campo: "acmInterfacePersona.apellido", descripcion: "Apellido (Persona)", abreviacion: "Apellido", tipo: __TIPO_CAMPO_STRING, oculto: true },
+				tdPrepagoPersonaSexo: { campo: "acmInterfacePersona.sexo", descripcion: "Sexo (Persona)", abreviacion: "Sexo", tipo: __TIPO_CAMPO_STRING, ancho: 60, oculto: true },
+				tdPrepagoPersonaFechaNacimiento: { campo: "acmInterfacePersona.fechaNacimiento", descripcion: "Fecha de nacimiento (Persona)", abreviacion: "F. Nac.", tipo: __TIPO_CAMPO_STRING, ancho: 70, oculto: true },
+				tdPrepagoPersonaDireccion: { campo: "acmInterfacePersona.direccion", descripcion: "Direccion (Persona)", abreviacion: "Direccion", tipo: __TIPO_CAMPO_STRING, oculto: true },
+				tdPrepagoPersonaLocalidad: { campo: "acmInterfacePersona.localidad", descripcion: "Localidad (Persona)", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING, oculto: true }
+			}, 
+			true,
+			reloadData,
+			trPrepagosOnClick
+		);
+	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
+		grid = new Grid(
+			document.getElementById("divTabla"),
+			{
+				tdListaNegraMID: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+				tdListaNegraObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING, ancho: 700 },
+				tdListaNegraFact: { campo: "fact", descripcion: "Obtenido", abreviacion: "Obtenido", tipo: __TIPO_CAMPO_FECHA }
+			}, 
+			true,
+			reloadData,
+			trListaNegraOnClick
+		);
+	} else {
+		grid = new Grid(
+			document.getElementById("divTabla"),
+			{
+				tdSinDatosMID: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+//				tdSinDatosEstado: { campo: "estado", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_STRING },
+				tdEstado: { campo: "estado.descripcion", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "descripcion" }, ancho: 90 },
+				tdSinDatosFact: { campo: "fact", descripcion: "Obtenido", abreviacion: "Obtenido", tipo: __TIPO_CAMPO_FECHA }
+			}, 
+			true,
+			reloadData,
+			trSinDatosOnClick
+		);
 	}
 	
-	if ($("#selectTipoRegistro").val() == "contrato") {
-		$("#divContratos").show();
-	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		$("#divPrepagos").show();
-	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-		$("#divListaNegra").show();
-	} else {
-		$("#divSinDatos").show();
-	}
+	grid.rebuild();
+	
+	$(".divButtonBar").css("width", "875");
 	
 	reloadData();
+}
+
+function listTipoContratos() {
+	var result = [];
+	
+	ACMInterfaceContratoDWR.listTipoContratos(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listEstados() {
+	var result = [];
+	
+	ACMInterfaceEstadoDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
 }
 
 function inputTamanoMuestraOnChange(event) {
 	reloadData();
 }
 
+function trContratoOnClick() {
+	
+}
+
+function trPrepagosOnClick() {
+	
+}
+
+function trListaNegraOnClick() {
+	
+}
+
+function trSinDatosOnClick() {
+	
+}
+
 function reloadData() {
+	grid.setStatus(grid.__STATUS_LOADING);
+	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		ACMInterfaceContratoDWR.list(
-			calcularMetadataConsulta(),
+		ACMInterfaceContratoDWR.listContextAware(
+			grid.filtroDinamico.calcularMetadataConsulta(),
 			{
 				callback: function(data) {
-					$("#tableContratos > tbody:last > tr").remove();
-					
-					for (var i=0; i<data.registrosMuestra.length; i++) {
-						var registroMuestra = data.registrosMuestra[i];
-						
-						$("#tableContratos > tbody:last").append(
-							"<tr id='" + registroMuestra.mid + "'>"
-								+ "<td class='tdContratoMid'><div class='divContratoMid'>" 
-									+ registroMuestra.mid 
-								+ "</div></td>"
-								+ "<td class='tdContratoFinContrato'><div class='divContratoFinContrato'>" 
-									+ (registroMuestra.fechaFinContrato != null ? 
-										formatShortDate(registroMuestra.fechaFinContrato) : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoTipoContratoDescripcion'><div class='divContratoTipoContratoDescripcion' title='" 
-									+ registroMuestra.tipoContratoCodigo + "'>" 
-									+ (registroMuestra.tipoContratoDescripcion != null ? 
-										registroMuestra.tipoContratoDescripcion : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoDocumento'><div class='divContratoDocumento' title='"
-									+ registroMuestra.documentoTipo + "'>" 
-									+ (registroMuestra.documento != null ?
-										registroMuestra.documento : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoNumeroCliente'><div class='divContratoNumeroCliente' title='" 
-									+ (registroMuestra.numeroCliente != null ?
-										registroMuestra.numeroCliente : "&nbsp;") + "'>" 
-									+ (registroMuestra.numeroCliente != null ?
-										registroMuestra.numeroCliente : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoNumeroContrato'><div class='divContratoNumeroContrato' title='" 
-									+ (registroMuestra.numeroContrato != null ?
-										registroMuestra.numeroContrato : "&nbsp;") + "'>" 
-									+ (registroMuestra.numeroContrato != null ?
-										registroMuestra.numeroContrato : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoNombre'><div class='divContratoNombre' title='" 
-									+ (registroMuestra.nombre != null ?
-										registroMuestra.nombre : "&nbsp;") + "'>" 
-									+ (registroMuestra.nombre != null ?
-										registroMuestra.nombre : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoDireccion'><div class='divContratoDireccion' title='" 
-									+ (registroMuestra.direccion != null ?
-										registroMuestra.direccion : "&nbsp;") + "'>"
-									+ (registroMuestra.direccion != null ?
-										registroMuestra.direccion : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoCodigoPostal'><div class='divContratoCodigoPostal'>" 
-									+ (registroMuestra.codigoPostal != null ?
-										registroMuestra.codigoPostal : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoLocalidad'><div class='divContratoLocalidad' title='" 
-									+ (registroMuestra.localidad != null ?
-										registroMuestra.localidad : "&nbsp;") + "'>" 
-									+ (registroMuestra.localidad != null ?
-										registroMuestra.localidad : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoEquipo'><div class='divContratoEquipo' title='" 
-									+ (registroMuestra.equipo != null ?
-											registroMuestra.equipo : "&nbsp;") + "'>" 
-									+ (registroMuestra.equipo != null ?
-										registroMuestra.equipo : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoAgente'><div class='divContratoAgente' title='"
-									+ (registroMuestra.agente != null ?
-										registroMuestra.agente : "&nbsp;") + "'>" 
-									+ (registroMuestra.agente != null ?
-										registroMuestra.agente : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoFechaExportacion'><div class='divContratoFechaExportacion'>" 
-									+ (registroMuestra.fechaExportacion != null ?
-										formatLongDate(registroMuestra.fechaExportacion) : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdContratoFact'><div class='divContratoFact'>" 
-									+ formatLongDate(registroMuestra.fact)
-								+ "</div></td>"
-							+ "</tr>"
-						);
-					}
-					
-					$("#divContratoCantidadRegistros").text(data.cantidadRegistros);
+					grid.reload(data);
+				}
+			}
+		);
+		
+		ACMInterfaceContratoDWR.countContextAware(
+			grid.filtroDinamico.calcularMetadataConsulta(),
+			{
+				callback: function(data) {
+					grid.setCount(data);
 					
 					$("#inputHabilitarAcciones").prop("disabled", false);
-				}, async: false
+				}
 			}
 		);
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		ACMInterfacePrepagoDWR.list(
-			calcularMetadataConsulta(),
+		ACMInterfacePrepagoDWR.listContextAware(
+			grid.filtroDinamico.calcularMetadataConsulta(),
 			{
 				callback: function(data) {
-					$("#tablePrepagos > tbody:last > tr").remove();
-					
-					for (var i=0; i<data.registrosMuestra.length; i++) {
-						var registroMuestra = data.registrosMuestra[i];
-						
-						$("#tablePrepagos > tbody:last").append(
-							"<tr id='" + registroMuestra.mid + "'>"
-								+ "<td class='tdPrepagoMid'><div class='divPrepagoMid'>" 
-									+ registroMuestra.mid 
-								+ "</div></td>"
-								+ "<td class='tdPrepagoMesAno'><div class='divPrepagoMesAno'>" 
-									+ (registroMuestra.mesAno != null ?
-										formatMonthYearDate(registroMuestra.mesAno) : "&nbsp;") 
-								+ "</div></td>"
-								+ "<td class='tdPrepagoMontoMesActual'><div class='divPrepagoMontoMesActual'>" 
-									+ formatDecimal(registroMuestra.montoMesActual, 2) 
-								+ "</div></td>"
-								+ "<td class='tdPrepagoMontoMesAnterior1'><div class='divPrepagoMontoMesAnterior1'>" 
-									+ formatDecimal(registroMuestra.montoMesAnterior1, 2) 
-								+ "</div></td>"
-								+ "<td class='tdPrepagoMontoMesAnterior2'><div class='divPrepagoMontoMesAnterior2'>" 
-									+ formatDecimal(registroMuestra.montoMesAnterior2, 2)
-								+ "</div></td>"
-								+ "<td class='tdPrepagoMontoPromedio'><div class='divPrepagoMontoPromedio'>" 
-									+ formatDecimal(registroMuestra.montoPromedio, 2)
-								+ "</div></td>"
-								+ "<td class='tdPrepagoFechaExportacion'><div class='divPrepagoFechaExportacion'>" 
-									+ (registroMuestra.fechaExportacion != null ?
-										formatLongDate(registroMuestra.fechaExportacion) : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdPrepagoFechaActivacionKit'><div class='divPrepagoFechaActivacionKit'>" 
-									+ (registroMuestra.fechaActivacionKit != null ?
-										formatShortDate(registroMuestra.fechaActivacionKit) : "&nbsp;")
-								+ "</div></td>"
-								+ "<td class='tdPrepagoFact'><div class='divPrepagoFact'>" 
-									+ formatLongDate(registroMuestra.fact)
-								+ "</div></td>"
-							+ "</tr>"
-						);
-					}
-					
-					$("#divPrepagoCantidadRegistros").text(data.cantidadRegistros);
+					grid.reload(data);
+				}
+			}
+		);
+		
+		ACMInterfacePrepagoDWR.countContextAware(
+			grid.filtroDinamico.calcularMetadataConsulta(),
+			{
+				callback: function(data) {
+					grid.setCount(data);
 					
 					$("#inputHabilitarAcciones").prop("disabled", false);
-				}, async: false
+				}
 			}
 		);
 	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
 		ACMInterfaceListaNegraDWR.list(
-			calcularMetadataConsulta(),
+			grid.filtroDinamico.calcularMetadataConsulta(),
 			{
 				callback: function(data) {
-					$("#tableListaNegra > tbody:last > tr").remove();
-					
-					for (var i=0; i<data.registrosMuestra.length; i++) {
-						var registroMuestra = data.registrosMuestra[i];
-						
-						$("#tableListaNegra > tbody:last").append(
-							"<tr id='" + registroMuestra.mid + "'>"
-								+ "<td class='tdListaNegraMid'><div class='divListaNegraMid'>" 
-									+ registroMuestra.mid 
-								+ "</div></td>"
-								+ "<td class='tdListaNegraObservaciones'><div class='divListaNegraObservaciones'>" 
-									+ (registroMuestra.observaciones != null ?
-										registroMuestra.observaciones : "&nbsp;") 
-								+ "</div></td>"
-								+ "<td class='tdListaNegraFact'><div class='divListaNegraFact'>" 
-									+ formatLongDate(registroMuestra.fact)
-								+ "</div></td>"
-							+ "</tr>"
-						);
-					}
-					
-					$("#divListaNegraCantidadRegistros").text(data.cantidadRegistros);
+					grid.reload(data);
 					
 					$("#inputHabilitarAcciones").prop("disabled", false);
 				}, async: false
@@ -322,493 +278,35 @@ function reloadData() {
 		);
 	} else {
 		ACMInterfaceMidDWR.listSinDatos(
-			calcularMetadataConsulta(),
+			grid.filtroDinamico.calcularMetadataConsulta(),
 			{
 				callback: function(data) {
-					$("#tableSinDatos > tbody:last > tr").remove();
-					
-					for (var i=0; i<data.registrosMuestra.length; i++) {
-						var registroMuestra = data.registrosMuestra[i];
-						
-						$("#tableSinDatos > tbody:last").append(
-							"<tr id='" + registroMuestra.mid + "'>"
-								+ "<td class='tdSinDatosMid'><div class='divSinDatosMid'>" 
-									+ registroMuestra.mid 
-								+ "</div></td>"
-								+ "<td class='tdSinDatosEstado'><div class='divSinDatosEstado'>" 
-									+ estados[registroMuestra.estado]
-								+ "</div></td>"
-								+ "<td class='tdSinDatosFact'><div class='divSinDatosFact'>"
-									+ (registroMuestra.fact != null ?  
-										formatLongDate(registroMuestra.fact)
-										: "&nbsp;")
-								+ "</div></td>"
-							+ "</tr>"
-						);
-					}
-					
-					$("#divSinDatosCantidadRegistros").text(data.cantidadRegistros);
+					grid.reload(data);
 					
 					$("#inputHabilitarAcciones").prop("disabled", false);
 				}, async: false
 			}
 		);
-	}
-}
-
-function calcularMetadataConsulta() {
-	var metadataConsulta = {
-		tamanoMuestra: $("#inputTamanoMuestra").val(),
-	};
-	
-	metadataConsulta.metadataOrdenaciones = calcularOrdenaciones();
-	metadataConsulta.metadataCondiciones = calcularCondiciones();
-	
-	return metadataConsulta;
-}
-
-function calcularOrdenaciones() {
-	var result = [];
-	
-	for (var campo in ordenes) {
-		if ((campo.toLowerCase().indexOf($("#selectTipoRegistro").val().toLowerCase()) > 0)
-			&& (ordenes[campo] > 0)) {
-			result[result.length] = {
-				campo: campos[campo],
-				ascendente: (ordenes[campo] == 1)
-			};
-		}
-	}
-	
-	return result;
-}
-
-function calcularCondiciones() {
-	var result = [];
-	
-	for (var i=1; i<=filtros; i++) {
-		if (($("#divFiltro" + i).length > 0) 
-			&& ($("#selectCampo" + i).val() != "")
-			&& ($("#selectCondicion" + i).length > 0)
-			&& ($("#selectCondicion" + i).val() != "")) {
-			var metadataCondicion = {
-				campo: $("#selectCampo" + i).val(),
-				operador: $("#selectCondicion" + i).val()
-			};
-			
-			var filtroValido = false;
-			switch ($("#selectCondicion" + i).val()) {
-				case "btw":
-					var valorMin = $("#inputValorMin" + i).val();
-					var valorMax = $("#inputValorMax" + i).val();
-					
-					metadataCondicion.valores = [valorMin, valorMax];
-					
-					filtroValido = 
-						metadataCondicion.valores[0] != "" 
-							&& metadataCondicion.valores[1] != "";
-					
-					break;
-				case "nl":
-				case "nnl":
-					metadataCondicion.valores = [];
-					
-					filtroValido = true;
-					
-					break;
-				case "in":
-					var valoresMultiples = $(("#divFiltro" + i) + " .divValorMultiple");
-					
-					metadataCondicion.valores = [];
-					for (var j=0; j<valoresMultiples.length; j++) {
-						metadataCondicion.valores[metadataCondicion.valores.length] = 
-							valoresMultiples[j].innerHTML;
-					}
-					
-					filtroValido = true;
-					
-					break;
-				case "gt":
-				case "lt":
-				case "like":
-				case "nlike":
-				case "eq": 
-				default:
-					metadataCondicion.valores = [$("#inputValor" + i).val()];
-
-					filtroValido = metadataCondicion.valores[0] != "";
-				
-					break;
-			}
-			
-			if (filtroValido) {
-				if (metadataCondicion.valores != null) {
-					for (var j = 0; j < metadataCondicion.valores.length; j++) {
-						if (metadataCondicion.valores[j].indexOf("/") > 0) {
-							metadataCondicion.valores[j] = 
-								(metadataCondicion.valores[j] + " 00:00")
-									.substring(0, 16);
-						}
-					}
-				}
-				
-				result[result.length] = metadataCondicion;
-			}
-		}
-	}
-	
-	return result;
-}
-
-function inputAgregarFiltroOnClick(event) {
-	filtros++;
-	
-	var html = 
-		"<div id='divFiltro" + filtros + "' class='divFiltro'>"
-		+ "<div id='divQuitarFiltro" + filtros + "' class='divQuitarFiltro'>"
-			+ "<input type='submit' id='inputQuitarFiltro" + filtros + "' value='Quitar'"
-				+ " onclick='javascript:inputQuitarFiltroOnClick(event, this, " + filtros + ")'/>"
-		+ "</div>"
-		+ "<div class='divFormLabel'>Campo:</div>";
-	
-	if ($("#selectTipoRegistro").val() == "contrato") {
-		html += 
-			"<div id='divCampoContrato" + filtros + "' style='float: left;'>"
-				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
-					+ "<option value=''>Seleccione...</option>"
-					+ "<option value='mid'>MID</option>"
-					+ "<option value='fechaFinContrato'>Fin de contrato</option>"
-					+ "<option value='tipoContratoDescripcion'>Tipo de contrato</option>"
-					+ "<option value='documentoTipo'>Tipo de documento</option>"
-					+ "<option value='documento'>Documento</option>"
-					+ "<option value='numeroCliente'>N&uacute;mero de cliente</option>"
-					+ "<option value='numeroContrato'>N&uacute;mero de contrato</option>"
-					+ "<option value='nombre'>Nombre</option>"
-					+ "<option value='direccion'>Direcci&oacute;n</option>"
-					+ "<option value='codigoPostal'>Código postal</option>"
-					+ "<option value='localidad'>Localidad</option>"
-					+ "<option value='equipo'>Equipo</option>"
-					+ "<option value='agente'>Agente</option>"
-					+ "<option value='fechaExportacion'>Asignado</option>"
-					+ "<option value='fact'>Obtenido</option>"
-				+ "</select>"
-			+ "</div>";
-	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		html += 
-			"<div id='divCampoPrepago" + filtros + "' style='float: left;'>"
-				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
-					+ "<option value=''>Seleccione...</option>"
-					+ "<option value='mid'>MID</option>"
-					+ "<option value='mesAno'>Mes/A&ntilde;o</option>"
-					+ "<option value='montoMesActual'>Monto mes actual</option>"
-					+ "<option value='montoMesAnterior1'>Monto mes ant. 1</option>"
-					+ "<option value='montoMesAnterior2'>Monto mes ant. 2</option>"
-					+ "<option value='montoPromedio'>Monto promedio</option>"
-					+ "<option value='fechaExportacion'>Asignado</option>"
-					+ "<option value='fechaActivacionKit'>Activaci&oacute;n</option>"
-					+ "<option value='fact'>Obtenido</option>"
-				+ "</select>"
-			+ "</div>";
-	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-		html += 
-			"<div id='divCampoListaNegra" + filtros + "' style='float: left;'>"
-				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
-					+ "<option value=''>Seleccione...</option>"
-					+ "<option value='mid'>MID</option>"
-					+ "<option value='observaciones'>Observaciones</option>"
-					+ "<option value='fact'>Ingresado</option>"
-				+ "</select>"
-			+ "</div>";
-	} else {
-		html += 
-			"<div id='divCampoSinDatos" + filtros + "' style='float: left;'>"
-				+ "<select id='selectCampo" + filtros + "' onchange='javascript:selectCampoOnChange(event, this, " + filtros + ")'>"
-					+ "<option value=''>Seleccione...</option>"
-					+ "<option value='mid'>MID</option>"
-					+ "<option value='estado'>Estado</option>"
-					+ "<option value='fact'>Modificado</option>"
-				+ "</select>"
-			+ "</div>";
-	}
-	
-	html +=
-			"<div class='divFormLabel'>Condici&oacute;n:</div>"
-			+ "<div id='divCondicion" + filtros + "' class='divCondicion'>&nbsp;</div>"
-		+ "</div>";
-	
-	$("#divFiltros").append(html);
-}
-
-function selectCampoOnChange(event, element, index) {
-	var divCondicionValoresAnterior = $("#divCondicionValores" + index);
-	
-	if (divCondicionValoresAnterior.length > 0) {
-		divCondicionValoresAnterior.remove();
-	}
-	
-	var divCondicion = $("#divCondicion" + index);
-	
-	divCondicion.empty();
-	
-	var html = 
-		"<select id='selectCondicion" + index + "' onchange='javascript:selectCondicionOnChange(event, this, " + index + ")'>"
-			+ "<option value=''>Seleccione...</option>";
-	
-	if (($("#selectCampo" + index).val() == "mid") 
-		|| ($("#selectCampo" + index).val() == "numeroCliente")
-		|| ($("#selectCampo" + index).val() == "numeroContrato")	
-		|| ($("#selectCampo" + index).val() == "codigoPostal")
-		|| ($("#selectCampo" + index).val() == "mesAno")
-		|| ($("#selectCampo" + index).val() == "montoMesActual")
-		|| ($("#selectCampo" + index).val() == "montoMesAnterior1")
-		|| ($("#selectCampo" + index).val() == "montoMesAnterior2")
-		|| ($("#selectCampo" + index).val() == "montoPromedio")) {
-		html += 
-			"<option value='eq'>Es igual a</option>"
-			+ "<option value='btw'>Entre</option>"
-			+ "<option value='gt'>Mayor que</option>"
-			+ "<option value='lt'>Menor que</option>"
-			+ "<option value='nl'>Vac&iacute;o</option>"
-			+ "<option value='nnl'>No vac&iacute;o</option>";
-	} else if (
-		($("#selectCampo" + index).val() == "documento")
-		|| ($("#selectCampo" + index).val() == "nombre")
-		|| ($("#selectCampo" + index).val() == "direccion")
-		|| ($("#selectCampo" + index).val() == "localidad")
-		|| ($("#selectCampo" + index).val() == "equipo")
-		|| ($("#selectCampo" + index).val() == "agente")
-		|| ($("#selectCampo" + index).val() == "observaciones")) {
-		html += 
-			"<option value='like'>Contiene</option>"
-			+ "<option value='nlike'>No contiene</option>"
-			+ "<option value='eq'>Es igual a</option>"
-			+ "<option value='nl'>Vac&iacute;o</option>"
-			+ "<option value='nnl'>No vac&iacute;o</option>";
-	} else if (
-		($("#selectCampo" + index).val() == "tipoContratoDescripcion")) {
-		html += 
-			+ "<option value='eq'>Es igual a</option>"
-			+ "<option value='in'>Incluido en</option>"
-			+ "<option value='nl'>Vac&iacute;o</option>"
-			+ "<option value='nnl'>No vac&iacute;o</option>";
-	} else if (
-		($("#selectCampo" + index).val() == "fechaExportacion")
-		|| ($("#selectCampo" + index).val() == "fechaFinContrato")
-		|| ($("#selectCampo" + index).val() == "fechaActivacionKit")
-		|| ($("#selectCampo" + index).val() == "fact")) {
-		html += 
-			"<option value='eq'>Es igual a</option>"
-			+ "<option value='btw'>Entre</option>"
-			+ "<option value='gt'>Mayor que</option>"
-			+ "<option value='lt'>Menor que</option>"
-			+ "<option value='nl'>Vac&iacute;o</option>"
-			+ "<option value='nnl'>No vac&iacute;o</option>";
-	} else if (
-		($("#selectCampo" + index).val() == "documentoTipo")
-		|| ($("#selectCampo" + index).val() == "estado")) {
-		html += 
-			"<option value='eq'>Es igual a</option>";
-	}
-	
-	html +=
-		+ "</select>";
-	
-	divCondicion.append(html);
-}
-
-function selectCondicionOnChange(event, element, index) {
-	var divCondicionValoresAnterior = $("#divCondicionValores" + index);
-	
-	if (divCondicionValoresAnterior.length > 0) {
-		divCondicionValoresAnterior.remove();
-	}
-	
-	var html = "<div id='divCondicionValores" + index + "' class='divCondicionValores'>";
-	
-	switch ($("#selectCondicion" + index).val()) {
-		case "btw":
-			html +=
-				"<div class='divFormLabel'>Valor:</div>"
-				+ "<div id='divValorMin" + index + "' style='float: left'>"
-					+ "<input type='text' id='inputValorMin" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
-				+ "</div>"
-				+ "<div class='divFormLabel' style='width: 50px;'>y:</div>"
-				+ "<div id='divValorMax" + index + "' style='float: left;'>"
-					+ "<input type='text' id='inputValorMax" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
-				+ "</div>";
-			break;
-		case "nl":
-		case "nnl":
-			reloadData();
-			
-			break;
-		case "in":
-			if ($("#selectCampo" + index).val() == "tipoContratoDescripcion") {
-				ACMInterfaceContratoDWR.listTipoContratos(
-					calcularMetadataConsulta(),
-					{
-						callback: function(data) {
-							var html = "<div id='divCondicionValores" + index + "' class='divCondicionValoresMultiples'>";
-							
-							html += 
-								"<div class='divFormLabel'>Valor:</div>"
-								+ "<div id='divValor" + index + "' style='float: left;'>"
-									+ "<select id='inputValor" + index 
-										+ "' onchange='javascript:inputValorMultipleOnChange(event, this, " + index + ")'>"
-										+ "<option value=''>Seleccione...</option>"
-										+ "<option value='Todos'>Todos</option>"
-										+ "<option value='Ninguno'>Ninguno</option>";
-							
-							for (var i=0; i<data.length; i++) {
-								html += 
-										"<option value='" + data[i].tipoContratoDescripcion + "'>"
-											+ data[i].tipoContratoDescripcion 
-										+ "</option>";
-							}
-							
-							html += 
-										"</select>"
-								+ "</div>";	
-							
-							html += 
-								"<div id='divValores" + index + "' class='divValoresMultiples' style='float: left;'>";
-								
-							for (var i=0; i<data.length; i++) {
-								html += 
-									"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
-										+ data[i].tipoContratoDescripcion
-									+ "</div>";
-							}
-							
-							html +=
-								"</div>";
-							
-							$("#divFiltro" + index).append(html);
-						}, async: false
-					}
-				);
-				
-				reloadData();
-				
-				return;
-			}
-			
-			break;
-		case "gt":
-		case "lt":
-		case "like":
-		case "nlike":
-		case "eq":
-		default:
-			if ($("#selectCampo" + index).val() == "documentoTipo") {
-				html += 
-					"<div class='divFormLabel'>Valor:</div>"
-					+ "<div id='divValor" + index + "' style='float: left;'>"
-						+ "<select id='inputValor" + index + "' onchange='javascript:inputValorOnChange(event, this)'>"
-							+ "<option value=''>Seleccione...</option>"
-							+ "<option value='1'>Persona</option>"
-							+ "<option value='2'>Empresa</option>"
-							+ "<option value='3'>Estatal</option>"
-							+ "<option value='4'>Otros</option>"
-						+ "</select>"
-					+ "</div>";				
-			} else if ($("#selectCampo" + index).val() == "estado") {
-				html += 
-					"<div class='divFormLabel'>Valor:</div>"
-					+ "<div id='divValor" + index + "' style='float: left;'>"
-						+ "<select id='inputValor" + index + "' onchange='javascript:inputValorOnChange(event, this)'>"
-							+ "<option value=''>Seleccione...</option>"
-							+ "<option value='0'>No procesado</option>"
-							+ "<option value='1'>En proceso</option>"
-							// + "<option value='2'>Procesado</option>"
-							+ "<option value='3'>Lista vac&iacute;a</option>"
-							+ "<option value='4'>Para procesar</option>"
-							+ "<option value='5'>Para procesar prioritario</option>"
-							+ "<option value='6'>Lista negra</option>"
-						+ "</select>"
-					+ "</div>";				
-			} else {
-				html += 
-					"<div class='divFormLabel'>Valor:</div>"
-					+ "<div id='divValor" + index + "' style='float: left;'>"
-						+ "<input type='text' id='inputValor" + index + "' onchange='javascript:inputValorOnChange(event, this)'/>"
-					+ "</div>";
-			}
-			break;
-	}
-	
-	html +=
-		"</div>";
-	
-	$("#divFiltro" + index).append(html);
-}
-
-function inputValorOnChange(event, element) {
-	reloadData();
-}
-
-function inputValorMultipleOnChange(event, element, index) {
-	if ($("#inputValor" + index).val() == "Todos") {
-		var options = $("#inputValor" + index + " option");
 		
-		for (var i=0; i < options.length; i++) {
-			if (i > 2) {
-				$("#divValores" + index).append(
-					"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
-						+ $(options[i]).val()
-					+ "</div>"
-				);
+		ACMInterfaceMidDWR.countSinDatos(
+			grid.filtroDinamico.calcularMetadataConsulta(),
+			{
+				callback: function(data) {
+					grid.setCount(data);
+				}
 			}
-		}
-	} else if ($("#inputValor" + index).val() == "Ninguno") {
-		$("#divValores" + index + " div").remove();
-	} else {
-		$("#divValores" + index).append(
-			"<div class='divValorMultiple' onclick='javascript:inputValorMultipleOnClick(event, this)'>"
-				+ $("#inputValor" + index).val()
-			+ "</div>"
 		);
 	}
-	
-	reloadData();
-}
-
-function inputValorMultipleOnClick(event, element) {
-	$(element).remove();
-	
-	reloadData();
-}
-
-function inputQuitarFiltroOnClick(event, element, index) {
-	$("#divFiltro" + index).remove();
-	
-	reloadData();
-}
-
-function tableTheadTdOnClick(event, element) {
-	var className = element.getAttribute("class");
-	className = className.substring(0, className.length - 3);
-	
-	if (ordenes[className] != null) {
-		ordenes[className] = (ordenes[className] + 1) % ordenSufijos.length;
-	} else {
-		ordenes[className] = 1;
-	}
-	
-	element.setAttribute("class", className + ordenSufijos[ordenes[className]]);
-	
-	if (ordenes[className] == 0) {
-		ordenes[className] = null;
-	}
-	
-	reloadData();
 }
 
 function inputExportarAExcelOnClick(event) {
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	metadataConsulta.tamanoSubconjunto = grid.getCount();
+	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		if (confirm("Se exportarán " + $("#divContratoCantidadRegistros").text() + " registros.")) {
+		if (confirm("Se exportarï¿½n " + grid.getCount() + " registros.")) {
 			ACMInterfaceContratoDWR.exportarAExcel(
-				calcularMetadataConsulta(),
+				metadataConsulta,
 				{
 					callback: function(data) {
 						alert("Archivo generado: " + data);
@@ -819,9 +317,9 @@ function inputExportarAExcelOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		if (confirm("Se exportarán " + $("#divPrepagoCantidadRegistros").text()+ " registros.")) {
+		if (confirm("Se exportarï¿½n " + grid.getCount() + " registros.")) {
 			ACMInterfacePrepagoDWR.exportarAExcel(
-				calcularMetadataConsulta(),
+				metadataConsulta,
 				{
 					callback: function(data) {
 						alert("Archivo generado: " + data);
@@ -832,9 +330,56 @@ function inputExportarAExcelOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-		if (confirm("Se exportarán " + $("#divListaNegraCantidadRegistros").text()+ " registros.")) {
+		if (confirm("Se exportarï¿½n " + grid.getCount() + " registros.")) {
 			ACMInterfaceListaNegraDWR.exportarAExcel(
-				calcularMetadataConsulta(),
+				metadataConsulta,
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
+				}
+			);
+		}
+	} else {
+		alert("Funcionalidad no habilitada para el tipo de registro.");
+	}
+}
+
+function inputExportarSubconjuntoOnClick(event) {
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		if (confirm("Se exportarï¿½n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+			ACMInterfaceContratoDWR.exportarAExcel(
+				metadataConsulta,
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "prepago") {
+		if (confirm("Se exportarï¿½n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+			ACMInterfacePrepagoDWR.exportarAExcel(
+				metadataConsulta,
+				{
+					callback: function(data) {
+						alert("Archivo generado: " + data);
+						
+						reloadData();
+					}
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
+		if (confirm("Se exportarï¿½n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+			ACMInterfaceListaNegraDWR.exportarAExcel(
+				metadataConsulta,
 				{
 					callback: function(data) {
 						alert("Archivo generado: " + data);
@@ -872,7 +417,9 @@ function inputAsignarOnClick(event) {
 }
 
 function inputAsignarSubconjuntoOnClick(event) {
-	$("#inputTamanoSubconjuntoAsignacion").val($("#inputTamanoSubconjunto").val());
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	
+	$("#inputTamanoSubconjuntoAsignacion").val(metadataConsulta.tamanoSubconjunto);
 	
 	$("#selectEmpresa > option").remove();
 	
@@ -916,7 +463,7 @@ function inputCancelarOnClick(event, element) {
 }
 
 function inputAceptarOnClick(event) {
-	var metadataConsulta = calcularMetadataConsulta();
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
 	
 	if ($("#selectEmpresa").val() != "0") {
 		var empresa = {
@@ -928,64 +475,79 @@ function inputAceptarOnClick(event) {
 				metadataConsulta.tamanoSubconjunto = 
 					Math.min(
 						$("#inputTamanoSubconjuntoAsignacion").val(),
-						$("#divContratoCantidadRegistros").text()
+						grid.getCount()
 					);
+			} else {
+				metadataConsulta.tamanoSubconjunto = grid.getCount();
 			}
 			
-			if (confirm("Se exportarán " 
-				+ (metadataConsulta.tamanoSubconjunto != null ?
-					metadataConsulta.tamanoSubconjunto
-					: $("#divContratoCantidadRegistros").text()) + " registros.")) {
-				ACMInterfaceContratoDWR.exportarAExcelByEmpresa(
-					metadataConsulta,
-					empresa,
-					$("#textareaObservaciones").val(),
-					{
-						callback: function(data) {
-							alert("Archivo generado: " + data);
-							
-							closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
-							
-							$("#inputTamanoSubconjuntoAsignacion").val(0);
-							$("#selectEmpresa").val("0");
-							$("#textareaObservaciones").val("");
-							
-							reloadData();
+			ACMInterfaceContratoDWR.preprocesarExportacionByEmpresa(
+				metadataConsulta,
+				empresa,
+				{
+					callback: function(data) {
+						if (confirm(data.replace(new RegExp("\\|", "g"), "\n"))) {
+							ACMInterfaceContratoDWR.exportarAExcelByEmpresa(
+								metadataConsulta,
+								empresa,
+								$("#textareaObservaciones").val(),
+								{
+									callback: function(data) {
+										alert("Archivo generado: " + data);
+										
+										closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
+										
+										$("#inputTamanoSubconjuntoAsignacion").val(0);
+										$("#selectEmpresa").val("0");
+										$("#textareaObservaciones").val("");
+										
+										reloadData();
+									}, async: false
+								}
+							);
 						}
-					}
-				);
-			}
+					}, async: false
+				}
+			);
 		} else if ($("#selectTipoRegistro").val() == "prepago") {
 			if ($("#inputTamanoSubconjuntoAsignacion").val() != 0) {
 				metadataConsulta.tamanoSubconjunto = 
 					Math.min(
 						$("#inputTamanoSubconjuntoAsignacion").val(),
-						$("#divPrepagoCantidadRegistros").text()
+						grid.getCount()
 					);
+			} else {
+				metadataConsulta.tamanoSubconjunto = grid.getCount();
 			}
 			
-			if (confirm("Se exportarán " 
-				+ (metadataConsulta.tamanoSubconjunto != null ?
-					metadataConsulta.tamanoSubconjunto
-					: $("#divPrepagoCantidadRegistros").text()) + " registros.")) {
-				ACMInterfacePrepagoDWR.exportarAExcelByEmpresa(
-					metadataConsulta,
-					empresa,
-					$("#textareaObservaciones").val(),
-					{
-						callback: function(data) {
-							alert("Archivo generado: " + data);
-							
-							closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
-							
-							$("#selectEmpresa").val("0");
-							$("#textareaObservaciones").val("");
-							
-							reloadData();
+			ACMInterfacePrepagoDWR.preprocesarExportacionByEmpresa(
+				metadataConsulta,
+				empresa,
+				{
+					callback: function(data) {
+						if (confirm(data.replace(new RegExp("\\|", "g"), "\n"))) {
+							ACMInterfacePrepagoDWR.exportarAExcelByEmpresa(
+								metadataConsulta,
+								empresa,
+								$("#textareaObservaciones").val(),
+								{
+									callback: function(data) {
+										alert("Archivo generado: " + data);
+										
+										closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
+										
+										$("#inputTamanoSubconjuntoAsignacion").val(0);
+										$("#selectEmpresa").val("0");
+										$("#textareaObservaciones").val("");
+										
+										reloadData();
+									}, async: false
+								}
+							);
 						}
-					}
-				);
-			}
+					}, async: false
+				}
+			);
 		} else {
 			alert("Funcionalidad no habilitada para el tipo de registro.");
 		}
@@ -994,76 +556,11 @@ function inputAceptarOnClick(event) {
 	}
 }
 
-function inputExportarSubconjuntoOnClick(event) {
-	var metadataConsulta = calcularMetadataConsulta();
-	
-	if ($("#selectTipoRegistro").val() == "contrato") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divContratoCantidadRegistros").text()
-			);
-		
-		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-			ACMInterfaceContratoDWR.exportarAExcel(
-				metadataConsulta,
-				{
-					callback: function(data) {
-						alert("Archivo generado: " + data);
-						
-						reloadData();
-					}
-				}
-			);
-		}
-	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divPrepagoCantidadRegistros").text()
-			);
-		
-		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-			ACMInterfacePrepagoDWR.exportarAExcel(
-				metadataConsulta,
-				{
-					callback: function(data) {
-						alert("Archivo generado: " + data);
-						
-						reloadData();
-					}
-				}
-			);
-		}
-	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divListaNegraCantidadRegistros").text()
-			);
-		
-		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-			ACMInterfaceListaNegraDWR.exportarAExcel(
-				metadataConsulta,
-				{
-					callback: function(data) {
-						alert("Archivo generado: " + data);
-						
-						reloadData();
-					}
-				}
-			);
-		}
-	} else {
-		alert("Funcionalidad no habilitada para el tipo de registro.");
-	}
-}
-
 function inputDeshacerAsignacionOnClick(event) {
-	var metadataConsulta = calcularMetadataConsulta();
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		if (confirm("Se anulará la última asignación.")) {
+		if (confirm("Se anularï¿½ la ï¿½ltima asignaciï¿½n.")) {
 			ACMInterfaceContratoDWR.deshacerAsignacion(
 				metadataConsulta,
 				{
@@ -1074,7 +571,7 @@ function inputDeshacerAsignacionOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		if (confirm("Se anulará la última asignación.")) {
+		if (confirm("Se anularï¿½ la ï¿½ltima asignaciï¿½n.")) {
 			ACMInterfacePrepagoDWR.deshacerAsignacion(
 				metadataConsulta,
 				{
@@ -1090,42 +587,45 @@ function inputDeshacerAsignacionOnClick(event) {
 }
 
 function inputReprocesarOnClick(event) {
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	metadataConsulta.tamanoSubconjunto = grid.getCount();
+	
 	var observaciones = null;
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		observaciones = prompt("Se reprocesarán " + $("#divContratoCantidadRegistros").text() + " registros.");
+		observaciones = prompt("Se reprocesarï¿½n " + grid.getCount() + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfaceContratoDWR.reprocesar(
-				calcularMetadataConsulta(),
+				metadataConsulta,
 				observaciones,
 				{
 					callback: function(data) {
-						
+						reloadData();
 					}
 				}
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		observaciones = prompt("Se reprocesarán " + $("#divPrepagoCantidadRegistros").text() + " registros.");
+		observaciones = prompt("Se reprocesarï¿½n " + grid.getCount() + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfacePrepagoDWR.reprocesar(
-				calcularMetadataConsulta(),
+				metadataConsulta,
 				observaciones,
 				{
 					callback: function(data) {
-						
+						reloadData();
 					}
 				}
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-		observaciones = prompt("Se reprocesarán " + $("#divSinDatosCantidadRegistros").text() + " registros.");
+		observaciones = prompt("Se reprocesarï¿½n " + grid.getCount() + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfaceMidDWR.reprocesarSinDatos(
-				calcularMetadataConsulta(),
+				metadataConsulta,
 				observaciones,
 				{
 					callback: function(data) {
@@ -1140,17 +640,11 @@ function inputReprocesarOnClick(event) {
 }
 
 function inputReprocesarSubconjuntoOnClick(event) {
-	var metadataConsulta = calcularMetadataConsulta();
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
 	var observaciones = null;
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divContratoCantidadRegistros").text()
-			);
-		
-		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		observaciones = prompt("Se reprocesarï¿½n " + metadataConsulta.tamanoSubconjunto + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfaceContratoDWR.reprocesar(
@@ -1158,19 +652,13 @@ function inputReprocesarSubconjuntoOnClick(event) {
 				observaciones,
 				{
 					callback: function(data) {
-						
+						reloadData();
 					}
 				}
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divPrepagoCantidadRegistros").text()
-			);
-		
-		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		observaciones = prompt("Se reprocesarï¿½n " + metadataConsulta.tamanoSubconjunto + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfacePrepagoDWR.reprocesar(
@@ -1178,19 +666,13 @@ function inputReprocesarSubconjuntoOnClick(event) {
 				observaciones,
 				{
 					callback: function(data) {
-						
+						reloadData();
 					}
 				}
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divSinDatosCantidadRegistros").text()
-			);
-		
-		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		observaciones = prompt("Se reprocesarï¿½n " + metadataConsulta.tamanoSubconjunto + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfaceMidDWR.reprocesarSinDatos(
@@ -1209,10 +691,10 @@ function inputReprocesarSubconjuntoOnClick(event) {
 }
 
 function inputListaNegraOnClick(event) {
-	var metadataConsulta = calcularMetadataConsulta();
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		if (confirm("Se agregarán " + $("#divContratoCantidadRegistros").text() + " registros a la lista negra.")) {
+		if (confirm("Se agregarï¿½n " + grid.getCount() + " registros a la lista negra.")) {
 			ACMInterfaceContratoDWR.agregarAListaNegra(
 				metadataConsulta,
 				{
@@ -1223,7 +705,7 @@ function inputListaNegraOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		if (confirm("Se agregarán " + $("#divPrepagoCantidadRegistros").text()+ " registros a la lista negra.")) {
+		if (confirm("Se agregarï¿½n " + grid.getCount() + " registros a la lista negra.")) {
 			ACMInterfacePrepagoDWR.agregarAListaNegra(
 				metadataConsulta,
 				{
@@ -1234,7 +716,7 @@ function inputListaNegraOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-		if (confirm("Se agregarán " + $("#divSinDatosCantidadRegistros").text()+ " registros a la lista negra.")) {
+		if (confirm("Se agregarï¿½n " + grid.getCount() + " registros a la lista negra.")) {
 			ACMInterfaceMidDWR.agregarAListaNegraSinDatos(
 				metadataConsulta,
 				{

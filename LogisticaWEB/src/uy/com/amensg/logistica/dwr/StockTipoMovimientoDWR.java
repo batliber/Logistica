@@ -18,10 +18,12 @@ import uy.com.amensg.logistica.entities.StockTipoMovimientoTO;
 public class StockTipoMovimientoDWR {
 
 	private IStockTipoMovimientoBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = StockTipoMovimientoBean.class.getSimpleName();
 		String remoteInterfaceName = IStockTipoMovimientoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IStockTipoMovimientoBean) context.lookup(lookupName);

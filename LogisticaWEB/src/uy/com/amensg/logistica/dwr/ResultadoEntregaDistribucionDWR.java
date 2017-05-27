@@ -18,10 +18,12 @@ import uy.com.amensg.logistica.entities.ResultadoEntregaDistribucionTO;
 public class ResultadoEntregaDistribucionDWR {
 
 	private IResultadoEntregaDistribucionBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = ResultadoEntregaDistribucionBean.class.getSimpleName();
 		String remoteInterfaceName = IResultadoEntregaDistribucionBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IResultadoEntregaDistribucionBean) context.lookup(lookupName);

@@ -15,6 +15,9 @@ import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IProductoBean;
 import uy.com.amensg.logistica.bean.ProductoBean;
+import uy.com.amensg.logistica.entities.EmpresaService;
+import uy.com.amensg.logistica.entities.Marca;
+import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Producto;
 import uy.com.amensg.logistica.entities.ProductoTO;
 
@@ -22,10 +25,12 @@ import uy.com.amensg.logistica.entities.ProductoTO;
 public class ProductoDWR {
 
 	private IProductoBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = ProductoBean.class.getSimpleName();
 		String remoteInterfaceName = IProductoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IProductoBean) context.lookup(lookupName);
@@ -40,6 +45,51 @@ public class ProductoDWR {
 			for (Producto producto : iProductoBean.list()) {
 				result.add(transform(producto));
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public ProductoTO getById(Long id) {
+		ProductoTO result = null;
+		
+		try {
+			IProductoBean iProductoBean = lookupBean();
+			
+			result = transform(iProductoBean.getById(id));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public ProductoTO getByIMEI(String imei) {
+		ProductoTO result = null;
+		
+		try {
+			IProductoBean iProductoBean = lookupBean();
+			
+			Producto producto = iProductoBean.getByIMEI(imei);
+			if (producto != null) {
+				result = transform(producto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Boolean existeIMEI(String imei) {
+		Boolean result = false;
+		
+		try {
+			IProductoBean iProductoBean = lookupBean();
+			
+			result = iProductoBean.existeIMEI(imei);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -71,7 +121,7 @@ public class ProductoDWR {
 		try {
 			IProductoBean iProductoBean = lookupBean();
 			
-			iProductoBean.save(transform(productoTO));
+			iProductoBean.update(transform(productoTO));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,6 +132,19 @@ public class ProductoDWR {
 		
 		productoTO.setDescripcion(producto.getDescripcion());
 		productoTO.setFechaBaja(producto.getFechaBaja());
+		productoTO.setImei(producto.getImei());
+		
+		if (producto.getEmpresaService() != null) {
+			productoTO.setEmpresaService(EmpresaServiceDWR.transform(producto.getEmpresaService()));
+		}
+		
+		if (producto.getMarca() != null) {
+			productoTO.setMarca(MarcaDWR.transform(producto.getMarca()));
+		}
+		
+		if (producto.getModelo() != null) {
+			productoTO.setModelo(ModeloDWR.transform(producto.getModelo()));
+		}
 		
 		productoTO.setFact(producto.getFact());
 		productoTO.setId(producto.getId());
@@ -96,6 +159,28 @@ public class ProductoDWR {
 		
 		producto.setDescripcion(productoTO.getDescripcion());
 		producto.setFechaBaja(productoTO.getFechaBaja());
+		producto.setImei(productoTO.getImei());
+		
+		if (productoTO.getEmpresaService() != null) {
+			EmpresaService empresaService = new EmpresaService();
+			empresaService.setId(productoTO.getEmpresaService().getId());
+			
+			producto.setEmpresaService(empresaService);
+		}
+		
+		if (productoTO.getMarca() != null) {
+			Marca marca = new Marca();
+			marca.setId(productoTO.getMarca().getId());
+			
+			producto.setMarca(marca);
+		}
+		
+		if (productoTO.getModelo() != null) {
+			Modelo modelo = new Modelo();
+			modelo.setId(productoTO.getModelo().getId());
+			
+			producto.setModelo(modelo);
+		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		

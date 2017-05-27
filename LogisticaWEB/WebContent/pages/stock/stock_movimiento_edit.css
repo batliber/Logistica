@@ -9,17 +9,6 @@
 	width: 60%;
 }
 
-#divProducto {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
-}
-
-#selectProducto {
-	width: 60%;
-}
-
 #divStockTipoMovimiento {
 	float: left;
 	margin-top: 2px;
@@ -31,9 +20,42 @@
 	width: 60%;
 }
 
+#divMarca {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectMarca {
+	width: 60%;
+}
+
+#divModelo {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectModelo {
+	width: 60%;
+}
+
 #divCantidad {
 	float: left;
 	margin-top: 2px;
 	margin-left: 2px;
+	width: 70%;
 }
+
+#divIMEI {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#inputIMEI {
+	width: 58%;
 }

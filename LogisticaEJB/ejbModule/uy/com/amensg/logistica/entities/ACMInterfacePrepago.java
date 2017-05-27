@@ -5,7 +5,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -42,6 +46,9 @@ public class ACMInterfacePrepago implements Serializable {
 	@Column(name = "fecha_activacion_kit")
 	private Date fechaActivacionKit;
 
+	@Column(name = "agente")
+	private String agente;
+	
 	@Column(name = "uact")
 	private Long uact;
 
@@ -51,6 +58,14 @@ public class ACMInterfacePrepago implements Serializable {
 	@Column(name = "term")
 	private Long term;
 
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinTable(
+		name = "acm_interface_mid_persona", 
+		joinColumns = @JoinColumn(name = "mid"),
+		inverseJoinColumns = @JoinColumn(name = "persona_id")
+	)
+	private ACMInterfacePersona acmInterfacePersona;
+	
 	public Long getMid() {
 		return mid;
 	}
@@ -123,6 +138,14 @@ public class ACMInterfacePrepago implements Serializable {
 		this.fechaActivacionKit = fechaActivacionKit;
 	}
 
+	public String getAgente() {
+		return agente;
+	}
+
+	public void setAgente(String agente) {
+		this.agente = agente;
+	}
+
 	public Long getUact() {
 		return uact;
 	}
@@ -145,5 +168,13 @@ public class ACMInterfacePrepago implements Serializable {
 
 	public void setTerm(Long term) {
 		this.term = term;
+	}
+
+	public ACMInterfacePersona getAcmInterfacePersona() {
+		return acmInterfacePersona;
+	}
+
+	public void setAcmInterfacePersona(ACMInterfacePersona acmInterfacePersona) {
+		this.acmInterfacePersona = acmInterfacePersona;
 	}
 }

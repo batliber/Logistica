@@ -36,6 +36,14 @@ public class SeguridadFilter implements Filter {
 			HttpSession httpSession = httpServletRequest.getSession(false);
 			String requestedPage = httpServletRequest.getRequestURI();
 			String userAgent = httpServletRequest.getHeader("User-Agent");
+			String queryString = httpServletRequest.getQueryString();
+			
+			if ((queryString != null && queryString.contains("wsdl"))
+				|| requestedPage.contains("Service")) {
+				filterChain.doFilter(request, response);
+				
+				return;
+			}
 			
 			String pageName = requestedPage.substring(requestedPage.lastIndexOf("/") + 1);
 			
@@ -114,10 +122,12 @@ public class SeguridadFilter implements Filter {
 	}
 
 	private IUsuarioBean lookupUsuarioBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = UsuarioBean.class.getSimpleName();
 		String remoteInterfaceName = IUsuarioBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IUsuarioBean) context.lookup(lookupName);

@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -30,11 +32,12 @@
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Usuario</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
-	<div class="divMainWindow">
-		<div class="divFormLabel">Login:</div><div id="divUsuarioLogin"><input type="text" id="inputUsuarioLogin"/></div>
-		<div class="divFormLabel">Nombre:</div><div id="divUsuarioNombre"><input type="text" id="inputUsuarioNombre"/></div>
+	<div class="divPopupWindow">
+		<div class="divFormLabel">Login:</div><div id="divUsuarioLogin" class="divFormValue"><input type="text" id="inputUsuarioLogin"/></div>
+		<div class="divFormLabel">Nombre:</div><div id="divUsuarioNombre" class="divFormValue"><input type="text" id="inputUsuarioNombre"/></div>
+		<div class="divFormLabel">Documento:</div><div id="divUsuarioDocumento" class="divFormValue"><input type="text" id="inputUsuarioDocumento"/></div>
 		<div class="divFormLabel">Contrase&ntilde;a:</div>
-		<div id="divUsuarioContrasena">
+		<div id="divUsuarioContrasena" class="divFormValue">
 			<input type="password" id="inputUsuarioContrasena" disabled="disabled"/>
 			<input type="checkbox" id="inputCambiarContrasena" onchange="javascript:inputCambiarContrasenaOnChange(event, this)"/>
 		</div>

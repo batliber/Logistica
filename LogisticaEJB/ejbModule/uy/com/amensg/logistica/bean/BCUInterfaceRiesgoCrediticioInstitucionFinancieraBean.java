@@ -1,0 +1,58 @@
+package uy.com.amensg.logistica.bean;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.LinkedList;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticioInstitucionFinanciera;
+
+@Stateless
+public class BCUInterfaceRiesgoCrediticioInstitucionFinancieraBean implements IBCUInterfaceRiesgoCrediticioInstitucionFinancieraBean {
+
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	private EntityManager entityManager;
+	
+	public Collection<BCUInterfaceRiesgoCrediticioInstitucionFinanciera> listByBCUInterfaceRiesgoCrediticioId(Long id) {
+		Collection<BCUInterfaceRiesgoCrediticioInstitucionFinanciera> result = new LinkedList<BCUInterfaceRiesgoCrediticioInstitucionFinanciera>();
+		
+		try {
+			TypedQuery<BCUInterfaceRiesgoCrediticioInstitucionFinanciera> query = 
+				entityManager.createQuery(
+					"SELECT b"
+					+ " FROM BCUInterfaceRiesgoCrediticioInstitucionFinanciera b"
+					+ " WHERE b.bcuInterfaceRiesgoCrediticio.id = :bcuInterfaceRiesgoCrediticioId",
+					BCUInterfaceRiesgoCrediticioInstitucionFinanciera.class
+				);
+			query.setParameter("bcuInterfaceRiesgoCrediticioId", id);
+			
+			Collection<BCUInterfaceRiesgoCrediticioInstitucionFinanciera> resultList = query.getResultList();
+			for (BCUInterfaceRiesgoCrediticioInstitucionFinanciera bcuInterfaceRiesgoCrediticioInstitucionFinanciera : resultList) {
+				result.add(bcuInterfaceRiesgoCrediticioInstitucionFinanciera);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public void save(BCUInterfaceRiesgoCrediticioInstitucionFinanciera bcuInterfaceRiesgoCrediticioInstitucionFinanciera) {
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setFact(date);
+			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setTerm(new Long(1));
+			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setUact(new Long(1));
+			
+			entityManager.persist(bcuInterfaceRiesgoCrediticioInstitucionFinanciera);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

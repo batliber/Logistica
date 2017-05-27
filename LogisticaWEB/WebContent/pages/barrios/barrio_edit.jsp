@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -29,10 +31,10 @@
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Barrio</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
-	<div class="divMainWindow">
-		<div class="divFormLabel">Nombre:</div><div id="divBarrioNombre"><input type="text" id="inputBarrioNombre"/></div>
-		<div class="divFormLabel">Departamento:</div><div id="divDepartamento"><select id="selectDepartamento" onchange="javascript:selectDepartamentoOnChange(this)"></select></div>
-		<div class="divFormLabel">Zona:</div><div id="divZona"><select id="selectZona"></select></div>
+	<div class="divPopupWindow">
+		<div class="divFormLabel">Nombre:</div><div id="divBarrioNombre" class="divFormValue"><input type="text" id="inputBarrioNombre"/></div>
+		<div class="divFormLabel">Departamento:</div><div id="divDepartamento" class="divFormValue"><select id="selectDepartamento" onchange="javascript:selectDepartamentoOnChange(this)"></select></div>
+		<div class="divFormLabel">Zona:</div><div id="divZona" class="divFormValue"><select id="selectZona"></select></div>
 	</div>
 </body>
 </html>

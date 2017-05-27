@@ -11,6 +11,7 @@ public class UsuarioTO extends BaseTO {
 	private String login;
 	private String contrasena;
 	private String nombre;
+	private String documento;
 	private Date fechaBaja;
 	private Collection<UsuarioRolEmpresaTO> usuarioRolEmpresas;
 	private Collection<MenuTO> menus;
@@ -37,6 +38,14 @@ public class UsuarioTO extends BaseTO {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getDocumento() {
+		return documento;
+	}
+
+	public void setDocumento(String documento) {
+		this.documento = documento;
 	}
 
 	public Date getFechaBaja() {

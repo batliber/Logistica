@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -12,8 +13,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import javax.ejb.EJB;
@@ -50,6 +54,7 @@ import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.entities.Rol;
 import uy.com.amensg.logistica.entities.StockMovimiento;
 import uy.com.amensg.logistica.entities.StockTipoMovimiento;
+import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
 import uy.com.amensg.logistica.util.Configuration;
@@ -59,7 +64,7 @@ import uy.com.amensg.logistica.util.QueryHelper;
 @Stateless
 public class ContratoBean implements IContratoBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogisticaXA")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -91,7 +96,6 @@ public class ContratoBean implements IContratoBean {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
 		try {
-			// Obtener el usuario para el cual se consulta
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			
 			CriteriaQuery<Contrato> criteriaQuery = criteriaBuilder.createQuery(Contrato.class);
@@ -101,6 +105,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Predicate where = new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, root);
 			
+			// Subquery con los roles subordinados del usuario
 			Subquery<UsuarioRolEmpresa> subqueryRolesSubordinados = criteriaQuery.subquery(UsuarioRolEmpresa.class);
 			Root<UsuarioRolEmpresa> subrootRolesSubordinados = subqueryRolesSubordinados.from(UsuarioRolEmpresa.class);
 			subrootRolesSubordinados.alias("subrootRolesSubordinados");
@@ -212,6 +217,11 @@ public class ContratoBean implements IContratoBean {
 									"p" + i,
 									new Double(valor)
 								);
+							} else if (field.getJavaType().equals(Boolean.class)) {
+								query.setParameter(
+									"p" + i,
+									new Boolean(valor)
+								);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -253,18 +263,15 @@ public class ContratoBean implements IContratoBean {
 		Long result = null;
 		
 		try {
-			// Obtener el usuario para el cual se consulta
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			
-			// -------------------------------------------
-			// Query para obtener la cantidad de registros
-			// -------------------------------------------
 			CriteriaQuery<Long> criteriaQueryCount = criteriaBuilder.createQuery(Long.class);
 			Root<Contrato> rootCount = criteriaQueryCount.from(Contrato.class);
 			rootCount.alias("root");
 			
 			Predicate where = new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, rootCount);
 			
+			// Subquery con los roles subordinados del usuario
 			Subquery<UsuarioRolEmpresa> subqueryRolesSubordinados = criteriaQueryCount.subquery(UsuarioRolEmpresa.class);
 			Root<UsuarioRolEmpresa> subrootRolesSubordinados = subqueryRolesSubordinados.from(UsuarioRolEmpresa.class);
 			subrootRolesSubordinados.alias("subrootRolesSubordinados");
@@ -346,6 +353,11 @@ public class ContratoBean implements IContratoBean {
 									"p" + i,
 									new Double(valor)
 								);
+							} else if (field.getJavaType().equals(Boolean.class)) {
+								queryCount.setParameter(
+									"p" + i,
+									new Boolean(valor)
+								);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -369,6 +381,205 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
+	 * Lista los tipos de contrato distintos.
+	 * 
+	 * @return Lista de tipos de contrato existentes.
+	 */
+	public Collection<TipoContrato> listTipoContratos() {
+		Collection<TipoContrato> result = new LinkedList<TipoContrato>();
+		
+		try {
+			Query query = entityManager.createQuery(
+				"SELECT c.tipoContratoDescripcion, COUNT(c)"
+				+ " FROM Contrato c"
+				+ " WHERE c.tipoContratoDescripcion IS NOT NULL"
+				+ " GROUP BY c.tipoContratoDescripcion"
+				+ " ORDER BY COUNT(c) DESC"
+			);
+			
+			for (Object object : query.getResultList()) {
+				Object[] fields = (Object[]) object;
+				
+				TipoContrato tipoContrato = new TipoContrato();
+				
+				// tipoContrato.setTipoContratoCodigo((String) fields[0]);
+				tipoContrato.setTipoContratoDescripcion((String) fields[0]);
+				
+				result.add(tipoContrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Lista los tipos de contrato que cumplen con los criterios encapsulados en metadataConsulta y que puede ver el usuarioId
+	 * 
+	 * @param metadataConsulta Criterios de la consulta.
+	 * @param usuarioId ID del usuario que consulta.
+	 * @return Lista de tipos de contrato que cumplen con los criterios.
+	 */
+	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Collection<TipoContrato> result = new LinkedList<TipoContrato>();
+		
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+			
+			Root<Contrato> root = criteriaQuery.from(Contrato.class);
+			root.alias("root");
+			
+			Predicate where = new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, root);
+			
+			// Subquery con los roles subordinados del usuario
+			Subquery<UsuarioRolEmpresa> subqueryRolesSubordinados = criteriaQuery.subquery(UsuarioRolEmpresa.class);
+			Root<UsuarioRolEmpresa> subrootRolesSubordinados = subqueryRolesSubordinados.from(UsuarioRolEmpresa.class);
+			subrootRolesSubordinados.alias("subrootRolesSubordinados");
+			Join<Rol, Rol> joinRolesSubordinados = subrootRolesSubordinados.join("rol", JoinType.INNER).join("subordinados", JoinType.INNER);
+			Expression<Collection<Rol>> expressionRolesSubordinados = joinRolesSubordinados.get("subordinados");
+			
+			where = criteriaBuilder.and(
+				where,
+				criteriaBuilder.or(
+					// Asignados al usuario.
+					criteriaBuilder.equal(root.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario1")),
+					// Asignados a algún rol subordinado dentro de la empresa
+					criteriaBuilder.exists(
+						subqueryRolesSubordinados
+							.select(subrootRolesSubordinados)
+							.where(
+								criteriaBuilder.and(
+									criteriaBuilder.equal(subrootRolesSubordinados.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario2")),
+									criteriaBuilder.equal(subrootRolesSubordinados.get("empresa").get("id"), root.get("empresa").get("id")),
+									criteriaBuilder.isMember(root.get("rol").as(Rol.class), expressionRolesSubordinados)
+								)
+							)
+					)
+				)
+			);
+			
+			// Procesar las ordenaciones para los registros de la muestra
+			List<Order> orders = new LinkedList<Order>();
+			for (MetadataOrdenacion metadataOrdenacion : metadataConsulta.getMetadataOrdenaciones()) {
+				String[] campos = metadataOrdenacion.getCampo().split("\\.");
+				
+				Join<?, ?> join = null;
+				for (int j=0; j<campos.length - 1; j++) {
+					if (join != null) {
+						join = join.join(campos[j], JoinType.LEFT);
+					} else {
+						join = root.join(campos[j], JoinType.LEFT);
+					}
+				}
+				
+				if (metadataOrdenacion.getAscendente()) {
+					orders.add(
+						criteriaBuilder.asc(
+							join != null ? join.get(campos[campos.length - 1]) : root.get(campos[campos.length - 1])
+						)
+					);
+				} else {
+					orders.add(
+						criteriaBuilder.desc(
+							join != null ? join.get(campos[campos.length - 1]) : root.get(campos[campos.length - 1])
+						)
+					);
+				}
+			}
+			
+			criteriaQuery
+				.multiselect(
+					root.get("tipoContratoDescripcion")
+				).distinct(true)
+				.where(where)
+				.orderBy(orders);
+			
+			TypedQuery<Object[]> query = entityManager.createQuery(criteriaQuery);
+			
+			query.setParameter("usuario1", usuarioId);
+			query.setParameter("usuario2", usuarioId);
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			
+			// Setear los parámetros según las condiciones del filtro
+			int i = 0;
+			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
+				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
+					for (String valor : metadataCondicion.getValores()) {
+						String[] campos = metadataCondicion.getCampo().split("\\.");
+						
+						Path<Contrato> field = root;
+						Join<?, ?> join = null;
+						for (int j=0; j<campos.length - 1; j++) {
+							if (join != null) {
+								join = join.join(campos[j], JoinType.LEFT);
+							} else {
+								join = root.join(campos[j], JoinType.LEFT);
+							}
+						}
+						
+						if (join != null) {
+							field = join.get(campos[campos.length - 1]);
+						} else {
+							field = root.get(campos[campos.length - 1]);
+						}
+						
+						try {
+							if (field.getJavaType().equals(Date.class)) {
+								query.setParameter(
+									"p" + i,
+									format.parse(valor)
+								);
+							} else if (field.getJavaType().equals(Long.class)) {
+								query.setParameter(
+									"p" + i,
+									new Long(valor)
+								);
+							} else if (field.getJavaType().equals(String.class)) {
+								query.setParameter(
+									"p" + i,
+									valor
+								);
+							} else if (field.getJavaType().equals(Double.class)) {
+								query.setParameter(
+									"p" + i,
+									new Double(valor)
+								);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						
+						i++;
+					}
+					
+					if (metadataCondicion.getValores().size() == 0) {
+						i++;
+					}
+				}
+			}
+			
+			for (Object object : query.getResultList()) {
+				if (object != null) {
+					TipoContrato tipoContrato = new TipoContrato();
+					
+					// tipoContrato.setTipoContratoCodigo((String) fields[0]);
+					tipoContrato.setTipoContratoDescripcion((String) object);
+					
+					result.add(tipoContrato);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Procesa el archivo .csv de nombre fileName para la Empresa empresaId.
 	 * 
 	 * @param fileName El nombre del archivo a Importar.
@@ -376,7 +587,7 @@ public class ContratoBean implements IContratoBean {
 	 * @return String que informa cuántos MIDs se importarán, cuántos se sobreescribirán y cuántos se omitirán. 
 	 */
 	public String preprocesarArchivoEmpresa(String fileName, Long empresaId) {
-		String result = "";
+		String result = null;
 		
 		BufferedReader bufferedReader = null;
 		
@@ -397,6 +608,58 @@ public class ContratoBean implements IContratoBean {
 				mids.add(mid);
 			}
 			
+			Map<Long, Integer> map = this.preprocesarConjunto(mids, empresaId);
+			
+			Long importar = new Long(0);
+			Long sobreescribir = new Long(0);
+			Long omitir = new Long(0);
+			for (Entry<Long, Integer> entry : map.entrySet()) {
+				switch (entry.getValue()) {
+					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
+						importar++;
+						
+						break;
+					case Constants.__COMPROBACION_IMPORTACION_OMITIR:
+						omitir++;
+						
+						break;
+					case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
+						sobreescribir++;
+						
+						break;
+				}
+			}
+			
+			result =
+				"Se importarán " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
+				+ "Se omitirán " + omitir + " MIDs.";
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Procesa un conjunto de MIDs para la empresa empresaId.
+	 * 
+	 * @param empresaId ID de la empresa a la cual asignar los MIDs.
+	 * @param Colección de MIDs a procesar.
+	 * @return Map indicando para cada MID si se importará, sobreescribirá u omitirá.
+	 */
+	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids, Long empresaId) {
+		Map<Long, Integer> result = new HashMap<Long, Integer>();
+		
+		try {
 			Long estadoLlamarId = 
 				new Long(Configuration.getInstance().getProperty("estado.LLAMAR"));
 			Long estadoVendidoId = 
@@ -422,7 +685,7 @@ public class ContratoBean implements IContratoBean {
 			
 			TypedQuery<Long> queryVendidos = 
 				entityManager.createQuery(
-					"SELECT COUNT(c) AS cantidad"
+					"SELECT c.mid"
 					+ " FROM Contrato c"
 					+ " WHERE c.estado.id IN ("
 						+ " :estadoVendidoId, :estadoDistribuirId, :estadoActivarId, :estadoFaltaDocumentacionId,"
@@ -444,16 +707,13 @@ public class ContratoBean implements IContratoBean {
 			queryVendidos.setParameter("estadoReagendarId", estadoReagendarId);
 			queryVendidos.setParameter("mids", mids);
 			
-			Long noSobreescribir = new Long(0);
-			
-			List<Long> resultList = queryVendidos.getResultList();
-			if (resultList.size() > 0) {
-				noSobreescribir = resultList.get(0);
+			for (Long mid : queryVendidos.getResultList()) {
+				result.put(mid, Constants.__COMPROBACION_IMPORTACION_OMITIR);
 			}
 			
 			TypedQuery<Long> queryLlamar = 
 				entityManager.createQuery(
-					"SELECT COUNT(c) AS cantidad"
+					"SELECT mid"
 					+ " FROM Contrato c"
 					+ " WHERE c.empresa.id = :empresaId"
 					+ " AND c.estado.id = :estadoLlamarId"
@@ -464,30 +724,17 @@ public class ContratoBean implements IContratoBean {
 			queryLlamar.setParameter("estadoLlamarId", estadoLlamarId);
 			queryLlamar.setParameter("mids", mids);
 			
-			Long sobreescribir = new Long(0);
-			
-			resultList = queryLlamar.getResultList();
-			if (resultList.size() > 0) {
-				sobreescribir = resultList.get(0);
+			for (Long mid : queryLlamar.getResultList()) {
+				result.put(mid, Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR);
 			}
 			
-			Long nuevos = Math.max(0, mids.size() - sobreescribir - noSobreescribir);
-			sobreescribir = Math.max(0, mids.size() - nuevos - noSobreescribir);
-			
-			return 
-				"Se importarán " + nuevos + " MIDs nuevos.|"
-				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
-				+ "Se omitirán " + noSobreescribir + " MIDs.";
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (Exception e) {
-					e.printStackTrace();
+			for (Long mid : mids) {
+				if (!result.containsKey(mid)) {
+					result.put(mid, Constants.__COMPROBACION_IMPORTACION_IMPORTAR);
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return result;
@@ -690,10 +937,9 @@ public class ContratoBean implements IContratoBean {
 					+ " c.id,"
 					+ " c.estado_id"
 				+ " FROM contrato c"
+				+ " LEFT OUTER JOIN contrato_routing_history crh ON crh.contrato_id = c.id"
 				+ " WHERE c.fact = ?"
-				+ " AND NOT EXISTS ("
-					+ " SELECT 1 FROM contrato_routing_history WHERE contrato_id = c.id"
-				+ " )"
+				+ " AND crh.id IS NULL"
 			);
 			
 			insertContratoRoutingHistory.setParameter(0, hoy, DateType.INSTANCE);
@@ -892,7 +1138,7 @@ public class ContratoBean implements IContratoBean {
 	 * @return String con el resultado de la operación.
 	 */
 	public String addAsignacionManual(Long empresaId, Contrato contrato, Long loggedUsuarioId) {
-		String result = "Operación exitosa.";
+		String result = null;
 		
 		try {
 			Empresa empresa = iEmpresaBean.getById(empresaId);
@@ -994,6 +1240,8 @@ public class ContratoBean implements IContratoBean {
 				contratoRoutingHistoryNew.setUact(loggedUsuarioId);
 				
 				entityManager.persist(contratoRoutingHistoryNew);
+				
+				result = "Operación exitosa.";
 			} else {
 				result = "El MID ya fue vendido. No se puede asignar.";
 			}
@@ -1345,8 +1593,10 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			contrato.setFechaVenta(date);
-			contrato.setVendedor(contrato.getUsuario());
+			contrato.setVendedor(uact);
 			contrato.setEstado(estado);
 			contrato.setRol(rol);
 			contrato.setUsuario(null);
@@ -1366,12 +1616,13 @@ public class ContratoBean implements IContratoBean {
 			stockMovimiento.setFecha(date);
 			
 			stockMovimiento.setEmpresa(contrato.getEmpresa());
-			stockMovimiento.setProducto(contrato.getProducto());
+			stockMovimiento.setMarca(contrato.getMarca());
+			stockMovimiento.setModelo(contrato.getModelo());
 			stockMovimiento.setStockTipoMovimiento(stockTipoMovimiento);
 			
 			stockMovimiento.setFact(date);
 			stockMovimiento.setTerm(new Long(1));
-			stockMovimiento.setUact(contrato.getUact());
+			stockMovimiento.setUact(uact.getId());
 			
 			iStockMovimientoBean.save(stockMovimiento);
 			
@@ -1424,11 +1675,11 @@ public class ContratoBean implements IContratoBean {
 				
 				contratoOtraEmpresa.setFact(date);
 				contratoOtraEmpresa.setTerm(new Long(1));
-				contratoOtraEmpresa.setUact(contrato.getUact());
+				contratoOtraEmpresa.setUact(uact.getId());
 				
 				Contrato contratoOtraEmpresaManaged = this.update(contratoOtraEmpresa);
 				
-				this.asignar(null, rolGerenteDeEmpresa, contratoOtraEmpresaManaged, contrato.getUact());
+				this.asignar(null, rolGerenteDeEmpresa, contratoOtraEmpresaManaged, uact.getId());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1457,6 +1708,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
@@ -1485,7 +1738,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, contrato.getRol(), contratoManaged, contrato.getUact());
+			this.asignar(null, contrato.getRol(), contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1505,6 +1758,8 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.RELLAMAR"))
 				);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
@@ -1512,7 +1767,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Contrato contratoManaged = this.update(contrato);
 			
-			this.asignar(null, contratoManaged.getRol(), contratoManaged, contrato.getUact());
+			this.asignar(null, contratoManaged.getRol(), contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1536,13 +1791,15 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
 			contrato.setVendedor(contratoManaged.getVendedor());
 			
 			contrato.setFechaBackoffice(date);
-			contrato.setBackoffice(contrato.getUsuario());
+			contrato.setBackoffice(uact);
 			contrato.setEstado(estado);
 			contrato.setRol(rol);
 			contrato.setUsuario(null);
@@ -1552,7 +1809,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1575,6 +1832,8 @@ public class ContratoBean implements IContratoBean {
 			Rol rol = iRolBean.getById(
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion"))
 			);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
@@ -1599,7 +1858,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1627,6 +1886,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
@@ -1634,7 +1895,7 @@ public class ContratoBean implements IContratoBean {
 				
 				contrato.setRol(rolSupervisorCallCenter);
 				
-				contrato.setVendedor(contrato.getUsuario());
+				contrato.setVendedor(uact);
 			} else if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Backoffice")))) {
 				// Si estaba asignado a un Back-office lo dejamos en la "bandeja" de Supervisores de Back-office.
 				
@@ -1643,7 +1904,7 @@ public class ContratoBean implements IContratoBean {
 				contrato.setFechaVenta(contratoManaged.getFechaVenta());
 				contrato.setVendedor(contratoManaged.getVendedor());
 				contrato.setFechaBackoffice(date);
-				contrato.setBackoffice(contratoManaged.getUsuario());
+				contrato.setBackoffice(uact);
 			}
 			
 			contrato.setEstado(estado);
@@ -1655,7 +1916,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, contrato.getRol(), contratoManaged, contrato.getUact());
+			this.asignar(null, contrato.getRol(), contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1683,6 +1944,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
@@ -1690,7 +1953,7 @@ public class ContratoBean implements IContratoBean {
 				
 				contrato.setRol(rolSupervisorCallCenter);
 				
-				contrato.setVendedor(contrato.getUsuario());
+				contrato.setVendedor(uact);
 			} else if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Backoffice")))) {
 				// Si estaba asignado a un Back-office lo dejamos en la "bandeja" de Supervisores de Back-office.
 				
@@ -1699,7 +1962,7 @@ public class ContratoBean implements IContratoBean {
 				contrato.setFechaVenta(contratoManaged.getFechaVenta());
 				contrato.setVendedor(contratoManaged.getVendedor());
 				contrato.setFechaBackoffice(date);
-				contrato.setBackoffice(contratoManaged.getUsuario());
+				contrato.setBackoffice(uact);
 			}
 			
 			contrato.setEstado(estado);
@@ -1711,7 +1974,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			asignar(null, contrato.getRol(), contratoManaged, contrato.getUact());
+			asignar(null, contrato.getRol(), contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1732,6 +1995,8 @@ public class ContratoBean implements IContratoBean {
 				iEstadoBean.getById(
 					new Long(Configuration.getInstance().getProperty("estado.REAGENDAR"))
 				);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
 			
 			contrato.setEstado(estado);
 			
@@ -1770,7 +2035,7 @@ public class ContratoBean implements IContratoBean {
 				
 				contrato.setFechaVenta(contratoManaged.getFechaVenta());
 				contrato.setVendedor(contratoManaged.getVendedor());
-				contrato.setBackoffice(contratoManaged.getUsuario());
+				contrato.setBackoffice(uact);
 				contrato.setFechaBackoffice(date);
 				
 				contrato.setRol(contratoRoutingHistoryVendedor.getRol());
@@ -1804,6 +2069,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -1813,7 +2080,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			
 			contrato.setFechaDevolucionDistribuidor(date);
-			contrato.setDistribuidor(contrato.getUsuario());
+			contrato.setDistribuidor(contratoManaged.getUsuario());
 			contrato.setEstado(estado);
 			contrato.setRol(rol);
 			contrato.setUsuario(null);
@@ -1823,7 +2090,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1831,6 +2098,7 @@ public class ContratoBean implements IContratoBean {
 	
 	/**
 	 * Actualiza el Contrato a estado "NO FIRMA".
+	 * Mantiene el Distribuidor al que estaba asignado.
 	 * 
 	 * @param contrato a actualizar.
 	 */
@@ -1852,7 +2120,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			
 			contrato.setFechaDevolucionDistribuidor(date);
-			contrato.setDistribuidor(contrato.getUsuario());
+			contrato.setDistribuidor(contratoManaged.getUsuario());
 			contrato.setEstado(estado);
 			contrato.setRol(contratoManaged.getRol());
 			contrato.setUsuario(contrato.getUsuario());
@@ -1884,16 +2152,18 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
 			contrato.setVendedor(contratoManaged.getVendedor());
 			contrato.setBackoffice(contratoManaged.getBackoffice());
 			contrato.setFechaBackoffice(contratoManaged.getFechaBackoffice());
-			
 			contrato.setFechaEntregaDistribuidor(null);
 			contrato.setFechaDevolucionDistribuidor(null);
-			contrato.setDistribuidor(null);
+			contrato.setDistribuidor(contratoManaged.getDistribuidor());
+			
 			contrato.setEstado(estado);
 			contrato.setRol(rol);
 			contrato.setUsuario(null);
@@ -1903,7 +2173,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			asignar(null, rol, contratoManaged, contrato.getUact());
+			asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1927,6 +2197,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.Activador"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -1946,7 +2218,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			asignar(contratoManaged.getUsuario(), rol, contratoManaged, contrato.getUact());
+			asignar(contratoManaged.getUsuario(), rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1966,6 +2238,8 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.CONTROLANTEL"))
 				);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -1977,7 +2251,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
 			
 			contrato.setFechaEnvioAntel(date);
-			contrato.setActivador(contrato.getUsuario());
+			contrato.setActivador(uact);
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
@@ -2003,6 +2277,8 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.ACM"))
 				);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -2015,7 +2291,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
 			
 			contrato.setFechaActivacion(date);
-			contrato.setActivador(contrato.getUsuario());
+			contrato.setActivador(uact);
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
@@ -2045,6 +2321,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -2066,7 +2344,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2090,6 +2368,8 @@ public class ContratoBean implements IContratoBean {
 				new Long(Configuration.getInstance().getProperty("rol.Activador"))
 			);
 			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
 			contrato.setFechaVenta(contratoManaged.getFechaVenta());
@@ -2099,20 +2379,20 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
-			contrato.setActivador(contrato.getActivador());
+			contrato.setActivador(contratoManaged.getActivador());
 			
-			contrato.setCoordinador(contrato.getUsuario());
+			contrato.setCoordinador(uact);
 			contrato.setEstado(estado);
 			contrato.setFechaCoordinacion(date);
 			contrato.setRol(rol);
-			contrato.setUsuario(contrato.getActivador());
+			contrato.setUsuario(contratoManaged.getActivador());
 			
 			contrato.setFact(date);
 			contrato.setTerm(new Long(1));
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(contratoManaged.getActivador(), rol, contratoManaged, contrato.getUact());
+			this.asignar(contratoManaged.getActivador(), rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2132,11 +2412,11 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.NORECOORDINA"))
 				);
 			
-			contrato.setEstado(estado);
-			
 			Rol rol = iRolBean.getById(
 				new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion"))
 			);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
@@ -2149,7 +2429,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
 			contrato.setActivador(contratoManaged.getActivador());
 			
-			contrato.setCoordinador(contrato.getUsuario());
+			contrato.setCoordinador(uact);
 			contrato.setEstado(estado);
 			contrato.setFechaCoordinacion(date);
 			contrato.setRol(rol);
@@ -2160,7 +2440,188 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged = this.update(contrato);
 			
-			this.asignar(null, rol, contratoManaged, contrato.getUact());
+			this.asignar(null, rol, contratoManaged, uact.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Actualiza el Contrato a estado "CERRADO" y lo asigna a la "bandeja" de Supervisores de Activación.
+	 * 
+	 * @param contrato a actualizar.
+	 */
+	public void cerrar(Contrato contrato) {
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			Estado estado = 
+				iEstadoBean.getById(
+					new Long(Configuration.getInstance().getProperty("estado.CERRADO"))
+				);
+			
+			Rol rol = iRolBean.getById(
+				new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion"))
+			);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
+			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
+			
+			contrato.setFechaVenta(contratoManaged.getFechaVenta());
+			contrato.setVendedor(contratoManaged.getVendedor());
+			contrato.setBackoffice(contratoManaged.getBackoffice());
+			contrato.setFechaBackoffice(contratoManaged.getFechaBackoffice());
+			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
+			contrato.setDistribuidor(contratoManaged.getDistribuidor());
+			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
+			contrato.setActivador(contratoManaged.getActivador());
+			contrato.setCoordinador(contratoManaged.getCoordinador());
+			
+			contrato.setEstado(estado);
+			contrato.setRol(rol);
+			contrato.setUsuario(null);
+			
+			contrato.setFact(date);
+			contrato.setTerm(new Long(1));
+			
+			contratoManaged = this.update(contrato);
+			
+			this.asignar(null, rol, contratoManaged, uact.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Actualiza el Contrato a estado "GESTION INTERNA" y lo asigna a la "bandeja" de Supervisores de Activación.
+	 * 
+	 * @param contrato a actualizar.
+	 */
+	public void gestionInterna(Contrato contrato) {
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			Estado estado = 
+				iEstadoBean.getById(
+					new Long(Configuration.getInstance().getProperty("estado.GESTIONINTERNA"))
+				);
+			
+			Rol rol = iRolBean.getById(
+				new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion"))
+			);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
+			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
+			
+			contrato.setFechaVenta(contratoManaged.getFechaVenta());
+			contrato.setVendedor(contratoManaged.getVendedor());
+			contrato.setBackoffice(contratoManaged.getBackoffice());
+			contrato.setFechaBackoffice(contratoManaged.getFechaBackoffice());
+			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
+			contrato.setDistribuidor(contratoManaged.getDistribuidor());
+			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			
+			contrato.setActivador(null);
+			contrato.setEstado(estado);
+			
+			contrato.setFact(date);
+			contrato.setTerm(new Long(1));
+			
+			this.update(contrato);
+			
+			this.asignar(null, rol, contratoManaged, uact.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Actualiza el Contrato a estado "GESTION DISTRIBUCION" y lo asigna a la "bandeja" del Distribuidor.
+	 * 
+	 * @param contrato a actualizar.
+	 */
+	public void gestionDistribucion(Contrato contrato) {
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			Estado estado = 
+				iEstadoBean.getById(
+					new Long(Configuration.getInstance().getProperty("estado.GESTIONDISTRIBUCION"))
+				);
+			
+			Rol rol = iRolBean.getById(
+				new Long(Configuration.getInstance().getProperty("rol.Distribuidor"))
+			);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
+			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
+			
+			contrato.setFechaVenta(contratoManaged.getFechaVenta());
+			contrato.setVendedor(contratoManaged.getVendedor());
+			contrato.setBackoffice(contratoManaged.getBackoffice());
+			contrato.setFechaBackoffice(contratoManaged.getFechaBackoffice());
+			
+			contrato.setFechaEntregaDistribuidor(date);
+			contrato.setFechaDevolucionDistribuidor(null);
+			contrato.setDistribuidor(null);
+			contrato.setEstado(estado);
+			contrato.setRol(rol);
+			contrato.setUsuario(contratoManaged.getUsuario());
+			
+			contrato.setFact(date);
+			contrato.setTerm(new Long(1));
+			
+			contratoManaged = this.update(contrato);
+			
+			this.asignar(contrato.getUsuario(), rol, contratoManaged, uact.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Actualiza el Contrato a estado "EQUIPO PERDIDO".
+	 * 
+	 * @param contrato a actualizar.
+	 */
+	public void equipoPerdido(Contrato contrato) {
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			Estado estado = 
+				iEstadoBean.getById(
+					new Long(Configuration.getInstance().getProperty("estado.EQUIPOPERDIDO"))
+				);
+			
+			Rol rol = iRolBean.getById(
+				new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion"))
+			);
+			
+			Usuario uact = iUsuarioBean.getById(contrato.getUact());
+			
+			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
+			
+			contrato.setFechaVenta(contratoManaged.getFechaVenta());
+			contrato.setVendedor(contratoManaged.getVendedor());
+			contrato.setBackoffice(contratoManaged.getBackoffice());
+			contrato.setFechaBackoffice(contratoManaged.getFechaBackoffice());
+			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
+			contrato.setDistribuidor(contratoManaged.getDistribuidor());
+			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			
+			contrato.setActivador(null);
+			contrato.setEstado(estado);
+			
+			contrato.setFact(date);
+			contrato.setTerm(new Long(1));
+			
+			this.update(contrato);
+			
+			this.asignar(null, rol, contratoManaged, uact.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2216,9 +2677,12 @@ public class ContratoBean implements IContratoBean {
 //				+ ";Dirección de factura"
 //				+ ";Teléfono de contacto"
 				+ ";E-mail"
-//				+ ";Número de factura"
-//				+ ";Precio"
+				+ ";Número de factura"
+				+ ";Número de factura River Green"
+				+ ";Precio"
 				+ ";Nuevo plan"
+				+ ";Forma de pago"
+				+ ";Tarjeta de crédito"
 				+ ";Número de serie"
 				+ ";Observaciones"
 				+ ";Fecha de venta"
@@ -2240,7 +2704,7 @@ public class ContratoBean implements IContratoBean {
 //				+ ";Rol"
 				+ ";Usuario"
 				+ ";Vendedor"
-//				+ ";Back-office"
+				+ ";Back-office"
 				+ ";Distribuidor"
 //				+ ";Activador"
 //				+ ";Coordinador"
@@ -2314,14 +2778,23 @@ public class ContratoBean implements IContratoBean {
 					+ ";" + (contrato.getEmail() != null ?
 						contrato.getEmail()
 						: "")
-//					+ ";" + (contrato.getNumeroFactura() != null ?
-//						contrato.getNumeroFactura()
-//						: "")
-//					+ ";" + (contrato.getPrecio() != null ?
-//						contrato.getPrecio()
-//						: "")
+					+ ";" + (contrato.getNumeroFactura() != null ?
+						contrato.getNumeroFactura()
+						: "")
+					+ ";" + (contrato.getNumeroFacturaRiverGreen() != null ?
+						contrato.getNumeroFacturaRiverGreen()
+						: "")
+					+ ";" + (contrato.getPrecio() != null ?
+						contrato.getPrecio()
+						: "")
 					+ ";" + (contrato.getNuevoPlan() != null ?
-						contrato.getNuevoPlan()
+						contrato.getNuevoPlan().getAbreviacion()
+						: "")
+					+ ";" + (contrato.getFormaPago() != null ?
+						contrato.getFormaPago().getDescripcion()
+						: "")
+					+ ";" + (contrato.getTarjetaCredito() != null ?
+						contrato.getTarjetaCredito().getNombre()
 						: "")
 					+ ";" + (contrato.getNumeroSerie() != null ?
 						contrato.getNumeroSerie()
@@ -2370,7 +2843,11 @@ public class ContratoBean implements IContratoBean {
 //						: "")
 					+ ";" + (contrato.getProducto() != null ?
 						contrato.getProducto().getDescripcion()
-						: "")
+						: (contrato.getModelo() != null ? 
+							contrato.getModelo().getDescripcion() 
+							: ""
+						)
+					)
 					+ ";" + (contrato.getEstado() != null ?
 						contrato.getEstado().getNombre()
 						: "")
@@ -2385,9 +2862,9 @@ public class ContratoBean implements IContratoBean {
 						: "")
 					+ ";" + (contrato.getVendedor() != null ?
 						contrato.getVendedor().getNombre()
-//						: "")
-//					+ ";" + (contrato.getBackoffice() != null ?
-//						contrato.getBackoffice().getNombre()
+						: "")
+					+ ";" + (contrato.getBackoffice() != null ?
+						contrato.getBackoffice().getNombre()
 //						: "")
 					+ ";" + (contrato.getDistribuidor() != null ?
 						contrato.getDistribuidor().getNombre()
@@ -2398,6 +2875,190 @@ public class ContratoBean implements IContratoBean {
 //					+ ";" + (contrato.getCoordinador() != null ?
 //						contrato.getCoordinador().getNombre()
 						: "");
+				
+				printWriter.println(line.replaceAll("\n", ""));
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado según: YYYYMMDDHHmmSS en la carpeta de exportación del sistema.
+	 * El archivo generado tendrá el formato especificado para enviar a Núcleo.
+	 * 
+	 * @param metadataConsulta Criterios de la consulta.
+	 * @param loggedUsuarioId ID del Usuario que consulta.
+	 */
+	public String exportarAExcelNucleo(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		String result = null;
+		
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName = 
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
+			
+			Map<Long, Long> codigosDepartamentos = new HashMap<Long, Long>();
+			codigosDepartamentos.put(new Long(1), new Long(11)); //"MONTEVIDEO"
+			codigosDepartamentos.put(new Long(2), new Long(90)); //"CANELONES"
+			codigosDepartamentos.put(new Long(3), new Long(55)); //"ARTIGAS"
+			codigosDepartamentos.put(new Long(4), new Long(50)); //"SALTO"
+			codigosDepartamentos.put(new Long(5), new Long(60)); //"PAYSANDU"
+			codigosDepartamentos.put(new Long(6), new Long(65)); //"RIO NEGRO"
+			codigosDepartamentos.put(new Long(7), new Long(75)); //"SORIANO"
+			codigosDepartamentos.put(new Long(8), new Long(70)); //"COLONIA"
+			codigosDepartamentos.put(new Long(9), new Long(85)); //"FLORES"
+			codigosDepartamentos.put(new Long(10), new Long(94)); //"FLORIDA"
+			codigosDepartamentos.put(new Long(11), new Long(97)); //"DURAZNO"
+			codigosDepartamentos.put(new Long(12), new Long(30)); //"LAVALLEJA"
+			codigosDepartamentos.put(new Long(13), new Long(20)); //"MALDONADO"
+			codigosDepartamentos.put(new Long(14), new Long(27)); //"ROCHA"
+			codigosDepartamentos.put(new Long(15), new Long(33)); //"TREINTA Y TRES"
+			codigosDepartamentos.put(new Long(16), new Long(37)); //"CERRO LARGO"
+			codigosDepartamentos.put(new Long(17), new Long(40)); //"RIVERA"
+			codigosDepartamentos.put(new Long(18), new Long(45)); //"TACUAREMBO"
+			codigosDepartamentos.put(new Long(19), new Long(80)); //"SAN JOSE"
+
+			
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
+			
+//			printWriter.println(
+//				"Tipo de documento"
+//				+ ";Documento"
+//				+ ";Nombre primario"
+//				+ ";Nombre secundario"
+//				+ ";Apellido primario"
+//				+ ";Apellido secundario"
+//				+ ";Fecha de nacimiento"
+//				+ ";Sexo"
+//				+ ";Estado civil"
+//				+ ";Nacionalidad"
+//				+ ";Fecha de vencimiento de documento"
+//				+ ";Email"
+//				+ ";Calle"
+//				+ ";Número de casa"
+//				+ ";Número de apartamento"
+//				+ ";Esquina"
+//				+ ";Solar,Senda,Block,MZ"
+//				+ ";Código postal"
+//				+ ";Departamento"
+//				+ ";Teléfono"
+//				+ ";Celular"
+//				+ ";Teléfono especial"
+//				+ ";Ocupación"
+//				+ ";Teléfono trabajo"
+//				+ ";Fecha ingreso"
+//				+ ";Departamento"
+//				+ ";Barrio"
+//				+ ";Calle"
+//				+ ";Número"
+//				+ ";Apt/esq/block/solar/manzana"
+//				+ ";Código postal"
+//				+ ";Nombre empresa"
+//				+ ";Comprobante"
+//				+ ";Salario nominal"
+//				+ ";Salario líquido"
+//				+ ";Tarjeta de crédito"
+//				+ ";Límite"
+//				+ ";Otra tarjeta de crédito"
+//				+ ";Límite"
+//				+ ";Clearing"
+//				+ ";Producto"
+//				+ ";Monto solicitado"
+//				+ ";Cuotas"
+//				+ ";Intereses"
+//				+ ";Gastos administrativos"
+//				+ ";Gastos de concesión"
+//				+ ";Valor cuota"
+//				+ ";Fecha venta"
+// Se modifica la fecha de venta por la fecha de activación.
+//				+ ";Fecha activación"
+//				+ ";Unidad Indexada"
+//				+ ";Número de trámite"
+//			);
+			
+			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			
+			String valorNoDisponible = Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.formatoArchivoNucleo.valorNoDisponible");
+			String producto = Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.formatoArchivoNucleo.producto");
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			DecimalFormat decimalFormat = new DecimalFormat("#.##");
+			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
+				Contrato contrato = (Contrato) object;
+				
+				String line = 
+					// Para Núcleo, 1 - Cédula de identidad, 2 - RUT. Por ahora son iguales a Logística.
+					(contrato.getTipoDocumento() != null ? contrato.getTipoDocumento().getId() : valorNoDisponible)
+					+ ";" + (contrato.getDocumento() != null ? contrato.getDocumento().replace("-", "") : valorNoDisponible)
+					+ ";" + (contrato.getNombre() != null ? contrato.getNombre() : valorNoDisponible)
+					+ ";" + valorNoDisponible
+					+ ";" + (contrato.getApellido() != null ? contrato.getApellido() : valorNoDisponible)
+					+ ";" + valorNoDisponible
+					+ ";" + (contrato.getFechaNacimiento() != null ? dateFormat.format(contrato.getFechaNacimiento()) : valorNoDisponible)
+					+ ";" + (contrato.getSexo() != null ? contrato.getSexo().getDescripcion().substring(0, 1) : valorNoDisponible)
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + (contrato.getEmail() != null ? contrato.getEmail() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionEntregaCalle() != null ? contrato.getDireccionEntregaCalle() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionEntregaNumero() != null ? contrato.getDireccionEntregaNumero() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionEntregaApto() != null ? contrato.getDireccionEntregaApto() : valorNoDisponible)
+					+ ";" + valorNoDisponible
+					+ ";" + (contrato.getDireccionEntregaSolar() != null ? contrato.getDireccionEntregaSolar() : valorNoDisponible) //+ " - " + contrato.getDireccionEntregaBlock() + " - " + contrato.getDireccionEntregaManzana()
+					+ ";" + (contrato.getCodigoPostal() != null ? contrato.getCodigoPostal() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionEntregaDepartamento() != null ? codigosDepartamentos.get(contrato.getDireccionEntregaDepartamento().getId()) : valorNoDisponible)
+					+ ";" + (contrato.getTelefonoContacto() != null ? contrato.getTelefonoContacto() : valorNoDisponible)
+					+ ";" + (contrato.getTelefonoContacto() != null ? contrato.getTelefonoContacto() : valorNoDisponible)
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					// TODO Ver si hay más productos
+					+ ";" + producto
+					+ ";" + (contrato.getPrecio() != null ? decimalFormat.format(Math.round(contrato.getPrecio())) : valorNoDisponible)
+					+ ";" + (contrato.getCuotas() != null ? decimalFormat.format(contrato.getCuotas()) : valorNoDisponible)
+					+ ";" + (contrato.getIntereses() != null ? decimalFormat.format(Math.round(contrato.getIntereses())) : valorNoDisponible)
+					+ ";" + (contrato.getGastosAdministrativosTotales() != null ? decimalFormat.format(Math.round(contrato.getGastosAdministrativosTotales())) : valorNoDisponible)
+//					+ ";" + (contrato.getGastosConcesion() != null ? decimalFormat.format(Math.round(contrato.getGastosConcesion())) : valorNoDisponible)
+					+ ";" + (contrato.getValorCuota() != null ? decimalFormat.format(Math.round(contrato.getValorCuota())) : valorNoDisponible)
+//					+ ";" + (contrato.getFechaVenta() != null ? dateFormat.format(contrato.getFechaVenta()) : valorNoDisponible)
+					+ ";" + (contrato.getFechaActivarEn() != null ? dateFormat.format(contrato.getFechaActivarEn()) : valorNoDisponible)
+					+ ";" + (contrato.getValorUnidadIndexada() != null ? decimalFormat.format(contrato.getValorUnidadIndexada()) : valorNoDisponible)
+					+ ";" + contrato.getNumeroTramite();
 				
 				printWriter.println(line.replaceAll("\n", ""));
 			}

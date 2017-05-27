@@ -33,10 +33,12 @@ import uy.com.amensg.logistica.util.MD5Utils;
 public class UsuarioDWR {
 
 	private IUsuarioBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = UsuarioBean.class.getSimpleName();
 		String remoteInterfaceName = IUsuarioBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IUsuarioBean) context.lookup(lookupName);
@@ -180,8 +182,9 @@ public class UsuarioDWR {
 	public static UsuarioTO transform(Usuario usuario, boolean transformCollections) {
 		UsuarioTO usuarioTO = new UsuarioTO();
 		
-		usuarioTO.setLogin(usuario.getLogin());
 		usuarioTO.setContrasena(usuario.getContrasena());
+		usuarioTO.setDocumento(usuario.getDocumento());
+		usuarioTO.setLogin(usuario.getLogin());
 		usuarioTO.setNombre(usuario.getNombre());
 
 		if (transformCollections) {
@@ -221,11 +224,12 @@ public class UsuarioDWR {
 	public static Usuario transform(UsuarioTO usuarioTO) {
 		Usuario usuario = new Usuario();
 		
-		usuario.setLogin(usuarioTO.getLogin());
-		
 		if (usuarioTO.getContrasena() != null) {
 			usuario.setContrasena(MD5Utils.stringToMD5(usuarioTO.getContrasena()));
 		}
+		
+		usuario.setDocumento(usuarioTO.getDocumento());
+		usuario.setLogin(usuarioTO.getLogin());
 		usuario.setNombre(usuarioTO.getNombre());
 		
 		if (usuarioTO.getUsuarioRolEmpresas() != null) {

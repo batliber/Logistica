@@ -8,6 +8,7 @@ public class MenuTO extends BaseTO {
 	private String titulo;
 	private String url;
 	private Long orden;
+	private Long padre;
 
 	public String getTitulo() {
 		return titulo;
@@ -31,5 +32,13 @@ public class MenuTO extends BaseTO {
 
 	public void setOrden(Long orden) {
 		this.orden = orden;
+	}
+
+	public Long getPadre() {
+		return padre;
+	}
+
+	public void setPadre(Long padre) {
+		this.padre = padre;
 	}
 }

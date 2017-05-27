@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -23,8 +24,16 @@ public class StockMovimiento extends BaseEntity {
 	@Column(name = "documento_id")
 	private Long documentoId;
 	
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "producto_id", nullable = false)
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "marca_id", nullable = true)
+	private Marca marca;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "modelo_id", nullable = true)
+	private Modelo modelo;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "producto_id", nullable = true)
 	private Producto producto;
 
 	@ManyToOne(optional = false)
@@ -59,6 +68,22 @@ public class StockMovimiento extends BaseEntity {
 		this.documentoId = documentoId;
 	}
 
+	public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca marca) {
+		this.marca = marca;
+	}
+
+	public Modelo getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(Modelo modelo) {
+		this.modelo = modelo;
+	}
+	
 	public Producto getProducto() {
 		return producto;
 	}

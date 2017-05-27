@@ -11,6 +11,7 @@ $(document).ready(function() {
 			tdEstadoNombre: { campo: "estado.nombre", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_STRING },
 			tdUsuarioAutorNombre: { campo: "usuarioAct.nombre", descripcion: "Autor", abreviacion: "Autor", tipo: __TIPO_CAMPO_STRING }
 		}, 
+		false,
 		reloadData,
 		trHistoricoOnClick
 	);

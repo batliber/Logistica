@@ -30,10 +30,12 @@
 }
 
 #divDisponibilidadEntrega {
-	
+	float: left;
+	width: 70%;
 }
 
 .divTitulo {
+	float: left;
 	width: 100%;
 	font-weight: bold;
 	text-align: center;
@@ -53,7 +55,7 @@
 
 .divInput {
 	float: left;
-	width: 75px;
+	width: 50px;
 }
 
 .inputCantidad {

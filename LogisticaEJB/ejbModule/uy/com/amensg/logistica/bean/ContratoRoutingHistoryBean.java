@@ -195,6 +195,11 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 									"p" + i,
 									new Double(valor)
 								);
+							} else if (field.getJavaType().equals(Boolean.class)) {
+								query.setParameter(
+									"p" + i,
+									new Boolean(valor)
+								);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -333,6 +338,11 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 								queryCount.setParameter(
 									"p" + i,
 									new Double(valor)
+								);
+							} else if (field.getJavaType().equals(Boolean.class)) {
+								queryCount.setParameter(
+									"p" + i,
+									new Boolean(valor)
 								);
 							}
 						} catch (Exception e) {

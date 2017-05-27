@@ -1,5 +1,7 @@
 var __ROL_ADMINISTRADOR = 1;
 
+var mode = __FORM_MODE_USER;
+
 var grid = null;
 
 $(document).ready(function() {
@@ -10,6 +12,7 @@ $(document).ready(function() {
 		{
 			tdEmpresaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 } 
 		}, 
+		false,
 		reloadData,
 		trEmpresaOnClick
 	);
@@ -103,9 +106,7 @@ function reloadData() {
 function trEmpresaOnClick(eventObject) {
 	var target = eventObject.currentTarget;
 	
-	var formMode = __FORM_MODE_NEW;
-	
-	document.getElementById("iFrameEmpresa").src = "./empresa_edit.jsp?m=" + formMode + "&id=" + $(target).attr("id");
+	document.getElementById("iFrameEmpresa").src = "./empresa_edit.jsp?m=" + mode + "&id=" + $(target).attr("id");
 	showPopUp(document.getElementById("divIFrameEmpresa"));
 }
 

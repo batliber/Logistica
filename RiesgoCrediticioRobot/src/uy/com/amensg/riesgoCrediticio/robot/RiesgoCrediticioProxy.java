@@ -9,6 +9,7 @@ public class RiesgoCrediticioProxy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioACM(
+		String empresaId,
 		String documento,
 		String fechaCelular,
 		String deudaCelular,
@@ -22,6 +23,7 @@ public class RiesgoCrediticioProxy {
 		String estadoDeudaClienteFijo,
 		String numeroClienteMovil) {
 		iConnectionStrategy.actualizarDatosRiesgoCrediticioACM(
+			empresaId,
 			documento,
 			fechaCelular,
 			deudaCelular,
@@ -38,6 +40,7 @@ public class RiesgoCrediticioProxy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String empresaId,
 		String documento,
 		String periodo,
 		String nombreCompleto,
@@ -53,6 +56,7 @@ public class RiesgoCrediticioProxy {
 		String otorgantesGarantias
 	) {
 		iConnectionStrategy.actualizarDatosRiesgoCrediticioBCU(
+			empresaId,
 			documento,
 			periodo,
 			nombreCompleto,
@@ -70,6 +74,7 @@ public class RiesgoCrediticioProxy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String empresaId,
 		String documento,
 		String institucionFinanciera,
 		String calificacion,
@@ -79,6 +84,7 @@ public class RiesgoCrediticioProxy {
 		String contingencias
 	) {
 		iConnectionStrategy.actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+			empresaId,
 			documento,
 			institucionFinanciera,
 			calificacion,
@@ -105,7 +111,8 @@ public class RiesgoCrediticioProxy {
 				args[9],
 				args[10],
 				args[11],
-				args[12]
+				args[12],
+				args[13]
 			);
 		} else if (args[0].equals("actualizarDatosRiesgoCrediticioBCU")) {
 			new RiesgoCrediticioProxy().actualizarDatosRiesgoCrediticioBCU(
@@ -121,7 +128,8 @@ public class RiesgoCrediticioProxy {
 				args[10],
 				args[11],
 				args[12],
-				args[13]
+				args[13],
+				args[14]
 			);
 		} else if (args[0].equals("actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera")) {
 			new RiesgoCrediticioProxy().actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
@@ -131,7 +139,8 @@ public class RiesgoCrediticioProxy {
 				args[4],
 				args[5],
 				args[6],
-				args[7]
+				args[7],
+				args[8]
 			);
 		}
 	}

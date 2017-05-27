@@ -2,15 +2,22 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Empresa;
+import uy.com.amensg.logistica.entities.Marca;
+import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Producto;
 import uy.com.amensg.logistica.entities.StockMovimiento;
+import uy.com.amensg.logistica.entities.StockTipoMovimiento;
+import uy.com.amensg.logistica.util.Configuration;
 
 @Stateless
 public class StockMovimientoBean implements IStockMovimientoBean {
@@ -18,15 +25,23 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
 	private EntityManager entityManager;
 	
+	@EJB
+	IProductoBean iProductoBean;
+	
+	@EJB
+	IStockTipoMovimientoBean iStockTipoMovimientoBean;
+	
+	@EJB
+	IEmpresaBean iEmpresaBean;
+	
 	public Collection<StockMovimiento> listStockActual() {
 		Collection<StockMovimiento> result = new LinkedList<StockMovimiento>();
 		
 		try {
 			Query query = entityManager.createQuery(
-				"SELECT s.empresa.id, s.producto.id, SUM(s.cantidad) AS cantidad"
+				"SELECT s.empresa.id, s.marca.id, s.modelo.id, SUM(s.cantidad) AS cantidad"
 				+ " FROM StockMovimiento s"
-				+ " WHERE s.producto.fechaBaja IS NULL"
-				+ " GROUP BY s.empresa.id, s.producto.id"
+				+ " GROUP BY s.empresa.id, s.marca.id, s.modelo.id"
 			);
 			
 			for (Object object : query.getResultList()) {
@@ -34,15 +49,19 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 				
 				StockMovimiento stockMovimiento = new StockMovimiento();
 				
-				stockMovimiento.setCantidad((Long) values[2]);
-				
 				Empresa empresa = entityManager.find(Empresa.class, (Long) values[0]);
 				
 				stockMovimiento.setEmpresa(empresa);
 				
-				Producto producto = entityManager.find(Producto.class, (Long) values[1]);
+				Marca marca = entityManager.find(Marca.class, (Long) values[1]);
 				
-				stockMovimiento.setProducto(producto);
+				stockMovimiento.setMarca(marca);
+				
+				Modelo modelo = entityManager.find(Modelo.class, (Long) values[2]);
+				
+				stockMovimiento.setModelo(modelo);
+				
+				stockMovimiento.setCantidad((Long) values[3]);
 				
 				result.add(stockMovimiento);
 			}
@@ -58,11 +77,11 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 		
 		try {
 			Query query = entityManager.createQuery(
-				"SELECT s.producto.id, SUM(s.cantidad) AS cantidad"
+				"SELECT s.marca.id, s.modelo.id, SUM(s.cantidad) AS cantidad"
 				+ " FROM StockMovimiento s"
 				+ " WHERE s.empresa.id = :empresaId"
-				+ " AND s.producto.fechaBaja IS NULL"
-				+ " GROUP BY s.producto.id"
+				+ " AND s.modelo.fechaBaja IS NULL"
+				+ " GROUP BY s.marca.id, s.modelo.id"
 			);
 			query.setParameter("empresaId", id);
 			
@@ -71,11 +90,15 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 				
 				StockMovimiento stockMovimiento = new StockMovimiento();
 				
-				stockMovimiento.setCantidad((Long) values[1]);
+				Marca marca = entityManager.find(Marca.class, (Long) values[0]);
 				
-				Producto producto = entityManager.find(Producto.class, (Long) values[0]);
+				stockMovimiento.setMarca(marca);
 				
-				stockMovimiento.setProducto(producto);
+				Modelo modelo = entityManager.find(Modelo.class, (Long) values[1]);
+				
+				stockMovimiento.setModelo(modelo);
+				
+				stockMovimiento.setCantidad((Long) values[2]);
 				
 				result.add(stockMovimiento);
 			}
@@ -86,9 +109,124 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 		return result;
 	}
 
+	public Collection<StockMovimiento> listByIMEI(String imei) {
+		Collection<StockMovimiento> result = new LinkedList<StockMovimiento>();
+		
+		try {
+			Producto producto = iProductoBean.getByIMEI(imei);
+			
+			TypedQuery<StockMovimiento> query = 
+				entityManager.createQuery(
+					"SELECT sm"
+					+ " FROM StockMovimiento sm"
+					+ " WHERE sm.producto = :producto"
+					+ " ORDER BY sm.id DESC", 
+					StockMovimiento.class
+				);
+			query.setParameter("producto", producto);
+			
+			for (StockMovimiento stockMovimiento : query.getResultList()) {
+				result.add(stockMovimiento);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public StockMovimiento getLastByIMEI(String imei) {
+		StockMovimiento result = null;
+		
+		try {
+			TypedQuery<StockMovimiento> query =
+				entityManager.createQuery(
+					"SELECT sm"
+					+ " FROM StockMovimiento sm"
+					+ " WHERE sm.producto.imei = :imei"
+					+ " ORDER BY sm.id DESC",
+					StockMovimiento.class
+				);
+			query.setParameter("imei", imei);
+			query.setMaxResults(1);
+			
+			List<StockMovimiento> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				result = resultList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public void save(StockMovimiento stockMovimiento) {
 		try {
 			entityManager.persist(stockMovimiento);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void save(Collection<StockMovimiento> stockMovimientos) {
+		try {
+			for (StockMovimiento stockMovimiento : stockMovimientos) {
+				if (stockMovimiento.getProducto().getId() == null) {
+					entityManager.persist(stockMovimiento.getProducto());
+				}
+				
+				entityManager.persist(stockMovimiento);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void transferir(Collection<StockMovimiento> stockMovimientos, Long empresaDestinoId) {
+		try {
+			StockTipoMovimiento stockTipoMovimientoBaja =
+				iStockTipoMovimientoBean.getById(new Long(Configuration.getInstance().getProperty("stockTipoMovimiento.BajaPorTransferencia")));
+			
+			StockTipoMovimiento stockTipoMovimientoAlta =
+				iStockTipoMovimientoBean.getById(new Long(Configuration.getInstance().getProperty("stockTipoMovimiento.AltaPorTransferencia")));
+			
+			Empresa empresaDestino = 
+				iEmpresaBean.getById(empresaDestinoId);
+			
+			for (StockMovimiento stockMovimiento : stockMovimientos) {
+				StockMovimiento stockMovimientoBaja = new StockMovimiento();
+				stockMovimientoBaja.setCantidad(new Long(1) * stockTipoMovimientoBaja.getSigno());
+				stockMovimientoBaja.setDocumentoId(new Long(-1));
+				stockMovimientoBaja.setEmpresa(stockMovimiento.getEmpresa());
+				stockMovimientoBaja.setFecha(stockMovimiento.getFact());
+				stockMovimientoBaja.setMarca(stockMovimiento.getMarca());
+				stockMovimientoBaja.setModelo(stockMovimiento.getModelo());
+				stockMovimientoBaja.setProducto(stockMovimiento.getProducto());
+				stockMovimientoBaja.setStockTipoMovimiento(stockTipoMovimientoBaja);
+				
+				stockMovimientoBaja.setFact(stockMovimiento.getFact());
+				stockMovimientoBaja.setTerm(stockMovimiento.getTerm());
+				stockMovimientoBaja.setUact(stockMovimiento.getUact());
+				
+				entityManager.persist(stockMovimientoBaja);
+				
+				StockMovimiento stockMovimientoAlta = new StockMovimiento();
+				stockMovimientoAlta.setCantidad(new Long(1) * stockTipoMovimientoAlta.getSigno());
+				stockMovimientoAlta.setDocumentoId(new Long(1));
+				stockMovimientoAlta.setEmpresa(empresaDestino);
+				stockMovimientoAlta.setFecha(stockMovimiento.getFact());
+				stockMovimientoAlta.setMarca(stockMovimiento.getMarca());
+				stockMovimientoAlta.setModelo(stockMovimiento.getModelo());
+				stockMovimientoAlta.setProducto(stockMovimiento.getProducto());
+				stockMovimientoAlta.setStockTipoMovimiento(stockTipoMovimientoAlta);
+				
+				stockMovimientoAlta.setFact(stockMovimiento.getFact());
+				stockMovimientoAlta.setTerm(stockMovimiento.getTerm());
+				stockMovimientoAlta.setUact(stockMovimiento.getUact());
+				
+				entityManager.persist(stockMovimientoAlta);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

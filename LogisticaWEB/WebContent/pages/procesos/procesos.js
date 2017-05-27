@@ -2,20 +2,21 @@ var grid = null;
 
 $(document).ready(function() {
 	grid = new Grid(
-			document.getElementById("divTableProcesos"),
-			{
-				tdFechaInicio: { campo: "fechaInicio", descripcion: "Fecha de inicio", abreviacion: "Inicio", tipo: __TIPO_CAMPO_FECHA },
-				tdFechaFin: { campo: "fechaFin", descripcion: "Fecha de fin", abreviacion: "Fin", tipo: __TIPO_CAMPO_FECHA },
-				tdObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING, ancho: 400 },
-				tdCantidadRegistrosParaProcesar: { campo: "cantidadRegistrosParaProcesar", descripcion: "Para procesar", abreviacion: "Para procesar", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-				tdCantidadRegistrosEnProceso: { campo: "cantidadRegistrosEnProceso", descripcion: "En proceso", abreviacion: "En proceso", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-				tdCantidadRegistrosParaProcesarPrioritario: { campo: "cantidadRegistrosParaProcesarPrioritario", descripcion: "Para procesar prioritario", abreviacion: "Prioritarios", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-				tdCantidadRegistrosProcesado: { campo: "cantidadRegistrosProcesado", descripcion: "Procesados", abreviacion: "Procesados", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-				tdCantidadRegistrosListaVacia: { campo: "cantidadRegistrosListaVacia", descripcion: "Lista vacía", abreviacion: "Lista vacía", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 }
-			}, 
-			reloadData,
-			trProcesoOnClick
-		);
+		document.getElementById("divTableProcesos"),
+		{
+			tdFechaInicio: { campo: "fechaInicio", descripcion: "Fecha de inicio", abreviacion: "Inicio", tipo: __TIPO_CAMPO_FECHA },
+			tdFechaFin: { campo: "fechaFin", descripcion: "Fecha de fin", abreviacion: "Fin", tipo: __TIPO_CAMPO_FECHA },
+			tdObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING, ancho: 400 },
+			tdCantidadRegistrosParaProcesar: { campo: "cantidadRegistrosParaProcesar", descripcion: "Para procesar", abreviacion: "Para procesar", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+			tdCantidadRegistrosEnProceso: { campo: "cantidadRegistrosEnProceso", descripcion: "En proceso", abreviacion: "En proceso", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+			tdCantidadRegistrosParaProcesarPrioritario: { campo: "cantidadRegistrosParaProcesarPrioritario", descripcion: "Para procesar prioritario", abreviacion: "Prioritarios", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+			tdCantidadRegistrosProcesado: { campo: "cantidadRegistrosProcesado", descripcion: "Procesados", abreviacion: "Procesados", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+			tdCantidadRegistrosListaVacia: { campo: "cantidadRegistrosListaVacia", descripcion: "Lista vacï¿½a", abreviacion: "Lista vacï¿½a", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 }
+		}, 
+		false,
+		reloadData,
+		trProcesoOnClick
+	);
 		
 	grid.rebuild();
 	

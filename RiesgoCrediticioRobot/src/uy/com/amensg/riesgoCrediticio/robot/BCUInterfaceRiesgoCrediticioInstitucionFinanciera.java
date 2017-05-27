@@ -19,6 +19,14 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		
 		// Parsear los parámetros tipados.
 		
+		// empresaId
+		try {
+			result.add(new Long(iterator.next()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.add(null);
+		}
+		
 		// documento
 		result.add(iterator.next());
 		
@@ -69,15 +77,20 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		PreparedStatement preparedStatement = this.connection.prepareStatement(
 			"SELECT COUNT(0)"
 			+ " FROM bcu_interface_riesgo_crediticio_institucion_financiera"
-			+ " WHERE documento = ? AND institucion_financiera = ?" 
+			+ " WHERE empresa_id = ? documento = ? AND institucion_financiera = ?" 
 		);
 		
 		Iterator<Object> iterator = parsedParameters.iterator();
 		
+		Long empresaId = (Long) iterator.next();
+		String documento = (String) iterator.next();
+		String institucionFinanciera = (String) iterator.next();
+		
 		int parameterCount = 1;
 		
-		preparedStatement.setString(parameterCount++, (String) iterator.next());
-		preparedStatement.setString(parameterCount++, (String) iterator.next());
+		preparedStatement.setLong(parameterCount++, empresaId);
+		preparedStatement.setString(parameterCount++, documento);
+		preparedStatement.setString(parameterCount++, institucionFinanciera);
 		
 		Long count = null;
 		
@@ -100,6 +113,8 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		
 		Iterator<Object> iterator = parsedParameters.iterator();
 		int parameterIndex = 1;
+		
+		Long empresaId = (Long) iterator.next();
 		
 		String documento = (String) iterator.next();
 		if (documento != null) {
@@ -174,6 +189,7 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		Iterator<Object> iterator = parsedParameters.iterator();
 		int parameterIndex = 1;
 		
+		Long empresaId = (Long) iterator.next();
 		String documento = (String) iterator.next();
 		String institucionFinanciera = (String) iterator.next();
 		

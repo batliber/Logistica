@@ -21,10 +21,12 @@ import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 public class ACMInterfaceListaNegraDWR {
 
 	private IACMInterfaceListaNegraBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = ACMInterfaceListaNegraBean.class.getSimpleName();
 		String remoteInterfaceName = IACMInterfaceListaNegraBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IACMInterfaceListaNegraBean) context.lookup(lookupName);

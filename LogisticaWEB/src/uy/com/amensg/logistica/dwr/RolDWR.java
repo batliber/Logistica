@@ -18,10 +18,12 @@ import uy.com.amensg.logistica.entities.RolTO;
 public class RolDWR {
 
 	private IRolBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = RolBean.class.getSimpleName();
 		String remoteInterfaceName = IRolBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IRolBean) context.lookup(lookupName);

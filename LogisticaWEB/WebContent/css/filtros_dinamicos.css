@@ -6,7 +6,6 @@
 
 #divTamanoSubconjunto {
 	float: left;
-	width: 55%;
 	height: 20px;
 }
 
@@ -22,20 +21,106 @@
 	height: 24px;
 }
 
+#inputAgregarFiltro {
+	background-image: url('/LogisticaWEB/images/filter_add.png');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 #divLimpiarFiltros {
 	float: left;
-	width: 55%;
+	width: 150px;
 	height: 24px;
+}
+
+#inputLimpiarFiltros {
+	background-image: url('/LogisticaWEB/images/broom.png');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#divSeleccionarColumnas {
+	float: left;
+	width: 150px;
+	height: 24px;
+}
+
+#inputSeleccionarColumnas {
+	background-image: url('/LogisticaWEB/images/table_gear.png');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#divIFrameSeleccionColumnas {
+	display: none;
+	position: relative;
+	top: -22px;
+	left: 22px;
+	width: 300px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionColumnas {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 94%;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionColumnasTitulo {
+	float: left;
+	width: 100%;
+	text-align: center;
+}
+
+#divSeleccionColumnasLista {
+	float: left;
+	width: 100%;
+	height: 240px;
+	overflow: auto;
+}
+
+#divSeleccionColumna {
+	float: left;
+	width: 100%;
+	height: 24px;
+}
+
+#divSeleccionColumnasBotonera {
+	float: left;
+	width: 100%;
+	height: 25px;
+	text-align: right;
+}
+
+#inputSeleccionColumnasAceptar {
+	background-image: url('/LogisticaWEB/images/tick.png');
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 #divFiltros {
 	float: left;
-	width: 100%;
+	width: 1360px;
 }
 
 .divFiltro {
 	float: left;
 	width: 1000px;
+}
+
+.divCampo {
+	float: left;
+	width: 70px;
+	height: 20px;
+	text-align: right;
+	margin-top: 2px;
 }
 
 .divCondicion {
@@ -70,4 +155,10 @@
 .divQuitarFiltro {
 	float: left;
 	width: 50px;
+}
+
+.divQuitarFiltro input {
+	background-image: url('/LogisticaWEB/images/filter_delete.png');
+	background-repeat: no-repeat;
+	background-position: center;
 }

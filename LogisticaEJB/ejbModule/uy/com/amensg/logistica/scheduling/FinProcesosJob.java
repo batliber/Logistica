@@ -24,10 +24,12 @@ public class FinProcesosJob implements Job {
 	}
 	
 	private IACMInterfaceProcesoBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = ACMInterfaceProcesoBean.class.getSimpleName();
 		String remoteInterfaceName = IACMInterfaceProcesoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IACMInterfaceProcesoBean) context.lookup(lookupName);

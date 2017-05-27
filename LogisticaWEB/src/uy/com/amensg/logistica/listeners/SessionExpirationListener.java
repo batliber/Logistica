@@ -36,10 +36,12 @@ public class SessionExpirationListener implements HttpSessionListener {
 	}
 	
 	private ISeguridadBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = SeguridadBean.class.getSimpleName();
 		String remoteInterfaceName = ISeguridadBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (ISeguridadBean) context.lookup(lookupName);

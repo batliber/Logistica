@@ -3,6 +3,62 @@
 	width: 50%;
 }
 
+.divLayoutColumnFull {
+	float: left;
+	width: 100%;
+}
+
+.divTabbedPanel {
+	float: left;
+	width: 99%;
+}
+
+.divTabHeader {
+	float: left;
+	width: 780px;
+}
+
+.divTabTitle {
+	float: left;
+	width: 175px;
+	height: 23px;
+	border-top: solid 1px black;
+	border-left: solid 1px black;
+	border-bottom: solid 1px black;
+	text-align: center;
+	cursor: pointer;
+}
+
+.divTabTitleSelected {
+	float: left;
+	width: 175px;
+	height: 23px;
+	border-top: solid 1px black;
+	border-left: solid 1px black;
+	border-bottom: solid 1px transparent;
+	text-align: center;
+	cursor: pointer;
+}
+
+.divTabTitleFiller {
+	float: left;
+	width: 251px;
+	height: 23px;
+	border-top: solid 1px transparent;
+	border-left: solid 1px black;
+	border-bottom: solid 1px black;
+}
+
+.divTab {
+	float: left;
+	width: 779px;
+	height: 145px;
+	padding-top: 5px;
+	border-left: solid 1px black;
+	border-bottom: solid 1px black;
+	border-right: solid 1px black;
+}
+
 #divMid {
 	float: left;
 	width: 60%;
@@ -67,6 +123,44 @@
 	width: 100%;
 }
 
+#divResultadoEntregaDistribucionDocumentos {
+	float: left;
+	height: 100%;
+}
+
+.divGalleryLeft {
+	float: left;
+	width: 9%;
+	height: 100%;
+	cursor: pointer;
+	text-align: center;
+}
+
+.divGalleryContent {
+	float: left;
+	width: 94%;
+	height: 100%;
+}
+
+.imgGalleryActive {
+	float: left;
+	width: 100%;
+}
+
+.imgGalleryInactive {
+	float: left;
+	display: none;
+	width: 100%;
+}
+
+.divGalleryRight {
+	float: left;
+	width: 9%;
+	height: 100%;
+	cursor: pointer;
+	text-align: center;
+}
+
 #divResultadoEntregaDistribucionURLAnverso {
 	float: left;
 	width: 50%;
@@ -85,6 +179,15 @@
 	width: 100%;
 }
 
+#divTipoDocumento {
+	float: left;
+	width: 60%;
+}
+
+#selectTipoDocumento {
+	width: 53.5%;
+}
+
 #divDocumento {
 	float: left;
 	width: 60%;
@@ -99,7 +202,30 @@
 	width: 100%;
 }
 
+#divApellido {
+	float: left;
+	width: 60%;
+}
+
+#inputApellido {
+	width: 100%;
+}
+
+#divSexo {
+	float: left;
+	width: 60%;
+}
+
+#selectSexo {
+	width: 53.5%;
+}
+
 #divNumeroFactura {
+	float: left;
+	width: 60%;
+}
+
+#divNumeroFacturaRiverGreen {
 	float: left;
 	width: 60%;
 }
@@ -141,13 +267,84 @@
 	width: 60%;
 }
 
+#divMoneda {
+	float: left;
+	width: 60%;
+}
+
+#selectMoneda {
+	width: 53.5%;
+}
+
+#divFormaPago {
+	float: left;
+	width: 60%;
+}
+
+#selectFormaPago {
+	float: left;
+	width: 53.5%;
+}
+
+#divRealizarClearing {
+	float: left;
+	color: red;
+	padding-left: 20px;
+	padding-top: 2px;
+}
+
+#divTarjetaCredito {
+	float: left;
+	width: 60%;
+}
+
+#selectTarjetaCredito {
+	width: 53.5%;
+}
+
+#divCuotas {
+	float: left;
+	width: 32%;
+}
+
+#selectCuotas {
+	width: 100%;
+}
+
+#divLabelPTF {
+	width: 65px;
+}
+
+#divPTF {
+	float: left;
+	width: 70px;
+}
+
+#inputPTF {
+	width: 100%;
+}
+
+#divLabelValorCuota {
+	width: 65px;
+}
+
+#divValorCuota {
+	float: left;
+	width: 70px;
+}
+
+#inputValorCuota {
+	width: 100%;
+	text-align: right;
+}
+
 #divDepartamento {
 	float: left;
 	width: 60%;
 }
 
 #selectDepartamento {
-	width: 56.5%;
+	width: 53.5%;
 }
 
 #divBarrio {
@@ -189,10 +386,59 @@
 #divObservaciones {
 	float: left;
 	width: 60%;
+	height: 57px;
 }
 
 #textareaObservaciones {
 	width: 100%;
+}
+
+#divDireccionFacturaCalle {
+	width: 80%;
+}
+
+#inputDireccionFacturaCalle {
+	width: 100%;
+}
+
+#divDireccionFacturaObservaciones {
+	width: 80%;
+}
+
+#inputDireccionFacturaObservaciones {
+	width: 100%;
+}
+
+#divDireccionEntregaCalle {
+	width: 80%;
+}
+
+#inputDireccionEntregaCalle {
+	width: 100%;
+}
+
+#divDireccionEntregaObservaciones {
+	width: 80%;
+}
+
+#inputDireccionEntregaObservaciones {
+	width: 100%;
+}
+
+#divAgregarAdjunto {
+	width: 80%;
+	height: 25px;
+}
+
+#inputAdjunto {
+	width: 336px;
+}
+
+#inputAgregarAdjunto {
+	background-image: url('/LogisticaWEB/images/add.png');
+	background-position: center;
+	background-repeat: no-repeat;
+	overflow: hidden;
 }
 
 #divIFramePrint {

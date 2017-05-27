@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -37,32 +39,26 @@
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/monitoreo/monitoreo.css"/>
 </head>
 <body>
-	<div class="divMenuBar">
-<%@ include file="/includes/menu.jsp" %>	
+	<div class="divMenuBarContainer">
+<%@ include file="/includes/menu.jsp" %>
 	</div>
-	<div class="divButtonBar">
-		<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
-		<div class="divButton"><input type="submit" id="inputAgregarMid" value="Agregar MID" onclick="javascript:inputAgregarMidOnClick(event, this)"/></div>
-		<div class="divButton"><input type="submit" id="inputSubirArchivo" value="Subir archivo" onclick="javascript:inputSubirArchivoOnClick(event, this)"/></div>
-		<div class="divButtonBarSeparator">&nbsp;</div>
-	</div>
-	<div class="divButtonTitleBar">
-		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Acciones</div>
-		<div class="divButtonTitleBarSeparator">&nbsp;</div>
-	</div>
-	<div class="divMainWindow">
-		<div id="divFiltros">
-			<div class="divFormLabelExtended">Tama&ntilde;o de muestra:</div>
-			<div id="divTamanoMuestra"><input type="text" id="inputTamanoMuestra" value="50" onchange="javascript:grid.filtroDinamico.tamanoMuestraOnChange(event)"/></div>
-			<div class="divFormLabelExtended">Tama&ntilde;o subconjunto:</div>
-			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="500" onchange="javascript:grid.filtroDinamico.tamanoSubconjuntoOnChange(event)"/></div>
-			<div id="divAgregarFiltroContainer">
-				<div class="divFormLabelExtended">Agregar filtro:</div>
-				<div id="divAgregarFiltro"><input type="submit" value="Agregar" id="inputAgregarFiltro" onclick="javascript:grid.filtroDinamico.agregarFiltro(event, this)"/></div>
+	<div class="divBodyContainer">
+		<div class="divBody">
+			<div class="divButtonBar">
+				<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
+				<div class="divButton"><input type="submit" id="inputAgregarMid" value="Agregar MID" onclick="javascript:inputAgregarMidOnClick(event, this)"/></div>
+				<div class="divButton"><input type="submit" id="inputSubirArchivo" value="Subir archivo" onclick="javascript:inputSubirArchivoOnClick(event, this)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
 			</div>
-		</div>
-		<div id="divContratos">
-			<div id="divTableContratos">&nbsp;</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divMainWindow">
+				<div id="divContratos">
+					<div id="divTableContratos">&nbsp;</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="divIFrameContrato" style="display:none;">
@@ -83,7 +79,7 @@
 				<div class="divButton" id="divInputRechazar"><input type="submit" value="Rechazar" onclick="javascript:inputRechazarOnClick(event)"/></div>
 				<div class="divButton" id="divInputRedistribuir"><input type="submit" value="Re-distribuir" onclick="javascript:inputRedistribuirOnClick(event)"/></div>
 				<div class="divButton" id="divInputTelelink"><input type="submit" value="Telelink" onclick="javascript:inputTelelinkOnClick(event)"/></div>
-				<div class="divButton" id="divInputRenovo"><input type="submit" value="Renovó" onclick="javascript:inputRenovoOnClick(event)"/></div>
+				<div class="divButton" id="divInputRenovo"><input type="submit" value="RenovÃ³" onclick="javascript:inputRenovoOnClick(event)"/></div>
 				<div class="divButton" id="divInputActivar"><input type="submit" value="Activar" onclick="javascript:inputActivarOnClick(event)"/></div>
 				<div class="divButton" id="divInputNoFirma"><input type="submit" value="No firma" onclick="javascript:inputNoFirmaOnClick(event)"/></div>
 				<div class="divButton" id="divInputRecoordinar"><input type="submit" value="Re-coordinar" onclick="javascript:inputRecoordinarOnClick(event)"/></div>
@@ -91,7 +87,7 @@
 				<div class="divButton" id="divInputTerminar"><input type="submit" value="Terminar" onclick="javascript:inputTerminarOnClick(event)"/></div>
 				<div class="divButton" id="divInputAgendarActivacion"><input type="submit" value="Agendar activaci&oacute;n" onclick="javascript:inputAgendarActivacionOnClick(event)"/></div>
 				<div class="divButton" id="divInputReagendar"><input type="submit" value="Reagendar" onclick="javascript:inputReagendarOnClick(event)"/></div>
-				<div class="divButton" id="divInputFaltaDocumentacion"><input type="submit" value="Falta documentación" onclick="javascript:inputFaltaDocumentacionOnClick(event)"/></div>
+				<div class="divButton" id="divInputFaltaDocumentacion"><input type="submit" value="Falta documentaciÃ³n" onclick="javascript:inputFaltaDocumentacionOnClick(event)"/></div>
 				 -->
 		 <!-- 
 				<div class="divButtonBarSeparator">&nbsp;</div>
@@ -131,15 +127,14 @@
 				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 			</div>
-			<div class="divMainWindow">
+			<div class="divPopupWindow">
 				<form id="formSubirArchivo" method="POST" action="/LogisticaWEB/Upload" enctype="multipart/form-data">
 					<input type="hidden" name="caller" value="/LogisticaWEB/pages/monitoreo/monitoreo.jsp"/>
-					<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa"><select id="selectEmpresa" name="selectEmpresa"></select></div>
-					<div class="divFormLabelExtended">Archivo:</div><div id="divArchivo"><input type="file" id="inputArchivo" name="inputArchivo"/></div>
+					<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa" name="selectEmpresa"></select></div>
+					<div class="divFormLabelExtended">Archivo:</div><div id="divArchivo" class="divFormValue"><input type="file" id="inputArchivo" name="inputArchivo"/></div>
 				</form>
 			</div>
 		</div>
 	</div>
 	<div id="divModalBackground">&nbsp;</div>
-</body>
-</html>
+<%@ include file="/includes/footer.jsp" %>

@@ -5,12 +5,10 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -49,17 +47,11 @@ public class ACMInterfaceListaNegraBean implements IACMInterfaceListaNegraBean {
 			if (metadataConsulta.getTamanoSubconjunto() != null) {
 				List<ACMInterfaceListaNegra> toOrder = query.getResultList();
 				
-				Collections.sort(toOrder, new Comparator<ACMInterfaceListaNegra>() {
-					public int compare(ACMInterfaceListaNegra arg0, ACMInterfaceListaNegra arg1) {
-						Random random = new Random();
-						
-						return random.nextBoolean() ? 1 : -1;
-					}
-				});
+				Collections.shuffle(toOrder);
 				
 				int i = 0;
-				for (ACMInterfaceListaNegra acmInterfacePrepago : toOrder) {
-					resultList.add(acmInterfacePrepago);
+				for (ACMInterfaceListaNegra acmInterfaceListaNegra : toOrder) {
+					resultList.add(acmInterfaceListaNegra);
 					
 					i++;
 					if (i == metadataConsulta.getTamanoSubconjunto()) {

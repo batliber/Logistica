@@ -15,6 +15,7 @@ $(document).ready(function() {
 			tdUsuarioRol: { campo: "rolNombre", descripcion: "Rol", abreviacion: "Rol", tipo: __TIPO_CAMPO_STRING, ancho: 300 }, 
 			tdUsuarioEmpresa: { campo: "empresaNombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_STRING, ancho: 300 }
 		}, 
+		false,
 		reloadData,
 		trUsuarioOnClick
 	);

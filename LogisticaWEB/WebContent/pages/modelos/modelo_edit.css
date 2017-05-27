@@ -1,0 +1,29 @@
+#divModeloDescripcion {
+	float: left;
+	width: 60%;
+}
+
+#inputModeloDescripcion {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divModeloMarca {
+	float: left;
+	width: 60%;
+}
+
+#selectModeloMarca {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divModeloEmpresaService {
+	float: left;
+	width: 60%;
+}
+
+#selectModeloEmpresaService {
+	margin-left: 2px;
+	width: 100%;
+}

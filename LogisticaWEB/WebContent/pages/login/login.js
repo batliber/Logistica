@@ -13,7 +13,13 @@ function inputAccederOnClick(event, element) {
 		{
 			callback: function(data) {
 				if (data != null && data.menus != null && data.menus.length > 0) {
-					window.location = data.menus[0].url;
+					var i = 0;
+					for (i=0; i<data.menus.length; i++) {
+						if (data.menus[i].padre != null) {
+							break;
+						}
+					}
+					window.location = data.menus[i].url;
 				} else {
 					window.location = "/LogisticaWEB";
 				}

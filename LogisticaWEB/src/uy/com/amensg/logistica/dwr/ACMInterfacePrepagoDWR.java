@@ -6,7 +6,9 @@ import java.util.LinkedList;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.ACMInterfacePrepagoBean;
@@ -22,10 +24,12 @@ import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 public class ACMInterfacePrepagoDWR {
 
 	private IACMInterfacePrepagoBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = ACMInterfacePrepagoBean.class.getSimpleName();
 		String remoteInterfaceName = IACMInterfacePrepagoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IACMInterfacePrepagoBean) context.lookup(lookupName);
@@ -60,6 +64,65 @@ public class ACMInterfacePrepagoDWR {
 		return result;
 	}
 
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iACMInterfacePrepagoBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object acmInterfacePrepago : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(transform((ACMInterfacePrepago) acmInterfacePrepago));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+				
+				result = 
+					iACMInterfacePrepagoBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
 		String result = null;
 		
@@ -77,10 +140,27 @@ public class ACMInterfacePrepagoDWR {
 		
 		return result;
 	}
+
+	public String preprocesarExportacionByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO) {
+		String result = null;
+		
+		try {
+			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+			
+			result = iACMInterfacePrepagoBean.preprocesarExportacion(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				),
+				EmpresaDWR.transform(empresaTO)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
-	public String exportarAExcelByEmpresa(
-		MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones
-	) {
+	public String exportarAExcelByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO, String observaciones) {
 		String result = null;
 		
 		try {
@@ -100,6 +180,20 @@ public class ACMInterfacePrepagoDWR {
 		return result;
 	}
 	
+	public void deshacerAsignacion(MetadataConsultaTO metadataConsultaTO) {
+		try {
+			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+			
+			iACMInterfacePrepagoBean.deshacerAsignacion(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void reprocesar(MetadataConsultaTO metadataConsultaTO, String observaciones) {
 		try {
 			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
@@ -109,20 +203,6 @@ public class ACMInterfacePrepagoDWR {
 					metadataConsultaTO
 				),
 				observaciones
-			);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void deshacerAsignacion(MetadataConsultaTO metadataConsultaTO) {
-		try {
-			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
-			
-			iACMInterfacePrepagoBean.deshacerAsignacion(
-				MetadataConsultaDWR.transform(
-					metadataConsultaTO
-				)
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -143,9 +223,10 @@ public class ACMInterfacePrepagoDWR {
 		}
 	}
 	
-	public ACMInterfacePrepagoTO transform(ACMInterfacePrepago acmInterfacePrepago) {
+	public static ACMInterfacePrepagoTO transform(ACMInterfacePrepago acmInterfacePrepago) {
 		ACMInterfacePrepagoTO acmInterfacePrepagoTO = new ACMInterfacePrepagoTO();
 		
+		acmInterfacePrepagoTO.setAgente(acmInterfacePrepago.getAgente());
 		acmInterfacePrepagoTO.setMesAno(acmInterfacePrepago.getMesAno());
 		acmInterfacePrepagoTO.setMid(acmInterfacePrepago.getMid());
 		acmInterfacePrepagoTO.setMontoMesActual(acmInterfacePrepago.getMontoMesActual());
@@ -154,6 +235,10 @@ public class ACMInterfacePrepagoDWR {
 		acmInterfacePrepagoTO.setMontoPromedio(acmInterfacePrepago.getMontoPromedio());
 		acmInterfacePrepagoTO.setFechaExportacion(acmInterfacePrepago.getFechaExportacion());
 		acmInterfacePrepagoTO.setFechaActivacionKit(acmInterfacePrepago.getFechaActivacionKit());
+		
+		if (acmInterfacePrepago.getAcmInterfacePersona() != null) {
+			acmInterfacePrepagoTO.setAcmInterfacePersona(ACMInterfacePersonaDWR.transform(acmInterfacePrepago.getAcmInterfacePersona()));
+		}
 		
 		acmInterfacePrepagoTO.setFact(acmInterfacePrepago.getFact());
 		acmInterfacePrepagoTO.setUact(acmInterfacePrepago.getUact());

@@ -22,6 +22,14 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		// Parsear los parámetros tipados.
 		
+		// empresaId
+		try {
+			result.add(new Long(iterator.next()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.add(null);
+		}
+		
 		// documento
 		result.add(iterator.next());
 		
@@ -112,12 +120,17 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		PreparedStatement preparedStatement = this.connection.prepareStatement(
 			"SELECT COUNT(0)"
 			+ " FROM acm_interface_riesgo_crediticio"
-			+ " WHERE documento = ?"
+			+ " WHERE empresa_id = ?"
+			+ " AND documento = ?"
 		);
 		
 		Iterator<Object> iterator = parsedParameters.iterator();
 		
-		preparedStatement.setString(1, (String) iterator.next());
+		Long empresaId = (Long) iterator.next();
+		String documento = (String) iterator.next();
+		
+		preparedStatement.setLong(1, empresaId);
+		preparedStatement.setString(2, documento);
 		
 		Long count = null;
 		
@@ -141,6 +154,8 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		Iterator<Object> iterator = parsedParameters.iterator();
 		int parameterIndex = 1;
+		
+		Long empresaId = (Long) iterator.next();
 		
 		String documento = (String) iterator.next();
 		if (documento != null) {
@@ -248,6 +263,7 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		Iterator<Object> iterator = parsedParameters.iterator();
 		int parameterIndex = 1;
 		
+		Long empresaId = (Long) iterator.next();
 		String documento = (String) iterator.next();
 		
 		Date fechaCelularParsed = (Date) iterator.next();

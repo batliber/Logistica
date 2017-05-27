@@ -13,11 +13,13 @@ public class ACMInterfacePrepagoTO {
 	private Double montoMesAnterior1;
 	private Double montoMesAnterior2;
 	private Double montoPromedio;
+	private String agente;
 	private Date fechaExportacion;
 	private Date fechaActivacionKit;
 	private Long uact;
 	private Date fact;
 	private Long term;
+	private ACMInterfacePersonaTO acmInterfacePersona;
 
 	public Long getMid() {
 		return mid;
@@ -67,6 +69,14 @@ public class ACMInterfacePrepagoTO {
 		this.montoPromedio = montoPromedio;
 	}
 
+	public String getAgente() {
+		return agente;
+	}
+
+	public void setAgente(String agente) {
+		this.agente = agente;
+	}
+
 	public Date getFechaExportacion() {
 		return fechaExportacion;
 	}
@@ -105,5 +115,13 @@ public class ACMInterfacePrepagoTO {
 
 	public void setTerm(Long term) {
 		this.term = term;
+	}
+
+	public ACMInterfacePersonaTO getAcmInterfacePersona() {
+		return acmInterfacePersona;
+	}
+
+	public void setAcmInterfacePersona(ACMInterfacePersonaTO acmInterfacePersona) {
+		this.acmInterfacePersona = acmInterfacePersona;
 	}
 }

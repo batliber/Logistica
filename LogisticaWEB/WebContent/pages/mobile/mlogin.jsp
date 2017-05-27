@@ -19,7 +19,8 @@
 		<div class="divTitleBarText">Iniciar sesi&oacute;n</div>
 	</div>
 	<div class="divLogo">
-		<img class="imgLogo" src="/LogisticaWEB/images/logo-vos.png"></img>
+		&nbsp;
+		<!-- <img class="imgLogo" src="/LogisticaWEB/images/logo-vos.png"></img> -->
 	</div>
 	<div id="divError">&nbsp;</div>
 	<div class="divFormLabel">Usuario:</div>

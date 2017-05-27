@@ -3,18 +3,23 @@
 }
 
 #divIFrameContrato {
-	position: absolute;
-	top: 50px;
+	position: relative;
+	top: 25px;
 	left: 100px;
+	width: 815px;
+	height: 729px;
 	z-index: 3;
 	border: solid 1px black;
 	background-color: white;
 }
 
 #iFrameContrato {
-	width: 800px;
-	height: 575px;
+	position: absolute;
+	top: 21px;
+	left: 0;
 	border: none;
+	width: 100%;
+	height: 708px;
 }
 
 #divIFrameSeleccionDistribuidor {
@@ -29,6 +34,9 @@
 }
 
 #divSeleccionDistribuidor {
+	position: absolute;
+	top: 21px;
+	left: 0;
 	padding-left: 8px;
 	padding-right: 8px;
 	width: 95%;

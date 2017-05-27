@@ -5,7 +5,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -62,7 +66,7 @@ public class ACMInterfaceContrato implements Serializable {
 
 	@Column(name = "fecha_exportacion_anterior")
 	private Date fechaExportacionAnterior;
-
+	
 	@Column(name = "uact")
 	private Long uact;
 
@@ -72,6 +76,14 @@ public class ACMInterfaceContrato implements Serializable {
 	@Column(name = "term")
 	private Long term;
 
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinTable(
+		name = "acm_interface_mid_persona", 
+		joinColumns = @JoinColumn(name = "mid"),
+		inverseJoinColumns = @JoinColumn(name = "persona_id")
+	)
+	private ACMInterfacePersona acmInterfacePersona;
+	
 	public Long getMid() {
 		return mid;
 	}
@@ -222,5 +234,13 @@ public class ACMInterfaceContrato implements Serializable {
 
 	public void setTerm(Long term) {
 		this.term = term;
+	}
+
+	public ACMInterfacePersona getAcmInterfacePersona() {
+		return acmInterfacePersona;
+	}
+
+	public void setAcmInterfacePersona(ACMInterfacePersona acmInterfacePersona) {
+		this.acmInterfacePersona = acmInterfacePersona;
 	}
 }

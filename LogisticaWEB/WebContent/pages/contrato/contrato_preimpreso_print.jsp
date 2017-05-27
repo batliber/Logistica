@@ -1,3 +1,8 @@
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@ page import="uy.com.amensg.logistica.dwr.*" %>
+<%@ page import="uy.com.amensg.logistica.util.*" %>
+<%@ page import="uy.com.amensg.logistica.entities.ContratoTO" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,6 +13,7 @@
 	</script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
@@ -16,178 +22,207 @@
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
 	<link rel="stylesheet" type="text/css" href="./contrato_preimpreso_print.css"/>
 </head>
+<%
+	ContratoTO contratoTO = new ContratoDWR().getById(new Long(request.getParameter("cid")));
+%>
 <body>
+	<div class="divPrintingButtonBar">
+		<div class="divButtonBar">
+			<div class="divButton"><input type="submit" value="Imprimir" onclick="javascript:inputImprimirOnClick(event, this)"></div>
+			<div class="divButton"><input type="submit" value="Cancelar" onclick="javascript:inputCancelarOnClick(event, this)"></div>
+		</div>
+	</div>
+<%
+	int vias = 3; 
+	for (int i = 0; i<vias; i++) {
+%>
 	<div class="divA4Sheet">
 		<div class="divA4SheetContent">
 			<div class="divPageHeading">&nbsp;</div>
 			<div class="divPageContent">
 				<div class="divTexto">
-					En <span id="spanDepartamento">&nbsp;</span> a los <span id="spanDia">&nbsp;</span> d&iacute;as del mes de <span id="spanMes">&nbsp;</span> de <span id="spanAno">&nbsp;</span>, se celebra este contrato, por un plazo de <span id="spanDuracionContrato">&nbsp;</span> de acuerdo con las condiciones precedentemente descriptas y particulares del Plan que se se&ntilde;ala m&aacute;s adelante, entre la Administraci&oacute;n Nacional de Telecomunicaciones (ANTEL) y <span id="spanNombre">&nbsp;</span> quedando perfeccionado en la fecha se habilite el servicio al Cliente.
+					En <input type="text" class="inputDepartamento"/> a los <input type="text" class="inputDia"/> d&iacute;as del mes de <input type="text" class="inputMes"/> de <input type="text" class="inputAno"/>, se celebra este contrato, por un plazo de <input type="text" class="inputDuracionContrato"/> de acuerdo con las condiciones precedentemente descriptas y particulares del Plan que se se&ntilde;ala m&aacute;s adelante, entre la Administraci&oacute;n Nacional de Telecomunicaciones (ANTEL) y <input type="text" class="inputNombre"/> quedando perfeccionado en la fecha se habilite el servicio al Cliente.
 				</div>
 				<div class="divTitulo">INFORMACION CORRESPONDIENTE AL CLIENTE</div>
 				<div class="divTabla">
 					<div class="divFila">
-						<div class="divColumnaHalf">Nombres:<span id="spanClienteNombre">&nbsp;</span></div>
-						<div class="divColumnaHalfFiller">Apellido:<span id="spanClienteApellido">&nbsp;</span></div>
+						<div class="divColumnaHalf" style="width: 300px;">Nombres: <input type="text" class="inputClienteNombre"/></div>
+						<div class="divColumnaHalfFiller" style="width: 275px;">Apellido: <input type="text" class="inputClienteApellido"></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaFull">Nombre de la Empresa:<span id="spanClienteNombreEmpresa">&nbsp;</span></div>
+						<div class="divColumnaFull">Nombre de la Empresa: <input type="text" class="inputClienteNombreEmpresa"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaHalf" style="text-align: center;">Tipo de documento</div>
-						<div class="divColumnaHalfFiller" style="text-align: center;">Numero de documento</div>
+						<div class="divColumnaHalf" style="text-align: center;width: 300px;">Tipo de documento</div>
+						<div class="divColumnaHalfFiller" style="text-align: center;width: 275px;">Numero de documento</div>
 					</div>
 					<div class="divFila" style="height: 28px;">
 						<div class="divColumnaMin" style="width: 29px;height: 26px;">RUT</div>
-						<div class="divColumnaMin" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaMin divTipoDocumento2" style="height: 26px;">&nbsp;</div>
 						<div class="divColumnaMin" style="width: 22px;height: 26px;">C.I.</div>
-						<div class="divColumnaMin" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaMin divTipoDocumento1" style="height: 26px;">&nbsp;</div>
 						<div class="divColumnaMin" style="width: 25px;height: 26px;">PAS</div>
-						<div class="divColumnaMin" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaMin divTipoDocumento3" style="height: 26px;">&nbsp;</div>
 						<div class="divColumnaMin" style="width: 43px;height: 26px;">INCISO</div>
-						<div class="divColumnaMin" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaMin divTipoDocumento4" style="height: 26px;">&nbsp;</div>
 						<div class="divColumnaMin" style="width: 24px;height: 26px;">BPS</div>
-						<div class="divColumnaMin" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaMin divTipoDocumento5" style="height: 26px;">&nbsp;</div>
 						<div class="divColumnaMin" style="width: 36px;height: 26px;">OTRO</div>
-						<div class="divColumnaMinFiller" style="height: 26px;border-right: solid 1px black;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigit" style="height: 26px;">&nbsp;</div>
-						<div class="divColumnaDigitFiller" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaMinFiller divTipoDocumento6" style="height: 26px;border-right: solid 1px black;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit1" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit2" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit3" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit4" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit5" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit6" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit7" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit8" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit9" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit10" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit11" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigit divColumnaDigit12" style="height: 26px;">&nbsp;</div>
+						<div class="divColumnaDigitFiller divColumnaDigit13" style="height: 26px;">&nbsp;</div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaFifth">Sexo:</div>
-						<div class="divColumnaFifth">FechaNacim:</div>
-						<div class="divColumnaFifth">Tipo Cliente:</div>
-						<div class="divColumnaFifth">Actividad:</div>
-						<div class="divColumnaFifthFiller">Tel. Contacto:</div>
+						<div class="divColumnaFifth" style="width: 90px;">Sexo:<input type="text" class="inputClienteSexo"/></div>
+						<div class="divColumnaFifth" style="width: 134px;">FechaNacim:<input type="text" class="inputClienteFechaNacimiento"/></div>
+						<div class="divColumnaFifth" style="width: 93px;">Tipo Cliente:<input type="text" class="inputClienteTipoCliente"/></div>
+						<div class="divColumnaFifth" style="width: 89px;">Actividad:<input type="text" class="inputClienteActividad"/></div>
+						<div class="divColumnaFifthFiller" style="width: 160px;">Tel. Contacto:<input type="text" class="inputClienteTelefonoContacto"/></div>
 					</div>
 				</div>
 				<div class="divTitulo">INFORMACION CORRESPONDIENTE AL SERVICIO Y TERMINAL:</div>
 				<div class="divTabla">
 					<div class="divFila">
-						<div class="divColumnaHalf">N de m&oacute;vil:<span id="spanMID">&nbsp;</span></div>
-						<div class="divColumnaHalfFiller">CHIP:<span id="spanNumeroChip">&nbsp;</span></div>
+						<div class="divColumnaHalf">N de m&oacute;vil: <input type="text" class="inputMID"/></div>
+						<div class="divColumnaHalfFiller">CHIP: <input type="text" class="inputNumeroChip"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaHalf">Marca:<span id="spanMarca">&nbsp;</span></div>
-						<div class="divColumnaHalfFiller">Numero de serie electr&oacute;nico:<span id="spanNumeroSerie">&nbsp;</span></div>
+						<div class="divColumnaHalf">Marca: <input type="text" class="inputMarca"/></div>
+						<div class="divColumnaHalfFiller">Numero de serie electr&oacute;nico: <input type="text" class="inputNumeroSerie"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaHalf">Modelo:<span id="spanModelo">&nbsp;</span></div>
-						<div class="divColumnaHalfFiller">C&oacute;digo de bloqueo:<span id="spanCodigoBloqueo">&nbsp;</span></div>
+						<div class="divColumnaHalf">Modelo: <input type="text" class="inputModelo"/></div>
+						<div class="divColumnaHalfFiller">C&oacute;digo de bloqueo: <input type="text" class="inputCodigoBloqueo"/></div>
 					</div>
 				</div>
-				<div class="divTitulo">DOMICILIO ESPECIAL: El cliente constituye domicilio a todos los efectos del presente contrato en:</div>
+				<div class="divTitulo">DOMICILIO ESPECIAL: El cliente constituye domicilio a todos los efectos del presente contrato en: </div>
 				<div class="divTabla">
 					<div class="divFila">
-						<div class="divColumnaFull">CALLE:<span id="spanDireccionCalle">&nbsp;</span></div>
+						<div class="divColumnaFull">CALLE: <input type="text" class="inputDireccionCalle"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaSixth">Numero:<span id="spanDireccionNumero">&nbsp;</span></div>
-						<div class="divColumnaSixth">Bis<span id="spanDireccionBis">&nbsp;</span></div>
-						<div class="divColumnaSixth">Apto:<span id="spanDireccionApto">&nbsp;</span></div>
-						<div class="divColumnaSixth">Block:<span id="spanDireccionBlock">&nbsp;</span></div>
-						<div class="divColumnaSixth">Manz:<span id="spanDireccionManzana">&nbsp;</span></div>
-						<div class="divColumnaSixthFiller">Solar:<span id="spanDireccionSolar">&nbsp;</span></div>
+						<div class="divColumnaSixth">Numero:<input type="text" class="inputDireccionNumero"/></div>
+						<div class="divColumnaSixth">Bis:<input type="text" class="inputDireccionBis"/></div>
+						<div class="divColumnaSixth">Apto:<input type="text" class="inputDireccionApto"/></div>
+						<div class="divColumnaSixth">Block:<input type="text" class="inputDireccionBlock"/></div>
+						<div class="divColumnaSixth">Manz:<input type="text" class="inputDireccionManzana"/></div>
+						<div class="divColumnaSixthFiller">Solar:<input type="text" class="inputDireccionSolar"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaThird">Localidad:<span id="spanDireccionLocalidad">&nbsp;</span></div>
-						<div class="divColumnaThird">Departamento:<span id="spanDireccionDepartamento">&nbsp;</span></div>
-						<div class="divColumnaThirdFiller">C.P.:<span id="spanDireccionCodigoPostal">&nbsp;</span></div>
+						<div class="divColumnaThird">Localidad:<input type="text" class="inputDireccionLocalidad"/></div>
+						<div class="divColumnaThird">Departamento:<input type="text" class="inputDireccionDepartamento"/></div>
+						<div class="divColumnaThirdFiller">C.P.:<input type="text" class="inputDireccionCodigoPostal"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaFull">Observaciones:<span id="spanDireccionObservaciones">&nbsp;</span></div>
+						<div class="divColumnaFull">Observaciones: <input type="text" class="inputDireccionObservaciones"/></div>
 					</div>
 				</div>
 				<div class="divTitulo">DOMICILIO DE ENVIO DE FACTURAS (en caso de ser distinta al domicilio especial)</div>
 				<div class="divTabla">
 					<div class="divFila">
-						<div class="divColumnaFull">CALLE:<span id="spanDireccionEntregaCalle">&nbsp;</span></div>
+						<div class="divColumnaFull">CALLE: <input type="text" class="inputDireccionCalle"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaSixth">Numero:<span id="spanDireccionFacturaNumero">&nbsp;</span></div>
-						<div class="divColumnaSixth">Bis<span id="spanDireccionFacturaBis">&nbsp;</span></div>
-						<div class="divColumnaSixth">Apto:<span id="spanDireccionFacturaApto">&nbsp;</span></div>
-						<div class="divColumnaSixth">Block:<span id="spanDireccionFacturaBlock">&nbsp;</span></div>
-						<div class="divColumnaSixth">Manz:<span id="spanDireccionFacturaManzana">&nbsp;</span></div>
-						<div class="divColumnaSixthFiller">Solar:<span id="spanDireccionFacturaSolar">&nbsp;</span></div>
+						<div class="divColumnaSixth">Numero:<input type="text" class="inputDireccionNumero"/></div>
+						<div class="divColumnaSixth">Bis:<input type="text" class="inputDireccionBis"/></div>
+						<div class="divColumnaSixth">Apto:<input type="text" class="inputDireccionApto"/></div>
+						<div class="divColumnaSixth">Block:<input type="text" class="inputDireccionBlock"/></div>
+						<div class="divColumnaSixth">Manz:<input type="text" class="inputDireccionManzana"/></div>
+						<div class="divColumnaSixthFiller">Solar:<input type="text" class="inputDireccionSolar"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaThird">Localidad:<span id="spanDireccionFacturaLocalidad">&nbsp;</span></div>
-						<div class="divColumnaThird">Departamento:<span id="spanDireccionFacturaDepartamento">&nbsp;</span></div>
-						<div class="divColumnaThirdFiller">C.P.:<span id="spanDireccionFacturaCodigoPostal">&nbsp;</span></div>
+						<div class="divColumnaThird">Localidad:<input type="text" class="inputDireccionLocalidad"/></div>
+						<div class="divColumnaThird">Departamento:<input type="text" class="inputDireccionDepartamento"/></div>
+						<div class="divColumnaThirdFiller">C.P.:<input type="text" class="inputDireccionCodigoPostal"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaFull">Observaciones:<span id="spanDireccionFacturaObservaciones">&nbsp;</span></div>
+						<div class="divColumnaFull">Observaciones: <input type="text" class="inputDireccionObservaciones"/></div>
 					</div>
 				</div>
 				<div class="divTitulo">EL CLIENTE SENALA QUE QUIEN TIENE LA CALIDAD DE USUARIO DEL SERVICIO ES:</div>
 				<div class="divTabla">
 					<div class="divFila">
-						<div class="divColumnaHalf">Nombres:<span id="spanUsuarioNombre">&nbsp;</span></div>
-						<div class="divColumnaHalfFiller">Apellidos:<span id="spanUsuarioApellido">&nbsp;</span></div>
+						<div class="divColumnaHalf">Nombres: <input type="text" class="inputUsuarioNombre"/></div>
+						<div class="divColumnaHalfFiller">Apellidos: <input type="text" class="inputUsuarioApellido"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaHalf">Documento:<span id="spanUsuarioDocumento">&nbsp;</span></div>
-						<div class="divColumnaHalfFiller">Direcci&oacute;n de e-mail:<span id="spanUsuarioEmail">&nbsp;</span></div>
+						<div class="divColumnaHalf">Documento: <input type="text" class="inputUsuarioDocumento"/></div>
+						<div class="divColumnaHalfFiller">Direcci&oacute;n de e-mail: <input type="text" class="inputUsuarioEmail"/></div>
 					</div>
 				</div>
 				<div class="divTitulo">DATOS COMERCIALES</div>
 				<div class="divTabla">
 					<div class="divFila">
-						<div class="divColumnaThird">Plan:<span id="spanPlan">&nbsp;</span></div>
-						<div class="divColumnaThird">Promotor:<span id="spanPromotor">&nbsp;</span></div>
-						<div class="divColumnaThirdFiller">Ayuda Econ&oacute;mica:<span id="spanAyudaEconomica">&nbsp;</span></div>
+						<div class="divColumnaThird">Plan: <input type="text" class="inputPlan"/></div>
+						<div class="divColumnaThird">Promotor: <input type="text" class="inputPromotor"/></div>
+						<div class="divColumnaThirdFiller">Ayuda Econ&oacute;mica: <input type="text" class="inputAyudaEconomica"/></div>
 					</div>
 					<div class="divFila">
-						<div class="divColumnaThird">Cantidad de minutos<span id="spanCantidadMinutos">&nbsp;</span></div>
-						<div class="divColumnaThird">Desde<span id="spanDesde">&nbsp;</span></div>
-						<div class="divColumnaThirdFiller">Hasta<span id="spanHasta">&nbsp;</span></div>
+						<div class="divColumnaThird">Cantidad de minutos: <input type="text" class="inputCantidadMinutos"/></div>
+						<div class="divColumnaThird">Desde: <input type="text" class="inputDesde"/></div>
+						<div class="divColumnaThirdFiller">Hasta: <input type="text" class="inputHasta"/></div>
 					</div>
 				</div>
+				<div class="divTitulo">&nbsp;</div>
+<%
+		if (contratoTO.getMotivoCambioPlan() != null) {
+%>
+				<div class=""><input type="text" class="inputMotivosCambioPlan"/></div>
+<%		
+		}
+%>
 			</div>
 			<div class="divPageFooter">&nbsp;</div>
 		</div>
 	</div>
-	<div class="divA4Sheet">
+<% 
+	}
+	
+	vias = 3;
+	for (int i=0; i<vias; i++) {
+%>
+	<div class="divA4Sheet" style="border-top: none;">
 		<div class="divA4SheetContent">
-			<div class="divPageHeading">&nbsp;</div>
+			<div class="divPageHeading" style="height: 30mm;">&nbsp;</div>
 			<div class="divPageContent">
 				<div class="divTitulo">GARANTIA</div>
 				<div class="divTextarea">
 					<ul style="padding-left: 5px;">
 						<li style="list-style-type: none;">
-							A) Fiador solidario- El Sr <span id="spanFiadorSolidarioNombre">&nbsp;</span> se constituye en fiador solidario de las obligaciones asumidas por el cliente.
+							A) Fiador solidario- El Sr <input type="text" class="inputFiadorSolidarioNombre"/> se constituye en fiador solidario de las obligaciones asumidas por el cliente.
 							<br/>
-							En virtud de ello, la presente fianza subsidiar&aacute; por todo el tiempo durante el cual el cliente mantenga relaciones comerciales con ANTEL, y solo cesar&aacute; si media alguna de las siguientes circunstancias:</li>
+							En virtud de ello, la presente fianza <!-- subsidiar&aacute; -->subsistir&aacute; por todo el tiempo durante el cual el cliente mantenga relaciones comerciales con ANTEL, y solo cesar&aacute; si media alguna de las siguientes circunstancias:</li>
 						<li style="list-style-type: none;">
 							<ol>
 								<li>Que se hayan cancelado definitivamente todas las deudas y obligaciones de cargo del Cliente derivadas del presente contrato.</li>
 								<li>Que ANTEL libere expresamente y por escrito al fiador solidario, siempre que el Cliente ofrezca fiador solidario o garant&iacute;a sustitutivos a satisfacci&oacute;n de ANTEL.</li>
 							</ol>
 						<li style="list-style-type: none;">&nbsp;</li>
-						<li style="list-style-type: none;">A su vez el fiador solidario autoriza a que en caso de falta de pago por parte del Cliente, los cargos generados, sean facturados en la cuenta de ANTEL N� <span id="spanFiadorSolidarioNumeroCuenta">&nbsp;</span> de la que es titular- Documento de identidad: <span id="spanFiadorSolidarioDocumento">&nbsp;</span> Tel&eacute;fono de contacto: <span id="spanFiadorSolidarioTelefonoContacto">&nbsp;</span>.</li>
+						<li style="list-style-type: none;">A su vez el fiador solidario autoriza a que en caso de falta de pago por parte del Cliente, los cargos generados, sean facturados en la cuenta de ANTEL Nº <input type="text" class="inputFiadorSolidarioNumeroCuenta"/> de la que es titular- Documento de identidad: <input type="text" class="inputFiadorSolidarioDocumento"/> Tel&eacute;fono de contacto: <input type="text" class="inputFiadorSolidarioTelefonoContacto"/>.</li>
 						<li style="list-style-type: none;">&nbsp;</li>
-						<li style="list-style-type: none;">El fiador solidario constituye domicilio especial a todos los efectos del presente contrato en: <span id="spanFiadorSolidarioDireccion">&nbsp;</span></li>
+						<li style="list-style-type: none;">El fiador solidario constituye domicilio especial a todos los efectos del presente contrato en: <input type="text" class="inputFiadorSolidarioDireccion"/></li>
 						<li style="list-style-type: none;">&nbsp;</li>
-						<li style="list-style-type: none;">B) Dep&oacute;sito en efectivo - El Cliente deposita en car&aacute;cter de garant&iacute;a la suma de: <span id="spanFiadorSolidarioDepositoGarantia">&nbsp;</span></li>
+						<li style="list-style-type: none;">B) Dep&oacute;sito en efectivo - El Cliente deposita en car&aacute;cter de garant&iacute;a la suma de: <input type="text" class="inputFiadorSolidarioDepositoGarantia"/></li>
 					</ul>
 				</div>
 				<div class="divTitulo">OBSERVACIONES:</div>
-				<div class="divTextarea" style="font-size: 7pt;height: 66px;">
+				<div class="divTextarea" style="font-size: 7pt;height: 102px;">
 					Tuve al cliente ante m&iacute; y corrobor&eacute; su identidad. El n&uacute;mero de individualizaci&oacute;n del presente contrato, lucir&aacute; en cada factura a emitirse.
-					<br/><br/>
-					<span id="spanObservaciones">&nbsp;</span>
+					<br/>
+					Cliente se comunica con *611 por números gratis.
+					<br/>
+					<textarea class="textareaObservaciones"></textarea>
 				</div>
 				<div class="divTitulo">FIRMAS: Para constancia y como prueba de conformidad, se suscriben tres ejemplares de un mismo tenor en el lugar y fecha antes se&ntilde;alados</div>
 				<div class="divTabla">
@@ -204,17 +239,17 @@
 				<div class="divTitulo">AGENTE DE VENTA:</div>
 				<div class="divTabla">
 					<div class="divFila">
-						<div class="divColumnaThird">Nombre:<span id="spanAgenteVentaNombre">&nbsp;</span></div>
-						<div class="divColumnaThird">C&oacute;digo:<span id="spanAgenteVentaCodigo">&nbsp;</span></div>
-						<div class="divColumnaThirdFiller">Sucursal:<span id="spanAgenteVentaSucursal">&nbsp;</span></div>
+						<div class="divColumnaThird">Nombre: <input type="text" class="inputAgenteVentaNombre"/></div>
+						<div class="divColumnaThird">C&oacute;digo: <input type="text" class="inputAgenteVentaCodigo"/></div>
+						<div class="divColumnaThirdFiller">Sucursal: <input type="text" class="inputAgenteVentaSucursal"/></div>
 					</div>
 				</div>
 				<div class="divTitulo">VENDEDOR</div>
 				<div class="divTabla">
 					<div class="divFila">
-						<div class="divColumnaThird">Firma:</div>
-						<div class="divColumnaThird">Aclaraci&oacute;n:<span id="spanVendedorNombre">&nbsp;</span></div>
-						<div class="divColumnaThirdFiller">Documento:<span id="spanVendedorDocumento">&nbsp;</span></div>
+						<div class="divColumnaThird">Firma: </div>
+						<div class="divColumnaThird">Aclaraci&oacute;n: <input type="text" class="inputVendedorNombre"/></div>
+						<div class="divColumnaThirdFiller">Documento:<input type="text" class="inputVendedorDocumento"/></div>
 					</div>
 				</div>
 				<div class="divTitulo">&nbsp;</div>
@@ -234,7 +269,7 @@
 						<div class="divColumnaNineth">Firma</div>
 						<div class="divColumnaNineth">&nbsp;</div>
 						<div class="divColumnaNineth">&nbsp;</div>
-						<div class="divColumnaNineth"><span id="spanControlCuentaCliente">&nbsp;</span></div>
+						<div class="divColumnaNineth"><input type="text" style="font-size: 7pt;" class="inputControlCuentaBackoffice"/></div>
 						<div class="divColumnaNineth">&nbsp;</div>
 						<div class="divColumnaNineth">&nbsp;</div>
 						<div class="divColumnaNineth">&nbsp;</div>
@@ -245,7 +280,7 @@
 						<div class="divColumnaNineth" >Fecha:</div>
 						<div class="divColumnaNineth">&nbsp;</div>
 						<div class="divColumnaNineth">&nbsp;</div>
-						<div class="divColumnaNineth">&nbsp;</div>
+						<div class="divColumnaNineth"><input type="text" class="inputControlCuentaCliente"/></div>
 						<div class="divColumnaNineth">&nbsp;</div>
 						<div class="divColumnaNineth">&nbsp;</div>
 						<div class="divColumnaNineth">&nbsp;</div>
@@ -256,5 +291,263 @@
 			</div>
 		</div>
 	</div>
+<%
+	}
+	
+	vias = 2;
+	for (int i=0; i<vias; i++) {
+%>
+	<div class="divA4Sheet" style="border-top: none;">
+		<div class="divA4SheetContent divA4SheetContentEspecificaciones">
+			<div class="divPageHeading" style="height: 15mm;">&nbsp;</div>
+			<div class="divPageContent" style="width: 88%;">
+				<div class="divEspecificacionesTitulo">Especificaciones del Contrato de Servicio de Telefon&iacute;a M&oacute;vil</div>
+				<br/>
+				<div class="">Las especificaciones que se detallan a continuaci&oacute;n integran el Contrato No <input type="text" class="inputEspecificacionesNumeroContrato"/> suscrito en el d&iacute;a de la fecha.</div>
+				<br/>
+				<div class="divEspecificacionesTituloInformacion">Informaci&oacute;n correspondiente al servicio que se contrata:</div>
+				<br/>
+				<div class="divTabla">
+					<div class="divFila">
+						<div class="divColumnaFull" style="width: 653px;">Plan Comercial: <input type="text" class="inputEspecificacionesPlanComercial"/></div>
+					</div>
+					<div class="divFila">
+						<div class="divColumnaHalf" style="width: 308px;">Consumo m&iacute;nimo: <input type="text" class="inputEspecificacionesConsumoMinimo"/>, impuestos incluidos.</div>
+						<div class="divColumnaHalfFiller" style="width: 342px;">Duraci&oacute;n contractual: <input type="text" class="inputEspecificacionesDuraccionContractual"/></div>
+					</div>
+					<div class="divFila" style="height: 36px;">
+						<div class="divColumnaThird" style="width: 210px;height: 34px;">Precio de minuto de comunicaci&oacute;n a destinos Antel:</div>
+						<div class="divColumnaThird" style="width: 210px;height: 34px;">Horario normal: <input type="text" class="inputEspecificacionesPrecioMinutoHorarioNormal"/> impuestos incluidos</div>
+						<div class="divColumnaThirdFiller" style="width: 210px;height: 34px;">Horario reducido: <input type="text" class="inputEspecificacionesPrecioMinutoHorarioReducido"/> impuestos incluidos</div>
+					</div>
+					<div class="divFila">
+						<div class="divColumnaHalf" style="width: 308px;">Rendimiento minutos importe mensual destinos Antel:</div>
+						<div class="divColumnaHalfFiller" style="width: 330px;"><input type="text" class="inputEspecificacionesRendimientoMinutosAntelHorarioNormal"/>minutos horario normal &oacute; <input type="text" class="inputEspecificacionesRendimientoMinutosAntelHorarioReducido"/>minutos horario reducido</div>
+					</div>
+					<div class="divFila">
+						<div class="divColumnaHalf" style="width: 380px;">Precio minuto de comunicaci&oacute;n otras operadoras: <input type="text" class="inputEspecificacionesPrecioMinutoOtrasOperadoras"/>impuestos inc.</div>
+						<div class="divColumnaHalfFiller" style="width: 245px;">Rendimiento minutos otras operadoras: <input type="text" class="inputEspecificacionesRendimientoMinutosOtrasOperadoras"/></div>
+					</div>
+				</div>
+				<div class="">
+					&nbsp;
+					<br/>
+				</div>
+				<div class="">
+					<div class="divEspecificacionesTituloParrafo">Detalle del horario</div>
+					<div class="">Horario normal: lunes a viernes de 9 a 21 horas.</div>
+					<div class="">Horario reducido: lunes a viernes de 21 a 9 horas / s&aacute;bados, domingos y feriados no laborables (1/1, 1/5, 18/7, 25/8 y 25/12).</div>
+				</div>
+				<br/>
+				<div class="divTabla">
+					<div class="divFila">
+						<div class="divColumnaFull">Precio SMS: <input type="text" class="inputEspecificacionesPrecioSMS"/> impuestos incluidos por cada mensaje enviado.</div>
+					</div>
+					<div class="divFila">
+						<div class="divColumnaHalf" style="width: 280px;">Incluye para navegaci&oacute;n en el celular: <input type="text" class="inputEspecificacionesIncluyeParaNavegacionCelular"/></div>
+						<div class="divColumnaHalfFiller" style="width: 362px;">Consumo por fuera del bono: <input type="text" class="inputEspecificacionesConsumoFueraBono"/>, impuestos incluidos por MB</div>
+					</div>
+				</div>
+				<div class="">
+					&nbsp;
+					<br/>
+				</div>		
+				<div class="">Se aplica un tope de facturaci&oacute;n mensual de <input type="text" class="inputEspecificacionesTopeFacturacionMensual"/>, impuestos incluidos para el tr&aacute;fico de datos.</div>
+				<div class="">Las velocidades de conexi&oacute;n est&aacute;n sujetas a los recursos disponibles y cobertura de la red LTE de Antel. Luego de traficados los GB incluidos en el plan, la velocidad de bajada ser&aacute; de hasta 1 Mbps. La velocidad vuelve a asignarse en las primeras horas del nuevo per&iacute;odo de facturaci&oacute;n mensual.</div>
+				<br/>
+				<div class="">El cliente es informado sobre la cobertura actual de la tecnolog&iacute;a LTE, la cual puede ser consultada en la p&aacute;gina Web de Antel: www.antel.com.uy. En cas ode no existir cobertura LTE en la zona, se traficar&aacute; por la red 3.7G.</div>
+				<br/>
+				<div class="">
+					<div class="divEspecificacionesTituloParrafo">Beneficio amigos:</div>
+					<div class="">Puede elegir 5 amigos que tengan celulares de Antel. La tarifa a esos amigos asciende a $0,99, impuestos incluidos el minuto. Los mismos los puede seleccionar v&iacute;a Web en www.antel.com.uy.</div>
+				</div>
+				<br/>
+				<div class="">
+					<div class="divEspecificacionesTituloParrafo">Beneficio destinos gratis:</div>
+					<div class="">Antel le regala todos los meses minutos de comunicaci&oacute;n y mensajes de texto, no acumulables mes a mes. La cantidad de destinos, minutos y SMS que le corresponden dependen de su plan y del importe que abone por el consumo m&iacute;nimo.</div>
+					<div class="">Seg&uacute;n este plan contratado Ud. tiene <input type="text" class="inputEspecificacionesDestinosGratis"/> destinos gratis.</div>
+					<br/>
+					<div class="">Hasta <input type="text" class="inputEspecificacionesMinutosGratisMovil"/> minutos gratis por mes para hablar a <input type="text" class="inputEspecificacionesMinutosGratisCantidadCelulares"/> n&uacute;meros celulares de Antel M&oacute;vil. Los minutos que pudieren superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa del minuto de comunicaci&oacute;n correspondiente al Plan aqu&iacute; detallado.</div>
+					<br/>
+					<div class="">Hasta <input type="text" class="inputEspecificacionesSMSGratisMovil"/> SMS gratis por mes para enviar a <input type="text" class="inputEspecificacionesSMSGratisCantidadCelulares"/> n&uacute;meros celulares Antel M&oacute;vil. Los SMS que pudieren superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa correspondiente al Plan aqu&iacute; detallado.</div>
+					<br/>
+					<div class="">Hasta <input type="text" class="inputEspecificacionesMinutosGratisFijo"/> minutos gratis por mes para hablar a <input type="text" class="inputEspecificacionesMinutosGratisCantidadFijos"/> n&uacute;mero de tel&eacute;fono fijo de Antel. Los minutos que pudieren superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa del minuto de comunicaci&oacute;n correspondiente al Plan aqu&iacute; detallado.</div>
+					<br/>
+					<div class="">Los mismos los puede seleccionar v&iacute;a Web en www.antel.com.uy. Cada destino seleccionado puede modificarse cada tres meses.</div>
+					<div class="">Los clientes con documento RUT no pueden acceder a los Nros Gratis, excepto las empresas unipersonales. Dichos beneficios operan exclusivamente dentro del territorio nacional.</div>
+					<br/>
+					<div class="">Por m&aacute;s informaci&oacute;n sobre los beneficios del plan contratado, consulte la p&aacute;gina Web de Antel: www.antel.com.uy</div>
+					<br/>
+					<div class="">Los cargos mensuales establecidos en el contrato ser&aacute;n modificados autom&aacute;ticamente de conformidad con lo dispuesto en el Art. 12 del Decreto de Ley Nº 14.235 de 25 de julio de 1974 en la redacci&oacute;n dada por el Art. 13 de la Ley Nº 16.211 del 1 de octubre de 1991.</div>
+				</div>
+				<div class=""><input type="text" class="inputEspecificacionesDepartamento"/>, <input type="text" class="inputEspecificacionesDia"/> de <input type="text" class="inputEspecificacionesMes"/> de <input type="text" class="inputEspecificacionesAno"/></div>
+				<br/>
+				<div style="float: left;width: 45%;height: 20px;">Por Antel</div>
+				<div style="float: left;width: 45%;height: 20px;">Cliente</div>
+				<div style="float: left;width: 45%;">
+					<div style="width: 75%;border-bottom: dotted 1px black;">&nbsp;</div>
+					<div style="width: 75%;border-bottom: dotted 1px black;height: 30px;">&nbsp;</div>
+				</div>
+				<div style="float: left;width: 45%;">
+					<div style="width: 75%;border-bottom: dotted 1px black;">&nbsp;</div>
+					<div style="width: 75%;border-bottom: dotted 1px black;height: 30px;">&nbsp;</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<%
+	}
+
+	vias = 2;
+	if (!contratoTO.getModelo().getId().equals(new Long(Configuration.getInstance().getProperty("modelo.SinEquipo")))) {
+		for (int i=0; i<vias; i++) {
+%>
+	<div class="divA4Sheet" style="border-top: none;">
+		<div class="divA4SheetContent">
+			<div class="divPageHeading" style="height: 25mm;">
+				<div style="margin: auto;width: 15mm;height: 100%;"><img class="imgGarantiaLogo" class="imgGarantiaLogo" src="/LogisticaWEB/images/logo-vos.png"/></div>
+			</div>
+			<div class="divPageContent" style="width: 88%;">
+				<div class="divGarantiaTitulo">GARANT&Iacute;A LIMITADA</div>
+				<br/>
+				<div class=""><input type="text" class="inputGarantiaEmpresa"/> le garantiza que, durante el periodo de garant&iacute;a, <input type="text" class="inputGarantiaService"/> o el servicio Oficial autorizado por la comp&ntilde;&iacute;a subsanar&aacute; de forma gratuita y dentro de un plazo comercialmente razonable no acotado los defectos del equipo mediante la reparaci&oacute;n o, en el caso de que el Servicio Oficial lo considerase necesario a su discreci&oacute;n, la sustituci&oacute;n del Producto de conformidad con la presente Garant&iacute;a Limitada.</div>
+				<br/>
+				<div class=""><span class="spanGarantiaTitulo">Periodo de Garant&iacute;a:</span> El Periodo de garant&iacute;a dar&aacute; comienzo en el momento de la compra original del Producto por parte del usuario. El Producto puede estar formado por varias piezas diferentes y las distintas piezas pueden estar cubiertas por un periodo de garant&iacute;a distinto (en lo sucesivo, el "Periodo de Garant&iacute;a"). Los distintos Periodos de Garant&iacute; son: a) Doce (12) meses para el dispositivo m&oacute;vil, b) Seis (6) meses para los siguientes accesorios y piezas consumibles, bater&iacute;as, cargadores, etc., c) treinta (30) d&iacute;as para tarjetas de memoria y dem&aacute;s accesorios.</div>
+				<br/>
+				<div class=""><span class="spanGarantiaTitulo">C&oacute;mo obtener el servicio garantizado:</span> Cualquier reclamaci&oacute;n realizada en virtud de la presente Garant&iacute;a Limitada estar&aacute; sujeta a la notificaci&oacute;n por su parte del presunto defecto a <input type="text" class="inputGarantiaService"/> o a una compa&ntilde;&iacute;a de servicio oficial autorizada dentro de un plazo razonable a partir de su descubrimiento y, en cualquier caso, nunca posterior a la fecha de vencimiento del Per&iacute;odo de Garant&iacute;a. <span class="spanGarantiaNegrita">Al realizar una reclamaci&oacute;n en virtud de la presente Garant&iacute;a Limitada deber&aacute; proporcionar: a) el producto (o la pieza afectada) y b) el comprobante de compra original, que indique con claridad el nombre y direcci&oacute;n del vendedor, la fecha y el lugar de la compra as&iacute; como la presentaci&oacute;n del original del presente Certificado de Garant&iacute;a debidamente sellado y firmado por dicho distribuidor, el tipo de producto y el IMEI u otro n&uacute;mero de serie.</span></div>
+				<br/>
+				<div class=""><span class="spanGarantiaTitulo">¿Qu&eacute; es lo que no cubre?</span></div>
+				<br/>
+				<div class="">
+					<ol style="margin: 0;padding: 0;">
+						<li>La presente Garant&iacute;a Limitada no cubre manuales de usuario ni software, configuraci&oacute;n, contenidos, datos o enlaces de terceros, incluidos o descargados en el Producto por usted. <input type="text" class="inputGarantiaService"/> no garantiza que el software del producto se ajuste a sus necesidades, funcion en combinaci&oacute;n con cualquier hardware o software provisto por un proveedor independiente, ni que el funcionamiento de cualquier software est&eacute; libre de sufrir interrupciones o errores, ni que cualquier defecto presente en el software pueda ser objeto de rectificaci&oacute;n o ser rectificado.</li>
+						<li>La presente Garant&iacute;a Limitada no cubre a) el desgaste normal (incluido, sin car&aacute;cter limitativo, el desgaste de lentes de c&aacute;maras, bater&iacute;as o pantallas), b) los defectos ocasionados por una mala manipulaci&oacute;n (incluidos, sin car&aacute;cter limitativo, los defectos ocasionados por elementos afilados, doblado, compresi&oacute;n o ca&iacute;das, etc.), ni c) los defectos o da&ntilde;os ocasionados por una mala utilizaci&oacute;n del Producto, incluido el uso contrario a las instrucciones provistas por la marca del Producto (por ejemplo, seg&uacute;n lo dispuesto en la gu&iacute;a del usuario del Producto) y/o e) otros actos m&aacute;s all&aacute; del control razonable de <input type="text" class="inputGarantiaService"/></li>
+						<li>La presente Garant&iacute;a Limitada no cubre los defectos o presuntos defectos ocasionados por el hecho de que el Producto fuera utilizado con, o en relaci&oacute;n con, cualquier producto, equipamiento, software y/o servicio no fabricado o suministrado por la marca o fuera utilizado de otra manera que no fuera para su uso previsto. Los defectos pueden ser ocasionados por virus debidos al acceso no autorizado por parte de usted o un tercero a servicios, otras cuentas, redes o sistemas inform&aacute;ticos. Dicho acceso no autorizado puede tener lugar mediante ataques de hackers, obtenci&oacute;n il&iacute;cita de contrase&ntilde;as u otros medios similares.</li>
+						<li>La presente Garant&iacute;a Limitada no cubre los defectos ocasionados por el hecho de que la bater&iacute;a haya sido sometida a cortocircuito o por el hecho de que los sellos del cierre de la bater&iacute;a o las c&eacute;lulas se hayan roto o muestren evidencias de manipulaci&oacute;n, o por el hecho de que la bater&iacute;a haya sido utilizada en equipos para los que no hubiera sido especificada.</li>
+						<li>La presente Garant&iacute;a Limitada no ser&aacute; v&aacute;lida si el Producto ha sido abierto, modificado o reparado por otros que no sean un centro de servicio autorizado, si ha sido reparado utilizando piezas de repuesto no autorizadas o si el n&uacute;mero de serie del Producto, el c&oacute;digo de fecha de equipamiento m&oacute;vil o el n&uacute;mero IMEI han sido eliminados, borrados, desfigurados, alterados o aparecen ilegibles en forma alguna, algo que ser&aacute; determinado exclusivamente a discreci&oacute;n de <input type="text" class="inputGarantiaService"/> o por el servicio Oficial Autorizado.</li>
+						<li>La presente Garant&iacute;a Limitada no ser&aacute; v&aacute;lida si el Producto ha sido expuesto a la humedad o a condiciones atmosf&eacute;ricas o t&eacute;rmicas extremas o a cambios r&aacute;pidos de las mismas, a la corrosi&oacute;n, la oxidaci&oacute;n, el vertido de alimentos, l&iacute;quidos, arena o a la influencia de productos qu&iacute;micos o cualquier elemento extra&ntilde;os.</li>
+					</ol>
+				</div>
+				<br/>
+				<div class="" style="width: 100%;text-align: center;text-decoration: underline;">CERTIFICADO DE GARANTIA</div>
+				<br/>
+				<div class="">
+					<div class="">Marca: <input type="text" class="inputGarantiaProductoMarca"/></div>
+					<div class="">Modelo: <input type="text" class="inputGarantiaProductoModelo"/></div>
+					<div class="">Nro. Serie: <input type="text" class="inputGarantiaNumeroSerie"/></div>
+					<div class="">Nombre, Apellido: <input type="text" class="inputGarantiaNombreApellido"/></div>
+					<div class="">M&oacute;vil: <input type="text" class="inputGarantiaMID"/></div>
+				</div>
+				<br/><br/>
+				<div class="" style="float: left;width: 50%;height: 20px;">FIRMA CLIENTE</div>
+				<div class="" style="float: left;width: 45%;height: 20px;">POR LA EMPRESA</div>
+				<br/><br/>
+				<div class=""><input type="text" class="inputGarantiaDatosService"/></div>
+			</div>
+		</div>
+	</div>
+<%
+		}
+	}
+
+	if (contratoTO.getMotivoCambioPlan() != null) {
+	
+		vias = 2;
+		for (int i=0; i<vias; i++) {
+%>
+	<div class="divA4Sheet divA4SheetCambioPlan" style="border-top: none;">
+		<div class="divA4SheetContent">
+			<div class="divPageHeading" style="height: 43mm;">
+				<div style="margin: auto;width: 15mm;height: 100%;">&nbsp;</div>
+			</div>
+			<div class="divPageContent" style="width: 88%;">
+				<div class="divTitulo" style="height: 18px;">Fecha: <input type="text" class="inputCambioPlanFecha"/></div>
+				<div class="divTitulo" style="height: 17px;">Datos del cliente:</div>
+				<div class="divTabla">
+					<div class="divFila" style="height: 28px;">
+						<div class="divColumnaHalf" style="width: 324px;padding-top: 8px;">
+							Nombre: <input type="text" class="inputCambioPlanClienteNombre"/>
+						</div>
+						<div class="divColumnaHalfFiller" style="width: 312px;margin-left: 6px;padding-top: 8px;">
+							Doumento: <input type="text" class="inputCambioPlanClienteDocumento"/>
+						</div>
+					</div>
+					<div class="divFila" style="height: 28px;">
+						<div class="divColumnaHalf" style="width: 324px;padding-top: 8px;">
+							Nº. Contrato: <input type="text" class="inputCambioPlanNumeroContrato"/>
+						</div>
+						<div class="divColumnaHalfFiller" style="width: 312px;margin-left: 6px;padding-top: 8px;">
+							Nº. MID: <input type="text" class="inputCambioPlanMid"/>
+						</div>
+					</div>
+					<div class="divFila" style="height: 28px;">
+						<div class="divColumnaHalf" style="width: 324px;padding-top: 8px;">
+							Plan Vigente: <input type="text" class="inputCambioPlanPlan"/>
+						</div>
+						<div class="divColumnaHalfFiller" style="width: 312px;margin-left: 6px;padding-top: 8px;">
+							Plan Solicitado: <input type="text" class="inputCambioPlanNuevoPlan"/>
+						</div>
+					</div>
+				</div>
+				<div class="divTitulo" style="height: 40px;">Motivos del Cambio de Plan:</div>
+				<div class="divTabla">
+					<div class="divFila" style="height: 159px;margin-top: 5px;">
+						<div class="divColumnaFull">
+							<input type="text" class="inputCambioPlanMotivosCambioPlan"/>
+						</div>
+					</div>
+				</div>
+				<div class="divTitulo" style="height: 25px;">Fecha a partir de la cual adquiere vigencia el Cambio de Plan:</div>
+				<div class="divTabla">
+					<div class="divFila" style="height: 28px;margin-top: 5px;">
+						<div class="divColumnaFull">
+							<input type="text" class="inputCambioPlanFechaVigencia"/>
+						</div>
+					</div>
+				</div>
+				<div class="divTitulo" style="height: 20px;margin-top: 15px;">Costos asociados al Cambio de Plan (si corresponde)</div>
+				<div class="divCambioPlanCostosAsociados" style="font-size: 7pt;">
+					ANTEL hace saber al cliente y &eacute;ste acepta, que el precio del CHIP de Telefon&iacute;a M&oacute;vil asciende a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$<input type="text" class="inputCambioPlanPrecioChip"/> (pesos uruguayos).
+					<br/>
+					El importe correspondiente al CHIP de Telefon&iacute;a M&oacute;vil ser&aacute; facturado al cliente en la primera factura correspondiente al plan arriba se&ntilde;alado.
+					<br/>
+					En caso de hurto o extrav&iacute;o el cliente se har&aacute; cargo de la reposici&oacute;n del CHIP de Telefon&iacute;a M&oacute;vil. En estos casos ser&aacute; responsable de cualquier uso que se haga del Servicio Telef&oacute;nico Celular hasta tanto no comunique el hecho a ANTEL.
+				</div>
+				<div class="divTitulo" style="height: 26px;">Consideraciones generales:</div>
+				<div class="divCambioPlanConsideracionesGenerales" style="font-size: 7pt;">
+					<ol style="padding-left: 12px;margin-top: 0;">
+						<li>Respecto al Roaming en (Clientes itinerantes): ANTEL hace saber al Cliente y este acepta que el alcance del roaming queda sujeto a la implementaci&oacute;n de los acuerdos suscritos o a suscribirse entre ANTEL y las operadoras del extranjero.</li>
+						<li style="padding-top: 15px;">Para el caso de Clientes que habiendo adherido a alguno de los planes durante el per&iacute;odo de la promoci&oacute;n opten por adherir a otro plan durante dicho per&iacute;odo o con posterioridaad al mismo, ANTEL y el Cliente acuerdan incorporar la siguiente previsi&oacute;n al apartado 1) Obligaciones de ANTEL: "Si el cliente contrat&oacute; un plan con terminal incluido, y cambia a un plan que implica menores erogaciones, deber&aacute; abonar el importe correspondiente al terminal, que le restare al momento de realizar el Cambio de Plan".</li>
+						<li style="padding-top: 17px;">Para el caso que se trate de Clientes contractuales, las partes acuerdan que el Cliente mantiene la obligaci&oacute;n de abonar el sald odel precio del terminal que pudiere estar pendiente, de acuerdo con lo previsto en el apartado XI) REINTEGRO POR CONCEPTO DEL TERMINAL, del contrato respectivo.</li>
+					</ol>
+				</div>
+				<div class="divTabla">
+					<div class="divFila" style="height: 30px;">
+						<div class="divColumnaHalf" style="width: 324px;padding-top: 8px;">
+							Firma del titular:
+						</div>
+						<div class="divColumnaHalfFiller" style="width: 312px;margin-left: 6px;padding-top: 8px;">
+							Aclaraci&oacute;n de firma:
+						</div>
+					</div>
+				</div>
+				<div class="divTitulo" style="height: 25px;">&nbsp;</div>
+				<div class="divTabla">
+					<div class="divFila" style="height: 28px;">
+						<div class="divColumnaHalf" style="width: 324px;padding-top: 8px;">
+							Firma del representante:
+						</div>
+						<div class="divColumnaHalfFiller" style="width: 312px;margin-left: 6px;padding-top: 8px;">
+							Aclaraci&oacute;n de firma: <input type="text" class="inputCambioPlanBackofficeNombre"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<%
+		}
+	}
+%>
 </body>
 </html>

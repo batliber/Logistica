@@ -121,7 +121,7 @@ function inputGuardarOnClick(event) {
 			zona,
 			{
 				callback: function(data) {
-					alert("OperaciÛn exitosa");
+					alert("Operaci√≥n exitosa");
 				}, async: false
 			}
 		);
@@ -130,7 +130,7 @@ function inputGuardarOnClick(event) {
 			zona,
 			{
 				callback: function(data) {
-					alert("OperaciÛn exitosa");
+					alert("Operaci√≥n exitosa");
 					
 					$("#inputEliminarZona").prop("disabled", false);
 				}, async: false
@@ -140,7 +140,7 @@ function inputGuardarOnClick(event) {
 }
 
 function inputEliminarOnClick(event) {
-	if ((id != null) && confirm("Se eliminar· la Zona")) {
+	if ((id != null) && confirm("Se eliminar√° la Zona")) {
 		var zona = {
 			id: id
 		};
@@ -149,7 +149,7 @@ function inputEliminarOnClick(event) {
 			zona,
 			{
 				callback: function(data) {
-					alert("OperaciÛn exitosa");
+					alert("Operaci√≥n exitosa");
 				}, async: false
 			}
 		);

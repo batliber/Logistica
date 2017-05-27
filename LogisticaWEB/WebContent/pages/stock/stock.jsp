@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -6,6 +8,10 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/StockMovimientoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
@@ -22,21 +28,29 @@
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/stock/stock.css"/>
 </head>
 <body>
-	<div class="divMenuBar">
-<%@ include file="/includes/menu.jsp" %>	
+	<div class="divMenuBarContainer">
+<%@ include file="/includes/menu.jsp" %>
 	</div>
-	<div class="divButtonBar">
-		<div class="divButton"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
-		<div class="divButton" id="divButtonNuevoStockMovimiento"><input type="submit" value="Nuevo movimiento" onclick="javascript:inputNuevoStockMovimientoOnClick(event)"/></div>
-		<div class="divButton" id="divButtonAgregarProducto"><input type="submit" value="Agregar producto" onclick="javascript:inputAgregarProductoOnClick(event)"/></div>
-		<div class="divButtonBarSeparator">&nbsp;</div>
-	</div>
-	<div class="divButtonTitleBar">
-		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
-		<div class="divButtonTitleBarSeparator">&nbsp;</div>
-	</div>
-	<div class="divMainWindow">
-		<div id="divTableStockMovimientos">&nbsp;</div>
+	<div class="divBodyContainer">
+		<div class="divBody">
+			<div class="divButtonBar">
+				<div class="divButton"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
+				<div class="divButton" id="divButtonNuevoStockMovimiento"><input type="submit" value="Nuevo movimiento" onclick="javascript:inputNuevoStockMovimientoOnClick(event)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divMainWindow">
+				<div>
+					<div id="divAgregarFiltroContainer">
+						<div style="float: left;">Mostrar equipos dados de baja:</div><div style="float: left;"><input type="checkbox" id="inputMostrarFechaBaja" onchange="javascript:inputMostrarFechaBajaOnClick(event, this)"/></div>
+					</div>
+				</div> 
+				<div id="divTableStockMovimientos">&nbsp;</div>
+			</div>
+		</div>
 	</div>
 	<div id="divIFrameStockMovimiento" style="display: none;">
 		<div class="divTitleBar">
@@ -45,13 +59,12 @@
 		</div>
 		<iframe id="iFrameStockMovimiento" frameborder="0" src="#"></iframe>
 	</div>
-	<div id="divIFrameProducto" style="display: none;">
+	<div id="divIFrameIMEI" style="display: none;">
 		<div class="divTitleBar">
-			<div class="divTitleBarText" style="float:left;">Equipo</div>
+			<div class="divTitleBarText" style="float:left;">IMEI</div>
 			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
 		</div>
-		<iframe id="iFrameProducto" frameborder="0" src="#"></iframe>
+		<iframe id="iFrameIMEI" frameborder="0" src="#"></iframe>
 	</div>
 	<div id="divModalBackground">&nbsp;</div>
-</body>
-</html>
+<%@ include file="/includes/footer.jsp" %>

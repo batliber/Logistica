@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 
 import uy.com.amensg.logistica.robot.util.Configuration;
 
@@ -238,7 +240,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		String montoMesActual, 
 		String montoMesAnterior1,
 		String montoMesAnterior2,
-		String fechaActivacionKit
+		String fechaActivacionKit,
+		String agente
 	) {
 		try {
 			this.initializeConnection();
@@ -259,6 +262,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			
 			try {
+				// Parsear los parámetros tipados.
 				mesAnoDate = format.parse("01/" + mesAno);
 				montoMesActualDouble = new Double(montoMesActual);
 				montoMesAnterior1Double = new Double(montoMesAnterior1);
@@ -278,12 +282,14 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 					+ " monto_mes_anterior_2,"
 					+ " monto_promedio,"
 					+ " fecha_activacion_kit,"
+					+ " agente,"
 					+ " uact,"
 					+ " fact,"
 					+ " term,"
 					+ " mid"
 				+ ")"
 				+ " values ("
+					+ " ?,"
 					+ " ?,"
 					+ " ?,"
 					+ " ?,"
@@ -310,10 +316,11 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			} else {
 				preparedStatementUpdatePrepago.setNull(6, Types.DATE);
 			}
-			preparedStatementUpdatePrepago.setLong(7, 1);
-			preparedStatementUpdatePrepago.setTimestamp(8, new Timestamp(new Date().getTime()));
-			preparedStatementUpdatePrepago.setLong(9, 1);
-			preparedStatementUpdatePrepago.setLong(10, new Long(mid));
+			preparedStatementUpdatePrepago.setString(7, agente);
+			preparedStatementUpdatePrepago.setLong(8, 1);
+			preparedStatementUpdatePrepago.setTimestamp(9, new Timestamp(new Date().getTime()));
+			preparedStatementUpdatePrepago.setLong(10, 1);
+			preparedStatementUpdatePrepago.setLong(11, new Long(mid));
 			
 			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
 			Long uact = new Long(1);
@@ -366,6 +373,76 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			this.connection.commit();
 			
 			this.connection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void actualizarDatosPersona(
+		String idCliente,
+		String mid,
+		String pais,
+		String tipoDocumento,
+		String documento,
+		String apellido,
+		String nombre,
+		String razonSocial,
+		String tipoCliente,
+		String actividad,
+		String fechaNacimiento,
+		String sexo,
+		String direccionCalle, 
+		String direccionNumero,
+		String direccionBis,
+		String direccionApartamento,
+		String direccionEsquina,
+		String direccionBlock,
+		String direccionManzana,
+		String direccionSolar,
+		String direccionObservaciones,
+		String direccionLocalidad,
+		String direccionCodigoPostal,
+		String direccionCompleta,
+		String distribuidor,
+		String telefonosFijo,
+		String telefonosAviso,
+		String telefonosFax,
+		String email) {
+		try  {
+			DataProcessingTemplateMethod dataProcessingTemplateMethod = new ACMInterfacePersona();
+			
+			Collection<String> data = new LinkedList<String>();
+			data.add(idCliente);
+			data.add(mid);
+			data.add(pais);
+			data.add(tipoDocumento);
+			data.add(documento);
+			data.add(apellido);
+			data.add(nombre);
+			data.add(razonSocial);
+			data.add(tipoCliente);
+			data.add(actividad);
+			data.add(fechaNacimiento);
+			data.add(sexo);
+			data.add(direccionCalle); 
+			data.add(direccionNumero);
+			data.add(direccionBis);
+			data.add(direccionApartamento);
+			data.add(direccionEsquina);
+			data.add(direccionBlock);
+			data.add(direccionManzana);
+			data.add(direccionSolar);
+//			data.add(direccionObservaciones);
+			data.add(direccionLocalidad);
+			data.add(direccionCodigoPostal);
+			data.add(direccionCompleta);
+			data.add(distribuidor);
+			data.add(telefonosFijo);
+//			data.add(telefonosAviso);
+//			data.add(telefonosFax);
+			data.add(email);
+			
+			dataProcessingTemplateMethod.doProcessing(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

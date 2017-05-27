@@ -29,10 +29,12 @@ import uy.com.amensg.logistica.entities.Usuario;
 public class ContratoRoutingHistoryDWR {
 
 	private IContratoRoutingHistoryBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
 		String beanName = ContratoRoutingHistoryBean.class.getSimpleName();
 		String remoteInterfaceName = IContratoRoutingHistoryBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IContratoRoutingHistoryBean) context.lookup(lookupName);

@@ -6,10 +6,11 @@ $(document).ready(function() {
 	grid = new Grid(
 		document.getElementById("divTableContratos"),
 		{
-			tdContratoNumeroTramite: { campo: "numeroTramite", descripcion: "Número de trámite", abreviacion: "Trámite", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+			tdContratoNumeroTramite: { campo: "numeroTramite", descripcion: "NÃºmero de trÃ¡mite", abreviacion: "TrÃ¡mite", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
 			tdContratoMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO, ancho: 80 },
 			tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", clave: "resultadoEntregaDistribucion.id", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listResultadoEntregaDistribuciones, clave: "id", valor: "descripcion" } },
 		}, 
+		false,
 		reloadData,
 		trContratoOnClick
 	);
