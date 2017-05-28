@@ -18,10 +18,12 @@ import uy.com.amensg.logistica.entities.ACMInterfaceEstadoTO;
 public class ACMInterfaceEstadoDWR {
 
 	private IACMInterfaceEstadoBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
-		String beanName = ACMInterfaceEstadoBean.class.getSimpleName();
+		String appName = "LogisticaEJB";
 		String remoteInterfaceName = IACMInterfaceEstadoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		String beanName = ACMInterfaceEstadoBean.class.getSimpleName();
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
 		return (IACMInterfaceEstadoBean) context.lookup(lookupName);

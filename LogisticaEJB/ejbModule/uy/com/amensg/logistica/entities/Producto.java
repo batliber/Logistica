@@ -29,13 +29,10 @@ public class Producto extends BaseEntity {
 	private Marca marca;
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
-<<<<<<< HEAD
 	@JoinColumn(name = "modelo_id", nullable = true)
 	private Modelo modelo;
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	@JoinColumn(name = "empresa_service_id", nullable = true)
 	private EmpresaService empresaService;
 	
@@ -55,7 +52,6 @@ public class Producto extends BaseEntity {
 		this.fechaBaja = fechaBaja;
 	}
 
-<<<<<<< HEAD
 	public String getImei() {
 		return imei;
 	}
@@ -78,14 +74,6 @@ public class Producto extends BaseEntity {
 
 	public void setModelo(Modelo modelo) {
 		this.modelo = modelo;
-=======
-	public Marca getMarca() {
-		return marca;
-	}
-
-	public void setMarca(Marca marca) {
-		this.marca = marca;
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	}
 
 	public EmpresaService getEmpresaService() {

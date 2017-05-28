@@ -31,11 +31,7 @@
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Zona</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
-<<<<<<< HEAD
 	<div class="divPopupWindow">
-=======
-	<div class="divMainWindow">
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		<div class="divFormLabel">Nombre:</div><div id="divZonaNombre" class="divFormValue"><input type="text" id="inputZonaNombre"/></div>
 		<div class="divFormLabel">Detalle:</div><div id="divZonaDetalle" class="divFormValue"><input type="text" id="inputZonaDetalle"/></div>
 		<div class="divFormLabel">Departamento:</div><div id="divDepartamento" class="divFormValue"><select id="selectDepartamento"></select></div>

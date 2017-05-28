@@ -123,24 +123,6 @@ public class ACMInterfacePrepagoDWR {
 		return result;
 	}
 	
-	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
-		String result = null;
-		
-		try {
-			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
-			
-			result = iACMInterfacePrepagoBean.exportarAExcel(
-				MetadataConsultaDWR.transform(
-					metadataConsultaTO
-				)
-			);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-
 	public String preprocesarExportacionByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO) {
 		String result = null;
 		

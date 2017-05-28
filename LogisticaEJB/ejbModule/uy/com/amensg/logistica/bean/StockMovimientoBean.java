@@ -41,11 +41,7 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 			Query query = entityManager.createQuery(
 				"SELECT s.empresa.id, s.marca.id, s.modelo.id, SUM(s.cantidad) AS cantidad"
 				+ " FROM StockMovimiento s"
-<<<<<<< HEAD
 				+ " GROUP BY s.empresa.id, s.marca.id, s.modelo.id"
-=======
-				+ " GROUP BY s.empresa.id, s.producto.id"
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 			);
 			
 			for (Object object : query.getResultList()) {

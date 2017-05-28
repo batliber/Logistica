@@ -1,11 +1,7 @@
-<<<<<<< HEAD
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ page import="uy.com.amensg.logistica.dwr.*" %>
 <%@ page import="uy.com.amensg.logistica.util.*" %>
-=======
-<%@ page import="uy.com.amensg.logistica.dwr.*" %>
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 <%@ page import="uy.com.amensg.logistica.entities.ContratoTO" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -213,11 +209,7 @@
 								<li>Que ANTEL libere expresamente y por escrito al fiador solidario, siempre que el Cliente ofrezca fiador solidario o garant&iacute;a sustitutivos a satisfacci&oacute;n de ANTEL.</li>
 							</ol>
 						<li style="list-style-type: none;">&nbsp;</li>
-<<<<<<< HEAD
 						<li style="list-style-type: none;">A su vez el fiador solidario autoriza a que en caso de falta de pago por parte del Cliente, los cargos generados, sean facturados en la cuenta de ANTEL NÂº <input type="text" class="inputFiadorSolidarioNumeroCuenta"/> de la que es titular- Documento de identidad: <input type="text" class="inputFiadorSolidarioDocumento"/> Tel&eacute;fono de contacto: <input type="text" class="inputFiadorSolidarioTelefonoContacto"/>.</li>
-=======
-						<li style="list-style-type: none;">A su vez el fiador solidario autoriza a que en caso de falta de pago por parte del Cliente, los cargos generados, sean facturados en la cuenta de ANTEL Nº <input type="text" class="inputFiadorSolidarioNumeroCuenta"/> de la que es titular- Documento de identidad: <input type="text" class="inputFiadorSolidarioDocumento"/> Tel&eacute;fono de contacto: <input type="text" class="inputFiadorSolidarioTelefonoContacto"/>.</li>
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 						<li style="list-style-type: none;">&nbsp;</li>
 						<li style="list-style-type: none;">El fiador solidario constituye domicilio especial a todos los efectos del presente contrato en: <input type="text" class="inputFiadorSolidarioDireccion"/></li>
 						<li style="list-style-type: none;">&nbsp;</li>
@@ -228,11 +220,7 @@
 				<div class="divTextarea" style="font-size: 7pt;height: 102px;">
 					Tuve al cliente ante m&iacute; y corrobor&eacute; su identidad. El n&uacute;mero de individualizaci&oacute;n del presente contrato, lucir&aacute; en cada factura a emitirse.
 					<br/>
-<<<<<<< HEAD
 					Cliente se comunica con *611 por nÃºmeros gratis.
-=======
-					Cliente se comunica con *611 por números gratis.
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 					<br/>
 					<textarea class="textareaObservaciones"></textarea>
 				</div>
@@ -390,7 +378,6 @@
 					<br/>
 					<div class="">Por m&aacute;s informaci&oacute;n sobre los beneficios del plan contratado, consulte la p&aacute;gina Web de Antel: www.antel.com.uy</div>
 					<br/>
-<<<<<<< HEAD
 					<div class="">Los cargos mensuales establecidos en el contrato ser&aacute;n modificados autom&aacute;ticamente de conformidad con lo dispuesto en el Art. 12 del Decreto de Ley NÂº 14.235 de 25 de julio de 1974 en la redacci&oacute;n dada por el Art. 13 de la Ley NÂº 16.211 del 1 de octubre de 1991.</div>
 				</div>
 				<div class=""><input type="text" class="inputEspecificacionesDepartamento"/>, <input type="text" class="inputEspecificacionesDia"/> de <input type="text" class="inputEspecificacionesMes"/> de <input type="text" class="inputEspecificacionesAno"/></div>
@@ -491,106 +478,6 @@
 						</div>
 						<div class="divColumnaHalfFiller" style="width: 312px;margin-left: 6px;padding-top: 8px;">
 							NÂº. MID: <input type="text" class="inputCambioPlanMid"/>
-=======
-					<div class="">Los cargos mensuales establecidos en el contrato ser&aacute;n modificados autom&aacute;ticamente de conformidad con lo dispuesto en el Art. 12 del Decreto de Ley Nº 14.235 de 25 de julio de 1974 en la redacci&oacute;n dada por el Art. 13 de la Ley Nº 16.211 del 1 de octubre de 1991.</div>
-				</div>
-				<div class=""><input type="text" class="inputEspecificacionesDepartamento"/>, <input type="text" class="inputEspecificacionesDia"/> de <input type="text" class="inputEspecificacionesMes"/> de <input type="text" class="inputEspecificacionesAno"/></div>
-				<br/>
-				<div style="float: left;width: 45%;height: 20px;">Por Antel</div>
-				<div style="float: left;width: 45%;height: 20px;">Cliente</div>
-				<div style="float: left;width: 45%;">
-					<div style="width: 75%;border-bottom: dotted 1px black;">&nbsp;</div>
-					<div style="width: 75%;border-bottom: dotted 1px black;height: 30px;">&nbsp;</div>
-				</div>
-				<div style="float: left;width: 45%;">
-					<div style="width: 75%;border-bottom: dotted 1px black;">&nbsp;</div>
-					<div style="width: 75%;border-bottom: dotted 1px black;height: 30px;">&nbsp;</div>
-				</div>
-			</div>
-		</div>
-	</div>
-<%
-	}
-
-	vias = 2;
-	for (int i=0; i<vias; i++) {
-%>
-	<div class="divA4Sheet" style="border-top: none;">
-		<div class="divA4SheetContent">
-			<div class="divPageHeading" style="height: 25mm;">
-				<div style="margin: auto;width: 15mm;height: 100%;"><img class="imgGarantiaLogo" class="imgGarantiaLogo" src="/LogisticaWEB/images/logo-vos.png"/></div>
-			</div>
-			<div class="divPageContent" style="width: 88%;">
-				<div class="divGarantiaTitulo">GARANT&Iacute;A LIMITADA</div>
-				<br/>
-				<div class=""><input type="text" class="inputGarantiaEmpresa"/> le garantiza que, durante el periodo de garant&iacute;a, <input type="text" class="inputGarantiaService"/> o el servicio Oficial autorizado por la comp&ntilde;&iacute;a subsanar&aacute; de forma gratuita y dentro de un plazo comercialmente razonable no acotado los defectos del equipo mediante la reparaci&oacute;n o, en el caso de que el Servicio Oficial lo considerase necesario a su discreci&oacute;n, la sustituci&oacute;n del Producto de conformidad con la presente Garant&iacute;a Limitada.</div>
-				<br/>
-				<div class=""><span class="spanGarantiaTitulo">Periodo de Garant&iacute;a:</span> El Periodo de garant&iacute;a dar&aacute; comienzo en el momento de la compra original del Producto por parte del usuario. El Producto puede estar formado por varias piezas diferentes y las distintas piezas pueden estar cubiertas por un periodo de garant&iacute;a distinto (en lo sucesivo, el "Periodo de Garant&iacute;a"). Los distintos Periodos de Garant&iacute; son: a) Doce (12) meses para el dispositivo m&oacute;vil, b) Seis (6) meses para los siguientes accesorios y piezas consumibles, bater&iacute;as, cargadores, etc., c) treinta (30) d&iacute;as para tarjetas de memoria y dem&aacute;s accesorios.</div>
-				<br/>
-				<div class=""><span class="spanGarantiaTitulo">C&oacute;mo obtener el servicio garantizado:</span> Cualquier reclamaci&oacute;n realizada en virtud de la presente Garant&iacute;a Limitada estar&aacute; sujeta a la notificaci&oacute;n por su parte del presunto defecto a <input type="text" class="inputGarantiaService"/> o a una compa&ntilde;&iacute;a de servicio oficial autorizada dentro de un plazo razonable a partir de su descubrimiento y, en cualquier caso, nunca posterior a la fecha de vencimiento del Per&iacute;odo de Garant&iacute;a. <span class="spanGarantiaNegrita">Al realizar una reclamaci&oacute;n en virtud de la presente Garant&iacute;a Limitada deber&aacute; proporcionar: a) el producto (o la pieza afectada) y b) el comprobante de compra original, que indique con claridad el nombre y direcci&oacute;n del vendedor, la fecha y el lugar de la compra as&iacute; como la presentaci&oacute;n del original del presente Certificado de Garant&iacute;a debidamente sellado y firmado por dicho distribuidor, el tipo de producto y el IMEI u otro n&uacute;mero de serie.</span></div>
-				<br/>
-				<div class=""><span class="spanGarantiaTitulo">¿Qu&eacute; es lo que no cubre?</span></div>
-				<br/>
-				<div class="">
-					<ol style="margin: 0;padding: 0;">
-						<li>La presente Garant&iacute;a Limitada no cubre manuales de usuario ni software, configuraci&oacute;n, contenidos, datos o enlaces de terceros, incluidos o descargados en el Producto por usted. <input type="text" class="inputGarantiaService"/> no garantiza que el software del producto se ajuste a sus necesidades, funcion en combinaci&oacute;n con cualquier hardware o software provisto por un proveedor independiente, ni que el funcionamiento de cualquier software est&eacute; libre de sufrir interrupciones o errores, ni que cualquier defecto presente en el software pueda ser objeto de rectificaci&oacute;n o ser rectificado.</li>
-						<li>La presente Garant&iacute;a Limitada no cubre a) el desgaste normal (incluido, sin car&aacute;cter limitativo, el desgaste de lentes de c&aacute;maras, bater&iacute;as o pantallas), b) los defectos ocasionados por una mala manipulaci&oacute;n (incluidos, sin car&aacute;cter limitativo, los defectos ocasionados por elementos afilados, doblado, compresi&oacute;n o ca&iacute;das, etc.), ni c) los defectos o da&ntilde;os ocasionados por una mala utilizaci&oacute;n del Producto, incluido el uso contrario a las instrucciones provistas por la marca del Producto (por ejemplo, seg&uacute;n lo dispuesto en la gu&iacute;a del usuario del Producto) y/o e) otros actos m&aacute;s all&aacute; del control razonable de <input type="text" class="inputGarantiaService"/></li>
-						<li>La presente Garant&iacute;a Limitada no cubre los defectos o presuntos defectos ocasionados por el hecho de que el Producto fuera utilizado con, o en relaci&oacute;n con, cualquier producto, equipamiento, software y/o servicio no fabricado o suministrado por la marca o fuera utilizado de otra manera que no fuera para su uso previsto. Los defectos pueden ser ocasionados por virus debidos al acceso no autorizado por parte de usted o un tercero a servicios, otras cuentas, redes o sistemas inform&aacute;ticos. Dicho acceso no autorizado puede tener lugar mediante ataques de hackers, obtenci&oacute;n il&iacute;cita de contrase&ntilde;as u otros medios similares.</li>
-						<li>La presente Garant&iacute;a Limitada no cubre los defectos ocasionados por el hecho de que la bater&iacute;a haya sido sometida a cortocircuito o por el hecho de que los sellos del cierre de la bater&iacute;a o las c&eacute;lulas se hayan roto o muestren evidencias de manipulaci&oacute;n, o por el hecho de que la bater&iacute;a haya sido utilizada en equipos para los que no hubiera sido especificada.</li>
-						<li>La presente Garant&iacute;a Limitada no ser&aacute; v&aacute;lida si el Producto ha sido abierto, modificado o reparado por otros que no sean un centro de servicio autorizado, si ha sido reparado utilizando piezas de repuesto no autorizadas o si el n&uacute;mero de serie del Producto, el c&oacute;digo de fecha de equipamiento m&oacute;vil o el n&uacute;mero IMEI han sido eliminados, borrados, desfigurados, alterados o aparecen ilegibles en forma alguna, algo que ser&aacute; determinado exclusivamente a discreci&oacute;n de <input type="text" class="inputGarantiaService"/> o por el servicio Oficial Autorizado.</li>
-						<li>La presente Garant&iacute;a Limitada no ser&aacute; v&aacute;lida si el Producto ha sido expuesto a la humedad o a condiciones atmosf&eacute;ricas o t&eacute;rmicas extremas o a cambios r&aacute;pidos de las mismas, a la corrosi&oacute;n, la oxidaci&oacute;n, el vertido de alimentos, l&iacute;quidos, arena o a la influencia de productos qu&iacute;micos o cualquier elemento extra&ntilde;os.</li>
-					</ol>
-				</div>
-				<br/>
-				<div class="" style="width: 100%;text-align: center;text-decoration: underline;">CERTIFICADO DE GARANTIA</div>
-				<br/>
-				<div class="">
-					<div class="">Marca: <input type="text" class="inputGarantiaProductoMarca"/></div>
-					<div class="">Modelo: <input type="text" class="inputGarantiaProductoModelo"/></div>
-					<div class="">Nro. Serie: <input type="text" class="inputGarantiaNumeroSerie"/></div>
-					<div class="">Nombre, Apellido: <input type="text" class="inputGarantiaNombreApellido"/></div>
-					<div class="">M&oacute;vil: <input type="text" class="inputGarantiaMID"/></div>
-				</div>
-				<br/><br/>
-				<div class="" style="float: left;width: 50%;height: 20px;">FIRMA CLIENTE</div>
-				<div class="" style="float: left;width: 45%;height: 20px;">POR LA EMPRESA</div>
-				<br/><br/>
-				<div class=""><input type="text" class="inputGarantiaDatosService"/></div>
-			</div>
-		</div>
-	</div>
-<%
-	}
-
-	if (contratoTO.getMotivoCambioPlan() != null) {
-	
-		vias = 2;
-		for (int i=0; i<vias; i++) {
-%>
-	<div class="divA4Sheet divA4SheetCambioPlan" style="border-top: none;">
-		<div class="divA4SheetContent">
-			<div class="divPageHeading" style="height: 43mm;">
-				<div style="margin: auto;width: 15mm;height: 100%;">&nbsp;</div>
-			</div>
-			<div class="divPageContent" style="width: 88%;">
-				<div class="divTitulo" style="height: 18px;">Fecha: <input type="text" class="inputCambioPlanFecha"/></div>
-				<div class="divTitulo" style="height: 17px;">Datos del cliente:</div>
-				<div class="divTabla">
-					<div class="divFila" style="height: 28px;">
-						<div class="divColumnaHalf" style="width: 324px;padding-top: 8px;">
-							Nombre: <input type="text" class="inputCambioPlanClienteNombre"/>
-						</div>
-						<div class="divColumnaHalfFiller" style="width: 312px;margin-left: 6px;padding-top: 8px;">
-							Doumento: <input type="text" class="inputCambioPlanClienteDocumento"/>
-						</div>
-					</div>
-					<div class="divFila" style="height: 28px;">
-						<div class="divColumnaHalf" style="width: 324px;padding-top: 8px;">
-							Nº. Contrato: <input type="text" class="inputCambioPlanNumeroContrato"/>
-						</div>
-						<div class="divColumnaHalfFiller" style="width: 312px;margin-left: 6px;padding-top: 8px;">
-							Nº. MID: <input type="text" class="inputCambioPlanMid"/>
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 						</div>
 					</div>
 					<div class="divFila" style="height: 28px;">

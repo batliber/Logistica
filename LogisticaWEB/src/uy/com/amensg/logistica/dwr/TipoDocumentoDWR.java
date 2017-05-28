@@ -9,7 +9,6 @@ import javax.naming.NamingException;
 
 import org.directwebremoting.annotations.RemoteProxy;
 
-<<<<<<< HEAD
 import uy.com.amensg.logistica.bean.ITipoDocumentoBean;
 import uy.com.amensg.logistica.bean.TipoDocumentoBean;
 import uy.com.amensg.logistica.entities.TipoDocumento;
@@ -25,21 +24,7 @@ public class TipoDocumentoDWR {
 		String beanName = TipoDocumentoBean.class.getSimpleName();
 		String remoteInterfaceName = ITipoDocumentoBean.class.getName();
 		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
-=======
-import uy.com.amensg.logistica.entities.ITipoDocumentoBean;
-import uy.com.amensg.logistica.entities.TipoDocumento;
-import uy.com.amensg.logistica.entities.TipoDocumentoBean;
-import uy.com.amensg.logistica.entities.TipoDocumentoTO;
 
-@RemoteProxy
-public class TipoDocumentoDWR {
-
-	private ITipoDocumentoBean lookupBean() throws NamingException {
-		String EARName = "Logistica";
-		String beanName = TipoDocumentoBean.class.getSimpleName();
-		String remoteInterfaceName = ITipoDocumentoBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		Context context = new InitialContext();
 		
 		return (ITipoDocumentoBean) context.lookup(lookupName);

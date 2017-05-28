@@ -31,11 +31,7 @@
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Barrio</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
-<<<<<<< HEAD
 	<div class="divPopupWindow">
-=======
-	<div class="divMainWindow">
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		<div class="divFormLabel">Nombre:</div><div id="divBarrioNombre" class="divFormValue"><input type="text" id="inputBarrioNombre"/></div>
 		<div class="divFormLabel">Departamento:</div><div id="divDepartamento" class="divFormValue"><select id="selectDepartamento" onchange="javascript:selectDepartamentoOnChange(this)"></select></div>
 		<div class="divFormLabel">Zona:</div><div id="divZona" class="divFormValue"><select id="selectZona"></select></div>

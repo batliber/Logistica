@@ -53,7 +53,6 @@ public class ProductoBean implements IProductoBean {
 		return result;
 	}
 	
-<<<<<<< HEAD
 	public Producto getByIMEI(String imei) {
 		Producto result = null;
 		
@@ -100,8 +99,6 @@ public class ProductoBean implements IProductoBean {
 		return result;
 	}
 	
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	public void save(Producto producto) {
 		try {
 			entityManager.persist(producto);

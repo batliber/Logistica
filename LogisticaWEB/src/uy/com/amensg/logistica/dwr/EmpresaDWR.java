@@ -119,7 +119,6 @@ public class EmpresaDWR {
 		empresaTO.setNombre(empresa.getNombre());
 		empresaTO.setNombreContrato(empresa.getNombreContrato());
 		empresaTO.setNombreSucursal(empresa.getNombreSucursal());
-<<<<<<< HEAD
 		
 		if (empresa.getFormaPagos() != null) {
 			Collection<FormaPagoTO> formaPagos = new LinkedList<FormaPagoTO>();
@@ -130,8 +129,6 @@ public class EmpresaDWR {
 			
 			empresaTO.setFormaPagos(formaPagos);
 		}
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		
 		empresaTO.setFact(empresa.getFact());
 		empresaTO.setId(empresa.getId());
@@ -149,7 +146,6 @@ public class EmpresaDWR {
 		empresa.setNombre(empresaTO.getNombre());
 		empresa.setNombreContrato(empresaTO.getNombreContrato());
 		empresa.setNombreSucursal(empresaTO.getNombreSucursal());
-<<<<<<< HEAD
 		
 		if (empresaTO.getFormaPagos() != null) {
 			Collection<FormaPago> formaPagos = new LinkedList<FormaPago>();
@@ -164,8 +160,6 @@ public class EmpresaDWR {
 			
 			empresa.setFormaPagos(formaPagos);
 		}
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		

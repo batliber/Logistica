@@ -10,11 +10,9 @@ function Grid(element, campos, showFilters, reloadListener, trOnClickListener, t
 	this.__ANCHO_CAMPO_FECHA_MES_ANO = 65 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_RELACION = 110 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_MULTIPLE = 110 + this.__ANCHO_BORDE;
-<<<<<<< HEAD
 	this.__ANCHO_CAMPO_BOOLEAN = 55 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_DETAIL = 15 + this.__ANCHO_BORDE;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
+
 	this.__ANCHO_ETIQUETA_CANTIDAD_REGISTROS = 120;
 	
 	this.__ALTO_FILA = 18;
@@ -106,10 +104,6 @@ Grid.prototype.rebuild = function() {
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_DECIMAL;
 					
 					break;
-				case __TIPO_CAMPO_DECIMAL:
-					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_DECIMAL;
-					
-					break;
 				case __TIPO_CAMPO_STRING:
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_STRING;
 					
@@ -126,19 +120,12 @@ Grid.prototype.rebuild = function() {
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_MES_ANO;
 					
 					break;
-<<<<<<< HEAD
 				case __TIPO_CAMPO_BOOLEAN:
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_BOOLEAN;
 					
 					break;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				case __TIPO_CAMPO_RELACION:
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_RELACION;
-					
-					break;
-				case __TIPO_CAMPO_MULTIPLE:
-					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_MULTIPLE;
 					
 					break;
 				case __TIPO_CAMPO_MULTIPLE:
@@ -293,16 +280,12 @@ Grid.prototype.reload = function(data) {
 					
 					break;
 				case __TIPO_CAMPO_DECIMAL:
-<<<<<<< HEAD
 					var decimales = 2;
 					if (this.filtroDinamico.campos[campo].decimales != null) {
 						decimales = this.filtroDinamico.campos[campo].decimales;
 					} 
 					
 					formattedValue = value != null && value !== "" ? formatDecimal(value, decimales) : "&nbsp;";
-=======
-					formattedValue = value != null && value !== "" ? formatDecimal(value, 2) : "&nbsp;";
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 					
 					break;
 				case __TIPO_CAMPO_STRING:
@@ -321,18 +304,11 @@ Grid.prototype.reload = function(data) {
 					formattedValue = value != null && value != "" ? formatMonthYearDate(value) : "&nbsp;";
 					
 					break;
-<<<<<<< HEAD
 				case __TIPO_CAMPO_BOOLEAN:
 					formattedValue = value != null && value !== "" ? formatBoolean(value) : "&nbsp;";
 					
 					break;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				case __TIPO_CAMPO_RELACION:
-					formattedValue = value != null && value != "" ? value : "&nbsp;";
-					
-					break;
-				case __TIPO_CAMPO_MULTIPLE:
 					formattedValue = value != null && value != "" ? value : "&nbsp;";
 					
 					break;

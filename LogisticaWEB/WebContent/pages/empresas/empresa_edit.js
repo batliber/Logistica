@@ -52,7 +52,6 @@ $(document).ready(function() {
 					$("#inputEmpresaNombreContrato").val(data.nombreContrato);
 					$("#inputEmpresaNombreSucursal").val(data.nombreSucursal);
 					$("#inputEmpresaId").val(data.id);
-<<<<<<< HEAD
 					
 					if (data.formaPagos != null) {
 						for (var i=0; i<data.formaPagos.length; i++) {
@@ -60,8 +59,6 @@ $(document).ready(function() {
 						}
 					}
 					
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 					if (data.logoURL != null) {
 						$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + data.logoURL);
 					}

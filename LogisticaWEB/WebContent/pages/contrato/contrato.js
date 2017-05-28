@@ -6,7 +6,6 @@ var __ELEGIBILIDAD_FINANCIACION_RECHAZAR = 0;
 var __ELEGIBILIDAD_FINANCIACION_REALIZAR_CLEARING = 1;
 var __ELEGIBILIDAD_FINANCIACION_NO_REALIZAR_CLEARING = 2;
 
-<<<<<<< HEAD
 var gridArchivosAdjuntos = null;
 
 $(document).ready(init);
@@ -14,10 +13,6 @@ $(document).ready(init);
 function init() {
 	$("#divTab2").hide();
 	$("#divTab3").hide();
-=======
-$(document).ready(function() {
-	$("#divTab2").hide();
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	
 	$(".divTabHeader > div").click(function(eventObject) {
 		var element = $(eventObject.currentTarget);
@@ -37,11 +32,7 @@ $(document).ready(function() {
 		}
 	});
 	
-<<<<<<< HEAD
 	initTabArchivosAdjuntos();
-=======
-	buildGallery();
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	
 	refinarForm();
 	
@@ -56,11 +47,7 @@ $(document).ready(function() {
 	}
 	
 	if ($("#selectNuevoPlan").length > 0) {
-<<<<<<< HEAD
 		PlanDWR.listVigentes(
-=======
-		PlanDWR.list(
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 			{
 				callback: function(data) {
 					fillSelect("selectNuevoPlan", data, "id", "descripcion");
@@ -79,7 +66,6 @@ $(document).ready(function() {
 		);
 	}
 	
-<<<<<<< HEAD
 	if ($("#selectMoneda").length > 0) {
 		MonedaDWR.list(
 			{
@@ -125,8 +111,6 @@ $(document).ready(function() {
 	$("#inputPTF").prop("disabled", true);
 	$("#inputValorCuota").prop("disabled", true);
 	
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	if ($("#selectTipoDocumento").length > 0) {
 		TipoDocumentoDWR.list(
 			{
@@ -265,7 +249,6 @@ $(document).ready(function() {
 										
 										var found = false;
 										for (var i=0; i<dataStock.length; i++) {
-<<<<<<< HEAD
 											if (dataStock[i].cantidad > 0 && dataStock[i].fechaBaja == null) {
 												equipos[equipos.length] = {
 													id: dataStock[i].modelo.id,
@@ -276,20 +259,9 @@ $(document).ready(function() {
 												
 												found = 
 													found || (data.marca != null && data.modelo != null && dataStock[i].marca.id == data.marca.id && dataStock[i].modelo.id == data.modelo.id);
-=======
-											if (dataStock[i].cantidad > 0) {
-												equipos[equipos.length] = {
-													id: dataStock[i].producto.id,
-													descripcion: dataStock[i].producto.descripcion + " (" + dataStock[i].cantidad + ")" 
-												};
-												
-												found = 
-													found || (data.producto != null && data.producto != "" && dataStock[i].producto.id == data.producto.id);
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 											}
 										}
 										
-<<<<<<< HEAD
 										if (!found && data.marca != null && data.modelo != null) {
 											equipos[equipos.length] = {
 												id: data.modelo.id,
@@ -302,34 +274,17 @@ $(document).ready(function() {
 										fillSelect("selectEquipo", equipos, "id", "descripcion", "maid", "marca.id", "moid", "modelo.id");
 										
 										populateField("equipo", data, "modelo.id", "modelo.descripcion", "moid", "modelo.id");
-=======
-										if (!found && data.producto != null && data.producto != "") {
-											equipos[equipos.length] = {
-												id: data.producto.id,
-												descripcion: data.producto.descripcion
-											};
-										}
-										
-										fillSelect("selectEquipo", equipos, "id", "descripcion");
-										
-										populateField("equipo", data, "producto.id", "producto.descripcion", "pid", "producto.id");
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 									}, async: false
 								}
 							);
 						} else {
-<<<<<<< HEAD
 							populateField("equipo", data, "modelo.id", "modelo.descripcion", "moid", "modelo.id");
-=======
-							populateField("equipo", data, "producto.id", "producto.descripcion", "pid", "producto.id");
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 						}
 						
 						reloadFormasPago(data.empresa.id, data.documento);
 					}
 					
 					populateField("precio", data, "precio", "precio");
-<<<<<<< HEAD
 					populateField("moneda", data, "moneda.id", "moneda.simbolo", "mid", "moneda.id");
 					if (data.formaPago != null) {
 						var options = $("#selectFormaPago option");
@@ -391,20 +346,6 @@ $(document).ready(function() {
 					populateField("apellido", data, "apellido", "apellido");
 					populateField("fechaNacimiento", data, "fechaNacimiento", "fechaNacimiento", null, null, formatShortDate);
 					populateField("sexo", data, "sexo.id", "sexo.descripcion", "sid", "sexo.id");
-=======
-					populateField("numeroFactura", data, "numeroFactura", "numeroFactura");
-					populateField("numeroFacturaRiverGreen", data, "numeroFacturaRiverGreen", "numeroFacturaRiverGreen");
-					populateField("numeroSerie", data, "numeroSerie", "numeroSerie");
-					populateField("numeroChip", data, "numeroChip", "numeroChip");
-					populateField("numeroBloqueo", data, "numeroBloqueo", "numeroBloqueo");
-					
-					populateField("tipoDocumento", data, "tipoDocumento.id", "tipoDocumento.descripcion");
-					populateField("documento", data, "documento", "documento");
-					populateField("nombre", data, "nombre", "nombre");
-					populateField("apellido", data, "apellido", "apellido");
-					populateField("fechaNacimiento", data, "fechaNacimiento", "fechaNacimiento", null, null, formatShortDate);
-					populateField("sexo", data, "sexo.id", "sexo.descripcion");
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 					populateField("telefonoContacto", data, "telefonoContacto", "telefonoContacto");
 					populateField("email", data, "email", "email");
 					
@@ -467,17 +408,7 @@ $(document).ready(function() {
 					populateField("resultadoEntregaDistribucionPrecision", data, "resultadoEntregaDistribucionPrecision");
 					populateField("resultadoEntregaDistribucionObservaciones", data, "resultadoEntregaDistribucionObservaciones", "resultadoEntregaDistribucionObservaciones");
 					
-<<<<<<< HEAD
 					reloadArchivosAdjuntosData(data);
-=======
-					var galleryContent = $(".divGalleryContent > img");
-					if (data.resultadoEntregaDistribucionURLAnverso != null && data.resultadoEntregaDistribucionURLAnverso != "") {
-						$(galleryContent[0]).attr("src", "/LogisticaWEB/Stream?fn=" + data.resultadoEntregaDistribucionURLAnverso);
-					}
-					if (data.resultadoEntregaDistribucionURLReverso != null && data.resultadoEntregaDistribucionURLReverso!= "") {
-						$(galleryContent[1]).attr("src", "/LogisticaWEB/Stream?fn=" + data.resultadoEntregaDistribucionURLReverso);
-					}
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				}, async: false
 			}
 		);
@@ -659,7 +590,6 @@ function refinarForm() {
 	hideField("fechaCoordinacion");
 	hideField("resultadoEntregaDistribucion");
 	hideField("resultadoEntregaDistribucionObservaciones");
-<<<<<<< HEAD
 	hideField("resultadoEntregaDistribucionLatitud");
 	hideField("resultadoEntregaDistribucionLongitud");
 	hideField("resultadoEntregaDistribucionPrecision");
@@ -675,14 +605,6 @@ function refinarForm() {
 	
 	$("#divRealizarClearing").hide();
 	$("#inputNumeroFacturaRiverGreen").prop("disabled", true);
-=======
-	hideField("resultadoEntregaDistribucionDocumentos");
-	hideField("resultadoEntregaDistribucionURLAnverso");
-	hideField("resultadoEntregaDistribucionURLReverso");
-	hideField("resultadoEntregaDistribucionLatitud");
-	hideField("resultadoEntregaDistribucionLongitud");
-	hideField("resultadoEntregaDistribucionPrecision");
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	
 	$(".divButtonBar > div").hide();
 	$(".divButtonTitleBar > div").hide();
@@ -706,10 +628,7 @@ function refinarForm() {
 		$("#divSexo").html("&nbsp;");
 		$("#divNumeroFactura").html("&nbsp;");
 		$("#divNumeroFacturaRiverGreen").html("&nbsp;");
-<<<<<<< HEAD
 		$("#divAgregarAdjunto").html("&nbsp");
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		
 		$("#divDireccionFactura").html("&nbsp;");
 		$("#divDireccionFacturaCalle").html("&nbsp;");
@@ -772,11 +691,8 @@ function refinarForm() {
 		
 		$("#divFechaAtivarEn").html("&nbsp;");
 		hideField("fechaActivarEn");
-<<<<<<< HEAD
 		
 		$("#divAgregarAdjunto").html("&nbsp");
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		
 		$("#divLabelEmpresa").addClass("requiredFormLabel");
 		$("#divLabelMid").addClass("requiredFormLabel");
@@ -839,21 +755,11 @@ function refinarForm() {
 	} else if (mode == __FORM_MODE_BACKOFFICE) {
 		$("#divEmpresa").html("&nbsp;");
 		showField("empresa");
-<<<<<<< HEAD
-=======
 		
-		$("#divMid").html("&nbsp;");
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
-		
-<<<<<<< HEAD
 		$("#divMid").html("&nbsp;");
 		
 //		$("#divFechaAtivarEn").html("&nbsp;");
 //		hideField("fechaActivarEn");
-=======
-		$("#divFechaAtivarEn").html("&nbsp;");
-		hideField("fechaActivarEn");
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		
 		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
 		$("#divLabelEquipo").addClass("requiredFormLabel");
@@ -932,12 +838,6 @@ function refinarForm() {
 		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
 		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
 	} else if (mode == __FORM_MODE_DISTRIBUCION) {
-<<<<<<< HEAD
-=======
-		showField("resultadoEntregaDistribucionDocumentos");
-		showField("resultadoEntregaDistribucionURLAnverso");
-		showField("resultadoEntregaDistribucionURLReverso");
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		showField("resultadoEntregaDistribucionObservaciones");
 		
 		$("#divEmpresa").html("&nbsp;");
@@ -982,10 +882,7 @@ function refinarForm() {
 		$("#divInputActivar").show();
 		$("#divInputNoFirma").show();
 		$("#divInputRecoordinar").show();
-<<<<<<< HEAD
 		$("#divInputGestionDistribucion").show();
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		
 		$("#divInputImprimirAdjuntos").show();
 		$("#divInputGuardar").show();
@@ -993,20 +890,9 @@ function refinarForm() {
 		$(".divButtonBarSeparator").show();
 		$(".divButtonTitleBar > div").show();
 		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
-<<<<<<< HEAD
 		
 		$(".divPopupWindow > .divLayoutColumn").css("height", "410");
 	} else if (mode == __FORM_MODE_REDISTRIBUCION) {
-=======
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleTripleSize");
-	} else if (mode == __FORM_MODE_REDISTRIBUCION) {
-		$("#divLabelResultadoEntregaDistribucionDocumentos").show();
-		$("#divResultadoEntregaDistribucionDocumentos").show();
-		$("#divLabelResultadoEntregaDistribucionURLAnverso").show();
-		$("#divResultadoEntregaDistribucionURLAnverso").show();
-		$("#divLabelResultadoEntregaDistribucionURLReverso").show();
-		$("#divResultadoEntregaDistribucionURLReverso").show();
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		$("#divLabelResultadoEntregaDistribucionObservaciones").show();
 		$("#divResultadoEntregaDistribucionObservaciones").show();
 		
@@ -1052,7 +938,6 @@ function refinarForm() {
 		$("#divInputReActivar").show();
 		$("#divInputNoFirma").show();
 		$("#divInputRecoordinar").show();
-<<<<<<< HEAD
 		$("#divInputGestionDistribucion").show();
 		
 		$("#divInputGuardar").show();
@@ -1060,15 +945,6 @@ function refinarForm() {
 		$(".divButtonBarSeparator").show();
 		$(".divButtonTitleBar > div").show();
 		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
-=======
-		
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleTripleSize");
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	} else if (mode == __FORM_MODE_ACTIVACION) {
 		$("#divEmpresa").html("&nbsp;");
 		showField("empresa");
@@ -1104,7 +980,6 @@ function refinarForm() {
 		$(".divButtonBarSeparator").show();
 		$(".divButtonTitleBar > div").show();
 		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
-<<<<<<< HEAD
 	} else if (mode == __FORM_MODE_SUPERVISOR_ACTIVACION) {
 		$("#divEmpresa").html("&nbsp;");
 		showField("empresa");
@@ -1325,8 +1200,6 @@ function inputDocumentoOnChange(event, element) {
 	} else {
 		reloadPrecio();
 		reloadDatosFinanciacion();
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	}
 }
 
@@ -1766,11 +1639,7 @@ function collectContratoData() {
 				$("#divNumeroContrato").text().trim(),
 		numeroSerie: $("#inputNumeroSerie").length > 0 ? 
 			($("#inputNumeroSerie").val().trim() != "" ? $("#inputNumeroSerie").val().trim() : null) :
-<<<<<<< HEAD
 			($("#divNumeroSerie").text().trim() != "" ? $("#divNumeroSerie").text().trim() : null),
-=======
-				$("#divNumeroSerie").text().trim(),
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		numeroChip: $("#inputNumeroChip").length > 0 ? 
 			($("#inputNumeroChip").val().trim() != "" ? $("#inputNumeroChip").val().trim() : null) :
 				$("#divNumeroChip").text().trim(),
@@ -1901,45 +1770,6 @@ function collectContratoData() {
 	if ($("#selectDireccionEntregaDepartamento").val() != "0") {
 		contrato.direccionEntregaDepartamento = {
 			id: $("#selectDireccionEntregaDepartamento").val()
-<<<<<<< HEAD
-=======
-		};
-	}
-	
-	if ($("#selectDireccionFacturaDepartamento").val() != "0") {
-		contrato.direccionFacturaDepartamento = {
-			id: $("#selectDireccionFacturaDepartamento").val()
-		};
-	}
-	
-	if ($("#selectTipoDocumento").val() != "0") {
-		contrato.tipoDocumento = {
-			id: $("#selectTipoDocumento").val()
-		};
-	}
-	
-	if ($("#selectSexo").val() != "0") {
-		contrato.sexo = {
-			id: $("#selectSexo").val()
-		};
-	}
-	
-	if ($("#selectEquipo").val() != "0") {
-		contrato.producto = {
-			id: $("#selectEquipo").val()
-		};
-	}
-	
-	if ($("#selectNuevoPlan").val() != "0") {
-		contrato.nuevoPlan = {
-			id: $("#selectNuevoPlan").val()
-		};
-	}
-	
-	if ($("#selectMotivoCambioPlan").val() != "0") {
-		contrato.motivoCambioPlan = {
-			id: $("#selectMotivoCambioPlan").val()
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		};
 	}
 	
@@ -2148,7 +1978,7 @@ function inputImprimirAdjuntosOnClick() {
 
 function inputImprimirContratoOnClick() {
 	if (!checkRequiredFields()) {
-		alert("Información incompleta.");
+		alert("Informaciï¿½n incompleta.");
 		return;
 	}
 	
@@ -2159,7 +1989,7 @@ function inputImprimirContratoOnClick() {
 
 function inputImprimirAdjuntosOnClick() {
 	if (!checkRequiredFields()) {
-		alert("Información incompleta.");
+		alert("Informaciï¿½n incompleta.");
 		return;
 	}
 	

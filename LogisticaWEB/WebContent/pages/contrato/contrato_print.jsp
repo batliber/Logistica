@@ -46,11 +46,7 @@
 					<div class="divFormLabelExtendedPrint" id="divLabelLocalidad">Localidad:</div><div id="divLocalidad" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelCodigoPostal">C&oacute;digo postal:</div><div id="divCodigoPostal" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelNumeroContrato">N&uacute;mero de contrato:</div><div id="divNumeroContrato" class="divFormValuePrint">&nbsp;</div>
-<<<<<<< HEAD
 					<div class="divFormLabelExtendedPrint" id="divLabelNumeroSerie" id="divLabelNumeroSerie">NÂº de serie:</div><div id="divNumeroSerie" class="divFormValuePrint">&nbsp;</div>
-=======
-					<div class="divFormLabelExtendedPrint" id="divLabelNumeroSerie" id="divLabelNumeroSerie">Nº de serie:</div><div id="divNumeroSerie" class="divFormValuePrint">&nbsp;</div>
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 					<div class="divFormLabelExtendedPrint" id="divLabelNumeroFactura" id="divLabelNumeroFactura">N&uacute;mero factura:</div><div id="divNumeroFactura" class="divFormValuePrint">&nbsp;</div>
 					-->
 				</div>

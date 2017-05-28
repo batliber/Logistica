@@ -42,11 +42,7 @@
 
 .divTabTitleFiller {
 	float: left;
-<<<<<<< HEAD
 	width: 251px;
-=======
-	width: 427px;
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	height: 23px;
 	border-top: solid 1px transparent;
 	border-left: solid 1px black;
@@ -129,7 +125,6 @@
 
 #divResultadoEntregaDistribucionDocumentos {
 	float: left;
-<<<<<<< HEAD
 	height: 100%;
 }
 
@@ -144,23 +139,6 @@
 .divGalleryContent {
 	float: left;
 	width: 94%;
-=======
-	width: 50%;
-	height: 150px;
-}
-
-.divGalleryLeft {
-	float: left;
-	width: 9%;
-	height: 100%;
-	cursor: pointer;
-	text-align: center;
-}
-
-.divGalleryContent {
-	float: left;
-	width: 80%;
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	height: 100%;
 }
 
@@ -447,7 +425,6 @@
 	width: 100%;
 }
 
-<<<<<<< HEAD
 #divAgregarAdjunto {
 	width: 80%;
 	height: 25px;
@@ -464,8 +441,6 @@
 	overflow: hidden;
 }
 
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 #divIFramePrint {
 	display: none;
 }

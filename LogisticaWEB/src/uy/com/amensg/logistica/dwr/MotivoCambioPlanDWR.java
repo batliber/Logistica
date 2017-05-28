@@ -18,19 +18,13 @@ import uy.com.amensg.logistica.entities.MotivoCambioPlanTO;
 public class MotivoCambioPlanDWR {
 
 	private IMotivoCambioPlanBean lookupBean() throws NamingException {
-<<<<<<< HEAD
 		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
 		String appName = "LogisticaEJB";
 		String beanName = MotivoCambioPlanBean.class.getSimpleName();
 		String remoteInterfaceName = IMotivoCambioPlanBean.class.getName();
 		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
-=======
-		String EARName = "Logistica";
-		String beanName = MotivoCambioPlanBean.class.getSimpleName();
-		String remoteInterfaceName = IMotivoCambioPlanBean.class.getName();
-		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
+
 		Context context = new InitialContext();
 		
 		return (IMotivoCambioPlanBean) context.lookup(lookupName);

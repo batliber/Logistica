@@ -37,7 +37,6 @@
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Stock</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
-<<<<<<< HEAD
 	<div class="divPopupWindow">
 		<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa"></select></div>
 		<div class="divFormLabelExtended">Tipo de movimiento:</div><div id="divStockTipoMovimiento" class="divFormValue"><select id="selectStockTipoMovimiento" onchange="javascript:selectStockTipoMovimientoOnChange(event, this)"></select></div>
@@ -47,13 +46,6 @@
 		<div class="divFormLabelExtended">IMEI:</div><div id="divIMEI" class="divFormValue"><input type="text" id="inputIMEI" onchange="javascript:inputIMEIOnChange(event, this)"/></div>
 		<div class="divFormLabelExtended">&nbsp;</div><div class="divFormValue" style="width: 70%;">&nbsp;</div>
 		<div class="divFormLabelExtended">&nbsp;</div><div id="divTableIMEIs" style="float:left;">&nbsp;</div>
-=======
-	<div class="divMainWindow">
-		<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa"></select></div>
-		<div class="divFormLabelExtended">Producto:</div><div id="divProducto" class="divFormValue"><select id="selectProducto"></select></div>
-		<div class="divFormLabelExtended">Tipo de movimiento:</div><div id="divStockTipoMovimiento" class="divFormValue"><select id="selectStockTipoMovimiento"></select></div>
-		<div class="divFormLabelExtended">Cantidad:</div><div id="divCantidad" class="divFormValue"><input type="text" id="inputCantidad"/></div>
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	</div>
 </body>
 </html>

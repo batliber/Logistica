@@ -228,7 +228,6 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		
 		return result;
 	}
-<<<<<<< HEAD
 	
 	/**
 	 * Cuenta la cantidad de ACMInterfaceContrato que cumplen los criterios encapsulados en metadataConsulta.
@@ -320,84 +319,6 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			}
 			
 			result = queryCount.getSingleResult();
-=======
-
-	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa) {
-		String result = null;
-		
-		try {
-			Collection<Long> mids = new LinkedList<Long>();
-			for (ACMInterfaceContrato acmInterfaceContrato : this.listSubconjunto(metadataConsulta)) {
-				mids.add(acmInterfaceContrato.getMid());
-			}
-			
-			Map<Long, Integer> map = iContratoBean.preprocesarConjunto(mids, empresa.getId());
-			
-			Long importar = new Long(0);
-			Long sobreescribir = new Long(0);
-			Long omitir = new Long(0);
-			for (Entry<Long, Integer> entry : map.entrySet()) {
-				switch (entry.getValue()) {
-					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
-						importar++;
-						
-						break;
-					case Constants.__COMPROBACION_IMPORTACION_OMITIR:
-						omitir++;
-						
-						break;
-					case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
-						sobreescribir++;
-						
-						break;
-				}
-			}
-			
-			result =
-				"Se asignarán " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
-				+ "Se omitirán " + omitir + " MIDs.";
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-	
-	public String exportarAExcel(MetadataConsulta metadataConsulta) {
-		String result = null;
-		
-		try {
-			GregorianCalendar gregorianCalendar = new GregorianCalendar();
-			Date currentDate = gregorianCalendar.getTime();
-			
-			String fileName = 
-				Configuration.getInstance().getProperty("exportacion.carpeta")
-					+ gregorianCalendar.get(GregorianCalendar.YEAR)
-					+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1)
-					+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH)
-					+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY)
-					+ gregorianCalendar.get(GregorianCalendar.MINUTE)
-					+ gregorianCalendar.get(GregorianCalendar.SECOND)
-					+ ".csv";
-			
-			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
-			
-			for (ACMInterfaceContrato acmInterfaceContrato : this.listSubconjunto(metadataConsulta)) {
-				acmInterfaceContrato.setFechaExportacionAnterior(
-					acmInterfaceContrato.getFechaExportacion()
-				);
-				acmInterfaceContrato.setFechaExportacion(currentDate);
-				
-				acmInterfaceContrato = entityManager.merge(acmInterfaceContrato);
-				
-				printWriter.println(this.buildCSVLine(acmInterfaceContrato, null));
-			}
-			
-			printWriter.close();
-			
-			result = fileName;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

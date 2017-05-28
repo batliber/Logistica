@@ -17,10 +17,7 @@ import uy.com.amensg.logistica.bean.IProductoBean;
 import uy.com.amensg.logistica.bean.ProductoBean;
 import uy.com.amensg.logistica.entities.EmpresaService;
 import uy.com.amensg.logistica.entities.Marca;
-<<<<<<< HEAD
 import uy.com.amensg.logistica.entities.Modelo;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 import uy.com.amensg.logistica.entities.Producto;
 import uy.com.amensg.logistica.entities.ProductoTO;
 
@@ -100,20 +97,6 @@ public class ProductoDWR {
 		return result;
 	}
 	
-	public ProductoTO getById(Long id) {
-		ProductoTO result = null;
-		
-		try {
-			IProductoBean iProductoBean = lookupBean();
-			
-			result = transform(iProductoBean.getById(id));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-	
 	public void add(ProductoTO productoTO) {
 		try {
 			IProductoBean iProductoBean = lookupBean();
@@ -149,7 +132,6 @@ public class ProductoDWR {
 		
 		productoTO.setDescripcion(producto.getDescripcion());
 		productoTO.setFechaBaja(producto.getFechaBaja());
-<<<<<<< HEAD
 		productoTO.setImei(producto.getImei());
 		
 		if (producto.getEmpresaService() != null) {
@@ -162,15 +144,6 @@ public class ProductoDWR {
 		
 		if (producto.getModelo() != null) {
 			productoTO.setModelo(ModeloDWR.transform(producto.getModelo()));
-=======
-		
-		if (producto.getEmpresaService() != null) {
-			productoTO.setEmpresaService(EmpresaServiceDWR.transform(producto.getEmpresaService()));
-		}
-		
-		if (producto.getMarca() != null) {
-			productoTO.setMarca(MarcaDWR.transform(producto.getMarca()));
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		}
 		
 		productoTO.setFact(producto.getFact());

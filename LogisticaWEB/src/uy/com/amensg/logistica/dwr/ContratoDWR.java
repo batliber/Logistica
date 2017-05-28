@@ -29,23 +29,17 @@ import uy.com.amensg.logistica.entities.MetadataCondicionTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
-<<<<<<< HEAD
 import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Moneda;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 import uy.com.amensg.logistica.entities.MotivoCambioPlan;
 import uy.com.amensg.logistica.entities.Plan;
 import uy.com.amensg.logistica.entities.Producto;
 import uy.com.amensg.logistica.entities.ResultadoEntregaDistribucion;
 import uy.com.amensg.logistica.entities.Rol;
 import uy.com.amensg.logistica.entities.Sexo;
-<<<<<<< HEAD
 import uy.com.amensg.logistica.entities.TarjetaCredito;
 import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.entities.TipoContratoTO;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 import uy.com.amensg.logistica.entities.TipoDocumento;
 import uy.com.amensg.logistica.entities.Turno;
 import uy.com.amensg.logistica.entities.Usuario;
@@ -597,7 +591,6 @@ public class ContratoDWR {
 				
 				result = iContratoBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
 			}
-<<<<<<< HEAD
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -618,8 +611,6 @@ public class ContratoDWR {
 				
 				result = iContratoBean.exportarAExcelNucleo(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
 			}
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -758,7 +749,6 @@ public class ContratoDWR {
 		if (contrato.getEmpresa() != null) {
 			contratoTO.setEmpresa(EmpresaDWR.transform(contrato.getEmpresa()));
 		}
-<<<<<<< HEAD
 		if (contrato.getFormaPago() != null) {
 			contratoTO.setFormaPago(FormaPagoDWR.transform(contrato.getFormaPago()));
 		}
@@ -776,13 +766,6 @@ public class ContratoDWR {
 		}
 		if (contrato.getModelo() != null) {
 			contratoTO.setModelo(ModeloDWR.transform(contrato.getModelo()));
-=======
-		if (contrato.getNuevoPlan() != null) {
-			contratoTO.setNuevoPlan(PlanDWR.transform(contrato.getNuevoPlan()));
-		}
-		if (contrato.getMotivoCambioPlan() != null) {
-			contratoTO.setMotivoCambioPlan(MotivoCambioPlanDWR.transform(contrato.getMotivoCambioPlan()));
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		}
 		if (contrato.getProducto() != null) {
 			contratoTO.setProducto(ProductoDWR.transform(contrato.getProducto()));
@@ -793,12 +776,9 @@ public class ContratoDWR {
 		if (contrato.getRol() != null) {
 			contratoTO.setRol(RolDWR.transform(contrato.getRol()));
 		}
-<<<<<<< HEAD
 		if (contrato.getTarjetaCredito() != null) {
 			contratoTO.setTarjetaCredito(TarjetaCreditoDWR.transform(contrato.getTarjetaCredito()));
 		}
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		if (contrato.getTipoDocumento() != null) {
 			contratoTO.setTipoDocumento(TipoDocumentoDWR.transform(contrato.getTipoDocumento()));
 		}
@@ -938,7 +918,6 @@ public class ContratoDWR {
 			
 			contrato.setDireccionFacturaDepartamento(direccionFacturaDepartamento);
 		}
-<<<<<<< HEAD
 		if (contratoTO.getFormaPago() != null) {
 			FormaPago formaPago = new FormaPago();
 			formaPago.setId(contratoTO.getFormaPago().getId());
@@ -969,8 +948,6 @@ public class ContratoDWR {
 			
 			contrato.setModelo(modelo);
 		}
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		if (contratoTO.getProducto() != null) {
 			Producto producto = new Producto();
 			producto.setId(contratoTO.getProducto().getId());

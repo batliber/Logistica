@@ -37,7 +37,6 @@ public class PlanBean implements IPlanBean {
 		
 		return result;
 	}
-<<<<<<< HEAD
 	
 	public Collection<Plan> listVigentes() {
 		Collection<Plan> result = new LinkedList<Plan>();
@@ -59,8 +58,6 @@ public class PlanBean implements IPlanBean {
 		
 		return result;
 	}
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 
 	public Plan getById(Long id) {
 		Plan result = null;

@@ -33,10 +33,7 @@ public class ContratoTO extends BaseTO {
 	private String email;
 	private String numeroFactura;
 	private Double precio;
-<<<<<<< HEAD
 	private Long cuotas;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	private String numeroSerie;
 	private String numeroChip;
 	private String numeroBloqueo;
@@ -77,7 +74,6 @@ public class ContratoTO extends BaseTO {
 	private Long direccionFacturaCodigoPostal;
 	private String direccionFacturaLocalidad;
 	private String direccionFacturaObservaciones;
-<<<<<<< HEAD
 	private Double intereses;
 	private Double gastosAdministrativos;
 	private Double gastosConcesion;
@@ -85,8 +81,6 @@ public class ContratoTO extends BaseTO {
 	private Double valorCuota;
 	private Double valorUnidadIndexada;
 	private Double valorTasaInteresEfectivaAnual;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	private DepartamentoTO direccionEntregaDepartamento;
 	private DepartamentoTO direccionFacturaDepartamento;
 	private TipoDocumentoTO tipoDocumento;
@@ -99,12 +93,9 @@ public class ContratoTO extends BaseTO {
 	private ProductoTO producto;
 	private PlanTO nuevoPlan;
 	private MotivoCambioPlanTO motivoCambioPlan;
-<<<<<<< HEAD
 	private MonedaTO moneda;
 	private FormaPagoTO formaPago;
 	private TarjetaCreditoTO tarjetaCredito;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	private ResultadoEntregaDistribucionTO resultadoEntregaDistribucion;
 	private EstadoTO estado;
 	private EmpresaTO empresa;
@@ -355,7 +346,6 @@ public class ContratoTO extends BaseTO {
 
 	public void setMotivoCambioPlan(MotivoCambioPlanTO motivoCambioPlan) {
 		this.motivoCambioPlan = motivoCambioPlan;
-<<<<<<< HEAD
 	}
 
 	public MonedaTO getMoneda() {
@@ -380,8 +370,6 @@ public class ContratoTO extends BaseTO {
 
 	public void setTarjetaCredito(TarjetaCreditoTO tarjetaCredito) {
 		this.tarjetaCredito = tarjetaCredito;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	}
 
 	public String getNumeroSerie() {
@@ -639,7 +627,6 @@ public class ContratoTO extends BaseTO {
 		this.direccionFacturaObservaciones = direccionFacturaObservaciones;
 	}
 
-<<<<<<< HEAD
 	public Double getIntereses() {
 		return intereses;
 	}
@@ -696,8 +683,6 @@ public class ContratoTO extends BaseTO {
 		this.valorTasaInteresEfectivaAnual = valorTasaInteresEfectivaAnual;
 	}
 
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	public DepartamentoTO getDireccionEntregaDepartamento() {
 		return direccionEntregaDepartamento;
 	}

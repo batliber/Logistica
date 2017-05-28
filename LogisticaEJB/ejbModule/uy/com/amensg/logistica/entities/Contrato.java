@@ -1,6 +1,5 @@
 package uy.com.amensg.logistica.entities;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -91,12 +90,9 @@ public class Contrato extends BaseEntity {
 	@Column(name = "precio")
 	private Double precio;
 
-<<<<<<< HEAD
 	@Column(name = "cuotas")
 	private Long cuotas;
 	
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	@Column(name = "numero_serie")
 	private String numeroSerie;
 
@@ -220,7 +216,6 @@ public class Contrato extends BaseEntity {
 	@Column(name = "direccion_factura_observaciones")
 	private String direccionFacturaObservaciones;
 	
-<<<<<<< HEAD
 	@Column(name = "intereses")
 	private Double intereses;
 	
@@ -242,8 +237,6 @@ public class Contrato extends BaseEntity {
 	@Column(name = "valor_tasa_interes_efectiva_anual")
 	private Double valorTasaInteresEfectivaAnual;
 	
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "direccion_entrega_departamento_id", nullable = true)
 	private Departamento direccionEntregaDepartamento;
@@ -291,7 +284,6 @@ public class Contrato extends BaseEntity {
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "motivo_cambio_plan_id", nullable = true)
 	private MotivoCambioPlan motivoCambioPlan;
-<<<<<<< HEAD
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "moneda_id", nullable = true)
@@ -305,9 +297,6 @@ public class Contrato extends BaseEntity {
 	@JoinColumn(name = "tarjeta_credito_id", nullable = true)
 	private TarjetaCredito tarjetaCredito;
 	
-=======
-
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "estado_id", nullable = true)
 	private Estado estado;
@@ -415,14 +404,6 @@ public class Contrato extends BaseEntity {
 		this.apellido = apellido;
 	}
 
-	public String getApellido() {
-		return apellido;
-	}
-
-	public void setApellido(String apellido) {
-		this.apellido = apellido;
-	}
-
 	public Date getFechaNacimiento() {
 		return fechaNacimiento;
 	}
@@ -477,14 +458,6 @@ public class Contrato extends BaseEntity {
 
 	public void setNumeroContrato(Long numeroContrato) {
 		this.numeroContrato = numeroContrato;
-	}
-
-	public String getNuevoPlanString() {
-		return nuevoPlanString;
-	}
-
-	public void setNuevoPlanString(String nuevoPlanString) {
-		this.nuevoPlanString = nuevoPlanString;
 	}
 
 	public String getNuevoPlanString() {
@@ -613,7 +586,6 @@ public class Contrato extends BaseEntity {
 
 	public void setMotivoCambioPlan(MotivoCambioPlan motivoCambioPlan) {
 		this.motivoCambioPlan = motivoCambioPlan;
-<<<<<<< HEAD
 	}
 
 	public Moneda getMoneda() {
@@ -638,8 +610,6 @@ public class Contrato extends BaseEntity {
 
 	public void setTarjetaCredito(TarjetaCredito tarjetaCredito) {
 		this.tarjetaCredito = tarjetaCredito;
-=======
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	}
 
 	public String getNumeroSerie() {
@@ -887,7 +857,6 @@ public class Contrato extends BaseEntity {
 			String direccionFacturaObservaciones) {
 		this.direccionFacturaObservaciones = direccionFacturaObservaciones;
 	}
-<<<<<<< HEAD
 
 	public Double getIntereses() {
 		return intereses;
@@ -945,9 +914,6 @@ public class Contrato extends BaseEntity {
 		this.valorTasaInteresEfectivaAnual = valorTasaInteresEfectivaAnual;
 	}
 
-=======
-	
->>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	public Departamento getDireccionEntregaDepartamento() {
 		return direccionEntregaDepartamento;
 	}
