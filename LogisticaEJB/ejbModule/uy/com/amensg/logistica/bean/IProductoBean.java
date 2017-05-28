@@ -13,10 +13,13 @@ public interface IProductoBean {
 	
 	public Producto getById(Long id);
 	
+<<<<<<< HEAD
 	public Producto getByIMEI(String imei);
 	
 	public Boolean existeIMEI(String imei);
 	
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	public void save(Producto producto);
 	
 	public void remove(Producto producto);

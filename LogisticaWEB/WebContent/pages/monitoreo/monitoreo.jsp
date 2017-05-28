@@ -42,6 +42,7 @@
 	<div class="divMenuBarContainer">
 <%@ include file="/includes/menu.jsp" %>
 	</div>
+<<<<<<< HEAD
 	<div class="divBodyContainer">
 		<div class="divBody">
 			<div class="divButtonBar">
@@ -49,6 +50,27 @@
 				<div class="divButton"><input type="submit" id="inputAgregarMid" value="Agregar MID" onclick="javascript:inputAgregarMidOnClick(event, this)"/></div>
 				<div class="divButton"><input type="submit" id="inputSubirArchivo" value="Subir archivo" onclick="javascript:inputSubirArchivoOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
+=======
+	<div class="divButtonBar">
+		<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
+		<div class="divButton"><input type="submit" id="inputAgregarMid" value="Agregar MID" onclick="javascript:inputAgregarMidOnClick(event, this)"/></div>
+		<div class="divButton"><input type="submit" id="inputSubirArchivo" value="Subir archivo" onclick="javascript:inputSubirArchivoOnClick(event, this)"/></div>
+		<div class="divButtonBarSeparator">&nbsp;</div>
+	</div>
+	<div class="divButtonTitleBar">
+		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Acciones</div>
+		<div class="divButtonTitleBarSeparator">&nbsp;</div>
+	</div>
+	<div class="divMainWindow">
+		<div id="divFiltros">
+			<div class="divFormLabelExtended">Tama&ntilde;o de muestra:</div>
+			<div id="divTamanoMuestra"><input type="text" id="inputTamanoMuestra" value="50" onchange="javascript:grid.filtroDinamico.tamanoMuestraOnChange(event)"/></div>
+			<div class="divFormLabelExtended">Tama&ntilde;o subconjunto:</div>
+			<div id="divTamanoSubconjunto"><input type="text" id="inputTamanoSubconjunto" value="1" onchange="javascript:grid.filtroDinamico.tamanoSubconjuntoOnChange(event)"/></div>
+			<div id="divAgregarFiltroContainer">
+				<div class="divFormLabelExtended">Agregar filtro:</div>
+				<div id="divAgregarFiltro"><input type="submit" value="Agregar" id="inputAgregarFiltro" onclick="javascript:grid.filtroDinamico.agregarFiltro(event, this)"/></div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 			</div>
 			<div class="divButtonTitleBar">
 				<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Acciones</div>

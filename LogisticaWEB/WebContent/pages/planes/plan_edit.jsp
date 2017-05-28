@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -30,6 +31,38 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divPopupWindow">
+=======
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Plan</title>
+	<script type="text/javascript">
+		var mode = <%= request.getParameter("m") != null ? request.getParameter("m") : "0" %>;
+		var id = <%= request.getParameter("id") != null ? request.getParameter("id") : "null" %>;
+	</script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PlanDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
+	<script type="text/javascript" src="./plan_edit.js"></script>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
+	<link rel="stylesheet" type="text/css" href="./plan_edit.css"/>
+</head>
+<body>
+	<div class="divButtonBar">
+		<div class="divButton"><input type="submit" id="inputGuardarPlan" value="Guardar" onclick="javascript:inputGuardarOnClick(event)"/></div>
+		<div class="divButton" id="divEliminarPlan"><input type="submit" id="inputEliminarPlan" value="Eliminar" onclick="javascript:inputEliminarOnClick(event)"/></div>
+		<div class="divButtonBarSeparator">&nbsp;</div>
+	</div>
+	<div class="divButtonTitleBar">
+		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Plan</div>
+		<div class="divButtonTitleBarSeparator">&nbsp;</div>
+	</div>
+	<div class="divMainWindow">
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		<div class="divFormLabelExtraExtended" id="divLabelPlanDescripcion">Descripci&oacute;n:</div><div id="divPlanDescripcion"><input type="text" id="inputPlanDescripcion"/></div>
 		<div class="divFormLabelExtraExtended" id="divLabelPlanAbreviacion">Abreviaci&oacute;n:</div><div id="divPlanAbreviacion"><input type="text" id="inputPlanAbreviacion"/></div>
 		<div class="divFormLabelExtraExtended" id="divLabelPlanConsumoMinimo">Consumo m&iacute;nimo:</div><div id="divPlanConsumoMinimo"><input type="text" id="inputPlanConsumoMinimo"/></div>

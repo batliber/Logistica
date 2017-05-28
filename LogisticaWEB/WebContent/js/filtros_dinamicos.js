@@ -157,6 +157,14 @@ FiltroDinamico.prototype.campoOnChange = function(event, element, index, prevent
 			+ "<option value='lt'>Menor que</option>"
 			+ "<option value='nl'>Vac&iacute;o</option>"
 			+ "<option value='nnl'>No vac&iacute;o</option>";
+	} else if (tipoCampo == __TIPO_CAMPO_FECHA_MES_ANO) {
+		html += 
+			"<option value='eq'>Es igual a</option>"
+			+ "<option value='btw'>Entre</option>"
+			+ "<option value='gt'>Mayor que</option>"
+			+ "<option value='lt'>Menor que</option>"
+			+ "<option value='nl'>Vac&iacute;o</option>"
+			+ "<option value='nnl'>No vac&iacute;o</option>";
 	} else if (tipoCampo == __TIPO_CAMPO_FECHA_HORA) {
 		html += 
 			"<option value='eq'>Es igual a</option>"

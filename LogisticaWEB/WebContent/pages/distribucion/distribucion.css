@@ -6,8 +6,13 @@
 	position: relative;
 	top: 25px;
 	left: 100px;
+<<<<<<< HEAD
 	width: 815px;
 	height: 729px;
+=======
+	width: 800px;
+	height: 779px;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	z-index: 3;
 	border: solid 1px black;
 	background-color: white;
@@ -19,7 +24,11 @@
 	left: 0;
 	border: none;
 	width: 100%;
+<<<<<<< HEAD
 	height: 708px;
+=======
+	height: 758px;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 }
 
 #divIFrameSeleccionDistribuidor {

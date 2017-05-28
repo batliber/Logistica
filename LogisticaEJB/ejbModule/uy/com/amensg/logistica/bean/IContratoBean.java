@@ -33,6 +33,8 @@ public interface IContratoBean {
 	
 	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids, Long empresaId);
 	
+	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids, Long empresaId);
+	
 	public String procesarArchivoEmpresa(String fileName, Long empresaId, Long loggedUsuarioId);
 	
 	public String addAsignacionManual(Long empresaId, Contrato contrato, Long loggedUsuarioId);

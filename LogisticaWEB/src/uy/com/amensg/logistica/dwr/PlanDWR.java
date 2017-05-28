@@ -22,6 +22,7 @@ import uy.com.amensg.logistica.entities.PlanTO;
 public class PlanDWR {
 
 	private IPlanBean lookupBean() throws NamingException {
+<<<<<<< HEAD
 		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
 		String appName = "LogisticaEJB";
@@ -56,6 +57,24 @@ public class PlanDWR {
 			IPlanBean iPlanBean = lookupBean();
 			
 			for (Plan plan : iPlanBean.listVigentes()) {
+=======
+		String EARName = "Logistica";
+		String beanName = PlanBean.class.getSimpleName();
+		String remoteInterfaceName = IPlanBean.class.getName();
+		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+		Context context = new InitialContext();
+		
+		return (IPlanBean) context.lookup(lookupName);
+	}
+	
+	public Collection<PlanTO> list() {
+		Collection<PlanTO> result = new LinkedList<PlanTO>();
+		
+		try {
+			IPlanBean iPlanBean = lookupBean();
+			
+			for (Plan plan : iPlanBean.list()) {
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				result.add(transform(plan));
 			}
 		} catch (Exception e) {

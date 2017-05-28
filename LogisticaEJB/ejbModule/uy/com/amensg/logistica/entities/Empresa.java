@@ -32,6 +32,7 @@ public class Empresa extends BaseEntity {
 	@Column(name = "nombre_sucursal")
 	private String nombreSucursal;
 	
+<<<<<<< HEAD
 	@OneToMany( cascade=CascadeType.ALL, fetch=FetchType.EAGER )
 	@JoinTable(name = "forma_pago_empresa", 
 		joinColumns=@JoinColumn(name = "empresa_id"),
@@ -40,6 +41,9 @@ public class Empresa extends BaseEntity {
 	private Collection<FormaPago> formaPagos;
 	
  	public String getNombre() {
+=======
+	public String getNombre() {
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		return nombre;
 	}
 
@@ -77,6 +81,7 @@ public class Empresa extends BaseEntity {
 
 	public void setNombreSucursal(String nombreSucursal) {
 		this.nombreSucursal = nombreSucursal;
+<<<<<<< HEAD
 	}
 
 	public Collection<FormaPago> getFormaPagos() {
@@ -86,4 +91,7 @@ public class Empresa extends BaseEntity {
 	public void setFormaPagos(Collection<FormaPago> formaPagos) {
 		this.formaPagos = formaPagos;
 	}
+=======
+	}	
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 }

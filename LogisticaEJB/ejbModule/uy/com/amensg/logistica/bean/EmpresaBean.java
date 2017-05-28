@@ -105,8 +105,11 @@ public class EmpresaBean implements IEmpresaBean {
 			managedEmpresa.setNombre(empresa.getNombre());
 			managedEmpresa.setNombreContrato(empresa.getNombreContrato());
 			managedEmpresa.setNombreSucursal(empresa.getNombreSucursal());
+<<<<<<< HEAD
 			
 			managedEmpresa.setFormaPagos(empresa.getFormaPagos());
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 			
 			managedEmpresa.setFact(empresa.getFact());
 			managedEmpresa.setTerm(empresa.getTerm());

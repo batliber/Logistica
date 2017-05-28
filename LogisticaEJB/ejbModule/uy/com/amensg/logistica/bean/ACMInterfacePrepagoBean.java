@@ -224,6 +224,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		
 		return result;
 	}
+<<<<<<< HEAD
 	
 	/**
 	 * Cuenta la cantidad de ACMInterfacePrepago que cumplen los criterios encapsulados en metadataConsulta.
@@ -315,6 +316,44 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			}
 			
 			result = queryCount.getSingleResult();
+=======
+
+	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa) {
+		String result = null;
+		
+		try {
+			Collection<Long> mids = new LinkedList<Long>();
+			for (ACMInterfacePrepago acmInterfacePrepago: this.listSubconjunto(metadataConsulta)) {
+				mids.add(acmInterfacePrepago.getMid());
+			}
+			
+			Map<Long, Integer> map = iContratoBean.preprocesarConjunto(mids, empresa.getId());
+			
+			Long importar = new Long(0);
+			Long sobreescribir = new Long(0);
+			Long omitir = new Long(0);
+			for (Entry<Long, Integer> entry : map.entrySet()) {
+				switch (entry.getValue()) {
+					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
+						importar++;
+						
+						break;
+					case Constants.__COMPROBACION_IMPORTACION_OMITIR:
+						omitir++;
+						
+						break;
+					case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
+						sobreescribir++;
+						
+						break;
+				}
+			}
+			
+			result =
+				"Se asignarán " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
+				+ "Se omitirán " + omitir + " MIDs.";
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

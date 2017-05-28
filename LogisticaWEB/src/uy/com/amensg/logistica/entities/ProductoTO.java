@@ -11,7 +11,10 @@ public class ProductoTO extends BaseTO {
 	private String descripcion;
 	private Date fechaBaja;
 	private MarcaTO marca;
+<<<<<<< HEAD
 	private ModeloTO modelo;
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	private EmpresaServiceTO empresaService;
 
 	public String getDescripcion() {
@@ -30,6 +33,7 @@ public class ProductoTO extends BaseTO {
 		this.fechaBaja = fechaBaja;
 	}
 
+<<<<<<< HEAD
 	public String getImei() {
 		return imei;
 	}
@@ -52,6 +56,14 @@ public class ProductoTO extends BaseTO {
 
 	public void setModelo(ModeloTO modelo) {
 		this.modelo = modelo;
+=======
+	public MarcaTO getMarca() {
+		return marca;
+	}
+
+	public void setMarca(MarcaTO marca) {
+		this.marca = marca;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	}
 
 	public EmpresaServiceTO getEmpresaService() {

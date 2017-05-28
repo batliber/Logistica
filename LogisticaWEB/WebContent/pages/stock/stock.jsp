@@ -9,8 +9,11 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
+<<<<<<< HEAD
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/StockMovimientoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
@@ -31,6 +34,7 @@
 	<div class="divMenuBarContainer">
 <%@ include file="/includes/menu.jsp" %>
 	</div>
+<<<<<<< HEAD
 	<div class="divBodyContainer">
 		<div class="divBody">
 			<div class="divButtonBar">
@@ -51,6 +55,26 @@
 				<div id="divTableStockMovimientos">&nbsp;</div>
 			</div>
 		</div>
+=======
+	<div class="divButtonBar">
+		<div class="divButton"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
+		<div class="divButton" id="divButtonNuevoStockMovimiento"><input type="submit" value="Nuevo movimiento" onclick="javascript:inputNuevoStockMovimientoOnClick(event)"/></div>
+		<div class="divButton" id="divButtonAgregarProducto"><input type="submit" value="Agregar producto" onclick="javascript:inputAgregarProductoOnClick(event)"/></div>
+		<div class="divButton" id="divButtonAgregarEmpresaService"><input type="submit" value="Agregar service" onclick="javascript:inputAgregarEmpresaServiceOnClick(event)"/></div>
+		<div class="divButtonBarSeparator">&nbsp;</div>
+	</div>
+	<div class="divButtonTitleBar">
+		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
+		<div class="divButtonTitleBarSeparator">&nbsp;</div>
+	</div>
+	<div class="divMainWindow">
+		<div id="divFiltros">
+			<div id="divAgregarFiltroContainer">
+				<div style="float: left;">Mostrar equipos dados de baja:</div><div style="float: left;"><input type="checkbox" id="inputMostrarFechaBaja" onchange="javascript:inputMostrarFechaBajaOnClick(event, this)"/></div>
+			</div>
+		</div> 
+		<div id="divTableStockMovimientos">&nbsp;</div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	</div>
 	<div id="divIFrameStockMovimiento" style="display: none;">
 		<div class="divTitleBar">
@@ -65,6 +89,13 @@
 			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
 		</div>
 		<iframe id="iFrameIMEI" frameborder="0" src="#"></iframe>
+	</div>
+	<div id="divIFrameEmpresaService" style="display: none;">
+		<div class="divTitleBar">
+			<div class="divTitleBarText" style="float:left;">Empresa</div>
+			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
+		</div>
+		<iframe id="iFrameEmpresaService" frameborder="0" src="#"></iframe>
 	</div>
 	<div id="divModalBackground">&nbsp;</div>
 <%@ include file="/includes/footer.jsp" %>

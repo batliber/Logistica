@@ -14,9 +14,13 @@ public interface IACMInterfacePrepagoBean {
 
 	public Collection<ACMInterfacePrepago> list();
 	
+<<<<<<< HEAD
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
 	public Long count(MetadataConsulta metadataConsulta);
+=======
+	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta);
 	

@@ -2441,6 +2441,7 @@ public class ContratoBean implements IContratoBean {
 			contratoManaged = this.update(contrato);
 			
 			this.asignar(null, rol, contratoManaged, uact.getId());
+<<<<<<< HEAD
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2622,6 +2623,8 @@ public class ContratoBean implements IContratoBean {
 			this.update(contrato);
 			
 			this.asignar(null, rol, contratoManaged, uact.getId());
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2677,7 +2680,11 @@ public class ContratoBean implements IContratoBean {
 //				+ ";Dirección de factura"
 //				+ ";Teléfono de contacto"
 				+ ";E-mail"
+<<<<<<< HEAD
 				+ ";Número de factura"
+=======
+//				+ ";Número de factura"
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				+ ";Número de factura River Green"
 				+ ";Precio"
 				+ ";Nuevo plan"
@@ -2778,9 +2785,15 @@ public class ContratoBean implements IContratoBean {
 					+ ";" + (contrato.getEmail() != null ?
 						contrato.getEmail()
 						: "")
+<<<<<<< HEAD
 					+ ";" + (contrato.getNumeroFactura() != null ?
 						contrato.getNumeroFactura()
 						: "")
+=======
+//					+ ";" + (contrato.getNumeroFactura() != null ?
+//						contrato.getNumeroFactura()
+//						: "")
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 					+ ";" + (contrato.getNumeroFacturaRiverGreen() != null ?
 						contrato.getNumeroFacturaRiverGreen()
 						: "")
@@ -2789,12 +2802,15 @@ public class ContratoBean implements IContratoBean {
 						: "")
 					+ ";" + (contrato.getNuevoPlan() != null ?
 						contrato.getNuevoPlan().getAbreviacion()
+<<<<<<< HEAD
 						: "")
 					+ ";" + (contrato.getFormaPago() != null ?
 						contrato.getFormaPago().getDescripcion()
 						: "")
 					+ ";" + (contrato.getTarjetaCredito() != null ?
 						contrato.getTarjetaCredito().getNombre()
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 						: "")
 					+ ";" + (contrato.getNumeroSerie() != null ?
 						contrato.getNumeroSerie()

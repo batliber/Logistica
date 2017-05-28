@@ -3,7 +3,11 @@
 	top: 100px;
 	left: 100px;
 	width: 550px;
+<<<<<<< HEAD
 	height: 500px;
+=======
+	height: 400px;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	z-index: 3;
 	border: solid 1px black;
 	background-color: white;
@@ -15,5 +19,9 @@
 	left: 0;
 	border: none;
 	width: 100%;
+<<<<<<< HEAD
 	height: 479px;
+=======
+	height: 379px;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 }

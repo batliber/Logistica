@@ -191,6 +191,36 @@
 	cursor: pointer;
 }
 
+.divTableHeaderCell7NOO {
+	float: left;
+	width: 110px;
+	
+	font-family: Segoe UI;
+	font-size: 9pt;
+	
+	background-color: #F3F4F6;
+	
+	border-bottom: solid 1px #D5D5D5;
+	border-right: solid 1px #D5D5D5;
+	
+	cursor: pointer;
+}
+
+.divTableHeaderCell8NOO {
+	float: left;
+	width: 55px;
+	
+	font-family: Segoe UI;
+	font-size: 9pt;
+	
+	background-color: #F3F4F6;
+	
+	border-bottom: solid 1px #D5D5D5;
+	border-right: solid 1px #D5D5D5;
+	
+	cursor: pointer;
+}
+
 .divTableHeaderCell9NOO {
 	float: left;
 	width: 55px;
@@ -354,6 +384,7 @@
 	
 	font-family: Segoe UI;
 	font-size: 9pt;
+<<<<<<< HEAD
 	
 	background-color: #F3F4F6;
 	
@@ -372,6 +403,8 @@
 	
 	font-family: Segoe UI;
 	font-size: 9pt;
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	
 	background-color: #F3F4F6;
 	
@@ -516,6 +549,7 @@
 	
 	font-family: Segoe UI;
 	font-size: 9pt;
+<<<<<<< HEAD
 	
 	background-color: #F3F4F6;
 	
@@ -534,6 +568,8 @@
 	
 	font-family: Segoe UI;
 	font-size: 9pt;
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	
 	background-color: #F3F4F6;
 	
@@ -666,6 +702,7 @@
 	border-right: solid 1px #EBF4FE;
 }
 
+<<<<<<< HEAD
 .divTableBodyCell9 {
 	float: left;
 	text-align: left;
@@ -703,6 +740,8 @@
 	background-image: url('/LogisticaWEB/images/toggle-small.png')
 }
 
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 .divTableFooter {
 	float: left;
 	overflow: auto;

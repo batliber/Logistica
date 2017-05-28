@@ -12,7 +12,10 @@ public class EmpresaTO extends BaseTO {
 	private Long codigoPromotor;
 	private String nombreContrato;
 	private String nombreSucursal;
+<<<<<<< HEAD
 	private Collection<FormaPagoTO> formaPagos;
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 
 	public String getNombre() {
 		return nombre;
@@ -53,6 +56,7 @@ public class EmpresaTO extends BaseTO {
 	public void setNombreSucursal(String nombreSucursal) {
 		this.nombreSucursal = nombreSucursal;
 	}
+<<<<<<< HEAD
 
 	public Collection<FormaPagoTO> getFormaPagos() {
 		return formaPagos;
@@ -61,4 +65,6 @@ public class EmpresaTO extends BaseTO {
 	public void setFormaPagos(Collection<FormaPagoTO> formaPagos) {
 		this.formaPagos = formaPagos;
 	}
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 }

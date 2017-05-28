@@ -22,8 +22,12 @@
 			</div>
 			<div class="divForm">
 				<div class="divLogo">
+<<<<<<< HEAD
 					&nbsp;
 					<!-- <img src="/LogisticaWEB/images/blank-logo.png"></img> -->
+=======
+					<img src="/LogisticaWEB/images/logo-vos.png"></img>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				</div>
 				<div class="divFormLabel">Usuario:</div>
 				<div class="divFormInput"><input type="text" id="inputUsuario" onkeydown="javascript:inputUsuarioOnKeyDown(event, this)"/></div>
@@ -35,7 +39,11 @@
 				</div>
 			</div>
 			<div class="divVersionBar">
+<<<<<<< HEAD
 				<div class="divVersionBarText">Versi&oacute;n 0.94.2 - 30/12/2016</div>
+=======
+				<div class="divVersionBarText">Versi&oacute;n 0.93.4 - 06/08/2016</div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 			</div>
 		</div>
 	</div>

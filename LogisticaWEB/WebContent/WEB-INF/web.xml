@@ -95,7 +95,10 @@
       <param-name>classes</param-name>
       <param-value>
       	uy.com.amensg.logistica.dwr.ACMInterfaceContratoDWR,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.dwr.ACMInterfaceContratoPHDWR,
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.dwr.ACMInterfaceEstadoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceListaNegraDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceMidDWR,
@@ -127,31 +130,45 @@
       	uy.com.amensg.logistica.dwr.EstadoControlDWR,
       	uy.com.amensg.logistica.dwr.EstadoRiesgoCrediticioDWR,
       	uy.com.amensg.logistica.dwr.FileManagerDWR,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.dwr.FinanciacionDWR,
       	uy.com.amensg.logistica.dwr.FormaPagoDWR,
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.dwr.MarcaDWR,
       	uy.com.amensg.logistica.dwr.MenuDWR,
       	uy.com.amensg.logistica.dwr.MetadataConsultaDWR,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.dwr.ModeloDWR,
       	uy.com.amensg.logistica.dwr.MonedaDWR,
       	uy.com.amensg.logistica.dwr.MotivoCambioPlanDWR,
       	uy.com.amensg.logistica.dwr.PlanDWR,
       	uy.com.amensg.logistica.dwr.PrecioDWR,
+=======
+      	uy.com.amensg.logistica.dwr.MotivoCambioPlanDWR,
+      	uy.com.amensg.logistica.dwr.PlanDWR,
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.dwr.ProductoDWR,
       	uy.com.amensg.logistica.dwr.PuntoVentaDWR,
       	uy.com.amensg.logistica.dwr.ResultadoEntregaDistribucionDWR,
       	uy.com.amensg.logistica.dwr.RiesgoCrediticioDWR,
       	uy.com.amensg.logistica.dwr.RolDWR,
       	uy.com.amensg.logistica.dwr.SeguridadDWR,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.dwr.SeguridadAuditoriaDWR,
       	uy.com.amensg.logistica.dwr.SeguridadTipoEventoDWR,
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.dwr.SexoDWR,
       	uy.com.amensg.logistica.dwr.StockMovimientoDWR,
       	uy.com.amensg.logistica.dwr.StockTipoMovimientoDWR,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.dwr.TarjetaCreditoDWR,
       	uy.com.amensg.logistica.dwr.TipoActivacionDWR,
       	uy.com.amensg.logistica.dwr.TipoControlDWR,
       	uy.com.amensg.logistica.dwr.TipoControlRiesgoCrediticioDWR,
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.dwr.TipoDocumentoDWR,
       	uy.com.amensg.logistica.dwr.TurnoDWR,
       	uy.com.amensg.logistica.dwr.UnidadIndexadaDWR,
@@ -187,36 +204,50 @@
       	uy.com.amensg.logistica.entities.EmpresaTO,
       	uy.com.amensg.logistica.entities.EmpresaServiceTO,
       	uy.com.amensg.logistica.entities.EstadoTO,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.entities.EstadoActivacionTO,
       	uy.com.amensg.logistica.entities.EstadoControlTO,
       	uy.com.amensg.logistica.entities.EstadoRiesgoCrediticioTO,
       	uy.com.amensg.logistica.entities.FormaPagoTO,
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.entities.MarcaTO,
       	uy.com.amensg.logistica.entities.MenuTO,
       	uy.com.amensg.logistica.entities.MetadataCondicionTO,
       	uy.com.amensg.logistica.entities.MetadataConsultaTO,
       	uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO,
       	uy.com.amensg.logistica.entities.MetadataOrdenacionTO,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.entities.ModeloTO,
       	uy.com.amensg.logistica.entities.MonedaTO,
       	uy.com.amensg.logistica.entities.MotivoCambioPlanTO,
       	uy.com.amensg.logistica.entities.PlanTO,
       	uy.com.amensg.logistica.entities.PrecioTO,
+=======
+      	uy.com.amensg.logistica.entities.MotivoCambioPlanTO,
+      	uy.com.amensg.logistica.entities.PlanTO,
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.entities.ProductoTO,
       	uy.com.amensg.logistica.entities.PuntoVentaTO,
       	uy.com.amensg.logistica.entities.ResultadoEntregaDistribucionTO,
       	uy.com.amensg.logistica.entities.RiesgoCrediticioTO,
       	uy.com.amensg.logistica.entities.RolTO,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.entities.SeguridadAuditoriaTO,
       	uy.com.amensg.logistica.entities.SeguridadTipoEventoTO,
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.entities.SexoTO,
       	uy.com.amensg.logistica.entities.StockMovimientoTO,
       	uy.com.amensg.logistica.entities.StockTipoMovimientoTO,
       	uy.com.amensg.logistica.entities.TarjetaCreditoTO,
       	uy.com.amensg.logistica.entities.TipoActivacionTO,
       	uy.com.amensg.logistica.entities.TipoContratoTO,
+<<<<<<< HEAD
       	uy.com.amensg.logistica.entities.TipoControlTO,
       	uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticioTO,
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
       	uy.com.amensg.logistica.entities.TipoDocumentoTO,
       	uy.com.amensg.logistica.entities.TurnoTO,
       	uy.com.amensg.logistica.entities.UnidadIndexadaTO,

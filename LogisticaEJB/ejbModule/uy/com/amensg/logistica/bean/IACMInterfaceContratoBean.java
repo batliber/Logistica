@@ -15,6 +15,21 @@ public interface IACMInterfaceContratoBean {
 
 	public Collection<ACMInterfaceContrato> list();
 	
+<<<<<<< HEAD
+=======
+	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
+	
+	public String exportarAExcel(MetadataConsulta metadataConsulta);
+	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
+	
+	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
+	
+	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
+	
+	public void agregarAListaNegra(MetadataConsulta metadataConsulta);
+	
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
 	public Long count(MetadataConsulta metadataConsulta);

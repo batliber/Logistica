@@ -18,12 +18,19 @@ import uy.com.amensg.logistica.entities.SexoTO;
 public class SexoDWR {
 
 	private ISexoBean lookupBean() throws NamingException {
+<<<<<<< HEAD
 		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
 		String appName = "LogisticaEJB";
 		String beanName = SexoBean.class.getSimpleName();
 		String remoteInterfaceName = ISexoBean.class.getName();
 		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
+=======
+		String EARName = "Logistica";
+		String beanName = SexoBean.class.getSimpleName();
+		String remoteInterfaceName = ISexoBean.class.getName();
+		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		Context context = new InitialContext();
 		
 		return (ISexoBean) context.lookup(lookupName);

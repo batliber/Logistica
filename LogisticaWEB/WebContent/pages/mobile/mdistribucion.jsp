@@ -21,6 +21,7 @@
 				<div class="divFormLabel">Tr&aacute;mite:</div>
 				<div class="divFormValue">
 					<input type="text" id="inputNumeroTramite" name="inputNumeroTramite" onchange="javascript:inputNumeroTramiteOnChange(event, this)"/>
+<<<<<<< HEAD
 					<a href="zxing://scan/?ret=http%3A%2F%2F64fc056acde1.sn.mynetname.net:9090/LogisticaWEB/pages/mobile/mdistribucion.jsp?code=%7BCODE%7D&SCAN_FORMATS=UPC_A,EAN_13,128">
 						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
 					</a>
@@ -29,6 +30,16 @@
 						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
 					</a>
 					-->
+=======
+					<a href="zxing://scan/?ret=http%3A%2F%2F557f04881ee7.sn.mynetname.net:9090/LogisticaWEB/pages/mobile/mdistribucion.jsp?code=%7BCODE%7D&SCAN_FORMATS=UPC_A,EAN_13,128">
+						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
+					</a>
+					<!--
+					<a href="zxing://scan/?ret=http%3A%2F%2Ftosteaun.no-ip.biz:8080/LogisticaWEB/pages/mobile/mdistribucion.jsp?code=%7BCODE%7D&SCAN_FORMATS=UPC_A,EAN_13,128">
+						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
+					</a>
+					 -->
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				</div>
 				<div class="divFormLabel">MID:</div><div class="divFormValue" id="divMID"><a id="aMID" name="aMID" href="#">&nbsp;</a></div>
 				<div class="divFormLabel">Opci&oacute;n:</div>
@@ -36,8 +47,13 @@
 					<select id="selectResultadoEntregaDistribucion" name="selectResultadoEntregaDistribucion"></select>
 				</div>
 				<div class="divFormLabel">Comentarios:</div><div class="divFormValue"><textarea id="textareaObservaciones" name="textareaObservaciones"></textarea></div>
+<<<<<<< HEAD
 				<div class="divFormLabel" id="divFormLabelArchivos">Archivos:</div><div class="divFormValue" id="divAgregarArchivos"><input type="submit" id="inputAgregarArchivo" value="Agregar" onclick="javascript:inputAgregarArchivoOnClick(event, this);"/></div>
 				<div class="divArchivos">&nbsp;</div>
+=======
+				<div class="divFormLabel">Anverso:</div><div class="divFormValue"><form method="POST" action="/LogisticaWEB/Upload" id="formResultadoEntregaDistribucionAnverso"><input type="file" id="inputAnverso" name="inputAnverso"/></form></div>
+				<div class="divFormLabel">Reverso:</div><div class="divFormValue"><form method="POST" action="/LogisticaWEB/Upload" id="formResultadoEntregaDistribucionReverso"><input type="file" id="inputReverso" name="inputReverso"/></form></div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				<div class="divFormLabel" style="display: none;">Posici&oacute;n:</div>
 				<input type="hidden" name="caller" value="/pages/mobile/mdistribucion.jsp"/>
 				<div class="divFormLabel">&nbsp;</div><div class="divFormValue">

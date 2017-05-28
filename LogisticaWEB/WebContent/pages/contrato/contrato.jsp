@@ -11,6 +11,19 @@
 	</script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
+<<<<<<< HEAD
+=======
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PlanDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MotivoCambioPlanDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/StockMovimientoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoDocumentoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SexoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TurnoDWR.js"></script>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/BarrioDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
@@ -71,14 +84,22 @@
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton" id="divInputImprimirKit"><input type="submit" value="Imprimir kit" onclick="javascript:inputImprimirKitOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirContrato"><input type="submit" value="Imprimir contrato" onclick="javascript:inputImprimirContratoOnClick(event)"/></div>
+<<<<<<< HEAD
 		<div class="divButton" id="divInputImprimirPagare"><input type="submit" value="Imprimir pagare" onclick="javascript:inputImprimirPagareOnClick(event)"/></div>
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		<div class="divButton" id="divInputImprimirAdjuntos"><input type="submit" value="Imprimir adjuntos" onclick="javascript:inputImprimirAdjuntosOnClick(event)"/></div>
 		<div class="divButton" id="divInputGuardar"><input type="submit" value="Guardar" onclick="javascript:inputGuardarOnClick(event)"/></div>
 	</div>
 	<div class="divButtonTitleBar">
 		<div id="divButtonTitleFourfoldSize" class="divButtonTitleBarTitle">Procesos</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
+<<<<<<< HEAD
 		<div id="divButtonTitleFourfoldSize" class="divButtonTitleBarTitle">Acciones</div>
+=======
+		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Acciones</div>
+		<div class="divButtonTitleBarSeparator">&nbsp;</div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	</div>
 	<div class="divPopupWindow">
 		<div class="divLayoutColumn">
@@ -108,6 +129,7 @@
 			<div class="divFormLabelExtended" id="divLabelNuevoPlanString">Nuevo plan (digit):</div><div id="divNuevoPlanString" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelNuevoPlan">Nuevo plan:</div><div id="divNuevoPlan" class="divFormValue"><select id="selectNuevoPlan"></select></div>
 			<div class="divFormLabelExtended" id="divLabelNuevoPlan">Motivo cambio plan:</div><div id="divMotivoCambioPlan" class="divFormValue"><select id="selectMotivoCambioPlan"></select></div>
+<<<<<<< HEAD
 			<div class="divFormLabelExtended" id="divLabelEquipo">Equipo:</div><div id="divEquipo" class="divFormValue"><select id="selectEquipo" onchange="javascript:selectEquipoOnChange(event, this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelMoneda">Moneda:</div><div id="divMoneda" class="divFormValue"><select id="selectMoneda" onchange="javascript:selectMonedaOnChange(event, this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelPrecio">Precio:</div><div id="divPrecio" class="divFormValue"><input type="text" id="inputPrecio" onchange="javascript:inputPrecioOnChange(event, this)"/></div>
@@ -126,16 +148,32 @@
 			<div class="divFormLabelExtended" id="divLabelNumeroFacturaRiverGreen" id="divLabelNumeroFacturaRiverGreen">N&uacute;m. fac. River Green:</div><div id="divNumeroFacturaRiverGreen" class="divFormValue"><input type="text" id="inputNumeroFacturaRiverGreen"/><input type="checkbox" id="inputFacturaRiverGreen" onclick="javascript:inputFacturaRiverGreenOnClick(event, this)"/></div>
 			<div class="divFormLabelExtended" id="divLabelNumeroSerie" id="divLabelNumeroSerie">NÂº de serie:</div><div id="divNumeroSerie" class="divFormValue"><input type="text" id="inputNumeroSerie" onchange="javascript:inputNumeroSerieOnChange(event, this)"/></div>
 			<div class="divFormLabelExtended" id="divLabelNumeroChip" id="divLabelNumeroChip">NÂº de chip:</div><div id="divNumeroChip" class="divFormValue"><input type="text" id="inputNumeroChip"/></div>
+=======
+			<div class="divFormLabelExtended" id="divLabelEquipo">Equipo:</div><div id="divEquipo" class="divFormValue"><select id="selectEquipo"></select></div>
+			<div class="divFormLabelExtended" id="divLabelPrecio">Precio:</div><div id="divPrecio" class="divFormValue"><input type="text" id="inputPrecio"/></div>
+			<div class="divFormLabelExtended" id="divLabelNumeroFactura" id="divLabelNumeroFactura">N&uacute;mero factura:</div><div id="divNumeroFactura" class="divFormValue"><input type="text" id="inputNumeroFactura"/></div>
+			<div class="divFormLabelExtended" id="divLabelNumeroFacturaRiverGreen" id="divLabelNumeroFacturaRiverGreen">N&uacute;m. fac. River Green:</div><div id="divNumeroFacturaRiverGreen" class="divFormValue"><input type="text" id="inputNumeroFacturaRiverGreen"/></div>
+			<div class="divFormLabelExtended" id="divLabelNumeroSerie" id="divLabelNumeroSerie">Nº de serie:</div><div id="divNumeroSerie" class="divFormValue"><input type="text" id="inputNumeroSerie"/></div>
+			<div class="divFormLabelExtended" id="divLabelNumeroChip" id="divLabelNumeroChip">Nº de chip:</div><div id="divNumeroChip" class="divFormValue"><input type="text" id="inputNumeroChip"/></div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 			<div class="divFormLabelExtended" id="divLabelNumeroBloqueo" id="divLabelNumeroBloqueo">C&oacute;d. de bloqueo:</div><div id="divNumeroBloqueo" class="divFormValue"><input type="text" id="inputNumeroBloqueo"/></div>
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucion">Resultado entrega:</div><div id="divResultadoEntregaDistribucion" class="divFormValue">&nbsp;</div>
+<<<<<<< HEAD
 			<!--  <div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionDocumentos">Documentos:</div><div id="divResultadoEntregaDistribucionDocumentos" class="divFormValue">&nbsp;</div>  -->
+=======
+			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionDocumentos">Documentos:</div><div id="divResultadoEntregaDistribucionDocumentos" class="divFormValue">&nbsp;</div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionLatitud">Latitud:</div><div id="divResultadoEntregaDistribucionLatitud" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionLongitud">Longitud:</div><div id="divResultadoEntregaDistribucionLongitud" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionPrecision">Precisi&oacute;n:</div><div id="divResultadoEntregaDistribucionPrecision" class="divFormValue">&nbsp;</div>
 		</div>
 		<div class="divLayoutColumn">
 			<div class="divFormLabelExtended" id="divLabelTipoDocumento">Tipo de documento:</div><div id="divTipoDocumento" class="divFormValue"><select id="selectTipoDocumento"></select></div>
+<<<<<<< HEAD
 			<div class="divFormLabelExtended" id="divLabelDocumento">Documento:</div><div id="divDocumento" class="divFormValue"><input type="text" id="inputDocumento" onchange="javascript:inputDocumentoOnChange(event, this)"/></div>
+=======
+			<div class="divFormLabelExtended" id="divLabelDocumento">Documento:</div><div id="divDocumento" class="divFormValue"><input type="text" id="inputDocumento"/></div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 			<div class="divFormLabelExtended" id="divLabelNombre">Nombre:</div><div id="divNombre" class="divFormValue"><input type="text" id="inputNombre"/></div>
 			<div class="divFormLabelExtended" id="divLabelApellido">Apellido:</div><div id="divApellido" class="divFormValue"><input type="text" id="inputApellido"/></div>
 			<div class="divFormLabelExtended" id="divLabelFechaNacimiento">Fecha de nacimiento:</div><div id="divFechaNacimiento" class="divFormValue"><input type="text" id="inputFechaNacimiento"/></div>
@@ -156,6 +194,7 @@
 			<div class="divTabHeader">
 				<div class="divTabTitleSelected" id="divTabTitle1">Direcci&oacute;n de entrega</div>
 				<div class="divTabTitle" id="divTabTitle2">Direcci&oacute;n de env&iacute;o de factura</div>
+<<<<<<< HEAD
 				<div class="divTabTitle" id="divTabTitle3">Archivos adjuntos</div>
 				<div class="divTabTitleFiller" id="divTabTitle4">&nbsp;</div>
 			</div>
@@ -208,6 +247,50 @@
 				</div>
 				<div class="divLayoutColumn" style="width: 25%;">
 					<div id="divResultadoEntregaDistribucionDocumentos">&nbsp;</div>
+=======
+				<div class="divTabTitleFiller" id="divTabTitle3">&nbsp;</div>
+			</div>
+			<div class="divTab" id="divTab1">
+				<div class="divLayoutColumnFull">
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaCalle">Calle:</div><div id="divDireccionEntregaCalle" class="divFormValue"><input type="text" id="inputDireccionEntregaCalle"/></div>
+				</div>
+				<div class="divLayoutColumn">
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaNumero">N&uacute;mero:</div><div id="divDireccionEntregaNumero" class="divFormValue"  style="width: 125px;"><input type="text" id="inputDireccionEntregaNumero"/></div>
+					<div class="divFormLabel" id="divLabelDireccionEntregaBis" style="width: 50px;">Bis:</div><div id="divDireccionEntregaBis" class="divFormValue" style="width: 40px;"><input type="checkbox" id="inputDireccionEntregaBis"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaApto">Apto.:</div><div id="divDireccionEntregaApto" class="divFormValue"><input type="text" id="inputDireccionEntregaApto"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaManzana">Manzana:</div><div id="divDireccionEntregaManzana" class="divFormValue"><input type="text" id="inputDireccionEntregaManzana"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaCodigoPostal">C.P.:</div><div id="divDireccionEntregaCodigoPostal" class="divFormValue"><input type="text" id="inputDireccionEntregaCodigoPostal"/></div>
+				</div>
+				<div class="divLayoutColumn">
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaBlock">Block:</div><div id="divDireccionEntregaBlock" class="divFormValue"><input type="text" id="inputDireccionEntregaBlock"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaSolar">Solar:</div><div id="divDireccionEntregaSolar" class="divFormValue"><input type="text" id="inputDireccionEntregaSolar"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaDepartamento">Departamento:</div><div id="divDireccionEntregaDepartamento" class="divFormValue"><select id="selectDireccionEntregaDepartamento"></select></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaLocalidad">Localidad:</div><div id="divDireccionEntregaLocalidad" class="divFormValue"><input type="text" id="inputDireccionEntregaLocalidad"/></div>
+				</div>
+				<div class="divLayoutColumnFull">
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaObservaciones">Observaciones:</div><div id="divDireccionEntregaObservaciones" class="divFormValue"><input type="text" id="inputDireccionEntregaObservaciones"/></div>
+				</div>
+			</div>
+			<div class="divTab" id="divTab2">
+				<div class="divLayoutColumnFull">
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaCalle">Calle:</div><div id="divDireccionFacturaCalle" class="divFormValue"><input type="text" id="inputDireccionFacturaCalle"/></div>
+				</div>
+				<div class="divLayoutColumn">
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaNumero">N&uacute;mero:</div><div id="divDireccionFacturaNumero" class="divFormValue" style="width: 125px;"><input type="text" id="inputDireccionFacturaNumero"/></div>
+					<div class="divFormLabel" id="divLabelDireccionFacturaBis" style="width: 50px;">Bis:</div><div id="divDireccionFacturaBis" class="divFormValue" style="width: 40px;"><input type="checkbox" id="inputDireccionFacturaBis"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaApto">Apto.:</div><div id="divDireccionFacturaApto" class="divFormValue"><input type="text" id="inputDireccionFacturaApto"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaManzana">Manzana:</div><div id="divDireccionFacturaManzana" class="divFormValue"><input type="text" id="inputDireccionFacturaManzana"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaCodigoPostal">C.P.:</div><div id="divDireccionFacturaCodigoPostal" class="divFormValue"><input type="text" id="inputDireccionFacturaCodigoPostal"/></div>
+				</div>
+				<div class="divLayoutColumn">
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaBlock">Block:</div><div id="divDireccionFacturaBlock" class="divFormValue"><input type="text" id="inputDireccionFacturaBlock"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaSolar">Solar:</div><div id="divDireccionFacturaSolar" class="divFormValue"><input type="text" id="inputDireccionFacturaSolar"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaDepartamento">Departamento:</div><div id="divDireccionFacturaDepartamento" class="divFormValue"><select id="selectDireccionFacturaDepartamento"></select></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaLocalidad">Localidad:</div><div id="divDireccionFacturaLocalidad" class="divFormValue"><input type="text" id="inputDireccionFacturaLocalidad"/></div>
+				</div>
+				<div class="divLayoutColumnFull">
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaObservaciones">Observaciones:</div><div id="divDireccionFacturaObservaciones" class="divFormValue"><input type="text" id="inputDireccionFacturaObservaciones"/></div>
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 				</div>
 			</div>
 		</div>

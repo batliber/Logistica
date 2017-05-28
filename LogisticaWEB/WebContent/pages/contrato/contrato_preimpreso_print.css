@@ -188,6 +188,7 @@ textarea {
 }
 
 .inputDepartamento {
+<<<<<<< HEAD
 	width: 120px;
 }
 
@@ -354,6 +355,169 @@ textarea {
 .inputMotivosCambioPlan {
 	width: 100%;
 	text-align: center;
+=======
+	width: 90px;
+}
+
+.inputDia {
+	width: 20px;
+}
+
+.inputMes {
+	width: 60px;
+}
+
+.inputAno {
+	width: 30px;
+}
+
+.inputNombre {
+	width: 250px;
+}
+
+.inputDuracionContrato {
+	width: 40px;
+}
+
+.inputClienteNombre {
+	width: 247px;
+}
+
+.inputClienteApellido {
+	width: 228px;
+}
+
+.inputClienteNombreEmpresa {
+	width: 461px;
+}
+
+.inputClienteSexo {
+	width: 58px;
+}
+
+.inputClienteFechaNacimiento {
+	width: 68px;
+}
+
+.inputClienteTipoCliente {
+	width: 31px;
+}
+
+.inputClienteActividad {
+	width: 37px;
+}
+
+.inputClienteTelefonoContacto {
+	width: 92px;
+}
+
+.inputMID {
+	width: 229px;
+}
+
+.inputNumeroChip {
+	width: 252px;
+}
+
+.inputMarca {
+	width: 248px;
+}
+
+.inputNumeroSerie {
+	width: 143px;
+}
+
+.inputModelo {
+	width: 244px;
+}
+
+.inputCodigoBloqueo {
+	width: 189px;
+}
+
+.inputDireccionCalle {
+	width: 536px;
+}
+
+.inputDireccionNumero {
+	width: 50px;
+}
+
+.inputDireccionBis {
+	width: 72px;
+}
+
+.inputDireccionApto {
+	width: 64px;
+}
+
+.inputDireccionBlock {
+	width: 61px;
+}
+
+.inputDireccionManzana {
+	width: 61px;
+}
+
+.inputDireccionSolar {
+	width: 62px;
+}
+
+.inputDireccionLocalidad {
+	width: 138px;
+}
+
+.inputDireccionDepartamento {
+	width: 117px;
+}
+
+.inputDireccionCodigoPostal {
+	width: 160px;
+}
+
+.inputDireccionObservaciones {
+	width: 495px;
+}
+
+.inputUsuarioNombre {
+	width: 235px;
+}
+
+.inputUsuarioApellido {
+	width: 234px;
+}
+
+.inputUsuarioDocumento {
+	width: 224px;
+}
+
+.inputUsuarioEmail {
+	width: 187px;
+}
+
+.inputPlan {
+	width: 161px;
+}
+
+.inputPromotor {
+	width: 138px;
+}
+
+.inputAyudaEconomica {
+	width: 94px;
+}
+
+.inputCantidadMinutos {
+	width: 84px;
+}
+
+.inputDesde {
+	width: 150px;
+}
+
+.inputHasta {
+	width: 153px;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 }
 
 .textareaObservaciones {

@@ -46,8 +46,13 @@ $(document).ready(function() {
 								tdContratoFinContrato: { campo: "fechaFinContrato", descripcion: "Fin de contrato", abreviacion: "Fin", tipo: __TIPO_CAMPO_FECHA },
 								tdContratoDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING },
 								tdContratoNuevoPlan: { campo: "nuevoPlan.descripcion", clave: "nuevoPlan.id", descripcion: "Nuevo plan", abreviacion: "Nuevo plan", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPlanes, clave: "id", valor: "descripcion" }, ancho: 80 },
+<<<<<<< HEAD
 								tdContratoEquipo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 90 },
 								tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "NÃºmero de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
+=======
+								tdContratoEquipo: { campo: "producto.descripcion", clave: "producto.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listProductos, clave: "id", valor: "descripcion" }, ancho: 90 },
+								tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 								tdFechaActivarEn: { campo: "fechaActivarEn", descripcion: "Activar en", abreviacion: "Act. en", tipo: __TIPO_CAMPO_FECHA },
 								tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envÃ­o a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
 								tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto por distribuidor", abreviacion: "Distribuï¿½do", tipo: __TIPO_CAMPO_FECHA },
@@ -99,10 +104,17 @@ $(document).ready(function() {
 							tdContratoDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING },
 							tdContratoLocalidad: { campo: "localidad", descripcion: "Localidad", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING },
 							tdContratoNuevoPlan: { campo: "nuevoPlan.descripcion", clave: "nuevoPlan.id", descripcion: "Nuevo plan", abreviacion: "Nuevo plan", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPlanes, clave: "id", valor: "descripcion" }, ancho: 80 },
+<<<<<<< HEAD
 							tdContratoEquipo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 90 },
 							tdContratoTelefonoContacto: { campo: "telefonoContacto", descripcion: "TelÃ©fono contacto", abreviacion: "TelÃ©fono", tipo: __TIPO_CAMPO_STRING },
 							tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "NÃºmero de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
 							tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto por distribuidor", abreviacion: "Distribuï¿½do", tipo: __TIPO_CAMPO_FECHA },
+=======
+							tdContratoEquipo: { campo: "producto.descripcion", clave: "producto.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listProductos, clave: "id", valor: "descripcion" }, ancho: 90 },
+							tdContratoTelefonoContacto: { campo: "telefonoContacto", descripcion: "Teléfono contacto", abreviacion: "Teléfono", tipo: __TIPO_CAMPO_STRING },
+							tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
+							tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto por distribuidor", abreviacion: "Distribuído", tipo: __TIPO_CAMPO_FECHA },
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 							tdFechaActivarEn: { campo: "fechaActivarEn", descripcion: "Activar en", abreviacion: "Act. en", tipo: __TIPO_CAMPO_FECHA },
 							tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envÃ­o a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
 							tdContratoObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING },
@@ -147,6 +159,22 @@ function listModelos() {
 	var result = [];
 	
 	ModeloDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listPlanes() {
+	var result = [];
+	
+	PlanDWR.list(
 		{
 			callback: function(data) {
 				if (data != null) {

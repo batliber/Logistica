@@ -22,12 +22,19 @@ import uy.com.amensg.logistica.entities.MarcaTO;
 public class MarcaDWR {
 
 	private IMarcaBean lookupBean() throws NamingException {
+<<<<<<< HEAD
 		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
 		String appName = "LogisticaEJB";
 		String beanName = MarcaBean.class.getSimpleName();
 		String remoteInterfaceName = IMarcaBean.class.getName();
 		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
+=======
+		String EARName = "Logistica";
+		String beanName = MarcaBean.class.getSimpleName();
+		String remoteInterfaceName = IMarcaBean.class.getName();
+		String lookupName = EARName + "/" + beanName + "/remote-" + remoteInterfaceName;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		Context context = new InitialContext();
 		
 		return (IMarcaBean) context.lookup(lookupName);

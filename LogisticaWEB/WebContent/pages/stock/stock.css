@@ -2,8 +2,13 @@
 	position: relative;
 	top: 100px;
 	left: 100px;
+<<<<<<< HEAD
 	width: 650px;
 	height: 600px;
+=======
+	width: 430px;
+	height: 300px;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	z-index: 3;
 	border: solid 1px black;
 	background-color: white;
@@ -14,11 +19,19 @@
 	top: 21px;
 	left: 0;
 	width: 100%;
+<<<<<<< HEAD
 	height: 579px;
+=======
+	height: 279px;
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	border: none;
 }
 
+<<<<<<< HEAD
 #divIFrameMarca {
+=======
+#divIFrameProducto {
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	position: relative;
 	top: 100px;
 	left: 100px;
@@ -29,6 +42,7 @@
 	background-color: white;
 }
 
+<<<<<<< HEAD
 #iFrameMarca {
 	position: absolute;
 	top: 21px;
@@ -39,6 +53,18 @@
 }
 
 #divIFrameModelo {
+=======
+#iFrameProducto {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 279px;
+}
+
+#divIFrameEmpresaService {
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	position: relative;
 	top: 100px;
 	left: 100px;
@@ -49,13 +75,18 @@
 	background-color: white;
 }
 
+<<<<<<< HEAD
 #iFrameModelo {
+=======
+#iFrameEmpresaService {
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 	position: absolute;
 	top: 21px;
 	left: 0;
 	border: none;
 	width: 100%;
 	height: 279px;
+<<<<<<< HEAD
 }
 
 #divIFrameEmpresaService {
@@ -96,4 +127,6 @@
 	border: none;
 	width: 100%;
 	height: 279px;
+=======
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 }

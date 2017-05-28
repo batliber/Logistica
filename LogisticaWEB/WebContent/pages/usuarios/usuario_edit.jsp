@@ -32,7 +32,11 @@
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Usuario</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
+<<<<<<< HEAD
 	<div class="divPopupWindow">
+=======
+	<div class="divMainWindow">
+>>>>>>> branch 'master' of https://github.com/batliber/Logistica.git
 		<div class="divFormLabel">Login:</div><div id="divUsuarioLogin" class="divFormValue"><input type="text" id="inputUsuarioLogin"/></div>
 		<div class="divFormLabel">Nombre:</div><div id="divUsuarioNombre" class="divFormValue"><input type="text" id="inputUsuarioNombre"/></div>
 		<div class="divFormLabel">Documento:</div><div id="divUsuarioDocumento" class="divFormValue"><input type="text" id="inputUsuarioDocumento"/></div>
