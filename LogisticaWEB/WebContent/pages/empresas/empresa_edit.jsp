@@ -38,6 +38,7 @@
 			<div class="divFormLabelExtended">C&oacute;d. promotor:</div><div id="divEmpresaCodigoPromotor" class="divFormValue"><input type="text" id="inputEmpresaCodigoPromotor" name="inputEmpresaCodigoPromotor"/></div>
 			<div class="divFormLabelExtended">Nombre (contrato):</div><div id="divEmpresaNombreContrato" class="divFormValue"><input type="text" id="inputEmpresaNombreContrato" name="inputEmpresaNombreContrato"/></div>
 			<div class="divFormLabelExtended">Nombre sucursal:</div><div id="divEmpresaNombreSucursal" class="divFormValue"><input type="text" id="inputEmpresaNombreSucursal" name="inputEmpresaNombreSucursal"/></div>
+			<div class="divFormLabelExtended">Direcci&oacute;n:</div><div id="divEmpresaDireccion" class="divFormValue"><input type="text" id="inputEmpresaDireccion" name="inputEmpresaDireccion"/></div>
 			<div class="divFormLabelExtended">Logo:</div><div id="divEmpresaLogo" class="divFormValue"><img id="imgEmpresaLogo" src="#"/></div>
 			<div class="divFormLabelExtended">Formas de pago:</div>
 			<div class="divEmpresasRoles">

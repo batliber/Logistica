@@ -135,7 +135,7 @@ public class ActivacionBean implements IActivacionBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par·metros seg˙n las condiciones del filtro
+			// Setear los par√°metros seg√∫n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -198,7 +198,7 @@ public class ActivacionBean implements IActivacionBean {
 				}
 			}
 			
-			// Acotar al tamaÒo de la muestra
+			// Acotar al tama√±o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -258,7 +258,7 @@ public class ActivacionBean implements IActivacionBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par·metros seg˙n las condiciones del filtro
+			// Setear los par√°metros seg√∫n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -374,9 +374,9 @@ public class ActivacionBean implements IActivacionBean {
 			}
 			
 			result =
-				"Se importar·n " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribir·n " + sobreescribir + " MIDs.|"
-				+ "Se omitir·n " + omitir + " MIDs.";
+				"Se importar√°n " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribir√°n " + sobreescribir + " MIDs.|"
+				+ "Se omitir√°n " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -502,7 +502,7 @@ public class ActivacionBean implements IActivacionBean {
 				if (fields.length < 2) {
 					System.err.println(
 						"Error al procesar archivo: " + fileName + "."
-						+ " Formato de lÌnea " + lineNumber + " incompatible."
+						+ " Formato de l√≠nea " + lineNumber + " incompatible."
 						+ " Cantidad de columnas (" + fields.length + ") insuficientes."
 					);
 					errors++;
@@ -515,7 +515,7 @@ public class ActivacionBean implements IActivacionBean {
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de lÌnea " + lineNumber + " incompatible."
+							+ " Formato de l√≠nea " + lineNumber + " incompatible."
 							+ " Campo mid incorrecto -> " + fields[0].trim());
 						ok = false;
 					}
@@ -537,8 +537,8 @@ public class ActivacionBean implements IActivacionBean {
 			}
 			
 			result = 
-				"LÌneas procesadas con Èxito: " + successful + ".|"
-				+ "LÌneas con datos incorrectos: " + errors + ".";
+				"L√≠neas procesadas con √©xito: " + successful + ".|"
+				+ "L√≠neas con datos incorrectos: " + errors + ".";
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -702,7 +702,8 @@ public class ActivacionBean implements IActivacionBean {
 	}
 
 	/**
-	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado seg˙n: YYYYMMDDHHmmSS en la carpeta de exportaciÛn del sistema.
+	 * Exporta los datos que cumplen con los criterios especificados a un archivo .csv 
+	 * de nombre generado seg√∫n: YYYYMMDDHHmmSS en la carpeta de exportaci√≥n del sistema.
 	 * 
 	 * @param metadataConsulta Criterios de la consulta.
 	 * @param loggedUsuarioId ID del Usuario que consulta.
@@ -733,17 +734,17 @@ public class ActivacionBean implements IActivacionBean {
 				"MID"
 				+ ";Chip"
 				+ ";Empresa"
-				+ ";Tipo de activaciÛn"
+				+ ";Tipo de activaci√≥n"
 				+ ";Lote"
-				+ ";Estado de activaciÛn"
-				+ ";Fecha de importaciÛn"
-				+ ";Fecha de activaciÛn"
+				+ ";Estado de activaci√≥n"
+				+ ";Fecha de importaci√≥n"
+				+ ";Fecha de activaci√≥n"
 				+ ";Fecha de vencimiento"
 				+ ";Sub-lote"
 				+ ";Distribuidor"
-				+ ";Fecha asignaciÛn distribuidor"
+				+ ";Fecha asignaci√≥n distribuidor"
 				+ ";Punto de venta"
-				+ ";Fecha asignaciÛn punto venta"
+				+ ";Fecha asignaci√≥n punto venta"
 			);
 			
 			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));

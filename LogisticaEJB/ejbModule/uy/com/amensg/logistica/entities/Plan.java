@@ -4,6 +4,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -22,7 +25,7 @@ public class Plan extends BaseEntity {
 	private Double consumoMinimo;
 
 	@Column(name = "duracion")
-	private Long duracion;
+	private String duracion;
 
 	@Column(name = "precio_minuto_destinos_antel_horario_normal")
 	private Double precioMinutoDestinosAntelHorarioNormal;
@@ -55,7 +58,7 @@ public class Plan extends BaseEntity {
 	private Double topeFacturacionMensualTraficoDatos;
 	
 	@Column(name = "destinos_gratis")
-	private Long destinosGratis;
+	private String destinosGratis;
 	
 	@Column(name = "minutos_gratis_mes_celulares_antel")
 	private Long minutosGratisMesCelularesAntel;
@@ -64,7 +67,7 @@ public class Plan extends BaseEntity {
 	private Long smsGratisMesCelularesAntel;
 	
 	@Column(name = "cantidad_celulares_antel_sms_gratis")
-	private Long cantidadCelularesAntelSmsGratis;
+	private String cantidadCelularesAntelSmsGratis;
 	
 	@Column(name = "cantidad_celulares_antel_minutos_gratis")
 	private Long cantidadCelularesAntelMinutosGratis;
@@ -77,6 +80,10 @@ public class Plan extends BaseEntity {
 
 	@Column(name = "fecha_baja")
 	private Date fechaBaja;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "tipo_plan_id", nullable = true)
+	private TipoPlan tipoPlan;
 	
  	public String getDescripcion() {
 		return descripcion;
@@ -102,11 +109,11 @@ public class Plan extends BaseEntity {
 		this.consumoMinimo = consumoMinimo;
 	}
 
-	public Long getDuracion() {
+	public String getDuracion() {
 		return duracion;
 	}
 
-	public void setDuracion(Long duracion) {
+	public void setDuracion(String duracion) {
 		this.duracion = duracion;
 	}
 
@@ -196,11 +203,11 @@ public class Plan extends BaseEntity {
 		this.topeFacturacionMensualTraficoDatos = topeFacturacionMensualTraficoDatos;
 	}
 
-	public Long getDestinosGratis() {
+	public String getDestinosGratis() {
 		return destinosGratis;
 	}
 
-	public void setDestinosGratis(Long destinosGratis) {
+	public void setDestinosGratis(String destinosGratis) {
 		this.destinosGratis = destinosGratis;
 	}
 
@@ -221,12 +228,11 @@ public class Plan extends BaseEntity {
 		this.smsGratisMesCelularesAntel = smsGratisMesCelularesAntel;
 	}
 
-	public Long getCantidadCelularesAntelSmsGratis() {
+	public String getCantidadCelularesAntelSmsGratis() {
 		return cantidadCelularesAntelSmsGratis;
 	}
 
-	public void setCantidadCelularesAntelSmsGratis(
-			Long cantidadCelularesAntelSmsGratis) {
+	public void setCantidadCelularesAntelSmsGratis(String cantidadCelularesAntelSmsGratis) {
 		this.cantidadCelularesAntelSmsGratis = cantidadCelularesAntelSmsGratis;
 	}
 
@@ -262,5 +268,13 @@ public class Plan extends BaseEntity {
 
 	public void setFechaBaja(Date fechaBaja) {
 		this.fechaBaja = fechaBaja;
+	}
+
+	public TipoPlan getTipoPlan() {
+		return tipoPlan;
+	}
+
+	public void setTipoPlan(TipoPlan tipoPlan) {
+		this.tipoPlan = tipoPlan;
 	}
 }

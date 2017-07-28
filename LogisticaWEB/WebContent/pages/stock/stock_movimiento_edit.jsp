@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/StockTipoMovimientoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/StockMovimientoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
@@ -42,6 +43,7 @@
 		<div class="divFormLabelExtended">Tipo de movimiento:</div><div id="divStockTipoMovimiento" class="divFormValue"><select id="selectStockTipoMovimiento" onchange="javascript:selectStockTipoMovimientoOnChange(event, this)"></select></div>
 		<div class="divFormLabelExtended">Marca:</div><div id="divMarca" class="divFormValue"><select id="selectMarca" onchange="javascript:selectMarcaOnChange(event, this)"></select></div>
 		<div class="divFormLabelExtended">Modelo:</div><div id="divModelo" class="divFormValue"><select id="selectModelo"></select></div>
+		<div class="divFormLabelExtended">Tipo de producto:</div><div id="divTipoProducto" class="divFormValue"><select id="selectTipoProducto"></select></div>
 		<div class="divFormLabelExtended">Cantidad:</div><div id="divCantidad" class="divFormValue"><input type="text" id="inputCantidad"/></div>
 		<div class="divFormLabelExtended">IMEI:</div><div id="divIMEI" class="divFormValue"><input type="text" id="inputIMEI" onchange="javascript:inputIMEIOnChange(event, this)"/></div>
 		<div class="divFormLabelExtended">&nbsp;</div><div class="divFormValue" style="width: 70%;">&nbsp;</div>

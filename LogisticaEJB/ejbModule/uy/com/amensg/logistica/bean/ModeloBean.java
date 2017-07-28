@@ -39,6 +39,28 @@ public class ModeloBean implements IModeloBean {
 		return result;
 	}
 	
+	public Collection<Modelo> listVigentes() {
+		Collection<Modelo> result = new LinkedList<Modelo>();
+		
+		try {
+			TypedQuery<Modelo> query = entityManager.createQuery(
+				"SELECT m"
+				+ " FROM Modelo m"
+				+ " WHERE m.fechaBaja IS NULL"
+				+ " ORDER BY m.descripcion",
+				Modelo.class
+			);
+			
+			for (Modelo modelo : query.getResultList()) {
+				result.add(modelo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<Modelo> listByMarcaId(Long marcaId) {
 		Collection<Modelo> result = new LinkedList<Modelo>();
 		
@@ -47,6 +69,30 @@ public class ModeloBean implements IModeloBean {
 				"SELECT m"
 				+ " FROM Modelo m"
 				+ " WHERE m.marca.id = :marcaId"
+				+ " ORDER BY m.descripcion",
+				Modelo.class
+			);
+			query.setParameter("marcaId", marcaId);
+			
+			for (Modelo modelo : query.getResultList()) {
+				result.add(modelo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<Modelo> listVigentesByMarcaId(Long marcaId) {
+		Collection<Modelo> result = new LinkedList<Modelo>();
+		
+		try {
+			TypedQuery<Modelo> query = entityManager.createQuery(
+				"SELECT m"
+				+ " FROM Modelo m"
+				+ " WHERE m.marca.id = :marcaId"
+				+ " AND m.fechaBaja IS NULL"
 				+ " ORDER BY m.descripcion",
 				Modelo.class
 			);

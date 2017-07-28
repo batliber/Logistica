@@ -24,6 +24,9 @@ public class Control extends BaseEntity {
 	@Column(name = "monto_cargar")
 	private Long montoCargar;
 	
+	@Column(name = "monto_total")
+	private Long montoTotal;
+	
 	@Column(name = "fecha_control")
 	private Date fechaControl;
 	
@@ -35,6 +38,12 @@ public class Control extends BaseEntity {
 	
 	@Column(name = "fecha_importacion")
 	private Date fechaImportacion;
+	
+	@Column(name = "fecha_vencimiento")
+	private Date fechaVencimiento;
+	
+	@Column(name = "fecha_conexion")
+	private Date fechaConexion;
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "empresa_id", nullable = true)
@@ -72,6 +81,14 @@ public class Control extends BaseEntity {
 		this.montoCargar = montoCargar;
 	}
 
+	public Long getMontoTotal() {
+		return montoTotal;
+	}
+
+	public void setMontoTotal(Long montoTotal) {
+		this.montoTotal = montoTotal;
+	}
+
 	public Date getFechaControl() {
 		return fechaControl;
 	}
@@ -102,6 +119,22 @@ public class Control extends BaseEntity {
 
 	public void setFechaImportacion(Date fechaImportacion) {
 		this.fechaImportacion = fechaImportacion;
+	}
+
+	public Date getFechaVencimiento() {
+		return fechaVencimiento;
+	}
+
+	public void setFechaVencimiento(Date fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
+	}
+
+	public Date getFechaConexion() {
+		return fechaConexion;
+	}
+
+	public void setFechaConexion(Date fechaConexion) {
+		this.fechaConexion = fechaConexion;
 	}
 
 	public Empresa getEmpresa() {

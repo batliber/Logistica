@@ -10,7 +10,7 @@ public class PlanTO extends BaseTO {
 	private String descripcion;
 	private String abreviacion;
 	private Double consumoMinimo;
-	private Long duracion;
+	private String duracion;
 	private Double precioMinutoDestinosAntelHorarioNormal;
 	private Double precioMinutoDestinosAntelHorarioReducido;
 	private Long rendimientoMinutosMensualDestinosAntelHorarioNormal;
@@ -21,14 +21,15 @@ public class PlanTO extends BaseTO {
 	private Double montoNavegacionCelular;
 	private Double precioConsumoFueraBono;
 	private Double topeFacturacionMensualTraficoDatos;
-	private Long destinosGratis;
+	private String destinosGratis;
 	private Long minutosGratisMesCelularesAntel;
 	private Long smsGratisMesCelularesAntel;
-	private Long cantidadCelularesAntelSmsGratis;
+	private String cantidadCelularesAntelSmsGratis;
 	private Long cantidadCelularesAntelMinutosGratis;
 	private Long minutosGratisMesFijosAntel;
 	private Long cantidadFijosAntelMinutosGratis;
 	private Date fechaBaja;
+	private TipoPlanTO tipoPlan;
 
 	public String getDescripcion() {
 		return descripcion;
@@ -54,11 +55,11 @@ public class PlanTO extends BaseTO {
 		this.consumoMinimo = consumoMinimo;
 	}
 
-	public Long getDuracion() {
+	public String getDuracion() {
 		return duracion;
 	}
 
-	public void setDuracion(Long duracion) {
+	public void setDuracion(String duracion) {
 		this.duracion = duracion;
 	}
 
@@ -149,11 +150,11 @@ public class PlanTO extends BaseTO {
 		this.topeFacturacionMensualTraficoDatos = topeFacturacionMensualTraficoDatos;
 	}
 
-	public Long getDestinosGratis() {
+	public String getDestinosGratis() {
 		return destinosGratis;
 	}
 
-	public void setDestinosGratis(Long destinosGratis) {
+	public void setDestinosGratis(String destinosGratis) {
 		this.destinosGratis = destinosGratis;
 	}
 
@@ -174,12 +175,11 @@ public class PlanTO extends BaseTO {
 		this.smsGratisMesCelularesAntel = smsGratisMesCelularesAntel;
 	}
 
-	public Long getCantidadCelularesAntelSmsGratis() {
+	public String getCantidadCelularesAntelSmsGratis() {
 		return cantidadCelularesAntelSmsGratis;
 	}
 
-	public void setCantidadCelularesAntelSmsGratis(
-			Long cantidadCelularesAntelSmsGratis) {
+	public void setCantidadCelularesAntelSmsGratis(String cantidadCelularesAntelSmsGratis) {
 		this.cantidadCelularesAntelSmsGratis = cantidadCelularesAntelSmsGratis;
 	}
 
@@ -215,5 +215,13 @@ public class PlanTO extends BaseTO {
 
 	public void setFechaBaja(Date fechaBaja) {
 		this.fechaBaja = fechaBaja;
+	}
+
+	public TipoPlanTO getTipoPlan() {
+		return tipoPlan;
+	}
+
+	public void setTipoPlan(TipoPlanTO tipoPlan) {
+		this.tipoPlan = tipoPlan;
 	}
 }

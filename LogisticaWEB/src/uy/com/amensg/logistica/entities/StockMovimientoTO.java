@@ -12,6 +12,7 @@ public class StockMovimientoTO extends BaseTO {
 	private Long documentoId;
 	private MarcaTO marca;
 	private ModeloTO modelo;
+	private TipoProductoTO tipoProducto;
 	private ProductoTO producto;
 	private EmpresaTO empresa;
 	private StockTipoMovimientoTO stockTipoMovimiento;
@@ -56,6 +57,14 @@ public class StockMovimientoTO extends BaseTO {
 		this.modelo = modelo;
 	}
 	
+	public TipoProductoTO getTipoProducto() {
+		return tipoProducto;
+	}
+
+	public void setTipoProducto(TipoProductoTO tipoProducto) {
+		this.tipoProducto = tipoProducto;
+	}
+
 	public ProductoTO getProducto() {
 		return producto;
 	}

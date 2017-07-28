@@ -22,6 +22,8 @@ public interface IACMInterfacePrepagoBean {
 
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
 	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
 	
 	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);

@@ -79,7 +79,7 @@ public class ControlBean implements IControlBean {
 //				criteriaBuilder.or(
 //					// Asignados al usuario.
 //					criteriaBuilder.equal(root.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario1")),
-//					// Asignados a algún rol subordinado dentro de la empresa
+//					// Asignados a algï¿½n rol subordinado dentro de la empresa
 //					criteriaBuilder.exists(
 //						subqueryRolesSubordinados
 //							.select(subrootRolesSubordinados)
@@ -135,7 +135,7 @@ public class ControlBean implements IControlBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parï¿½metros segï¿½n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -198,7 +198,7 @@ public class ControlBean implements IControlBean {
 				}
 			}
 			
-			// Acotar al tamaño de la muestra
+			// Acotar al tamaï¿½o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -241,7 +241,7 @@ public class ControlBean implements IControlBean {
 //				criteriaBuilder.or(
 //					// Asignados al usuario.
 //					criteriaBuilder.equal(rootCount.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario1")),
-//					// Asignados a algún rol subordinado dentro de la empresa
+//					// Asignados a algï¿½n rol subordinado dentro de la empresa
 //					criteriaBuilder.exists(
 //						subqueryRolesSubordinados
 //							.select(subrootRolesSubordinados)
@@ -267,7 +267,7 @@ public class ControlBean implements IControlBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parï¿½metros segï¿½n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -383,9 +383,9 @@ public class ControlBean implements IControlBean {
 			}
 			
 			result =
-				"Se importarán " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
-				+ "Se omitirán " + omitir + " MIDs.";
+				"Se importarï¿½n " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribirï¿½n " + sobreescribir + " MIDs.|"
+				+ "Se omitirï¿½n " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -508,7 +508,7 @@ public class ControlBean implements IControlBean {
 				if (fields.length < 1) {
 					System.err.println(
 						"Error al procesar archivo: " + fileName + "."
-						+ " Formato de línea " + lineNumber + " incompatible."
+						+ " Formato de lï¿½nea " + lineNumber + " incompatible."
 						+ " Cantidad de columnas (" + fields.length + ") insuficientes."
 					);
 					errors++;
@@ -521,7 +521,7 @@ public class ControlBean implements IControlBean {
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Formato de lï¿½nea " + lineNumber + " incompatible."
 							+ " Campo mid incorrecto -> " + fields[0].trim());
 						ok = false;
 					}
@@ -539,8 +539,8 @@ public class ControlBean implements IControlBean {
 			}
 			
 			result = 
-				"Líneas procesadas con éxito: " + successful + ".|"
-				+ "Líneas con datos incorrectos: " + errors + ".";
+				"Lï¿½neas procesadas con ï¿½xito: " + successful + ".|"
+				+ "Lï¿½neas con datos incorrectos: " + errors + ".";
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -554,5 +554,101 @@ public class ControlBean implements IControlBean {
 		}
 		
 		return result;
+	}
+
+	public Control getSiguienteMidParaControlar() {
+		Control result = null;
+		
+		try {
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			TypedQuery<Control> query = 
+				entityManager.createQuery(
+					"SELECT c"
+					+ " FROM Control c"
+					+ " WHERE c.estadoControl.id = :estadoPendienteId", 
+					Control.class
+				);
+			query.setParameter("estadoPendienteId", new Long(Configuration.getInstance().getProperty("estadoControl.PENDIENTE")));
+			query.setMaxResults(1);
+			
+			List<Control> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				Control control = resultList.get(0);
+				
+				EstadoControl estadoControl = 
+					iEstadoControlBean.getById(new Long(Configuration.getInstance().getProperty("estadoControl.PROCESANDO")));
+				
+				control.setEstadoControl(estadoControl);
+				
+				control.setFact(hoy);
+				control.setTerm(new Long(1));
+				control.setUact(new Long(1));
+				
+				control = entityManager.merge(control);
+				
+				result = control;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public void actualizarDatosControl(Control control) {
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			Date hoy = gregorianCalendar.getTime();
+			
+			TypedQuery<Control> query = 
+				entityManager.createQuery(
+					"SELECT c"
+					+ " FROM Control c"
+					+ " WHERE c.empresa.id = :empresaId"
+					+ " AND c.tipoControl.id = :tipoControlId"
+					+ " AND c.mid = :mid"
+					+ " AND c.estadoControlId = :estadoControlProcesandoId",
+					Control.class
+				);
+			query.setParameter("empresaId", control.getEmpresa().getId());
+			query.setParameter("tipoControlId", control.getTipoControl().getId());
+			query.setParameter("mid", control.getMid());
+			query.setParameter(
+				"estadoControlProcesandoId", 
+				new Long(Configuration.getInstance().getProperty("estadoControl.PROCESANDO"))
+			);
+			query.setMaxResults(1);
+			
+			List<Control> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				Control controlManaged = resultList.get(0);
+				
+				controlManaged.setCargaInicial(control.getCargaInicial());
+				controlManaged.setEstadoControl(control.getEstadoControl());
+				
+				if (control.getEstadoControl().getId().equals(
+					new Long(Configuration.getInstance().getProperty("estadoControl.OK"))
+				)) {
+					controlManaged.setFechaControl(hoy);
+					controlManaged.setMesControl(hoy);
+				}
+				
+				controlManaged.setFechaActivacion(control.getFechaActivacion());
+				controlManaged.setFechaConexion(control.getFechaConexion());
+				controlManaged.setFechaVencimiento(control.getFechaVencimiento());
+				controlManaged.setMontoCargar(control.getMontoCargar());
+				controlManaged.setMontoTotal(control.getMontoTotal());
+				
+				control.setFact(hoy);
+				control.setTerm(new Long(1));
+				control.setUact(new Long(1));
+				
+				control = entityManager.merge(control);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

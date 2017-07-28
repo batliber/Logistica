@@ -1,6 +1,5 @@
 .divTable {
 	float: left;
-	height: 314px;
 	border: solid 1px #979797;
 	background-color: white;
 }
@@ -39,7 +38,6 @@
 .divTableHeaderCellText {
 	float: left;
 	width: 33px;
-	height: 100%;
 	white-space: nowrap;
 	margin-left: 2px;
 }
@@ -57,7 +55,6 @@
 
 .divTableHeaderCell {
 	float: left;
-	height: 18px;
 	
 	font-family: Segoe UI;
 	font-size: 9pt;
@@ -149,36 +146,6 @@
 .divTableHeaderCell6NOO {
 	float: left;
 	width: 110px;
-	
-	font-family: Segoe UI;
-	font-size: 9pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
-}
-
-.divTableHeaderCell7NOO {
-	float: left;
-	width: 110px;
-	
-	font-family: Segoe UI;
-	font-size: 9pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
-}
-
-.divTableHeaderCell8NOO {
-	float: left;
-	width: 55px;
 	
 	font-family: Segoe UI;
 	font-size: 9pt;
@@ -576,11 +543,9 @@
 .divTableBody {
 	float: left;
 	overflow: auto;
-	height: 277px;
 }
 
 .divTableBodyCover {
-	height: 277px;
 	position: absolute;
 	margin-top: 18px;
 	background-color: rgba(50, 50, 50, 0.1);
@@ -744,7 +709,6 @@
 
 .divTableFooterCell {
 	float: left;
-	height: 18px;
 	
 	font-family: Segoe UI;
 	font-size: 9pt;
@@ -756,15 +720,13 @@
 	border-right: solid 1px #D5D5D5;
 }
 
-#divCantidadRegistrosLabel {
+.divCantidadRegistrosLabel {
 	width: 120px;
 	text-align: left;
 }
 
-#divCantidadRegistrosValue {
-	width: 99%;
+.divCantidadRegistrosValue {
 	text-align: left;
-	margin-top: 1px;
 	margin-left: 2px;
 	
 	font-family: Segoe UI;

@@ -37,7 +37,7 @@ public class MarcaBean implements IMarcaBean {
 		
 		return result;
 	}
-
+	
 	public Marca getById(Long id) {
 		Marca result = null;
 		

@@ -65,6 +65,9 @@ import uy.com.amensg.logistica.util.QueryHelper;
 public class ContratoBean implements IContratoBean {
 
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogisticaXA")
+	private EntityManager entityManagerXA;
+	
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -117,7 +120,7 @@ public class ContratoBean implements IContratoBean {
 				criteriaBuilder.or(
 					// Asignados al usuario.
 					criteriaBuilder.equal(root.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario1")),
-					// Asignados a algún rol subordinado dentro de la empresa
+					// Asignados a algÃºn rol subordinado dentro de la empresa
 					criteriaBuilder.exists(
 						subqueryRolesSubordinados
 							.select(subrootRolesSubordinados)
@@ -173,7 +176,7 @@ public class ContratoBean implements IContratoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parÃ¡metros segÃºn las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -236,7 +239,7 @@ public class ContratoBean implements IContratoBean {
 				}
 			}
 			
-			// Acotar al tamaño de la muestra
+			// Acotar al tamaÃ±o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -283,7 +286,7 @@ public class ContratoBean implements IContratoBean {
 				criteriaBuilder.or(
 					// Asignados al usuario.
 					criteriaBuilder.equal(rootCount.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario1")),
-					// Asignados a algún rol subordinado dentro de la empresa
+					// Asignados a algÃºn rol subordinado dentro de la empresa
 					criteriaBuilder.exists(
 						subqueryRolesSubordinados
 							.select(subrootRolesSubordinados)
@@ -309,7 +312,7 @@ public class ContratoBean implements IContratoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parÃ¡metros segÃºn las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -446,7 +449,7 @@ public class ContratoBean implements IContratoBean {
 				criteriaBuilder.or(
 					// Asignados al usuario.
 					criteriaBuilder.equal(root.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario1")),
-					// Asignados a algún rol subordinado dentro de la empresa
+					// Asignados a algÃºn rol subordinado dentro de la empresa
 					criteriaBuilder.exists(
 						subqueryRolesSubordinados
 							.select(subrootRolesSubordinados)
@@ -504,7 +507,7 @@ public class ContratoBean implements IContratoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parÃ¡metros segÃºn las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -584,7 +587,7 @@ public class ContratoBean implements IContratoBean {
 	 * 
 	 * @param fileName El nombre del archivo a Importar.
 	 * @param emmpresaId ID de la empresa a la cual asignar los contratos importados.
-	 * @return String que informa cuántos MIDs se importarán, cuántos se sobreescribirán y cuántos se omitirán. 
+	 * @return String que informa cuÃ¡ntos MIDs se importarÃ¡n, cuÃ¡ntos se sobreescribirÃ¡n y cuÃ¡ntos se omitirÃ¡n. 
 	 */
 	public String preprocesarArchivoEmpresa(String fileName, Long empresaId) {
 		String result = null;
@@ -631,9 +634,9 @@ public class ContratoBean implements IContratoBean {
 			}
 			
 			result =
-				"Se importarán " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
-				+ "Se omitirán " + omitir + " MIDs.";
+				"Se importarÃ¡n " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribirÃ¡n " + sobreescribir + " MIDs.|"
+				+ "Se omitirÃ¡n " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -653,8 +656,8 @@ public class ContratoBean implements IContratoBean {
 	 * Procesa un conjunto de MIDs para la empresa empresaId.
 	 * 
 	 * @param empresaId ID de la empresa a la cual asignar los MIDs.
-	 * @param Colección de MIDs a procesar.
-	 * @return Map indicando para cada MID si se importará, sobreescribirá u omitirá.
+	 * @param mids ColecciÃ³n de MIDs a procesar.
+	 * @return Map indicando para cada MID si se importarÃ¡, sobreescribirÃ¡ u omitirÃ¡.
 	 */
 	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids, Long empresaId) {
 		Map<Long, Integer> result = new HashMap<Long, Integer>();
@@ -712,7 +715,7 @@ public class ContratoBean implements IContratoBean {
 			}
 			
 			TypedQuery<Long> queryLlamar = 
-				entityManager.createQuery(
+				entityManagerXA.createQuery(
 					"SELECT mid"
 					+ " FROM Contrato c"
 					+ " WHERE c.empresa.id = :empresaId"
@@ -742,12 +745,12 @@ public class ContratoBean implements IContratoBean {
 	
 	/**
 	 * Importa el archivo .csv de nombre fileName para la Empresa empresaId.
-	 * Genera un Contrato (con estado "LLAMAR") por cada línea del archivo y los asigna a la "bandeja" de Supervisores de Call-Center de la Empresa empresaId.
+	 * Genera un Contrato (con estado "LLAMAR") por cada lÃ­nea del archivo y los asigna a la "bandeja" de Supervisores de Call-Center de la Empresa empresaId.
 	 *  
 	 * @param fileName El nombre del archivo a Importar.
 	 * @param emmpresaId ID de la empresa a la cual asignar los contratos importados.
-	 * @param loggedUsuarioId ID del usuario que ejecuta la acción.
-	 * @return String con el resultado de la operación.
+	 * @param loggedUsuarioId ID del usuario que ejecuta la acciÃ³n.
+	 * @return String con el resultado de la operaciÃ³n.
 	 */
 	public String procesarArchivoEmpresa(String fileName, Long empresaId, Long loggedUsuarioId) {
 		BufferedReader bufferedReader = null;
@@ -956,7 +959,7 @@ public class ContratoBean implements IContratoBean {
 				if (fields.length < 15) {
 					System.err.println(
 						"Error al procesar archivo: " + fileName + "."
-						+ " Formato de línea " + lineNumber + " incompatible."
+						+ " Formato de lÃ­nea " + lineNumber + " incompatible."
 						+ " Cantidad de columnas (" + fields.length + ") insuficientes."
 					);
 					errors++;
@@ -969,7 +972,7 @@ public class ContratoBean implements IContratoBean {
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Formato de lÃ­nea " + lineNumber + " incompatible."
 							+ " Campo mid incorrecto -> " + fields[0].trim());
 						ok = false;
 					}
@@ -981,7 +984,7 @@ public class ContratoBean implements IContratoBean {
 					} catch (ParseException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Formato de lÃ­nea " + lineNumber + " incompatible."
 							+ " Campo fechaFinContrato incorrecto -> " + fields[1].trim()
 						);
 						ok = false;
@@ -999,7 +1002,7 @@ public class ContratoBean implements IContratoBean {
 					} catch (Exception e) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Formato de lÃ­nea " + lineNumber + " incompatible."
 							+ " Campo documentoTipo incorrecto -> " + fields[4].trim()
 						);
 						ok = false;
@@ -1011,8 +1014,18 @@ public class ContratoBean implements IContratoBean {
 						(fields[6] != null && !fields[6].equals("")) ? fields[6].trim() : null;
 					String direccion = 
 						(fields[7] != null && !fields[7].equals("")) ? fields[7].trim() : null;
+					
 					String codigoPostal = 
 						(fields[8] != null && !fields[8].equals("")) ? fields[8].trim() : null;
+					if (codigoPostal != null && codigoPostal.length() > 16) {
+						System.err.println(
+							"Error al procesar archivo: " + fileName + "."
+							+ " Formato de lÃ­nea " + lineNumber + " incompatible."
+							+ " Campo codigoPostal incorrecto -> " + fields[8].trim()
+						);
+						ok = false;
+					}
+					
 					String localidad = 
 						(fields[9] != null && !fields[9].equals("")) ? fields[9].trim() : null;
 					String equipo = 
@@ -1027,7 +1040,7 @@ public class ContratoBean implements IContratoBean {
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Formato de lÃ­nea " + lineNumber + " incompatible."
 							+ " Campo numeroCliente incorrecto -> " + fields[12].trim()
 						);
 						ok = false;
@@ -1040,7 +1053,7 @@ public class ContratoBean implements IContratoBean {
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Formato de lÃ­nea " + lineNumber + " incompatible."
 							+ " Campo numeroContrato incorrecto -> " + fields[13].trim()
 						);
 						ok = false;
@@ -1052,16 +1065,16 @@ public class ContratoBean implements IContratoBean {
 					if (!ok) {
 						errors++;
 					} else {
-						// Busco si el mid está en estado VENDIDO o superior
+						// Busco si el mid estÃ¡ en estado VENDIDO o superior
 						selectVendidos.setParameter("mid", mid, LongType.INSTANCE);
 						
 						if (selectVendidos.list().size() == 0) {
-							// Busco si el mid ya está asignado en estado LLAMAR para la empresa.
+							// Busco si el mid ya estÃ¡ asignado en estado LLAMAR para la empresa.
 							selectContratoExisteEmpresa.setParameter("mid", mid, LongType.INSTANCE);
 							
 							List<?> listContratoExisteEmpresa = selectContratoExisteEmpresa.list();
 							if (listContratoExisteEmpresa.size() > 0) {
-								// Si ya está en estado LLAMAR sobre-escribo.
+								// Si ya estÃ¡ en estado LLAMAR sobre-escribo.
 								Long contratoId = (Long) listContratoExisteEmpresa.get(0);
 								
 								updateContrato.setParameter(3, agente, StringType.INSTANCE);
@@ -1108,12 +1121,12 @@ public class ContratoBean implements IContratoBean {
 				}
 			}
 			
-			// Ruteo los contratos recién creados.
+			// Ruteo los contratos reciÃ©n creados.
 			insertContratoRoutingHistory.executeUpdate();
 			
 			result = 
-				"Líneas procesadas con éxito: " + successful + ".|"
-				+ "Líneas con datos incorrectos: " + errors + ".";
+				"LÃ­neas procesadas con Ã©xito: " + successful + ".|"
+				+ "LÃ­neas con datos incorrectos: " + errors + ".";
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -1134,8 +1147,8 @@ public class ContratoBean implements IContratoBean {
 	 * 
 	 * @param empresaId ID de la empresa a la cual asignar el Contrato.
 	 * @param contrato El Contrato a asignar.
-	 * @param loggedUsuarioId ID del usuario que ejecuta la acción.
-	 * @return String con el resultado de la operación.
+	 * @param loggedUsuarioId ID del usuario que ejecuta la acciÃ³n.
+	 * @return String con el resultado de la operaciÃ³n.
 	 */
 	public String addAsignacionManual(Long empresaId, Contrato contrato, Long loggedUsuarioId) {
 		String result = null;
@@ -1241,7 +1254,7 @@ public class ContratoBean implements IContratoBean {
 				
 				entityManager.persist(contratoRoutingHistoryNew);
 				
-				result = "Operación exitosa.";
+				result = "OperaciÃ³n exitosa.";
 			} else {
 				result = "El MID ya fue vendido. No se puede asignar.";
 			}
@@ -1253,11 +1266,11 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Consulta si dentro del filtro a asignar existe algún registro ya asignado.
+	 * Consulta si dentro del filtro a asignar existe algÃºn registro ya asignado.
 	 * 
 	 * @param Criterios de la consulta.
-	 * @param loggedUsuarioId ID del usuario que ejecuta la acción.
-	 * @return true sii la asignación se puede realizar.
+	 * @param loggedUsuarioId ID del usuario que ejecuta la acciÃ³n.
+	 * @return true sii la asignaciÃ³n se puede realizar.
 	 */
 	public boolean chequearAsignacion(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
 		boolean result = true;
@@ -1287,7 +1300,7 @@ public class ContratoBean implements IContratoBean {
 				criteriaBuilder.or(
 					// Asignados al usuario.
 					criteriaBuilder.equal(root.get("usuario"), criteriaBuilder.parameter(Usuario.class, "usuario1")),
-					// Asignados a algún rol subordinado dentro de la empresa
+					// Asignados a algÃºn rol subordinado dentro de la empresa
 					criteriaBuilder.exists(
 						subqueryRolesSubordinados
 							.select(subrootRolesSubordinados)
@@ -1313,7 +1326,7 @@ public class ContratoBean implements IContratoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parÃ¡metros segÃºn las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -1380,7 +1393,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Asigna los Contratos que cumplen con los criterios especificados al Usuario y Rol especificados y actualiza su Estado según parámetro.
+	 * Asigna los Contratos que cumplen con los criterios especificados al Usuario y Rol especificados y actualiza su Estado segÃºn parÃ¡metro.
 	 * 
 	 * @param usuario Usuario a asignar los Contratos.
 	 * @param rol Rol a asignar los Contratos.
@@ -1435,38 +1448,60 @@ public class ContratoBean implements IContratoBean {
 			Long estadoFaltaDocumentacionId =
 				new Long(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
 			
+			Long estadoVendidoPorOtraEmpresaId =
+				new Long(Configuration.getInstance().getProperty("estado.VENDIDOPOROTRAEMPRESA"));
+			
 			for (Contrato contrato : resultList) {
-				if (!estadoFaltaDocumentacionId.equals(contrato.getEstado().getId())
-					&& !estadoRecoordinarId.equals(contrato.getEstado().getId())) {
-					contrato.setEstado(estado);
+				Long diffInMilliseconds = 
+					contrato.getFechaRechazo() != null ? (currentDate.getTime() - contrato.getFechaRechazo().getTime()) : 
+						contrato.getFact() != null ? (currentDate.getTime() - contrato.getFact().getTime()) :
+							null;
+				
+				Long cantidadDiasVendidoPorOtraEmpresa = 
+					new Long(Configuration.getInstance().getProperty("cantidadDiasRetencionVendidoPorOtraEmpresa"));
+				Long milisegundosSegundo = new Long(1000);
+				Long segundosMinuto = new Long(60);
+				Long minutosHora = new Long(60);
+				Long horasDia = new Long(24);
+				Long milisegundosDia = milisegundosSegundo * segundosMinuto * minutosHora * horasDia;
+						
+				if (estadoVendidoPorOtraEmpresaId.equals(contrato.getEstado().getId()) 
+					&& diffInMilliseconds != null
+					&& (diffInMilliseconds / milisegundosDia < cantidadDiasVendidoPorOtraEmpresa)) {
+					// No asignar contratos vendidos por otra empresa en menos de 30 dÃ­as.
+				} else {
+					if (!estadoFaltaDocumentacionId.equals(contrato.getEstado().getId())
+						&& !estadoRecoordinarId.equals(contrato.getEstado().getId())) {
+						contrato.setEstado(estado);
+					}
+					
+					contrato.setRol(rol);
+					contrato.setUsuario(usuario);
+					
+					contrato.setFact(currentDate);
+					contrato.setTerm(new Long(1));
+					contrato.setUact(loggedUsuarioId);
+					
+					if (rol.getId().equals(rolDistribuidorId)) {
+						contrato.setFechaEntregaDistribuidor(currentDate);
+					}
+					
+					Contrato mergedContrato = entityManager.merge(contrato);
+					
+					ContratoRoutingHistory contratoRoutingHistoryNew = new ContratoRoutingHistory();
+					contratoRoutingHistoryNew.setContrato(mergedContrato);
+					contratoRoutingHistoryNew.setEmpresa(contrato.getEmpresa());
+					contratoRoutingHistoryNew.setEstado(mergedContrato.getEstado());
+					contratoRoutingHistoryNew.setFecha(currentDate);
+					contratoRoutingHistoryNew.setRol(rol);
+					contratoRoutingHistoryNew.setUsuario(usuario);
+					
+					contratoRoutingHistoryNew.setFact(currentDate);
+					contratoRoutingHistoryNew.setTerm(new Long(1));
+					contratoRoutingHistoryNew.setUact(loggedUsuarioId);
+					
+					entityManager.persist(contratoRoutingHistoryNew);
 				}
-				
-				contrato.setRol(rol);
-				contrato.setUsuario(usuario);
-				
-				contrato.setFact(currentDate);
-				contrato.setTerm(new Long(1));
-				contrato.setUact(loggedUsuarioId);
-				
-				if (rol.getId().equals(rolDistribuidorId)) {
-					contrato.setFechaEntregaDistribuidor(currentDate);
-				}
-				
-				Contrato mergedContrato = entityManager.merge(contrato);
-				
-				ContratoRoutingHistory contratoRoutingHistoryNew = new ContratoRoutingHistory();
-				contratoRoutingHistoryNew.setContrato(mergedContrato);
-				contratoRoutingHistoryNew.setEmpresa(contrato.getEmpresa());
-				contratoRoutingHistoryNew.setEstado(mergedContrato.getEstado());
-				contratoRoutingHistoryNew.setFecha(currentDate);
-				contratoRoutingHistoryNew.setRol(rol);
-				contratoRoutingHistoryNew.setUsuario(usuario);
-				
-				contratoRoutingHistoryNew.setFact(currentDate);
-				contratoRoutingHistoryNew.setTerm(new Long(1));
-				contratoRoutingHistoryNew.setUact(loggedUsuarioId);
-				
-				entityManager.persist(contratoRoutingHistoryNew);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1479,7 +1514,7 @@ public class ContratoBean implements IContratoBean {
 	 * @param usuario Usuario a asignar el Contrato.
 	 * @param rol Rol a asignar el Contrato.
 	 * @param contrato Contrato a asignar.
-	 * @param loggedUsuarioId ID del usuario que ejecuta la acción.
+	 * @param loggedUsuarioId ID del usuario que ejecuta la acciÃ³n.
 	 */
 	public void asignar(Usuario usuario, Rol rol, Contrato contrato, Long loggedUsuarioId) {
 		try {
@@ -1576,7 +1611,7 @@ public class ContratoBean implements IContratoBean {
 	
 	/**
 	 * Actualiza el Contrato a estado "VENDIDO" y lo asigna a la "bandeja" de Supervisores de Back-office.
-	 * Actualiza el Stock del producto e impide la venta del mismo número por otra empresa, pasando los demás Contratos a estado "VENDIDO POR OTRA EMPRESA".
+	 * Actualiza el Stock del producto e impide la venta del mismo nÃºmero por otra empresa, pasando los demÃ¡s Contratos a estado "VENDIDO POR OTRA EMPRESA".
 	 * 
 	 * @param contrato a agendar.
 	 */
@@ -1618,6 +1653,7 @@ public class ContratoBean implements IContratoBean {
 			stockMovimiento.setEmpresa(contrato.getEmpresa());
 			stockMovimiento.setMarca(contrato.getMarca());
 			stockMovimiento.setModelo(contrato.getModelo());
+			stockMovimiento.setTipoProducto(contrato.getTipoProducto());
 			stockMovimiento.setStockTipoMovimiento(stockTipoMovimiento);
 			
 			stockMovimiento.setFact(date);
@@ -1632,7 +1668,7 @@ public class ContratoBean implements IContratoBean {
 				entityManager.createQuery(
 					"SELECT c"
 					+ " FROM Contrato c"
-					+ " WHERE c.estado IN ( :estadoLlamar, :estadoRellamar, :estadoRechazado )"
+					+ " WHERE c.estado IN ( :estadoLlamar, :estadoRellamar, :estadoRechazado, :estadoRenovado )"
 					+ " AND c.empresa <> :empresa"
 					+ " AND c.mid = :mid", 
 					Contrato.class);
@@ -1652,9 +1688,15 @@ public class ContratoBean implements IContratoBean {
 					new Long(Configuration.getInstance().getProperty("estado.RECHAZADO"))
 				);
 			
+			Estado estadoRenovado =
+				iEstadoBean.getById(
+					new Long(Configuration.getInstance().getProperty("estado.RENOVADO"))
+				);
+			
 			queryOtrasEmpresas.setParameter("estadoLlamar", estadoLlamar);
 			queryOtrasEmpresas.setParameter("estadoRellamar", estadoRellamar);
 			queryOtrasEmpresas.setParameter("estadoRechazado", estadoRechazado);
+			queryOtrasEmpresas.setParameter("estadoRenovado", estadoRenovado);
 			queryOtrasEmpresas.setParameter("empresa", contrato.getEmpresa());
 			queryOtrasEmpresas.setParameter("mid", contrato.getMid());
 			
@@ -1672,6 +1714,7 @@ public class ContratoBean implements IContratoBean {
 				contratoOtraEmpresa.setEstado(estadoVendidoPorOtraEmpresa);
 				contratoOtraEmpresa.setRol(rolGerenteDeEmpresa);
 				contratoOtraEmpresa.setUsuario(null);
+				contratoOtraEmpresa.setFechaRechazo(date);
 				
 				contratoOtraEmpresa.setFact(date);
 				contratoOtraEmpresa.setTerm(new Long(1));
@@ -1729,6 +1772,16 @@ public class ContratoBean implements IContratoBean {
 				contrato.setBackoffice(contratoManaged.getUsuario());
 			}
 			
+			contrato.setFormaPago(null);
+			contrato.setCuotas(null);
+			contrato.setGastosAdministrativos(null);
+			contrato.setGastosAdministrativosTotales(null);
+			contrato.setGastosConcesion(null);
+			contrato.setIntereses(null);
+			contrato.setValorCuota(null);
+			contrato.setValorTasaInteresEfectivaAnual(null);
+			contrato.setValorUnidadIndexada(null);
+			
 			contrato.setEstado(estado);
 			contrato.setFechaRechazo(date);
 			contrato.setUsuario(null);
@@ -1774,7 +1827,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Actualiza el Contrato a estado "DISTRIBUIR" y lo asigna a la "bandeja" de Supervisores de Distribución.
+	 * Actualiza el Contrato a estado "DISTRIBUIR" y lo asigna a la "bandeja" de Supervisores de DistribuciÃ³n.
 	 * 
 	 * @param contrato contrato a distribuir.
 	 */
@@ -1816,7 +1869,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Actualiza el Contrato a estado "RE-DISTRIBUIR" y lo asigna a la "bandeja" de Supervisores de Distribución.
+	 * Actualiza el Contrato a estado "RE-DISTRIBUIR" y lo asigna a la "bandeja" de Supervisores de DistribuciÃ³n.
 	 * 
 	 * @param contrato a redistribuir.
 	 */
@@ -1965,6 +2018,16 @@ public class ContratoBean implements IContratoBean {
 				contrato.setBackoffice(uact);
 			}
 			
+			contrato.setFormaPago(null);
+			contrato.setCuotas(null);
+			contrato.setGastosAdministrativos(null);
+			contrato.setGastosAdministrativosTotales(null);
+			contrato.setGastosConcesion(null);
+			contrato.setIntereses(null);
+			contrato.setValorCuota(null);
+			contrato.setValorTasaInteresEfectivaAnual(null);
+			contrato.setValorUnidadIndexada(null);
+			
 			contrato.setEstado(estado);
 			contrato.setFechaRechazo(date);
 			contrato.setUsuario(null);
@@ -1981,7 +2044,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Actualiza el Contrato a estado "REAGENDAR" y lo asigna a la "bandeja" del último Vendedor que realizó la venta.
+	 * Actualiza el Contrato a estado "REAGENDAR" y lo asigna a la "bandeja" del Ãºltimo Vendedor que realizÃ³ la venta.
 	 * 
 	 * @param contrato a reagendar.
 	 */
@@ -2052,7 +2115,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Actualiza el Contrato a estado "ACTIVAR" y lo asigna a la "bandeja" de Supervisores de Activación.
+	 * Actualiza el Contrato a estado "ACTIVAR" y lo asigna a la "bandeja" de Supervisores de ActivaciÃ³n.
 	 * 
 	 * @param contrato a activar.
 	 */
@@ -2180,7 +2243,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Actualiza el Contrato a estado "ACT. DOC. VENTA" y lo asigna a la "bandeja" del Activador que agendó la activación.
+	 * Actualiza el Contrato a estado "ACT. DOC. VENTA" y lo asigna a la "bandeja" del Activador que agendÃ³ la activaciÃ³n.
 	 * 
 	 * @param contrato a agendar.
 	 */
@@ -2399,7 +2462,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Actualiza el Contrato a estado "NO RECOORDINA" y lo asigna a la "bandeja" de Supervisores de Distribución.
+	 * Actualiza el Contrato a estado "NO RECOORDINA" y lo asigna a la "bandeja" de Supervisores de DistribuciÃ³n.
 	 * 
 	 * @param contrato a actualizar.
 	 */
@@ -2447,7 +2510,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Actualiza el Contrato a estado "CERRADO" y lo asigna a la "bandeja" de Supervisores de Activación.
+	 * Actualiza el Contrato a estado "CERRADO" y lo asigna a la "bandeja" de Supervisores de ActivaciÃ³n.
 	 * 
 	 * @param contrato a actualizar.
 	 */
@@ -2495,7 +2558,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Actualiza el Contrato a estado "GESTION INTERNA" y lo asigna a la "bandeja" de Supervisores de Activación.
+	 * Actualiza el Contrato a estado "GESTION INTERNA" y lo asigna a la "bandeja" de Supervisores de ActivaciÃ³n.
 	 * 
 	 * @param contrato a actualizar.
 	 */
@@ -2628,7 +2691,7 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado según: YYYYMMDDHHmmSS en la carpeta de exportación del sistema.
+	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado segÃºn: YYYYMMDDHHmmSS en la carpeta de exportaciÃ³n del sistema.
 	 * 
 	 * @param metadataConsulta Criterios de la consulta.
 	 * @param loggedUsuarioId ID del Usuario que consulta.
@@ -2658,41 +2721,41 @@ public class ContratoBean implements IContratoBean {
 			printWriter.println(
 				"MID"
 				+ ";Fecha fin contrato"
-				+ ";Código de plan"
-				+ ";Descripción de plan"
+				+ ";CÃ³digo de plan"
+				+ ";DescripciÃ³n de plan"
 				+ ";Tipo de documento"
 				+ ";Documento"
 				+ ";Nombre"
-				+ ";Dirección"
-				+ ";Código postal"
+				+ ";DirecciÃ³n"
+				+ ";CÃ³digo postal"
 				+ ";Localidad"
 //				+ ";Equipo"
 //				+ ";Agente"
-//				+ ";Número de contrato"
-				+ ";Número de trámite"
-//				+ ";Número de cliente"
+//				+ ";NÃºmero de contrato"
+				+ ";NÃºmero de trÃ¡mite"
+//				+ ";NÃºmero de cliente"
 //				+ ";Fecha de nacimiento"
 				+ ";Fecha de entrega"
-//				+ ";Dirección de entrega"
-//				+ ";Dirección de factura"
-//				+ ";Teléfono de contacto"
+//				+ ";DirecciÃ³n de entrega"
+//				+ ";DirecciÃ³n de factura"
+//				+ ";TelÃ©fono de contacto"
 				+ ";E-mail"
-				+ ";Número de factura"
-				+ ";Número de factura River Green"
+				+ ";NÃºmero de factura"
+				+ ";NÃºmero de factura River Green"
 				+ ";Precio"
 				+ ";Nuevo plan"
 				+ ";Forma de pago"
-				+ ";Tarjeta de crédito"
-				+ ";Número de serie"
+				+ ";Tarjeta de crÃ©dito"
+				+ ";NÃºmero de serie"
 				+ ";Observaciones"
 				+ ";Fecha de venta"
 				+ ";Fecha de back-office"
 				+ ";Fecha de entrega a Distribuidor"
 				+ ";Fecha de devuelto por Distribuidor"
-				+ ";Fecha de envío a ANTEL"
-//				+ ";Fecha de activación"
-//				+ ";Fecha agendada de activación"
-//				+ ";Fecha de coordinación"
+				+ ";Fecha de envÃ­o a ANTEL"
+//				+ ";Fecha de activaciÃ³n"
+//				+ ";Fecha agendada de activaciÃ³n"
+//				+ ";Fecha de coordinaciÃ³n"
 //				+ ";Fecha de rechazo"
 				+ ";Departamento"
 				+ ";Barrio"
@@ -2801,7 +2864,7 @@ public class ContratoBean implements IContratoBean {
 						contrato.getNumeroSerie()
 						: "")
 					+ ";" + (contrato.getObservaciones() != null ?
-						contrato.getObservaciones().replaceAll(";", ".")
+						contrato.getObservaciones().replaceAll(";", ".").replaceAll("\"", "")
 						: "")
 					+ ";" + (contrato.getFechaVenta() != null ?
 						format.format(contrato.getFechaVenta())
@@ -2891,8 +2954,8 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado según: YYYYMMDDHHmmSS en la carpeta de exportación del sistema.
-	 * El archivo generado tendrá el formato especificado para enviar a Núcleo.
+	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado segÃºn: YYYYMMDDHHmmSS en la carpeta de exportaciÃ³n del sistema.
+	 * El archivo generado tendrÃ¡ el formato especificado para enviar a NÃºcleo.
 	 * 
 	 * @param metadataConsulta Criterios de la consulta.
 	 * @param loggedUsuarioId ID del Usuario que consulta.
@@ -2955,45 +3018,47 @@ public class ContratoBean implements IContratoBean {
 //				+ ";Fecha de vencimiento de documento"
 //				+ ";Email"
 //				+ ";Calle"
-//				+ ";Número de casa"
-//				+ ";Número de apartamento"
+//				+ ";NÃºmero de casa"
+//				+ ";NÃºmero de apartamento"
 //				+ ";Esquina"
 //				+ ";Solar,Senda,Block,MZ"
-//				+ ";Código postal"
+//				+ ";CÃ³digo postal"
 //				+ ";Departamento"
-//				+ ";Teléfono"
+//				+ ";TelÃ©fono"
 //				+ ";Celular"
-//				+ ";Teléfono especial"
-//				+ ";Ocupación"
-//				+ ";Teléfono trabajo"
+//				+ ";TelÃ©fono especial"
+//				+ ";OcupaciÃ³n"
+//				+ ";TelÃ©fono trabajo"
 //				+ ";Fecha ingreso"
 //				+ ";Departamento"
 //				+ ";Barrio"
 //				+ ";Calle"
-//				+ ";Número"
+//				+ ";NÃºmero"
 //				+ ";Apt/esq/block/solar/manzana"
-//				+ ";Código postal"
+//				+ ";CÃ³digo postal"
 //				+ ";Nombre empresa"
 //				+ ";Comprobante"
 //				+ ";Salario nominal"
-//				+ ";Salario líquido"
-//				+ ";Tarjeta de crédito"
-//				+ ";Límite"
-//				+ ";Otra tarjeta de crédito"
-//				+ ";Límite"
+//				+ ";Salario lÃ­quido"
+//				+ ";Tarjeta de crÃ©dito"
+//				+ ";LÃ­mite"
+//				+ ";Otra tarjeta de crÃ©dito"
+//				+ ";LÃ­mite"
 //				+ ";Clearing"
 //				+ ";Producto"
 //				+ ";Monto solicitado"
 //				+ ";Cuotas"
 //				+ ";Intereses"
 //				+ ";Gastos administrativos"
-//				+ ";Gastos de concesión"
+//				+ ";Gastos de concesiÃ³n"
 //				+ ";Valor cuota"
 //				+ ";Fecha venta"
-// Se modifica la fecha de venta por la fecha de activación.
-//				+ ";Fecha activación"
+// Se modifica la fecha de venta por la fecha de activaciÃ³n.
+//				+ ";Fecha activaciÃ³n"
 //				+ ";Unidad Indexada"
-//				+ ";Número de trámite"
+//				+ ";NÃºmero de trÃ¡mite"
+//				+ ";NÃºmero de vale"
+//				+ ";Empresa"
 //			);
 			
 			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
@@ -3007,7 +3072,7 @@ public class ContratoBean implements IContratoBean {
 				Contrato contrato = (Contrato) object;
 				
 				String line = 
-					// Para Núcleo, 1 - Cédula de identidad, 2 - RUT. Por ahora son iguales a Logística.
+					// Para NÃºcleo, 1 - CÃ©dula de identidad, 2 - RUT. Por ahora son iguales a LogÃ­stica.
 					(contrato.getTipoDocumento() != null ? contrato.getTipoDocumento().getId() : valorNoDisponible)
 					+ ";" + (contrato.getDocumento() != null ? contrato.getDocumento().replace("-", "") : valorNoDisponible)
 					+ ";" + (contrato.getNombre() != null ? contrato.getNombre() : valorNoDisponible)
@@ -3020,15 +3085,25 @@ public class ContratoBean implements IContratoBean {
 					+ ";" + valorNoDisponible
 					+ ";" + valorNoDisponible
 					+ ";" + (contrato.getEmail() != null ? contrato.getEmail() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionFacturaCalle() != null ? contrato.getDireccionFacturaCalle() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionFacturaNumero() != null ? contrato.getDireccionFacturaNumero() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionFacturaApto() != null ? contrato.getDireccionFacturaApto() : valorNoDisponible)
+					+ ";" + valorNoDisponible
+					+ ";" + (contrato.getDireccionFacturaSolar() != null ? contrato.getDireccionFacturaSolar() : valorNoDisponible) //+ " - " + contrato.getDireccionFacturaBlock() + " - " + contrato.getDireccionFacturaManzana()
+					+ ";" + (contrato.getDireccionFacturaCodigoPostal() != null ? contrato.getDireccionFacturaCodigoPostal() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionFacturaDepartamento() != null ? codigosDepartamentos.get(contrato.getDireccionFacturaDepartamento().getId()) : valorNoDisponible)
+					+ ";" + (contrato.getTelefonoContacto() != null ? contrato.getTelefonoContacto() : valorNoDisponible)
+					+ ";" + (contrato.getTelefonoContacto() != null ? contrato.getTelefonoContacto() : valorNoDisponible)
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + valorNoDisponible
+					+ ";" + (contrato.getDireccionEntregaDepartamento() != null ? codigosDepartamentos.get(contrato.getDireccionEntregaDepartamento().getId()) : valorNoDisponible)
+					+ ";" + valorNoDisponible
 					+ ";" + (contrato.getDireccionEntregaCalle() != null ? contrato.getDireccionEntregaCalle() : valorNoDisponible)
 					+ ";" + (contrato.getDireccionEntregaNumero() != null ? contrato.getDireccionEntregaNumero() : valorNoDisponible)
 					+ ";" + (contrato.getDireccionEntregaApto() != null ? contrato.getDireccionEntregaApto() : valorNoDisponible)
-					+ ";" + valorNoDisponible
-					+ ";" + (contrato.getDireccionEntregaSolar() != null ? contrato.getDireccionEntregaSolar() : valorNoDisponible) //+ " - " + contrato.getDireccionEntregaBlock() + " - " + contrato.getDireccionEntregaManzana()
-					+ ";" + (contrato.getCodigoPostal() != null ? contrato.getCodigoPostal() : valorNoDisponible)
-					+ ";" + (contrato.getDireccionEntregaDepartamento() != null ? codigosDepartamentos.get(contrato.getDireccionEntregaDepartamento().getId()) : valorNoDisponible)
-					+ ";" + (contrato.getTelefonoContacto() != null ? contrato.getTelefonoContacto() : valorNoDisponible)
-					+ ";" + (contrato.getTelefonoContacto() != null ? contrato.getTelefonoContacto() : valorNoDisponible)
+					+ ";" + (contrato.getDireccionEntregaCodigoPostal() != null ? contrato.getDireccionEntregaCodigoPostal() : valorNoDisponible)
 					+ ";" + valorNoDisponible
 					+ ";" + valorNoDisponible
 					+ ";" + valorNoDisponible
@@ -3038,17 +3113,7 @@ public class ContratoBean implements IContratoBean {
 					+ ";" + valorNoDisponible
 					+ ";" + valorNoDisponible
 					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					+ ";" + valorNoDisponible
-					// TODO Ver si hay más productos
+					// TODO Ver si hay mÃ¡s productos
 					+ ";" + producto
 					+ ";" + (contrato.getPrecio() != null ? decimalFormat.format(Math.round(contrato.getPrecio())) : valorNoDisponible)
 					+ ";" + (contrato.getCuotas() != null ? decimalFormat.format(contrato.getCuotas()) : valorNoDisponible)
@@ -3059,7 +3124,9 @@ public class ContratoBean implements IContratoBean {
 //					+ ";" + (contrato.getFechaVenta() != null ? dateFormat.format(contrato.getFechaVenta()) : valorNoDisponible)
 					+ ";" + (contrato.getFechaActivarEn() != null ? dateFormat.format(contrato.getFechaActivarEn()) : valorNoDisponible)
 					+ ";" + (contrato.getValorUnidadIndexada() != null ? decimalFormat.format(contrato.getValorUnidadIndexada()) : valorNoDisponible)
-					+ ";" + contrato.getNumeroTramite();
+					+ ";" + contrato.getNumeroTramite()
+					+ ";" + (contrato.getNumeroVale() != null ? contrato.getNumeroVale() : valorNoDisponible)
+					+ ";" + contrato.getEmpresa().getId();
 				
 				printWriter.println(line.replaceAll("\n", ""));
 			}
@@ -3075,7 +3142,104 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Retorna el Contrato cuyo id coincide con el parámetro.
+	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado segÃºn: YYYYMMDDHHmmSS en la carpeta de exportaciÃ³n del sistema.
+	 * 
+	 * @param metadataConsulta Criterios de la consulta.
+	 * @param loggedUsuarioId ID del Usuario que consulta.
+	 */
+	public String exportarAExcelVentasNuestroCredito(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		String result = null;
+		
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName = 
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
+			
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
+			
+			printWriter.println(
+				"MID"
+				+ ";Empresa"
+				+ ";Fecha de venta"
+				+ ";NÃºmero de vale"
+				+ ";Tasa Efectiva Anual"
+				+ ";Unidad Indexada"
+				+ ";Precio"
+				+ ";Cuotas"
+				+ ";Valor cuota"
+				+ ";Intereses"
+				+ ";Estado"
+			);
+			
+			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			DecimalFormat decimalFormat = new DecimalFormat("#.##");
+			DecimalFormat decimalFormatCuatroCifras = new DecimalFormat("#.####");
+			
+			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
+				Contrato contrato = (Contrato) object;
+				
+				String line = 
+					contrato.getMid()
+					+ ";" + (contrato.getEmpresa() != null ?
+						contrato.getEmpresa().getNombre()
+						: "")
+					+ ";" + (contrato.getFechaVenta() != null ?
+						format.format(contrato.getFechaVenta())
+						: "")
+					+ ";" + (contrato.getNumeroVale() != null ?
+						contrato.getNumeroVale() 
+						: "")
+					+ ";" + (contrato.getValorTasaInteresEfectivaAnual() != null ?
+						decimalFormat.format(contrato.getValorTasaInteresEfectivaAnual())
+						: "")
+					+ ";" + (contrato.getValorUnidadIndexada() != null ?
+						decimalFormatCuatroCifras.format(contrato.getValorUnidadIndexada())
+						: "")
+					+ ";" + (contrato.getPrecio() != null ?
+						decimalFormat.format(contrato.getPrecio())
+						: "")
+					+ ";" + (contrato.getCuotas() != null ?
+						contrato.getCuotas()
+						: "")
+					+ ";" + (contrato.getValorCuota() != null ?
+						decimalFormat.format(contrato.getValorCuota())
+						: "")
+					+ ";" + (contrato.getIntereses() != null ?
+						decimalFormat.format(contrato.getIntereses())
+						: "")
+					+ ";" + (contrato.getEstado() != null ?
+						contrato.getEstado().getNombre()
+						: "");
+				
+				printWriter.println(line.replaceAll("\n", ""));
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Retorna el Contrato cuyo id coincide con el parÃ¡metro.
 	 * 
 	 * @param ID del contrato a retornar.
 	 * @return Contrato a retornar.
@@ -3093,11 +3257,11 @@ public class ContratoBean implements IContratoBean {
 	}
 
 	/**
-	 * Retorna el Contrato para la combinación <mid, empresa>.
+	 * Retorna el Contrato para la combinaciÃ³n <mid, empresa>.
 	 * 
 	 * @param mid MID del Contrato.
 	 * @param empresa Empresa del Contrato.
-	 * @return Contrato que cumple con los parámetros especificados.
+	 * @return Contrato que cumple con los parÃ¡metros especificados.
 	 */
 	public Contrato getByMidEmpresa(Long mid, Empresa empresa) {
 		Contrato result = null;
@@ -3125,9 +3289,9 @@ public class ContratoBean implements IContratoBean {
 	}
 	
 	/**
-	 * Retorna el Contrato para el número de trámite.
+	 * Retorna el Contrato para el nÃºmero de trÃ¡mite.
 	 * 
-	 * @param númeroTramite Número de trámite del Contrato.
+	 * @param numeroTramite NÃºmero de trÃ¡mite del Contrato.
 	 * @return Contrato a retornar.
 	 */
 	public Contrato getByNumeroTramite(Long numeroTramite) {
@@ -3153,7 +3317,8 @@ public class ContratoBean implements IContratoBean {
 	
 	/**
 	 * Actualiza el contrato y retorna la instancia actualizada.
-	 * Si es una instancia nueva, auto-genera el número de trámite.
+	 * Si es una instancia nueva, auto-genera el nÃºmero de trÃ¡mite.
+	 * Si la forma de pago es "Nuestro crÃ©dito", auto-genera el nÃºmero de vale. 
 	 * 
 	 * @param contrato Contrato a actualizar.
 	 * @return Contrato actualizado.
@@ -3175,6 +3340,27 @@ public class ContratoBean implements IContratoBean {
 				
 				entityManager.persist(contrato);
 			} else {
+				Long estadoVendidoId = 
+					new Long(Configuration.getInstance().getProperty("estado.VENDIDO"));
+				
+				Long formaPagoNuestroCreditoId = 
+					new Long(Configuration.getInstance().getProperty("formaPago.NuestroCredito"));
+				
+				if (contrato.getEstado().getId().equals(estadoVendidoId) &&
+					contrato.getFormaPago() != null && 
+					contrato.getFormaPago().getId().equals(formaPagoNuestroCreditoId) &&
+					contrato.getNumeroVale() == null) {
+					
+					Query query = 
+						entityManager.createNativeQuery(
+							"SELECT nextval('numero_vale_sequence')"
+						);
+						
+					Long maxNumeroVale = ((BigInteger) query.getSingleResult()).longValue();
+					
+					contrato.setNumeroVale(maxNumeroVale);
+				}
+				
 				entityManager.merge(contrato);
 			}
 			

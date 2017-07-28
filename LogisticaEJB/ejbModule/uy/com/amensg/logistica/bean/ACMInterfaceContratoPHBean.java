@@ -215,9 +215,9 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 			}
 			
 			result =
-				"Se asignar·n " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribir·n " + sobreescribir + " MIDs.|"
-				+ "Se omitir·n " + omitir + " MIDs.";
+				"Se asignar√°n " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribir√°n " + sobreescribir + " MIDs.|"
+				+ "Se omitir√°n " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -399,7 +399,7 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 				
 				acmInterfaceContrato = entityManagerPH.merge(acmInterfaceContrato);
 				
-				// Agregar lÌnea al archivo.
+				// Agregar l√≠nea al archivo.
 				printWriter.println(this.buildCSVLine(acmInterfaceContrato, observaciones));
 				
 				switch (map.get(acmInterfaceContrato.getMid())) {

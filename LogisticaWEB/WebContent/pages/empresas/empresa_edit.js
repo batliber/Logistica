@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	$("#divEliminarEmpresa").hide();
@@ -51,6 +53,7 @@ $(document).ready(function() {
 					$("#inputEmpresaCodigoPromotor").val(data.codigoPromotor);
 					$("#inputEmpresaNombreContrato").val(data.nombreContrato);
 					$("#inputEmpresaNombreSucursal").val(data.nombreSucursal);
+					$("#inputEmpresaDireccion").val(data.direccion);
 					$("#inputEmpresaId").val(data.id);
 					
 					if (data.formaPagos != null) {
@@ -75,7 +78,7 @@ $(document).ready(function() {
 			}
 		);
 	}
-});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -118,7 +121,7 @@ function inputEliminarOnClick(event) {
 			empresa,
 			{
 				callback: function(data) {
-					alert("Operaci�n exitosa");
+					alert("Operación exitosa");
 				}, async: false
 			}
 		);

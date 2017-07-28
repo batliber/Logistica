@@ -15,6 +15,7 @@ import uy.com.amensg.logistica.entities.Marca;
 import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Moneda;
 import uy.com.amensg.logistica.entities.Precio;
+import uy.com.amensg.logistica.entities.TipoProducto;
 
 @Stateless
 public class PrecioBean implements IPrecioBean {
@@ -86,16 +87,54 @@ public class PrecioBean implements IPrecioBean {
 				"SELECT p"
 				+ " FROM Precio p"
 				+ " WHERE p.fechaHasta IS NULL"
-				+ " AND p.empresa = :empresa"
-				+ " AND p.marca = :marca"
-				+ " AND p.modelo = :modelo"
-				+ " AND p.moneda = :moneda",
+				+ " AND p.empresa.id = :empresaId"
+				+ " AND p.marca.id = :marcaId"
+				+ " AND p.modelo.id = :modeloId"
+				+ " AND p.moneda.id = :monedaId",
 				Precio.class
 			);
-			query.setParameter("empresa", empresa);
-			query.setParameter("marca", marca);
-			query.setParameter("modelo", modelo);
-			query.setParameter("moneda", moneda);
+			query.setParameter("empresaId", empresa.getId());
+			query.setParameter("marcaId", marca.getId());
+			query.setParameter("modeloId", modelo.getId());
+			query.setParameter("monedaId", moneda.getId());
+			
+			List<Precio> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				result = resultList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Precio getActualByEmpresaTipoProductoMarcaModeloMoneda(
+		Empresa empresa, 
+		TipoProducto tipoProducto, 
+		Marca marca, 
+		Modelo modelo, 
+		Moneda moneda
+	) {
+		Precio result = null;
+		
+		try {
+			TypedQuery<Precio> query = entityManager.createQuery(
+				"SELECT p"
+				+ " FROM Precio p"
+				+ " WHERE p.fechaHasta IS NULL"
+				+ " AND p.empresa.id = :empresaId"
+				+ " AND p.tipoProducto.id = :tipoProductoId"
+				+ " AND p.marca.id = :marcaId"
+				+ " AND p.modelo.id = :modeloId"
+				+ " AND p.moneda.id = :monedaId",
+				Precio.class
+			);
+			query.setParameter("empresaId", empresa.getId());
+			query.setParameter("tipoProductoId", tipoProducto.getId());
+			query.setParameter("marcaId", marca.getId());
+			query.setParameter("modeloId", modelo.getId());
+			query.setParameter("monedaId", moneda.getId());
 			
 			List<Precio> resultList = query.getResultList();
 			if (resultList.size() > 0) {

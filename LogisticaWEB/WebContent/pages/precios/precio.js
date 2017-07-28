@@ -2,13 +2,16 @@ var __ROL_ADMINISTRADOR = 1;
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNuevoPrecio").hide();
 	
 	grid = new Grid(
 		document.getElementById("divTablePrecios"),
 		{
 			tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
+			tdTipoProducto: { campo: "tipoProducto.descripcion", clave: "tipoProducto.id", descripcion: "Tipo de producto", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoProductos, clave: "id", valor: "descripcion" } },
 			tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 80 },
 			tdModelo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Modelo", abreviacion: "Modelo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 200 },
 			tdMoneda: { campo: "moneda.simbolo", clave: "moneda.id", descripcion: "Moneda", abreviacion: "Moneda", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMonedas, clave: "id", valor: "nombre" }, ancho: 80 },
@@ -41,12 +44,28 @@ $(document).ready(function() {
 	reloadData();
 	
 	$("#divIFramePrecio").draggable();
-});
+}
 
 function listEmpresas() {
 	var result = [];
 	
 	EmpresaDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listTipoProductos() {
+	var result = [];
+	
+	TipoProductoDWR.list(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -154,27 +173,7 @@ function reloadData() {
 				}
 				
 				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						precio: ordered[i].precio,
-						empresa: {
-							id: ordered[i].empresa.id,
-							nombre: ordered[i].empresa.nombre,
-						},
-						marca: {
-							id: ordered[i].marca.id,
-							nombre: ordered[i].marca.nombre
-						},
-						modelo: {
-							id: ordered[i].modelo.id,
-							descripcion: ordered[i].modelo.descripcion
-						},
-						moneda: {
-							id: ordered[i].moneda.id,
-							nombre: ordered[i].moneda.nombre,
-							simbolo: ordered[i].moneda.simbolo
-						}
-					};
+					registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
 				}
 					
 				grid.reload(registros);

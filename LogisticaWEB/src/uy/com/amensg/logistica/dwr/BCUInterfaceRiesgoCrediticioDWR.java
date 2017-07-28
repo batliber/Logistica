@@ -97,6 +97,26 @@ public class BCUInterfaceRiesgoCrediticioDWR {
 		return result;
 	}
 	
+	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IBCUInterfaceRiesgoCrediticioBean iBCUInterfaceRiesgoCrediticioBean = lookupBean();
+				
+				result = iBCUInterfaceRiesgoCrediticioBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public static BCUInterfaceRiesgoCrediticioTO transform(BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio) {
 		BCUInterfaceRiesgoCrediticioTO result = new BCUInterfaceRiesgoCrediticioTO();
 		

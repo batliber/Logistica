@@ -123,6 +123,26 @@ public class ACMInterfacePrepagoDWR {
 		return result;
 	}
 	
+	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+				
+				result = iACMInterfacePrepagoBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public String preprocesarExportacionByEmpresa(MetadataConsultaTO metadataConsultaTO, EmpresaTO empresaTO) {
 		String result = null;
 		

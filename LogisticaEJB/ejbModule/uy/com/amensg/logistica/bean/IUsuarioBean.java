@@ -4,12 +4,18 @@ import java.util.Collection;
 
 import javax.ejb.Remote;
 
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Usuario;
 
 @Remote
 public interface IUsuarioBean {
 
 	public Collection<Usuario> list();
+	
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
+
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Usuario getById(Long id);
 	

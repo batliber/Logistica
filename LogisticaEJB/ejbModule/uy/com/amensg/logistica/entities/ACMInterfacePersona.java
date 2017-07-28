@@ -84,7 +84,7 @@ public class ACMInterfacePersona extends BaseEntity {
 	
 	@Column(name = "email")
 	private String email;
-
+	
 	public String getIdCliente() {
 		return idCliente;
 	}

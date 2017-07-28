@@ -1,4 +1,5 @@
 var __ROL_ADMINISTRADOR = 1;
+var __ROL_ENCARGADO_ANALISIS_FINANCIERO = 13;
 
 var grid = null;
 
@@ -11,7 +12,8 @@ function init() {
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ANALISIS_FINANCIERO) {
 						$("#divButtonExportarAExcel").show();
 						
 						grid = new Grid(
@@ -33,18 +35,18 @@ function init() {
 								},
 								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
 								tdDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING },
-//								private String periodo;
+								tdPeriodo: { campo: "periodo", descripcion: "Período", abreviación: "Período", tipo:__TIPO_CAMPO_STRING, ancho: 60 },
 //								private String nombreCompleto;
 //								private String actividad;
-								tdVigente: { campo: "vigente", descripcion: "Crédito vigente", abreviacion: "Créd. vigente", tipo: __TIPO_CAMPO_DECIMAL, ancho: 90 },
-//								private Double vigenteNoAutoliquidable;
-//								private Double garantiasComputables;
-//								private Double garantiasNoComputables;
-								tdCastigadoPorAtraso: { campo: "castigadoPorAtraso", descripcion: "Castigado por atraso", abreviacion: "Castigado atraso", tipo: __TIPO_CAMPO_BOOLEAN, ancho: 75 },
-								tdCastigadoPorQuitasYDesistimiento: { campo: "castigadoPorQuitasYDesistimiento", descripcion: "Castigado quitas y desistimiento", abreviacion: "Castigado quitas y des.", tipo: __TIPO_CAMPO_BOOLEAN, ancho: 75 },
-//								private Double previsionesTotales;
-//								private Double contingencias;
-//								private Double otorgantesGarantias;
+								tdVigente: { campo: "vigente", descripcion: "Crédito vigente", abreviacion: "Créd. vig.", tipo: __TIPO_CAMPO_DECIMAL, ancho: 70 },
+								tdVigenteNoAutoliquidable: { campo: "vigenteNoAutoliquidable", descripcion: "Cédito vigente no auto-liquidable", abreviacion: "Créd. vig. no auto-liq.", tipo: __TIPO_CAMPO_DECIMAL, ancho: 130 },
+								tdGarantiasComputables: { campo: "garantiasComputables", descripcion: "Garantías computables", abreviacion: "Garant. comput.", tipo: __TIPO_CAMPO_DECIMAL, ancho: 105 },
+								tdGarantiasNoComputables: { campo: "garantiasNoComputables", descripcion: "Garantías no computables", abreviacion: "Garant. no comput.", tipo: __TIPO_CAMPO_DECIMAL, ancho: 120 },
+								tdCastigadoPorAtraso: { campo: "castigadoPorAtraso", descripcion: "Castigado por atraso", abreviacion: "Castig. atraso", tipo: __TIPO_CAMPO_BOOLEAN, ancho: 90 },
+								tdCastigadoPorQuitasYDesistimiento: { campo: "castigadoPorQuitasYDesistimiento", descripcion: "Castigado quitas y desistimiento", abreviacion: "Castig. quit. des.", tipo: __TIPO_CAMPO_BOOLEAN, ancho: 105 },
+								tdPrevisionesTotales: { campo: "previsionesTotales", descripcion: "Previsiones totales", abreviacion: "Prevs. tot.", tipo: __TIPO_CAMPO_DECIMAL, ancho: 70 },
+								tdContingencias: { campo: "contingencias", descripcion: "Contingencias", abreviacion: "Conting.", tipo: __TIPO_CAMPO_DECIMAL, ancho: 65 },
+								tdOtorgantesGarantias: { campo: "vigente", descripcion: "Otorgantes garantias", abreviacion: "Otorg. garant.", tipo: __TIPO_CAMPO_DECIMAL, ancho: 90 },
 								tdFact: { campo: "fact", descripcion: "Obtenido", abreviacion: "Obtenido", tipo: __TIPO_CAMPO_FECHA_HORA },
 							}, 
 							true,
@@ -143,4 +145,16 @@ function tdAnalisisRiesgoOpenDetail(divRow) {
 	);
 	
 	return detail;
+}
+
+function inputExportarAExcelOnClick(event, element) {
+	BCUInterfaceRiesgoCrediticioDWR.exportarAExcel(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+				document.getElementById("formExportarAExcel").submit();
+			}, async: false
+		}
+	);
 }

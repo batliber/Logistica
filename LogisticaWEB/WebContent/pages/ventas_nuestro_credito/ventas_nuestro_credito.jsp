@@ -33,6 +33,9 @@
 		<div class="divBody">
 			<div class="divButtonBar">
 				<div class="divButton"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
+				<div class="divButton" id="divButtonExportarAExcel">
+					<form method="post" id="formExportarAExcel" action="#"><input type="submit" id="inputExportarAExcel" value="Exporta a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></form>
+				</div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divButtonTitleBar">

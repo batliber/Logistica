@@ -101,15 +101,15 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 	}
 	
 	/**
-	 * Calcula estad韘tcas para la asignaci髇 de MIDs con los criterios seleccionados.
+	 * Calcula estad铆stcas para la asignaci贸n de MIDs con los criterios seleccionados.
 	 * Devuelve un String con 3 tipos de caso:
 	 *     - Cantidad a asignar
 	 *     - Cantidad a omitir
 	 *     - Cantidad a reemplazar
 	 * 
-	 * @param filtro con la selecci髇
-	 * @param Empresa a asignar la selecci髇
-	 * @return String con las estad韘ticas de la asignaci髇 de la selecci髇 a la empresa.
+	 * @param filtro con la selecci贸n
+	 * @param Empresa a asignar la selecci贸n
+	 * @return String con las estad铆sticas de la asignaci贸n de la selecci贸n a la empresa.
 	 */
 	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa) {
 		String result = null;
@@ -143,9 +143,9 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 			}
 			
 			result =
-				"Se asignar醤 " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribir醤 " + sobreescribir + " MIDs.|"
-				+ "Se omitir醤 " + omitir + " MIDs.";
+				"Se asignar谩n " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribir谩n " + sobreescribir + " MIDs.|"
+				+ "Se omitir谩n " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -156,9 +156,9 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 	/**
 	 * Asigna los MIDs que cumplen con los criterios a la Empresa.
 	 * 
-	 * @param filtro con la selecci髇
-	 * @param Empresa a asignar la selecci髇
-	 * @param observaciones a inclu韗 en la asignaci髇.
+	 * @param filtro con la selecci贸n
+	 * @param Empresa a asignar la selecci贸n
+	 * @param observaciones a inclu铆r en la asignaci贸n.
 	 */
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones) {
 		String result = null;
@@ -333,7 +333,7 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 				
 				acmInterfacePrepago = entityManagerPH.merge(acmInterfacePrepago);
 				
-				// Agregar l韓ea al archivo.
+				// Agregar l铆nea al archivo.
 				printWriter.println(this.buildCSVLine(acmInterfacePrepago, observaciones));
 				
 				switch (map.get(acmInterfacePrepago.getMid())) {

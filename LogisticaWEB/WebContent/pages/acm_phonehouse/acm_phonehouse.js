@@ -12,7 +12,9 @@ var estados = [
 	"Lista negra"
 ];
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 //	$("#inputExportarAExcel").prop("disabled", true);
 //	$("#inputExportarSubconjunto").prop("disabled", true);
 	$("#inputAsignar").prop("disabled", true);
@@ -23,7 +25,7 @@ $(document).ready(function() {
 //	$("#inputListaNegra").prop("disabled", true);
 	
 	selectTipoRegistroOnChange();
-});
+}
 
 function inputActualizarOnClick(event, element) {
 	reloadData();
@@ -90,7 +92,7 @@ function selectTipoRegistroOnChange() {
 				tdContratoNumeroCliente: { campo: "numeroCliente", descripcion: "Número de cliente", abreviacion: "Cliente", tipo: __TIPO_CAMPO_NUMERICO },
 				tdContratoNumeroContrato: { campo: "numeroContrato", descripcion: "Número de contrato", abreviacion: "Contrato", tipo: __TIPO_CAMPO_NUMERICO },
 				tdContratoNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING },
-				tdContratoDireccion: { campo: "direccion", descripcion: "Dirección", abreviacion: "Direcci�n", tipo: __TIPO_CAMPO_STRING },
+				tdContratoDireccion: { campo: "direccion", descripcion: "Dirección", abreviacion: "Dirección", tipo: __TIPO_CAMPO_STRING },
 				tdContratoCodigoPostal: { campo: "codigoPostal", descripcion: "Código postal", abreviacion: "C.P.", tipo: __TIPO_CAMPO_STRING, ancho: 60 },
 				tdContratoLocalidad: { campo: "localidad", descripcion: "Localidad", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING },
 				tdContratoEquipo: { campo: "equipo", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_STRING },
@@ -197,10 +199,6 @@ function trPrepagosOnClick() {
 	
 }
 
-//function trListaNegraOnClick() {
-//	
-//}
-
 function trSinDatosOnClick() {
 	
 }
@@ -263,101 +261,6 @@ function reloadData() {
 		);
 	}
 }
-
-//function inputExportarAExcelOnClick(event) {
-//	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-//	metadataConsulta.tamanoSubconjunto = grid.getCount();
-//	
-//	if ($("#selectTipoRegistro").val() == "contrato") {
-//		if (confirm("Se exportarán " + grid.getCount() + " registros.")) {
-//			ACMInterfaceContratoPHDWR.exportarAExcel(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						alert("Archivo generado: " + data);
-//						
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "prepago") {
-//		if (confirm("Se exportarán " + grid.getCount() + " registros.")) {
-//			ACMInterfacePrepagoPHDWR.exportarAExcel(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						alert("Archivo generado: " + data);
-//						
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-//		if (confirm("Se exportarán " + grid.getCount() + " registros.")) {
-//			ACMInterfaceListaNegraPHDWR.exportarAExcel(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						alert("Archivo generado: " + data);
-//						
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else {
-//		alert("Funcionalidad no habilitada para el tipo de registro.");
-//	}
-//}
-//
-//function inputExportarSubconjuntoOnClick(event) {
-//	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-//	
-//	if ($("#selectTipoRegistro").val() == "contrato") {
-//		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-//			ACMInterfaceContratoPHDWR.exportarAExcel(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						alert("Archivo generado: " + data);
-//						
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "prepago") {
-//		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-//			ACMInterfacePrepagoPHDWR.exportarAExcel(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						alert("Archivo generado: " + data);
-//						
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-//		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-//			ACMInterfaceListaNegraDWR.exportarAExcel(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						alert("Archivo generado: " + data);
-//						
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else {
-//		alert("Funcionalidad no habilitada para el tipo de registro.");
-//	}
-//}
 
 function inputAsignarOnClick(event) {
 	$("#selectEmpresa > option").remove();
@@ -550,148 +453,3 @@ function inputDeshacerAsignacionOnClick(event) {
 		alert("Funcionalidad no habilitada para el tipo de registro.");
 	}
 }
-
-//function inputReprocesarOnClick(event) {
-//	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-//	metadataConsulta.tamanoSubconjunto = grid.getCount();
-//	
-//	var observaciones = null;
-//	
-//	if ($("#selectTipoRegistro").val() == "contrato") {
-//		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
-//		
-//		if (observaciones != null) {
-//			ACMInterfaceContratoPHDWR.reprocesar(
-//				metadataConsulta,
-//				observaciones,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "prepago") {
-//		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
-//		
-//		if (observaciones != null) {
-//			ACMInterfacePrepagoPHDWR.reprocesar(
-//				metadataConsulta,
-//				observaciones,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-//		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
-//		
-//		if (observaciones != null) {
-//			ACMInterfaceMidPHDWR.reprocesarSinDatos(
-//				metadataConsulta,
-//				observaciones,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else {
-//		alert("Funcionalidad no habilitada para el tipo de registro.");
-//	}
-//}
-//
-//function inputReprocesarSubconjuntoOnClick(event) {
-//	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-//	var observaciones = null;
-//	
-//	if ($("#selectTipoRegistro").val() == "contrato") {
-//		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
-//		
-//		if (observaciones != null) {
-//			ACMInterfaceContratoPHDWR.reprocesar(
-//				metadataConsulta,
-//				observaciones,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "prepago") {
-//		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
-//		
-//		if (observaciones != null) {
-//			ACMInterfacePrepagoPHDWR.reprocesar(
-//				metadataConsulta,
-//				observaciones,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-//		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
-//		
-//		if (observaciones != null) {
-//			ACMInterfaceMidPHDWR.reprocesarSinDatos(
-//				metadataConsulta,
-//				observaciones,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else {
-//		alert("Funcionalidad no habilitada para el tipo de registro.");
-//	}
-//}
-//
-//function inputListaNegraOnClick(event) {
-//	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-//	
-//	if ($("#selectTipoRegistro").val() == "contrato") {
-//		if (confirm("Se agregarán " + grid.getCount() + " registros a la lista negra.")) {
-//			ACMInterfaceContratoPHDWR.agregarAListaNegra(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "prepago") {
-//		if (confirm("Se agregarán " + grid.getCount() + " registros a la lista negra.")) {
-//			ACMInterfacePrepagoPHDWR.agregarAListaNegra(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-//		if (confirm("Se agregarán " + grid.getCount() + " registros a la lista negra.")) {
-//			ACMInterfaceMidPHDWR.agregarAListaNegraSinDatos(
-//				metadataConsulta,
-//				{
-//					callback: function(data) {
-//						reloadData();
-//					}
-//				}
-//			);
-//		}
-//	} else {
-//		alert("Funcionalidad no habilitada para el tipo de registro.");
-//	}
-//}

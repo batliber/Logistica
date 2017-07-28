@@ -95,6 +95,26 @@ public class ACMInterfaceRiesgoCrediticioDWR {
 		return result;
 	}
 	
+	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfaceRiesgoCrediticioBean iACMInterfaceRiesgoCrediticioBean = lookupBean();
+				
+				result = iACMInterfaceRiesgoCrediticioBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public static ACMInterfaceRiesgoCrediticioTO transform(ACMInterfaceRiesgoCrediticio acmInterfaceRiesgoCrediticio) {
 		ACMInterfaceRiesgoCrediticioTO result = new ACMInterfaceRiesgoCrediticioTO();
 		

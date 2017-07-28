@@ -36,6 +36,10 @@ public class Precio extends BaseEntity {
 	@ManyToOne(optional = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "moneda_id", nullable = true)
 	private Moneda moneda;
+	
+	@ManyToOne(optional = true, fetch = FetchType.EAGER)
+	@JoinColumn(name = "tipo_producto_id", nullable = true)
+	private TipoProducto tipoProducto;
 
 	public Double getPrecio() {
 		return precio;
@@ -83,5 +87,13 @@ public class Precio extends BaseEntity {
 
 	public void setMoneda(Moneda moneda) {
 		this.moneda = moneda;
+	}
+
+	public TipoProducto getTipoProducto() {
+		return tipoProducto;
+	}
+
+	public void setTipoProducto(TipoProducto tipoProducto) {
+		this.tipoProducto = tipoProducto;
 	}
 }

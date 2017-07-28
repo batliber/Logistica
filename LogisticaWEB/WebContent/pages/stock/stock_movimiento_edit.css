@@ -42,6 +42,17 @@
 	width: 60%;
 }
 
+#divTipoProducto {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectTipoProducto {
+	width: 60%;
+}
+
 #divCantidad {
 	float: left;
 	margin-top: 2px;

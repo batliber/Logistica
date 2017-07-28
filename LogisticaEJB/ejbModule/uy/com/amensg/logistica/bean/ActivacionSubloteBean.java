@@ -4,8 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -26,7 +30,9 @@ import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
+import uy.com.amensg.logistica.entities.PuntoVenta;
 import uy.com.amensg.logistica.util.Constants;
+import uy.com.amensg.logistica.util.QueryBuilder;
 import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
@@ -56,7 +62,19 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 		return result;
 	}
 
-	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<ActivacionSublote>().list(entityManager, metadataConsulta, new ActivacionSublote());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	public MetadataConsultaResultado listMisSublotes(MetadataConsulta metadataConsulta, Long usuarioId) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
 		try {
@@ -70,31 +88,13 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 			
 			Predicate where = new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, root);
 			
-//			Subquery<UsuarioRolEmpresa> subqueryRolesSubordinados = criteriaQuery.subquery(UsuarioRolEmpresa.class);
-//			Root<UsuarioRolEmpresa> subrootRolesSubordinados = subqueryRolesSubordinados.from(UsuarioRolEmpresa.class);
-//			subrootRolesSubordinados.alias("subrootRolesSubordinados");
-//			Join<Rol, Rol> joinRolesSubordinados = subrootRolesSubordinados.join("rol", JoinType.INNER).join("subordinados", JoinType.INNER);
-//			Expression<Collection<Rol>> expressionRolesSubordinados = joinRolesSubordinados.get("subordinados");
-//			
-//			where = criteriaBuilder.and(
-//				where,
-//				criteriaBuilder.or(
-//					// Asignados al usuario.
-//					criteriaBuilder.equal(root.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario1")),
-//					// Asignados a algún rol subordinado dentro de la empresa
-//					criteriaBuilder.exists(
-//						subqueryRolesSubordinados
-//							.select(subrootRolesSubordinados)
-//							.where(
-//								criteriaBuilder.and(
-//									criteriaBuilder.equal(subrootRolesSubordinados.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario2")),
-//									criteriaBuilder.equal(subrootRolesSubordinados.get("empresa").get("id"), root.get("empresa").get("id")),
-//									criteriaBuilder.isMember(root.get("rol").as(Rol.class), expressionRolesSubordinados)
-//								)
-//							)
-//					)
-//				)
-//			);
+			where = criteriaBuilder.and(
+				where,
+				criteriaBuilder.or(
+					// Asignados al usuario.
+					criteriaBuilder.equal(root.get("distribuidor").get("id"), criteriaBuilder.parameter(Long.class, "usuario1"))
+				)
+			);
 			
 			// Procesar las ordenaciones para los registros de la muestra
 			List<Order> orders = new LinkedList<Order>();
@@ -132,12 +132,11 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 
 			TypedQuery<ActivacionSublote> query = entityManager.createQuery(criteriaQuery);
 			
-//			query.setParameter("usuario1", usuarioId);
-//			query.setParameter("usuario2", usuarioId);
+			query.setParameter("usuario1", usuarioId);
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parÃ¡metros segÃºn las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -200,7 +199,7 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				}
 			}
 			
-			// Acotar al tamaño de la muestra
+			// Acotar al tamaÃ±o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -216,7 +215,19 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 		return result;
 	}
 
-	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+	public Long count(MetadataConsulta metadataConsulta) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<ActivacionSublote>().count(entityManager, metadataConsulta, new ActivacionSublote());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countMisSublotes(MetadataConsulta metadataConsulta, Long usuarioId) {
 		Long result = null;
 		
 		try {
@@ -232,31 +243,13 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 			
 			Predicate where = new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, rootCount);
 			
-//			Subquery<UsuarioRolEmpresa> subqueryRolesSubordinados = criteriaQueryCount.subquery(UsuarioRolEmpresa.class);
-//			Root<UsuarioRolEmpresa> subrootRolesSubordinados = subqueryRolesSubordinados.from(UsuarioRolEmpresa.class);
-//			subrootRolesSubordinados.alias("subrootRolesSubordinados");
-//			Join<Rol, Rol> joinRolesSubordinados = subrootRolesSubordinados.join("rol", JoinType.INNER).join("subordinados", JoinType.INNER);
-//			Expression<Collection<Rol>> expressionRolesSubordinados = joinRolesSubordinados.get("subordinados");
-//			
-//			where = criteriaBuilder.and(
-//				where,
-//				criteriaBuilder.or(
-//					// Asignados al usuario.
-//					criteriaBuilder.equal(rootCount.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario1")),
-//					// Asignados a algún rol subordinado dentro de la empresa
-//					criteriaBuilder.exists(
-//						subqueryRolesSubordinados
-//							.select(subrootRolesSubordinados)
-//							.where(
-//								criteriaBuilder.and(
-//									criteriaBuilder.equal(subrootRolesSubordinados.get("usuario").get("id"), criteriaBuilder.parameter(Long.class, "usuario2")),
-//									criteriaBuilder.equal(subrootRolesSubordinados.get("empresa").get("id"), rootCount.get("empresa").get("id")),
-//									criteriaBuilder.isMember(rootCount.get("rol").as(Rol.class), expressionRolesSubordinados)
-//								)
-//							)
-//					)
-//				)
-//			);
+			where = criteriaBuilder.and(
+				where,
+				criteriaBuilder.or(
+					// Asignados al usuario.
+					criteriaBuilder.equal(rootCount.get("distribuidor").get("id"), criteriaBuilder.parameter(Long.class, "usuario1"))
+				)
+			);
 			
 			criteriaQueryCount
 				.select(criteriaBuilder.count(rootCount.get("id")))
@@ -264,12 +257,11 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 			
 			TypedQuery<Long> queryCount = entityManager.createQuery(criteriaQueryCount);
 			
-//			queryCount.setParameter("usuario1", usuarioId);
-//			queryCount.setParameter("usuario2", usuarioId);
+			queryCount.setParameter("usuario1", usuarioId);
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parÃ¡metros segÃºn las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -406,9 +398,13 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				activacionSublote.setFechaAsignacionPuntoVenta(date);
 			}
 			
-			Collection<Activacion> activaciones = new LinkedList<Activacion>();
+			Set<Activacion> activaciones = new HashSet<Activacion>();
 			for (Activacion activacion : activacionSublote.getActivaciones()) {
-				activaciones.add(entityManager.find(Activacion.class, activacion.getId()));
+				Activacion activacionManaged = entityManager.find(Activacion.class, activacion.getId()); 
+				
+				activacionManaged.setActivacionSublote(activacionSublote);
+				
+				activaciones.add(activacionManaged);
 			}
 			activacionSublote.setActivaciones(activaciones);
 			
@@ -448,7 +444,50 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				activacionSublote.setFechaAsignacionPuntoVenta(date);
 			}
 			
+			Map<Long, Activacion> activacionesManaged = new HashMap<Long, Activacion>();
+			for (Activacion activacion : activacionSubloteManaged.getActivaciones()) {
+				activacionesManaged.put(activacion.getId(), activacion);
+			}
+			
+			Set<Activacion> activaciones = new HashSet<Activacion>();
+			for (Activacion activacion : activacionSublote.getActivaciones()) {
+				Activacion activacionManaged = entityManager.find(Activacion.class, activacion.getId());
+				activacionManaged.setActivacionSublote(activacionSubloteManaged);
+				
+				activaciones.add(activacionManaged);
+				
+				activacionesManaged.remove(activacion.getId());
+			}
+			activacionSublote.setActivaciones(activaciones);
+			
+			for (Activacion activacion : activacionesManaged.values()) {
+				activacion.setActivacionSublote(null);
+				
+				entityManager.merge(activacion);
+			}
+			
 			entityManager.merge(activacionSublote);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void asignarAPuntoVenta(ActivacionSublote activacionSublote, PuntoVenta puntoVenta) {
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			ActivacionSublote activacionSubloteManaged = entityManager.find(ActivacionSublote.class, activacionSublote.getId());
+			
+			PuntoVenta puntoVentaManaged = entityManager.find(PuntoVenta.class, puntoVenta.getId());
+			
+			activacionSubloteManaged.setPuntoVenta(puntoVentaManaged);
+			activacionSubloteManaged.setFechaAsignacionPuntoVenta(date);
+			
+			activacionSubloteManaged.setFact(date);
+			activacionSubloteManaged.setTerm(new Long(1));
+			activacionSubloteManaged.setUact(activacionSubloteManaged.getUact());
+			
+			entityManager.merge(activacionSubloteManaged);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

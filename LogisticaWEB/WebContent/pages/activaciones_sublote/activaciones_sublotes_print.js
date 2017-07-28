@@ -1,6 +1,8 @@
 var usuario = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
@@ -13,11 +15,17 @@ $(document).ready(function() {
 		id,
 		{
 			callback: function(data) {
-				$("#divEmpresa").text(data.empresa.nombre);
-				$("#divNumeroLote").text(data.numero);
-				$("#divFechaVencimiento").text(formatShortDate(data.activaciones[0].fechaVencimiento));
+				$("#divEmpresa").html(data.empresa.nombre);
+				$("#divNumeroLote").html(data.numero);
+				$("#divFechaVencimiento").html(
+					(data.activaciones != null && data.activaciones.length > 0 && data.activaciones[0].fechaVencimiento != null) ?
+						formatShortDate(data.activaciones[0].fechaVencimiento) :
+						"&nbsp;"
+				);
 				
-				$(".divNumeroLoteBarCode").css("background-image", "url(/LogisticaWEB/Barcode?code=" + data.numero + ")");
+				$(".divNumeroLoteBarCode").css(
+					"background-image", "url(/LogisticaWEB/Barcode?code=" + data.numero + ")"
+				);
 				
 				$("body").css("background-color", "white");
 				$(".divTagSheet").css("border", "none");
@@ -26,4 +34,4 @@ $(document).ready(function() {
 			}, async: false
 		}
 	);
-});
+}

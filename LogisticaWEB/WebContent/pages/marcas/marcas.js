@@ -88,13 +88,7 @@ function reloadData() {
 				}
 				
 				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						nombre: ordered[i].nombre,
-						uact: ordered[i].uact,
-						fact: ordered[i].fact,
-						term: ordered[i].term
-					};
+					registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
 				}
 				
 				grid.reload(registros);

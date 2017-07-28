@@ -13,6 +13,16 @@
 	margin-top: 2px;
 }
 
+#divPlanTipoPlan {
+	float: left;
+	width: 40%;
+}
+
+#selectPlanTipoPlan {
+	margin-left: 2px;
+	width: 40%;
+}
+
 #divPlanDescripcion {
 	float: left;
 	width: 40%;
@@ -50,7 +60,7 @@
 
 #inputPlanDuracion {
 	margin-left: 2px;
-	width: 25%;
+	width: 100%;
 }
 
 #divPlanPrecioMinutoDestinosAntelHorarioNormal {
@@ -160,7 +170,7 @@
 
 #inputPlanDestinosGratis {
 	margin-left: 2px;
-	width: 25%;
+	width: 100%;
 }
 
 #divPlanMinutosGratisMesCelularesAntel {
@@ -200,7 +210,7 @@
 
 #inputPlanCantidadCelularesAntelSmsGratis {
 	margin-left: 2px;
-	width: 25%;
+	width: 100%;
 }
 
 #divPlanMinutosGratisMesFijosAntel {

@@ -15,12 +15,18 @@ import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IPrecioBean;
 import uy.com.amensg.logistica.bean.PrecioBean;
+import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EmpresaTO;
+import uy.com.amensg.logistica.entities.Marca;
 import uy.com.amensg.logistica.entities.MarcaTO;
+import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.ModeloTO;
+import uy.com.amensg.logistica.entities.Moneda;
 import uy.com.amensg.logistica.entities.MonedaTO;
 import uy.com.amensg.logistica.entities.Precio;
 import uy.com.amensg.logistica.entities.PrecioTO;
+import uy.com.amensg.logistica.entities.TipoProducto;
+import uy.com.amensg.logistica.entities.TipoProductoTO;
 
 @RemoteProxy
 public class PrecioDWR {
@@ -83,7 +89,12 @@ public class PrecioDWR {
 		return result;
 	}
 	
-	public PrecioTO getActualByEmpresaMarcaModeloMoneda(EmpresaTO empresa, MarcaTO marca, ModeloTO modelo, MonedaTO moneda) {
+	public PrecioTO getActualByEmpresaMarcaModeloMoneda(
+		EmpresaTO empresa, 
+		MarcaTO marca, 
+		ModeloTO modelo, 
+		MonedaTO moneda
+	) {
 		PrecioTO result = null;
 		
 		try {
@@ -92,6 +103,37 @@ public class PrecioDWR {
 			Precio precio =
 				iPrecioBean.getActualByEmpresaMarcaModeloMoneda(
 					EmpresaDWR.transform(empresa),
+					MarcaDWR.transform(marca),
+					ModeloDWR.transform(modelo),
+					MonedaDWR.transform(moneda)
+				);
+			
+			if (precio != null) {
+				result = transform(precio);
+			} 	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public PrecioTO getActualByEmpresaTipoProductoMarcaModeloMoneda(
+		EmpresaTO empresa, 
+		TipoProductoTO tipoProducto, 
+		MarcaTO marca, 
+		ModeloTO modelo, 
+		MonedaTO moneda
+	) {
+		PrecioTO result = null;
+		
+		try {
+			IPrecioBean iPrecioBean = lookupBean();
+			
+			Precio precio =
+				iPrecioBean.getActualByEmpresaTipoProductoMarcaModeloMoneda(
+					EmpresaDWR.transform(empresa),
+					TipoProductoDWR.transform(tipoProducto),
 					MarcaDWR.transform(marca),
 					ModeloDWR.transform(modelo),
 					MonedaDWR.transform(moneda)
@@ -149,6 +191,10 @@ public class PrecioDWR {
 			result.setMoneda(MonedaDWR.transform(precio.getMoneda()));
 		}
 		
+		if (precio.getTipoProducto() != null) {
+			result.setTipoProducto(TipoProductoDWR.transform(precio.getTipoProducto()));
+		}
+		
 		result.setFact(precio.getFact());
 		result.setId(precio.getId());
 		result.setTerm(precio.getTerm());
@@ -164,19 +210,38 @@ public class PrecioDWR {
 		result.setPrecio(precioTO.getPrecio());
 		
 		if (precioTO.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(precioTO.getEmpresa()));
+			Empresa empresa = new Empresa();
+			empresa.setId(precioTO.getEmpresa().getId());
+			
+			result.setEmpresa(empresa);
 		}
 		
 		if (precioTO.getMarca() != null) {
-			result.setMarca(MarcaDWR.transform(precioTO.getMarca()));
+			Marca marca = new Marca();
+			marca.setId(precioTO.getMarca().getId());
+			
+			result.setMarca(marca);
 		}
 		
 		if (precioTO.getModelo() != null) {
-			result.setModelo(ModeloDWR.transform(precioTO.getModelo()));
+			Modelo modelo = new Modelo();
+			modelo.setId(precioTO.getModelo().getId());
+			
+			result.setModelo(modelo);
 		}
 		
 		if (precioTO.getMoneda() != null) {
-			result.setMoneda(MonedaDWR.transform(precioTO.getMoneda()));
+			Moneda moneda = new Moneda();
+			moneda.setId(precioTO.getMoneda().getId());
+			
+			result.setMoneda(moneda);
+		}
+		
+		if (precioTO.getTipoProducto() != null) {
+			TipoProducto tipoProducto = new TipoProducto();
+			tipoProducto.setId(precioTO.getTipoProducto().getId());
+			
+			result.setTipoProducto(tipoProducto);
 		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();

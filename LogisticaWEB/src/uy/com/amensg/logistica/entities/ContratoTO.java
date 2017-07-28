@@ -74,6 +74,7 @@ public class ContratoTO extends BaseTO {
 	private Long direccionFacturaCodigoPostal;
 	private String direccionFacturaLocalidad;
 	private String direccionFacturaObservaciones;
+	private Long numeroVale;
 	private Double intereses;
 	private Double gastosAdministrativos;
 	private Double gastosConcesion;
@@ -88,6 +89,7 @@ public class ContratoTO extends BaseTO {
 	private BarrioTO barrio;
 	private ZonaTO zona;
 	private TurnoTO turno;
+	private TipoProductoTO tipoProducto;
 	private MarcaTO marca;
 	private ModeloTO modelo;
 	private ProductoTO producto;
@@ -627,6 +629,14 @@ public class ContratoTO extends BaseTO {
 		this.direccionFacturaObservaciones = direccionFacturaObservaciones;
 	}
 
+	public Long getNumeroVale() {
+		return numeroVale;
+	}
+
+	public void setNumeroVale(Long numeroVale) {
+		this.numeroVale = numeroVale;
+	}
+
 	public Double getIntereses() {
 		return intereses;
 	}
@@ -739,6 +749,14 @@ public class ContratoTO extends BaseTO {
 
 	public void setTurno(TurnoTO turno) {
 		this.turno = turno;
+	}
+
+	public TipoProductoTO getTipoProducto() {
+		return tipoProducto;
+	}
+
+	public void setTipoProducto(TipoProductoTO tipoProducto) {
+		this.tipoProducto = tipoProducto;
 	}
 
 	public MarcaTO getMarca() {

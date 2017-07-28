@@ -4,7 +4,9 @@ var __ROL_ENCARGADO_ACTIVACIONES = 12;
 var grid = null;
 var map = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNew").hide();
 	
 	grid = new Grid(
@@ -13,10 +15,11 @@ $(document).ready(function() {
 			tdNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
 			tdTelefono: { campo: "telefono", descripcion: "Teléfono", abreviacion: "Tel.", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
 			tdContacto: { campo: "contacto", descripcion: "Contacto", abreviacion: "Contacto", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
-			tdDepartamento: { campo: "departamento.nombre", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_STRING, ancho: 100 },
-			tdBarrio: { campo: "barrio.nombre", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_STRING, ancho: 250 }
+			tdDepartamento: { campo: "departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"} },
+			tdBarrio: { campo: "barrio.nombre", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
+			tdEstado: { campo: "estadoPuntoVenta.nombre", clave: "estadoPuntoVenta.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoPuntoVentas, clave: "id", valor: "nombre"}, ancho: 100 }
 		},
-		false,
+		true,
 		reloadData,
 		trPuntoVentaOnClick
 	);
@@ -44,7 +47,39 @@ $(document).ready(function() {
 	$("#divIFramePuntoVenta").draggable();
 	
 	reloadData();
-});
+}
+
+function listDepartamentos() {
+	var result = [];
+	
+	DepartamentoDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listEstadoPuntoVentas() {
+	var result = [];
+	
+	EstadoPuntoVentaDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
 
 function initMap() {
 	var divMap = document.getElementById("divMapaPuntosVenta");
@@ -57,78 +92,26 @@ function initMap() {
 }
 
 function reloadData() {
-	PuntoVentaDWR.list(
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	PuntoVentaDWR.listContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
 		{
 			callback: function(data) {
-				var registros = {
-					cantidadRegistros: data.length,
-					registrosMuestra: []
-				};
-				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
-						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
-						
-						return result;
-					});
-				}
-				
 				initMap();
 				
 				var markerBounds = new google.maps.LatLngBounds();
 				
-				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						nombre: ordered[i].nombre,
-						direccion: ordered[i].direccion,
-						telefono: ordered[i].telefono,
-						contacto: ordered[i].contacto,
-						departamento: ordered[i].departamento,
-						barrio: ordered[i].barrio,
-						uact: ordered[i].uact,
-						fact: ordered[i].fact,
-						term: ordered[i].term
-					};
-					
-					if (ordered[i].latitud != null && ordered[i].longitud != null) {
+				for (var i=0; i<data.registrosMuestra.length; i++) {
+					if (data.registrosMuestra[i].latitud != null && data.registrosMuestra[i].longitud != null) {
 						var latlng = {
-							lat: ordered[i].latitud, lng: ordered[i].longitud
+							lat: data.registrosMuestra[i].latitud, lng: data.registrosMuestra[i].longitud
 						};
 						
 						var marker = new google.maps.Marker({
 							position: latlng,
 							map: map,
-							title: ordered[i].nombre
+							title: data.registrosMuestra[i].nombre
 						});
 						
 						markerBounds.extend(latlng);
@@ -137,8 +120,17 @@ function reloadData() {
 				
 				map.fitBounds(markerBounds);
 				
-				grid.reload(registros);
-			}, async: false
+				grid.reload(data);
+			}
+		}
+	);
+	
+	PuntoVentaDWR.countContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.setCount(data);
+			}
 		}
 	);
 }

@@ -14,4 +14,6 @@ public interface IACMInterfaceRiesgoCrediticioBean {
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public void save(ACMInterfaceRiesgoCrediticio acmInterfaceRiesgoCrediticio);
+	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 }

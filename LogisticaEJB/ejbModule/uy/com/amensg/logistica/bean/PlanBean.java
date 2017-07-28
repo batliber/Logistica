@@ -123,6 +123,8 @@ public class PlanBean implements IPlanBean {
 			planManaged.setSmsGratisMesCelularesAntel(plan.getSmsGratisMesCelularesAntel());
 			planManaged.setTopeFacturacionMensualTraficoDatos(plan.getTopeFacturacionMensualTraficoDatos());
 			
+			planManaged.setTipoPlan(plan.getTipoPlan());
+			
 			planManaged.setFact(plan.getFact());
 			planManaged.setFechaBaja(plan.getFechaBaja());
 			planManaged.setTerm(plan.getTerm());

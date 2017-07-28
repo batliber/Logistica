@@ -19,11 +19,13 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MonedaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MotivoCambioPlanDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PlanDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PrecioDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/FinanciacionDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/RiesgoCrediticioDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SexoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/StockMovimientoDWR.js"></script>
@@ -69,6 +71,7 @@
 		<div class="divButton" id="divInputGestionDistribucion"><input type="submit" value="Gestión distribución" onclick="javascript:inputGestionDistribucionOnClick(event)"/></div>
 		<div class="divButton" id="divInputEquipoPerdido"><input type="submit" value="Equipo perdido" onclick="javascript:inputEquipoPerdidoOnClick(event)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
+		<div class="divButton" id="divInputEstadoRiesgoCrediticio"><input type="submit" value="Estado Riesgo" onclick="javascript:inputEstadoRiesgoCrediticioOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirKit"><input type="submit" value="Imprimir kit" onclick="javascript:inputImprimirKitOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirContrato"><input type="submit" value="Imprimir contrato" onclick="javascript:inputImprimirContratoOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirPagare"><input type="submit" value="Imprimir pagare" onclick="javascript:inputImprimirPagareOnClick(event)"/></div>
@@ -108,13 +111,14 @@
 			<div class="divFormLabelExtended" id="divLabelNuevoPlanString">Nuevo plan (digit):</div><div id="divNuevoPlanString" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelNuevoPlan">Nuevo plan:</div><div id="divNuevoPlan" class="divFormValue"><select id="selectNuevoPlan"></select></div>
 			<div class="divFormLabelExtended" id="divLabelNuevoPlan">Motivo cambio plan:</div><div id="divMotivoCambioPlan" class="divFormValue"><select id="selectMotivoCambioPlan"></select></div>
+			<div class="divFormLabelExtended" id="divLabelTipoProducto">Tipo de producto:</div><div id="divTipoProducto" class="divFormValue"><select id="selectTipoProducto" onchange="javascript:selectTipoProductoOnChange(event, this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelEquipo">Equipo:</div><div id="divEquipo" class="divFormValue"><select id="selectEquipo" onchange="javascript:selectEquipoOnChange(event, this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelMoneda">Moneda:</div><div id="divMoneda" class="divFormValue"><select id="selectMoneda" onchange="javascript:selectMonedaOnChange(event, this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelPrecio">Precio:</div><div id="divPrecio" class="divFormValue"><input type="text" id="inputPrecio" onchange="javascript:inputPrecioOnChange(event, this)"/></div>
 			<div class="divFormLabelExtended" id="divLabelFormaPago">Forma de pago:</div><div id="divFormaPago" class="divFormValue"><select id="selectFormaPago" onchange="javascript:selectFormaPagoOnChange(this)"></select><div id="divRealizarClearing">Realizar clearing.</div></div>
 			<div class="divFormLabelExtended" id="divLabelTarjetaCredito">Tarjeta de cr&eacute;dito:</div><div id="divTarjetaCredito" class="divFormValue"><select id="selectTarjetaCredito" onchange="javascript:selectTarjetaCreditoOnChange(this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelCuotas">Cuotas:</div><div id="divCuotas" class="divFormValue"><select id="selectCuotas" onchange="javascript:selectCuotasOnChange(event, this)"></select></div>
-			<!-- <div class="divFormLabel" id="divLabelPTF">P.T.F.:</div><div id="divPTF" class="divFormValue"><input type="text" id="inputPTF"/></div> -->
+			<div class="divFormLabelExtended" id="divLabelNumeroVale">Vale:</div><div id="divNumeroVale" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabel" id="divLabelValorCuota">Cuota:</div><div id="divValorCuota" class="divFormValue"><input type="text" id="inputValorCuota"/></div>
 			<div class="divFormLabelExtended" id="divLabelGastosAdministrativos">Gastos administrativos:</div><div id="divGastosAdministrativos" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelGastosConcesion">Gastos concesi&oacute;n:</div><div id="divGastosConcesion" class="divFormValue">&nbsp;</div>

@@ -146,7 +146,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par醡etros seg鷑 las condiciones del filtro
+			// Setear los par谩metros seg煤n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -209,7 +209,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				}
 			}
 			
-			// Acotar al tama駉 de la muestra
+			// Acotar al tama帽o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -251,7 +251,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par醡etros seg鷑 las condiciones del filtro
+			// Setear los par谩metros seg煤n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -322,33 +322,29 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 		return result;
 	}
 	
-	public String exportarAExcel(MetadataConsulta metadataConsulta) {
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long usuarioId) {
 		String result = null;
 		
 		try {
 			GregorianCalendar gregorianCalendar = new GregorianCalendar();
-			Date currentDate = gregorianCalendar.getTime();
 			
 			String fileName =
-				Configuration.getInstance().getProperty("exportacion.carpeta")
-					+ gregorianCalendar.get(GregorianCalendar.YEAR)
-					+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1)
-					+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH)
-					+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY)
-					+ gregorianCalendar.get(GregorianCalendar.MINUTE)
-					+ gregorianCalendar.get(GregorianCalendar.SECOND)
-					+ ".csv";
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
 					
-			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
 			
 			for (ACMInterfacePrepago acmInterfacePrepago : this.listSubconjunto(metadataConsulta)) {
-				acmInterfacePrepago.setFechaExportacionAnterior(
-					acmInterfacePrepago.getFechaExportacion()
-				);
-				acmInterfacePrepago.setFechaExportacion(currentDate);
-				
-				acmInterfacePrepago = entityManager.merge(acmInterfacePrepago);
-				
 				printWriter.println(this.buildCSVLine(acmInterfacePrepago, null));
 			}
 			
@@ -363,15 +359,15 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 	}
 
 	/**
-	 * Calcula estad韘tcas para la asignaci髇 de MIDs con los criterios seleccionados.
+	 * Calcula estad铆stcas para la asignaci贸n de MIDs con los criterios seleccionados.
 	 * Devuelve un String con 3 tipos de caso:
 	 *     - Cantidad a asignar
 	 *     - Cantidad a omitir
 	 *     - Cantidad a reemplazar
 	 * 
-	 * @param filtro con la selecci髇
-	 * @param Empresa a asignar la selecci髇
-	 * @return String con las estad韘ticas de la asignaci髇 de la selecci髇 a la empresa.
+	 * @param filtro con la selecci贸n
+	 * @param Empresa a asignar la selecci贸n
+	 * @return String con las estad铆sticas de la asignaci贸n de la selecci贸n a la empresa.
 	 */
 	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa) {
 		String result = null;
@@ -405,9 +401,9 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 			}
 			
 			result =
-				"Se asignar醤 " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribir醤 " + sobreescribir + " MIDs.|"
-				+ "Se omitir醤 " + omitir + " MIDs.";
+				"Se asignar谩n " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribir谩n " + sobreescribir + " MIDs.|"
+				+ "Se omitir谩n " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -418,9 +414,9 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 	/**
 	 * Asigna los MIDs que cumplen con los criterios a la Empresa.
 	 * 
-	 * @param filtro con la selecci髇
-	 * @param Empresa a asignar la selecci髇
-	 * @param observaciones a inclu韗 en la asignaci髇.
+	 * @param filtro con la selecci贸n
+	 * @param Empresa a asignar la selecci贸n
+	 * @param observaciones a inclu铆r en la asignaci贸n.
 	 */
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones) {
 		String result = null;
@@ -597,7 +593,7 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				
 				acmInterfacePrepago = entityManager.merge(acmInterfacePrepago);
 				
-				// Agregar l韓ea al archivo.
+				// Agregar l铆nea al archivo.
 				printWriter.println(this.buildCSVLine(acmInterfacePrepago, observaciones));
 				
 				switch (map.get(acmInterfacePrepago.getMid())) {
@@ -945,6 +941,9 @@ public class ACMInterfacePrepagoBean implements IACMInterfacePrepagoBean {
 				: "")
 			+ ";" + (acmInterfacePrepago.getFechaActivacionKit() != null ?
 				format.format(acmInterfacePrepago.getFechaActivacionKit())
+				: "")
+			+ ";" + (acmInterfacePrepago.getAcmInterfacePersona() != null ?
+				acmInterfacePrepago.getAcmInterfacePersona().getDocumento()
 				: "")
 			+ ";" + (
 				"Monto promedio: " 

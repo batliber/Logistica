@@ -34,7 +34,8 @@ public interface IConnectionStrategy {
 		String castigadoPorQuitasYDesistimiento,
 		String previsionesTotales,
 		String contingencias,
-		String otorgantesGarantias
+		String otorgantesGarantias,
+		String sinDatos
 	);
 
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(

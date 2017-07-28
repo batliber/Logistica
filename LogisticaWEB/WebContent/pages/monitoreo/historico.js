@@ -13,7 +13,9 @@ $(document).ready(function() {
 		}, 
 		false,
 		reloadData,
-		trHistoricoOnClick
+		trHistoricoOnClick,
+		null,
+		17
 	);
 	
 	grid.rebuild();

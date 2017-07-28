@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.ejb.Remote;
 
+import uy.com.amensg.logistica.entities.Control;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 
@@ -20,4 +21,8 @@ public interface IControlBean {
 	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids, Long empresaId);
 	
 	public String procesarArchivoEmpresa(String fileName, Long empresaId, Long tipoControlId, Long loggedUsuarioId);
+	
+	public Control getSiguienteMidParaControlar();
+	
+	public void actualizarDatosControl(Control control);
 }

@@ -59,7 +59,8 @@
 					<div class="divFormLabelExtendedPrint" id="divLabelBarrio">Barrio:</div><div class="divFormValuePrint divBarrio">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelTurno">Turno:</div><div id="divTurno" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelFechaEntrega">Fecha de entrega:</div><div id="divFechaEntrega" class="divFormValuePrint">&nbsp;</div>
-					<div class="divFormLabelExtendedPrint" id="divLabelPrecio divPrecio">Precio:</div><div id="divPrecio" class="divFormValuePrint divPrecio">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelPrecio">Precio:</div><div id="divPrecio" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelFormaPago">Forma de pago:</div><div id="divFormaPago" class="divFormValuePrint divFormaPago">&nbsp;</div>
 					
 					<!--
 					<div class="divFormLabelExtended" id="divLabelEmail">E-Mail:</div><div id="divEmail" class="divFormValuePrint">&nbsp;</div>

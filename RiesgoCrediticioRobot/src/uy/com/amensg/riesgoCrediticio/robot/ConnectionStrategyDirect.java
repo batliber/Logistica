@@ -66,7 +66,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		String castigadoPorQuitasYDesistimiento,
 		String previsionesTotales,
 		String contingencias,
-		String otorgantesGarantias
+		String otorgantesGarantias,
+		String sinDatos
 	) {
 		try  {
 			DataProcessingTemplateMethod dataProcessingTemplateMethod = new BCUInterfaceRiesgoCrediticio();
@@ -86,6 +87,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			data.add(previsionesTotales);
 			data.add(contingencias);
 			data.add(otorgantesGarantias);
+			
+//			TODO agregar parámetro "sinDatos"
 			
 			dataProcessingTemplateMethod.doProcessing(data);
 		} catch (Exception e) {

@@ -8,6 +8,17 @@
 	width: 100%;
 }
 
+#divPuntoVentaEstado {
+	float: left;
+	margin-top: 2px;
+	margin-left: 2px;
+	width: 70%;
+}
+
+#selectPuntoVentaEstado {
+	width: 60%;
+}
+
 #divPuntoVentaDireccion {
 	float: left;
 	width: 60%;

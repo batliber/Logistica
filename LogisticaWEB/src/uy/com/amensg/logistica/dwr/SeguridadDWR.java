@@ -90,7 +90,7 @@ public class SeguridadDWR {
 					result = UsuarioDWR.transform(seguridadAuditoria.getUsuario(), true);
 				}
 			} else {
-				throw new Exception("Usuario o contraseña incorrecta.");
+				throw new Exception("Usuario o contraseÃ±a incorrecta.");
 			}
 		} catch (Exception e) {
 			throw e;

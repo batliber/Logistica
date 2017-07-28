@@ -1,24 +1,29 @@
 var __ROL_ADMINISTRADOR = 1;
-var __ROL_SUPERVISOR_FINANCIERA = 11;
+var __ROL_ENCARGADO_ANALISIS_FINANCIERO = 13;
 
 var grid = null;
 
 $(document).ready(init);
 
 function init() {
+	$("#divButtonExportarAExcel").hide();
+	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if ((data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_FINANCIERA)
-						|| (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR)){
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ANALISIS_FINANCIERO){
+						$("#divButtonExportarAExcel").show();
 						
 						grid = new Grid(
 							document.getElementById("divTableContratos"),
 							{
 								tdContratoMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
 								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 90 },
+								tdContratoDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING, ancho: 90 },
 								tdFechaVenta: { campo: "fechaVenta", descripcion: "Fecha de venta", abreviacion: "Vendido", tipo: __TIPO_CAMPO_FECHA },
+								tdNumeroVale: { campo: "numeroVale", descripcion: "Número de vale", abreviacion: "Nro. vale", tipo: __TIPO_CAMPO_NUMERICO },
 								tdValorTasaInteresEfectivaAnual: { campo: "valorTasaInteresEfectivaAnual", descripcion: "TEA", abreviacion: "TEA", tipo: __TIPO_CAMPO_DECIMAL },
 								tdValorUnidadIndexada: { campo: "valorUnidadIndexada", descripcion: "UI", abreviacion: "UI", tipo: __TIPO_CAMPO_DECIMAL },
 								tdValorTasaInteresEfectivaAnual: { campo: "valorTasaInteresEfectivaAnual", descripcion: "TEA", abreviacion: "TEA", tipo: __TIPO_CAMPO_DECIMAL },
@@ -35,6 +40,7 @@ function init() {
 						
 						grid.rebuild();
 						
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						break;
 					}
 				}
@@ -119,4 +125,16 @@ function inputActualizarOnClick(event, element) {
 
 function trContratoOnClick() {
 	
+}
+
+function inputExportarAExcelOnClick(event, element) {
+	ContratoDWR.exportarAExcelVentasNuestroCredito(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+				document.getElementById("formExportarAExcel").submit();
+			}, async: false
+		}
+	);
 }

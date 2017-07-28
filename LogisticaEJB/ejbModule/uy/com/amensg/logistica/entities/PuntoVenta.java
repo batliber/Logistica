@@ -50,6 +50,10 @@ public class PuntoVenta extends BaseEntity {
 	@JoinColumn(name = "barrio_id", nullable = true)
 	private Barrio barrio;
 	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "estado_punto_venta_id", nullable = true)
+	private EstadoPuntoVenta estadoPuntoVenta;
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -136,5 +140,13 @@ public class PuntoVenta extends BaseEntity {
 
 	public void setBarrio(Barrio barrio) {
 		this.barrio = barrio;
+	}
+
+	public EstadoPuntoVenta getEstadoPuntoVenta() {
+		return estadoPuntoVenta;
+	}
+
+	public void setEstadoPuntoVenta(EstadoPuntoVenta estadoPuntoVenta) {
+		this.estadoPuntoVenta = estadoPuntoVenta;
 	}
 }

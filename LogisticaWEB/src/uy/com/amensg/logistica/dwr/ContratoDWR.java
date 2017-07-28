@@ -41,6 +41,7 @@ import uy.com.amensg.logistica.entities.TarjetaCredito;
 import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.entities.TipoContratoTO;
 import uy.com.amensg.logistica.entities.TipoDocumento;
+import uy.com.amensg.logistica.entities.TipoProducto;
 import uy.com.amensg.logistica.entities.Turno;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioTO;
@@ -618,6 +619,37 @@ public class ContratoDWR {
 		return result;
 	}
 	
+	public String exportarAExcelVentasNuestroCredito(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				MetadataCondicionTO metadataCondicionTO = new MetadataCondicionTO();
+				metadataCondicionTO.setCampo("formaPago.id");
+				metadataCondicionTO.setOperador(Constants.__METADATA_CONDICION_OPERADOR_IGUAL);
+				
+				Collection<String> valores = new LinkedList<String>();
+				valores.add(Configuration.getInstance().getProperty("formaPago.NuestroCredito"));
+				
+				metadataCondicionTO.setValores(valores);
+				
+				metadataConsultaTO.getMetadataCondiciones().add(metadataCondicionTO);
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				result = iContratoBean.exportarAExcelVentasNuestroCredito(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public void update(ContratoTO contratoTO) {
 		try {
 			IContratoBean iContratoBean = lookupBean();
@@ -719,6 +751,7 @@ public class ContratoDWR {
 		contratoTO.setNumeroFacturaRiverGreen(contrato.getNumeroFacturaRiverGreen());
 		contratoTO.setNumeroSerie(contrato.getNumeroSerie());
 		contratoTO.setNumeroTramite(contrato.getNumeroTramite());
+		contratoTO.setNumeroVale(contrato.getNumeroVale());
 		contratoTO.setObservaciones(contrato.getObservaciones());
 		contratoTO.setPrecio(contrato.getPrecio());
 		contratoTO.setResultadoEntregaDistribucionLatitud(contrato.getResultadoEntregaDistribucionLatitud());
@@ -760,6 +793,9 @@ public class ContratoDWR {
 		}
 		if (contrato.getMotivoCambioPlan() != null) {
 			contratoTO.setMotivoCambioPlan(MotivoCambioPlanDWR.transform(contrato.getMotivoCambioPlan()));
+		}
+		if (contrato.getTipoProducto() != null) {
+			contratoTO.setTipoProducto(TipoProductoDWR.transform(contrato.getTipoProducto()));
 		}
 		if (contrato.getMarca() != null) {
 			contratoTO.setMarca(MarcaDWR.transform(contrato.getMarca()));
@@ -891,6 +927,7 @@ public class ContratoDWR {
 		contrato.setNumeroFacturaRiverGreen(contratoTO.getNumeroFacturaRiverGreen());
 		contrato.setNumeroSerie(contratoTO.getNumeroSerie());
 		contrato.setNumeroTramite(contratoTO.getNumeroTramite());
+		contrato.setNumeroVale(contratoTO.getNumeroVale());
 		contrato.setObservaciones(contratoTO.getObservaciones());
 		contrato.setPrecio(contratoTO.getPrecio());
 		contrato.setResultadoEntregaDistribucionLatitud(contratoTO.getResultadoEntregaDistribucionLatitud());
@@ -935,6 +972,12 @@ public class ContratoDWR {
 			tarjetaCredito.setId(contratoTO.getTarjetaCredito().getId());
 			
 			contrato.setTarjetaCredito(tarjetaCredito);
+		}
+		if (contratoTO.getTipoProducto() != null) {
+			TipoProducto tipoProducto = new TipoProducto();
+			tipoProducto.setId(contratoTO.getTipoProducto().getId());
+			
+			contrato.setTipoProducto(tipoProducto);
 		}
 		if (contratoTO.getMarca() != null) {
 			Marca marca = new Marca();

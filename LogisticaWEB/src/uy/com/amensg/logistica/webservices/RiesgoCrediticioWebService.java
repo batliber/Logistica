@@ -120,7 +120,9 @@ public class RiesgoCrediticioWebService {
 			}
 			
 			acmInterfaceRiesgoCrediticio.setNombreClienteFijo(nombreClienteFijo);
-			acmInterfaceRiesgoCrediticio.setEstadoDeudaClienteFijo(estadoDeudaClienteFijo);
+			acmInterfaceRiesgoCrediticio.setEstadoDeudaClienteFijo(
+				estadoDeudaClienteFijo != null && !estadoDeudaClienteFijo.trim().equals("") ? estadoDeudaClienteFijo : null
+			);
 			
 			try {
 				acmInterfaceRiesgoCrediticio.setNumeroClienteMovil(new Long(numeroClienteMovil));
@@ -151,7 +153,8 @@ public class RiesgoCrediticioWebService {
 		String castigadoPorQuitasYDesistimiento,
 		String previsionesTotales,
 		String contingencias,
-		String otorgantesGarantias
+		String otorgantesGarantias,
+		String sinDatos
 	) {
 		try {
 			String etiquetaSi = "SI";
@@ -228,7 +231,11 @@ public class RiesgoCrediticioWebService {
 			
 			IRiesgoCrediticioBean iRiesgoCrediticioBean = lookupRiesgoCrediticioBean();
 			
-			iRiesgoCrediticioBean.actualizarDatosRiesgoCrediticioBCU(bcuInterfaceRiesgoCrediticio);
+			if (sinDatos != null && sinDatos.toLowerCase().equals(etiquetaSi.toLowerCase())) {
+				iRiesgoCrediticioBean.actualizarDatosRiesgoCrediticioBCUSinDatos(bcuInterfaceRiesgoCrediticio);
+			} else {
+				iRiesgoCrediticioBean.actualizarDatosRiesgoCrediticioBCU(bcuInterfaceRiesgoCrediticio);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

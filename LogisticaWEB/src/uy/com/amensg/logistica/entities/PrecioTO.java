@@ -13,6 +13,7 @@ public class PrecioTO extends BaseTO {
 	private MarcaTO marca;
 	private ModeloTO modelo;
 	private MonedaTO moneda;
+	private TipoProductoTO tipoProducto;
 
 	public Double getPrecio() {
 		return precio;
@@ -60,5 +61,13 @@ public class PrecioTO extends BaseTO {
 
 	public void setMoneda(MonedaTO moneda) {
 		this.moneda = moneda;
+	}
+
+	public TipoProductoTO getTipoProducto() {
+		return tipoProducto;
+	}
+
+	public void setTipoProducto(TipoProductoTO tipoProducto) {
+		this.tipoProducto = tipoProducto;
 	}
 }

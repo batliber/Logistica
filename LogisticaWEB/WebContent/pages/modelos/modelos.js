@@ -2,7 +2,9 @@ var __ROL_ADMINISTRADOR = 1;
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNew").hide();
 	
 	grid = new Grid(
@@ -39,7 +41,7 @@ $(document).ready(function() {
 	reloadData();
 	
 	$("#divIFrameModelo").draggable();
-});
+}
 
 function listMarcas() {
 	var result = [];
@@ -74,7 +76,7 @@ function listEmpresaServices() {
 }
 
 function reloadData() {
-	ModeloDWR.list(
+	ModeloDWR.listVigentes(
 		{
 			callback: function(data) {
 				var registros = {
@@ -120,15 +122,7 @@ function reloadData() {
 				}
 				
 				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						descripcion: ordered[i].descripcion,
-						marca: ordered[i].marca,
-						empresaService: ordered[i].empresaService,
-						uact: ordered[i].uact,
-						fact: ordered[i].fact,
-						term: ordered[i].term
-					};
+					registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
 				}
 				
 				grid.reload(registros);

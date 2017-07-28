@@ -11,8 +11,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class UsuarioBean implements IUsuarioBean {
@@ -46,6 +49,38 @@ public class UsuarioBean implements IUsuarioBean {
 		return result;
 	}
 
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			result = new QueryBuilder<Usuario>().list(entityManager, metadataConsulta, new Usuario());
+			
+			for (Object object : result.getRegistrosMuestra()) {
+				Usuario usuario = (Usuario) object;
+				
+				for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
+					usuarioRolEmpresa.getRol().getMenus().size();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<Usuario>().count(entityManager, metadataConsulta, new Usuario());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Usuario getById(Long id) {
 		Usuario result = null;
 		

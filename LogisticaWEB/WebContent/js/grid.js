@@ -1,4 +1,4 @@
-function Grid(element, campos, showFilters, reloadListener, trOnClickListener, tdOpenDetailListener, rowHeight) {
+function Grid(element, campos, showFilters, reloadListener, trOnClickListener, tdOpenDetailListener, rowHeight, rowPixelHeight) {
 	this.__ANCHO_BORDE = 1;
 	this.__ALTO_BORDE = 1;
 	this.__ANCHO_SCROLL_VERTICAL = 20;
@@ -16,7 +16,9 @@ function Grid(element, campos, showFilters, reloadListener, trOnClickListener, t
 	this.__ANCHO_ETIQUETA_CANTIDAD_REGISTROS = 120;
 	
 	this.__ALTO_FILA = 18;
-	this.__FILAS = 16;
+	this.__FILAS = 25;
+	
+	this.anchoFila = 0;
 	
 	this.__STATUS_LOADING = 0;
 	this.__STATUS_LOADED = 1;
@@ -28,65 +30,29 @@ function Grid(element, campos, showFilters, reloadListener, trOnClickListener, t
 	this.trOnClickListener = trOnClickListener;
 	this.tdOpenDetailListener = tdOpenDetailListener;
 	this.rowHeight = rowHeight;
+	this.rowPixelHeight = rowPixelHeight;
 	this.status = this.__STATUS_LOADED;
 	this.filtroDinamico = new FiltroDinamico(this, this.campos, this.reloadListener);
+	this.count = 0;
 }
 
 Grid.prototype.setCampos = function(campos) {
 	this.campos = campos;
-	this.filtroDinamico = new FiltroDinamico(this.campos, this.reloadListener);
+	this.filtroDinamico = new FiltroDinamico(this, this.campos, this.reloadListener);
 	
 	this.rebuild();
 	this.reload();
-};
+}
 
 Grid.prototype.rebuild = function() {
-	var html = "";
+	var pesosElement = $(this.element);
+	pesosElement.empty();
 	
 	if (this.showFilters) {
-		html += 
-			"<div id='divFiltros'>"
-				+ "<div class='divFormLabelExtended'>Tama&ntilde;o de muestra:</div>"
-				+ "<div id='divTamanoMuestra'>"
-					+ "<input type='text' id='inputTamanoMuestra' value='50' onchange='javascript:grid.filtroDinamico.tamanoMuestraOnChange(event)'/>"
-				+ "</div>"
-				+ "<div class='divFormLabelExtended'>Tama&ntilde;o subconjunto:</div>"
-				+ "<div id='divTamanoSubconjunto'>"
-					+ "<input type='text' id='inputTamanoSubconjunto' value='50' onchange='javascript:grid.filtroDinamico.tamanoSubconjuntoOnChange(event)'/>"
-				+ "</div>"
-				+ "<div id='divAgregarFiltroContainer'>"
-					+ "<div class='divFormLabelExtended'>Agregar filtro:</div>"
-					+ "<div id='divAgregarFiltro'>"
-						+ "<input type='submit' value='' id='inputAgregarFiltro' onclick='javascript:grid.filtroDinamico.agregarFiltro(event, this)'/>"
-					+ "</div>"
-					+ "<div class='divFormLabelExtended'>Limpiar filtros:</div>"
-					+ "<div id='divLimpiarFiltros'>"
-						+ "<input type='submit' value='' id='inputLimpiarFiltros' onclick='javascript:grid.filtroDinamico.limpiarFiltros(event, this)'/>"
-					+ "</div>"
-					+ "<div class='divFormLabelExtended'>Seleccionar columnas:</div>"
-					+ "<div id='divSeleccionarColumnas'>"
-						+ "<input type='submit' value='' id='inputSeleccionarColumnas' onclick='javascript:grid.filtroDinamico.seleccionarColumnas(event, this)'/>"
-						+ "<div id='divIFrameSeleccionColumnas'>"
-							+ "<div class='divTitleBar'>"
-								+ "<div class='divTitleBarText' style='float:left;'>Columnas</div>"
-								+ "<div class='divTitleBarCloseButton' onclick='javascript:closePopUp(event, this.parentNode.parentNode)'>&nbsp;</div>"
-							+ "</div>"
-							+ "<div id='divSeleccionColumnas'>"
-								+ "<div class='divPopupWindow'>"
-									+ "<div id='divSeleccionColumnasLista'>&nbsp;</div>"
-									+ "<div id='divSeleccionColumnasBotonera'>"
-										+ "<input type='submit' id='inputSeleccionColumnasAceptar' value=''"
-											+ " onclick='javascript:grid.filtroDinamico.actualizarColumnas(event, this)'/>"
-									+ "</div>"
-								+ "</div>"
-							+ "</div>"
-						+ "</div>"
-					+ "</div>"
-				+ "</div>"
-			+ "</div>";
+		this.filtroDinamico.rebuild();
 	}
 	
-	html +=
+	var html =
 		"<div id='table' class='divTable'>"
 			+ "<div class='divTableHeader'>"
 				+ "<div class='divTableHeaderRow'>";
@@ -141,11 +107,9 @@ Grid.prototype.rebuild = function() {
 			width += this.filtroDinamico.campos[campo].oculto ? 0 : this.filtroDinamico.campos[campo].ancho + this.__ANCHO_BORDE;
 		}
 		
-		var height = this.__ALTO_FILA * (this.rowHeight != null ? this.rowHeight : this.__FILAS) - 2 * this.__ALTO_BORDE;
-		
 		html +=
 					"<div id='" + campo + "'"
-						+ " class='divTableHeaderCell" + this.filtroDinamico.campos[campo].tipo + "NOO'";
+						+ " class='divTableHeaderCell divTableHeaderCell" + this.filtroDinamico.campos[campo].tipo + "NOO'";
 		
 		if (this.filtroDinamico.campos[campo].oculto) {
 			html += 
@@ -164,7 +128,7 @@ Grid.prototype.rebuild = function() {
 					+ "</div>";
 		} else {
 			html +=
-						" onclick='javascript:grid.filtroDinamico.agregarOrden(event, this)'>"
+						">"
 						+ "<div class='divTableHeaderCellContent'>"
 							+ "<div class='divTableHeaderCellText'"
 								+ "title='" + this.filtroDinamico.campos[campo].descripcion + "'"
@@ -218,34 +182,78 @@ Grid.prototype.rebuild = function() {
 			+ "</div>"
 			+ "<div class='divTableFooter'>"
 				+ "<div class='divTableFooterRow'>"
-					+ "<div class='divTableFooterCell'><div id='divCantidadRegistrosLabel'>Registros:</div></div>"
-					+ "<div class='divTableFooterCell'><div id='divCantidadRegistrosValue'>&nbsp;</div></div>"
+					+ "<div class='divTableFooterCell'><div class='divCantidadRegistrosLabel'>Registros:</div></div>"
+					+ "<div class='divTableFooterCell divTableFooterCellCantidadRegistrosValue'><div class='divCantidadRegistrosValue'>&nbsp;</div></div>"
 				+ "</div>"
 			+ "</div>"
 		+ "</div>";
+	
+	var height = 
+		// Unidad de altura de fila
+		(this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA) * 
+		// Cantidad de filas 
+		(this.rowHeight != null ? this.rowHeight : this.__FILAS);
 
-	this.element.innerHTML = html;
+	pesosElement.append(html);
 	
-	var pesosElement = $(this.element);
-	
-	// ancho(table) = this.__ANCHO_SCROLL_VERTICAL + (ANCHO_COLUMNAS)
 	pesosElement.css("width", width + 1);
+	this.anchoFila = width;
 	
 	this.table = pesosElement.children(".divTable");
+	
 	this.table.css("width", width - 1);
-	this.table.css("height", height);
+	this.table.css("height", height + 2 * this.__ALTO_BORDE);
 	
-	// ancho(tbody) = ancho(table) - 3 * this.__ANCHO_BORDER;
-	this.table.children(".divTableBody").css("width", width - 2 * this.__ANCHO_BORDE);
-	this.table.children(".divTableBody").css("height", height - 2 * this.__ALTO_FILA - this.__ALTO_BORDE);
-	this.table.children(".divTableBodyCover").css("width", width - this.__ANCHO_BORDE - this.__ANCHO_SCROLL_VERTICAL);
-	this.table.children(".divTableBodyCover").css("height", height - 2 * this.__ALTO_FILA);
-	
-	// ancho(cantidadRegistrosValor) = ancho(table) - this.__ANCHO_SCROLL_VERTICAL - this.__ANCHO_ETIQUETA_CANTIDAD_REGISTROS - 3 * this.__ANCHO_BORDER
-	this.table.find(".divTableFooter > .divTableFooterRow > .divTableFooterCell > #divCantidadRegistrosValue").css(
-		"width", width - 2 - this.__ANCHO_SCROLL_VERTICAL - this.__ANCHO_ETIQUETA_CANTIDAD_REGISTROS - 2 * this.__ANCHO_BORDE
+	this.table.find(".divTableHeader .divTableHeaderRow").css(
+		"height",
+		(this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA) + this.__ALTO_BORDE
 	);
-};
+	this.table.find(".divTableHeader .divTableHeaderRow > div").css(
+		"height",
+		this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA
+	);
+	this.table.find(".divTableHeader .divTableHeaderRow > div").css(
+		"line-height",
+		(this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA) + "px"
+	);
+	this.table.find(".divTableHeaderCell").click(this.filtroDinamico.agregarOrden.bind(this.filtroDinamico));
+	this.table.children(".divTableBody").css(
+		"width", 
+		width - 2 * this.__ANCHO_BORDE
+	);
+	this.table.children(".divTableBody").css(
+		"height", 
+		height - (2 * ((this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA)))
+	);
+	this.table.children(".divTableBodyCover").css(
+		"width", 
+		width - this.__ANCHO_BORDE - this.__ANCHO_SCROLL_VERTICAL
+	);
+	this.table.children(".divTableBodyCover").css(
+		"height", 
+		height - (2 * ((this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA)))
+	);
+	this.table.find(".divTableFooter > .divTableFooterRow").css(
+		"width",
+		width - this.__ANCHO_BORDE
+	);
+	this.table.find(".divTableFooter > .divTableFooterRow").css(
+		"height",
+		(this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA) + this.__ALTO_BORDE
+	);
+	this.table.find(".divTableFooter > .divTableFooterRow > div").css(
+		"height",
+		this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA
+	);
+	this.table.find(".divTableFooter > .divTableFooterRow > div").css(
+		"line-height",
+		(this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA) + "px"
+	);
+	this.table.find(".divTableFooter > .divTableFooterRow > .divTableFooterCellCantidadRegistrosValue").css(
+		"width",
+		width - this.__ANCHO_SCROLL_VERTICAL - this.__ANCHO_ETIQUETA_CANTIDAD_REGISTROS - 2 * this.__ANCHO_BORDE
+	);
+}
 
 Grid.prototype.reload = function(data) {
 	this.table.find(".divTableBody:last > div").remove();
@@ -323,7 +331,7 @@ Grid.prototype.reload = function(data) {
 			}
 		    
 		    html +=
-				"<div class='divTableBodyCell" + this.filtroDinamico.campos[campo].tipo + "' campo='" + campo + "'";
+				"<div class='divTableBodyCell divTableBodyCell" + this.filtroDinamico.campos[campo].tipo + "' campo='" + campo + "'";
 	
 			if (this.filtroDinamico.campos[campo].oculto) {
 				html += 
@@ -334,8 +342,8 @@ Grid.prototype.reload = function(data) {
 			}
 			
 			if (this.filtroDinamico.campos[campo].tipo == __TIPO_CAMPO_DETAIL) {
-				html += 
-					" onclick='javascript:grid.openDetail(event, this)'"
+//				html += 
+//					" onclick='javascript:grid.openDetail(event, this)'"
 			}
 			
 			html +=
@@ -356,6 +364,19 @@ Grid.prototype.reload = function(data) {
 		this.setCount(data.cantidadRegistros);
 	}
 	
+	this.table.find(".divTableBody > .divTableBodyRow").css(
+		"height",
+		(this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA)
+	);
+	this.table.find(".divTableBody > .divTableBodyRow > div").css(
+		"height",
+		(this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA)
+	);
+	this.table.find(".divTableBody > .divTableBodyRow > div").css(
+		"line-height",
+		((this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA)) + "px"
+	);
+	
 	this.table.find(".divTableBody:last > .divTableBodyRow:odd").css("background-color", "#F8F8F8");
 	this.table.find(".divTableBody:last > .divTableBodyRow:odd").hover(
 		function() {
@@ -375,33 +396,35 @@ Grid.prototype.reload = function(data) {
 		}
 	);
 	this.table.find(".divTableBody:last > .divTableBodyRow").click(this.trOnClickListener);
+	this.table.find(".divTableBodyCell" + __TIPO_CAMPO_DETAIL).click(this.openDetail.bind(this));
 	
 	this.setStatus(this.__STATUS_LOADED);
-};
+}
 
 Grid.prototype.setCount = function(data) {
-	$("#divCantidadRegistrosValue").text(data != null ? data : 0);
-};
+	this.count = data != null ? data : 0;
+	this.table.find(".divTableFooter .divCantidadRegistrosValue").text(this.count);
+}
 
 Grid.prototype.getCount = function() {
-	return $("#divCantidadRegistrosValue").text();
-};
+	return this.count;
+}
 
 Grid.prototype.setStatus = function(status) {
 	this.status = status;
 	
 	if (this.status == this.__STATUS_LOADING) {
-		this.table.children(".divTableBodyCover").show();
+		this.table.find(".divTableBodyCover").show();
 	} else if (this.status == this.__STATUS_LOADED) {
-		this.table.children(".divTableBodyCover").hide();
+		this.table.find(".divTableBodyCover").hide();
 	}
-};
+}
 
-Grid.prototype.openDetail = function(event, element) {
-	var divRow = $($(element).parent()[0]);
-	var divCell = $(element);
+Grid.prototype.openDetail = function(eventObject) {
+	var divCell = $(eventObject.target);
+	var divRow = divCell.parent();
 	
-	var divCellClass = divCell.attr("class");
+	var divCellClass = divCell.attr("class").split(" ")[1];
 	
 	if (divCellClass == "divTableBodyCell10") {
 		divCell.attr("class", "divTableBodyCell10Open");
@@ -411,7 +434,9 @@ Grid.prototype.openDetail = function(event, element) {
 		var data = this.tdOpenDetailListener(divRow);
 		
 		var html =
-					"<div class='divTableHeaderDetailRow' rid='" + divRow.attr("id") + "'>";
+					"<div class='divTableHeaderDetailRow' rid='" + divRow.attr("id") + "'"
+					+ " style='width: " + (this.anchoFila - this.__ANCHO_CAMPO_DETAIL - this.__ANCHO_SCROLL_VERTICAL - 4 * this.__ANCHO_BORDE) + "px;'"
+					+ ">";
 		
 		var width = this.__ANCHO_SCROLL_VERTICAL;
 		for (var campoHeader in camposDetail) {
@@ -481,7 +506,9 @@ Grid.prototype.openDetail = function(event, element) {
 			var registro = data[i];
 			
 			html += 
-				"<div class='divTableBodyDetailRow' rid='" + divRow.attr("id") + "'>";
+				"<div class='divTableBodyDetailRow' rid='" + divRow.attr("id") + "'"
+				+ " style='width: " + (this.anchoFila - this.__ANCHO_CAMPO_DETAIL - this.__ANCHO_SCROLL_VERTICAL - 4 * this.__ANCHO_BORDE) + "px;'"
+				+ ">";
 			
 			for (var campoBody in camposDetail) {
 				var value = null;

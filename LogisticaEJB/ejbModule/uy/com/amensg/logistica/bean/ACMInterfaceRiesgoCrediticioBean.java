@@ -1,5 +1,7 @@
 package uy.com.amensg.logistica.bean;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -27,6 +29,7 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
+import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryHelper;
 
@@ -108,7 +111,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parï¿½metros segï¿½n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -171,7 +174,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 				}
 			}
 			
-			// Acotar al tamaño de la muestra
+			// Acotar al tamaï¿½o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -231,7 +234,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parï¿½metros segï¿½n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -314,5 +317,88 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado segÃºn: YYYYMMDDHHmmSS en la carpeta de exportaciÃ³n del sistema.
+	 * 
+	 * @param metadataConsulta Criterios de la consulta.
+	 * @param loggedUsuarioId ID del Usuario que consulta.
+	 */
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		String result = null;
+		
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName = 
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
+			
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
+			
+			printWriter.println(
+				"Empresa"
+				+ ";Documento" 
+				+ ";AntigÃ¼edad celular"
+				+ ";Deuda celular"
+				+ ";Riesgo crediticio celular"
+				+ ";Estado deuda cliente fijo"
+				+ ";Obtenido"
+			);
+			
+			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			
+			String etiquetaSi = "SI";
+			String etiquetaNo = "NO";
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
+			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
+				ACMInterfaceRiesgoCrediticio acmInterfaceRiesgoCrediticio = (ACMInterfaceRiesgoCrediticio) object;
+				
+				String line = 
+					(acmInterfaceRiesgoCrediticio.getEmpresa() != null ?
+						acmInterfaceRiesgoCrediticio.getEmpresa().getNombre()
+						: "")
+					+ ";" + (acmInterfaceRiesgoCrediticio.getDocumento() != null ? 
+						acmInterfaceRiesgoCrediticio.getDocumento()
+						: "")
+					+ ";" + (acmInterfaceRiesgoCrediticio.getFechaCelular() != null ?
+						format.format(acmInterfaceRiesgoCrediticio.getFechaCelular())
+						: "")
+					+ ";" + (acmInterfaceRiesgoCrediticio.getDeudaCelular() != null ?
+						(acmInterfaceRiesgoCrediticio.getDeudaCelular() ? etiquetaSi : etiquetaNo) 
+						: "")
+					+ ";" + (acmInterfaceRiesgoCrediticio.getRiesgoCrediticioCelular() != null ?
+						(acmInterfaceRiesgoCrediticio.getRiesgoCrediticioCelular() ? etiquetaSi : etiquetaNo)
+						: "")
+					+ ";" + (acmInterfaceRiesgoCrediticio.getEstadoDeudaClienteFijo() != null ?
+						acmInterfaceRiesgoCrediticio.getEstadoDeudaClienteFijo()
+						: "")
+					+ ";" + (acmInterfaceRiesgoCrediticio.getFact() != null ?
+						format.format(acmInterfaceRiesgoCrediticio.getFact())
+						: "");
+					
+				printWriter.println(line.replaceAll("\n", ""));
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }

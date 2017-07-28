@@ -12,7 +12,10 @@ import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.Departamento;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.PuntoVenta;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class PuntoVentaBean implements IPuntoVentaBean {
@@ -43,6 +46,30 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 		return result;
 	}
 
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<PuntoVenta>().list(entityManager, metadataConsulta, new PuntoVenta());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	public Long count(MetadataConsulta metadataConsulta) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<PuntoVenta>().count(entityManager, metadataConsulta, new PuntoVenta());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<PuntoVenta> listByDepartamento(Departamento departamento) {
 		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
 		
@@ -150,6 +177,10 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 			
 			if (puntoVenta.getDepartamento() != null) {
 				puntoVentaManaged.setDepartamento(puntoVenta.getDepartamento());
+			}
+			
+			if (puntoVenta.getEstadoPuntoVenta() != null) {
+				puntoVentaManaged.setEstadoPuntoVenta(puntoVenta.getEstadoPuntoVenta());
 			}
 			
 			puntoVentaManaged.setFact(puntoVenta.getFact());

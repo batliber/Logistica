@@ -294,6 +294,12 @@
 <%
 	}
 	
+	boolean conLimite = 
+		contratoTO.getNuevoPlan().getTipoPlan() != null 
+		&& contratoTO.getNuevoPlan().getTipoPlan().getId().equals(
+			new Long(Configuration.getInstance().getProperty("tipoPlan.ConLimite"))
+		);
+	
 	vias = 2;
 	for (int i=0; i<vias; i++) {
 %>
@@ -315,6 +321,21 @@
 						<div class="divColumnaHalf" style="width: 308px;">Consumo m&iacute;nimo: <input type="text" class="inputEspecificacionesConsumoMinimo"/>, impuestos incluidos.</div>
 						<div class="divColumnaHalfFiller" style="width: 342px;">Duraci&oacute;n contractual: <input type="text" class="inputEspecificacionesDuraccionContractual"/></div>
 					</div>
+<%
+		if (conLimite) {
+%>
+					<div class="divFila">
+						<div class="divColumnaFull" style="width: 653px;">Precio de minuto de comunicaci&oacute;n a destinos Antel: <input type="text" class="inputEspecificacionesPrecioMinutoHorarioNormal"/> impuestos incluidos.</div>
+					</div>
+					<div class="divFila">
+						<div class="divColumnaFull" style="width: 653px;">Rendimiento en minutos del importe mensual a destinos Antel: <input type="text" class="inputEspecificacionesRendimientoMinutosAntelHorarioNormal"/> minutos</div>
+					</div>
+					<div class="divFila">
+						<div class="divColumnaFull" style="width: 653px;">Precio minuto de comunicaci&oacute;n otras operadoras: <input type="text" class="inputEspecificacionesPrecioMinutoOtrasOperadoras"/>impuestos incluidos</div>
+					</div>
+<% 
+		} else {
+%>			
 					<div class="divFila" style="height: 36px;">
 						<div class="divColumnaThird" style="width: 210px;height: 34px;">Precio de minuto de comunicaci&oacute;n a destinos Antel:</div>
 						<div class="divColumnaThird" style="width: 210px;height: 34px;">Horario normal: <input type="text" class="inputEspecificacionesPrecioMinutoHorarioNormal"/> impuestos incluidos</div>
@@ -328,32 +349,63 @@
 						<div class="divColumnaHalf" style="width: 380px;">Precio minuto de comunicaci&oacute;n otras operadoras: <input type="text" class="inputEspecificacionesPrecioMinutoOtrasOperadoras"/>impuestos inc.</div>
 						<div class="divColumnaHalfFiller" style="width: 245px;">Rendimiento minutos otras operadoras: <input type="text" class="inputEspecificacionesRendimientoMinutosOtrasOperadoras"/></div>
 					</div>
+<%
+		}
+%>
 				</div>
 				<div class="">
 					&nbsp;
 					<br/>
 				</div>
+<%
+		if (!conLimite) {
+%>
 				<div class="">
 					<div class="divEspecificacionesTituloParrafo">Detalle del horario</div>
 					<div class="">Horario normal: lunes a viernes de 9 a 21 horas.</div>
 					<div class="">Horario reducido: lunes a viernes de 21 a 9 horas / s&aacute;bados, domingos y feriados no laborables (1/1, 1/5, 18/7, 25/8 y 25/12).</div>
 				</div>
+<%
+		}
+%>
 				<br/>
 				<div class="divTabla">
 					<div class="divFila">
 						<div class="divColumnaFull">Precio SMS: <input type="text" class="inputEspecificacionesPrecioSMS"/> impuestos incluidos por cada mensaje enviado.</div>
 					</div>
+<%
+		if (conLimite) {
+%>
 					<div class="divFila">
-						<div class="divColumnaHalf" style="width: 280px;">Incluye para navegaci&oacute;n en el celular: <input type="text" class="inputEspecificacionesIncluyeParaNavegacionCelular"/></div>
+						<div class="divColumnaFull" style="width: 653px;">Incluye para navegaci&oacute;n en el celular: <input type="text" class="inputEspecificacionesIncluyeParaNavegacionCelular"/> GB</div>
+					</div>
+<% 
+		} else {
+%>
+					<div class="divFila">
+						<div class="divColumnaHalf" style="width: 280px;">Incluye para navegaci&oacute;n en el celular: <input type="text" class="inputEspecificacionesIncluyeParaNavegacionCelular"/> GB</div>
 						<div class="divColumnaHalfFiller" style="width: 362px;">Consumo por fuera del bono: <input type="text" class="inputEspecificacionesConsumoFueraBono"/>, impuestos incluidos por MB</div>
 					</div>
+<%
+		}
+%>
 				</div>
 				<div class="">
 					&nbsp;
 					<br/>
 				</div>		
+<%
+		if (conLimite) {
+%>
+				<div class="">Las velocidades de conexi&oacute;n est&aacute;n sujetas a los recursos disponibles y cobertura de la red LTE de Antel.</div>
+<%
+		} else {
+%>				
 				<div class="">Se aplica un tope de facturaci&oacute;n mensual de <input type="text" class="inputEspecificacionesTopeFacturacionMensual"/>, impuestos incluidos para el tr&aacute;fico de datos.</div>
 				<div class="">Las velocidades de conexi&oacute;n est&aacute;n sujetas a los recursos disponibles y cobertura de la red LTE de Antel. Luego de traficados los GB incluidos en el plan, la velocidad de bajada ser&aacute; de hasta 1 Mbps. La velocidad vuelve a asignarse en las primeras horas del nuevo per&iacute;odo de facturaci&oacute;n mensual.</div>
+<%
+		}
+%>
 				<br/>
 				<div class="">El cliente es informado sobre la cobertura actual de la tecnolog&iacute;a LTE, la cual puede ser consultada en la p&aacute;gina Web de Antel: www.antel.com.uy. En cas ode no existir cobertura LTE en la zona, se traficar&aacute; por la red 3.7G.</div>
 				<br/>
@@ -369,7 +421,7 @@
 					<br/>
 					<div class="">Hasta <input type="text" class="inputEspecificacionesMinutosGratisMovil"/> minutos gratis por mes para hablar a <input type="text" class="inputEspecificacionesMinutosGratisCantidadCelulares"/> n&uacute;meros celulares de Antel M&oacute;vil. Los minutos que pudieren superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa del minuto de comunicaci&oacute;n correspondiente al Plan aqu&iacute; detallado.</div>
 					<br/>
-					<div class="">Hasta <input type="text" class="inputEspecificacionesSMSGratisMovil"/> SMS gratis por mes para enviar a <input type="text" class="inputEspecificacionesSMSGratisCantidadCelulares"/> n&uacute;meros celulares Antel M&oacute;vil. Los SMS que pudieren superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa correspondiente al Plan aqu&iacute; detallado.</div>
+					<div class="">Hasta <input type="text" class="inputEspecificacionesSMSGratisMovil"/> SMS gratis por mes para enviar a <input type="text" class="inputEspecificacionesSMSGratisCantidadCelulares"/> Antel M&oacute;vil. Los SMS que pudieren superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa correspondiente al Plan aqu&iacute; detallado.</div>
 					<br/>
 					<div class="">Hasta <input type="text" class="inputEspecificacionesMinutosGratisFijo"/> minutos gratis por mes para hablar a <input type="text" class="inputEspecificacionesMinutosGratisCantidadFijos"/> n&uacute;mero de tel&eacute;fono fijo de Antel. Los minutos que pudieren superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa del minuto de comunicaci&oacute;n correspondiente al Plan aqu&iacute; detallado.</div>
 					<br/>

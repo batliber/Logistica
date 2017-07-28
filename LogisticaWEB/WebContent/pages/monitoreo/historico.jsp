@@ -30,33 +30,9 @@
 	<div class="divButtonTitleBar">
 		<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
 	</div>
-	<div class="divMainWindow">
+	<div class="divPopupWindow">
 		<div id="divHistorico">
-			<div id="divTableHistorico">
-				<!-- 
-				<table id="tableHistorico" border="0" cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td class="tdFecha" onclick="javascript:tableTheadTdOnClick(event, this)">Fecha</td>
-							<td class="tdEmpresa" onclick="javascript:tableTheadTdOnClick(event, this)">Empresa</td>
-							<td class="tdUsuario" onclick="javascript:tableTheadTdOnClick(event, this)">Usuario</td>
-							<td class="tdRol" onclick="javascript:tableTheadTdOnClick(event, this)">Rol</td>
-							<td class="tdEstado" onclick="javascript:tableTheadTdOnClick(event, this)">Estado</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-					</tbody>
-				</table>
-				-->
-				&nbsp;
-			</div>
+			<div id="divTableHistorico">&nbsp;</div>
 		</div>
 	</div>
 </body>

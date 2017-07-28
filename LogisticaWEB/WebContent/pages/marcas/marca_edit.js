@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(init)
+
+function init() {
 	refinarForm();
 	
 	$("#divEliminarMarca").hide();
@@ -18,7 +20,7 @@ $(document).ready(function() {
 			}
 		);
 	}
-});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {

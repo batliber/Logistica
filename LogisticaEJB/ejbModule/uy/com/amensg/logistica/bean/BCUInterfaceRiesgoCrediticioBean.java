@@ -1,5 +1,8 @@
 package uy.com.amensg.logistica.bean;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -22,12 +25,14 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticio;
+import uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticioInstitucionFinanciera;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
+import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryHelper;
 
@@ -109,7 +114,7 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parï¿½metros segï¿½n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -172,7 +177,7 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 				}
 			}
 			
-			// Acotar al tamaño de la muestra
+			// Acotar al tamaï¿½o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -232,7 +237,7 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parï¿½metros segï¿½n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -342,5 +347,148 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado segÃºn: YYYYMMDDHHmmSS en la carpeta de exportaciÃ³n del sistema.
+	 * 
+	 * @param metadataConsulta Criterios de la consulta.
+	 * @param loggedUsuarioId ID del Usuario que consulta.
+	 */
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		String result = null;
+		
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName = 
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
+			
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
+			
+			printWriter.println(
+				"Tipo de registro"
+				+ ";Empresa"
+				+ ";Documento"
+				+ ";Periodo"
+				+ ";Nombre completo"
+				+ ";Actividad"
+				+ ";CrÃ©dito vigente"
+				+ ";CrÃ©dito vigente no auto-liquidable"
+				+ ";Garantias computables"
+				+ ";Garantias no computables"
+				+ ";Castigado por atraso"
+				+ ";Castigado por quitas y desistimiento"
+				+ ";Previsiones totales"
+				+ ";Contingencias"
+				+ ";Otorgantes de garantÃ­as"
+				+ ";Obtenido"
+			);
+			
+			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			
+			String etiquetaSi = "SI";
+			String etiquetaNo = "NO";
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			DecimalFormat decimalFormat = new DecimalFormat("#.##");
+			
+			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
+				BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio = (BCUInterfaceRiesgoCrediticio) object;
+				
+				String line = 
+					"Cabezal"
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getEmpresa() != null ?
+						bcuInterfaceRiesgoCrediticio.getEmpresa().getNombre()
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getDocumento() != null ? 
+						bcuInterfaceRiesgoCrediticio.getDocumento()
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getPeriodo() != null ?
+						bcuInterfaceRiesgoCrediticio.getPeriodo()
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getNombreCompleto() != null ? 
+						bcuInterfaceRiesgoCrediticio.getNombreCompleto()
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getActividad() != null ? 
+						bcuInterfaceRiesgoCrediticio.getActividad()
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getVigente() != null ? 
+						decimalFormat.format(bcuInterfaceRiesgoCrediticio.getVigente())
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getVigenteNoAutoliquidable() != null ? 
+						decimalFormat.format(bcuInterfaceRiesgoCrediticio.getVigenteNoAutoliquidable())
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getGarantiasComputables() != null ? 
+						decimalFormat.format(bcuInterfaceRiesgoCrediticio.getGarantiasComputables())
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getGarantiasNoComputables() != null ? 
+						decimalFormat.format(bcuInterfaceRiesgoCrediticio.getGarantiasNoComputables())
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getCastigadoPorAtraso() != null ?
+						(bcuInterfaceRiesgoCrediticio.getCastigadoPorAtraso() ? etiquetaSi : etiquetaNo) 
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getCastigadoPorQuitasYDesistimiento() != null ?
+						(bcuInterfaceRiesgoCrediticio.getCastigadoPorQuitasYDesistimiento() ? etiquetaSi : etiquetaNo) 
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getPrevisionesTotales() != null ? 
+						decimalFormat.format(bcuInterfaceRiesgoCrediticio.getPrevisionesTotales())
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getContingencias() != null ? 
+						decimalFormat.format(bcuInterfaceRiesgoCrediticio.getContingencias())
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getOtorgantesGarantias() != null ? 
+						decimalFormat.format(bcuInterfaceRiesgoCrediticio.getOtorgantesGarantias())
+						: "")
+					+ ";" + (bcuInterfaceRiesgoCrediticio.getFact() != null ?
+						format.format(bcuInterfaceRiesgoCrediticio.getFact())
+						: "");
+				
+				printWriter.println(line.replaceAll("\n", ""));
+				
+//				printWriter.println(
+//					"InstituciÃ³n financiera"
+//					+ ";CalificaciÃ³n"
+//				);
+				
+				for (BCUInterfaceRiesgoCrediticioInstitucionFinanciera bcuInterfaceRiesgoCrediticioInstitucionFinanciera 
+					: bcuInterfaceRiesgoCrediticio.getBcuInterfaceRiesgoCrediticioInstitucionFinancieras()) {
+					line =
+						"Detalle"
+						+ ";" + (bcuInterfaceRiesgoCrediticio.getEmpresa() != null ?
+							bcuInterfaceRiesgoCrediticio.getEmpresa().getNombre()
+							: "")
+						+ ";" + (bcuInterfaceRiesgoCrediticio.getDocumento() != null ? 
+							bcuInterfaceRiesgoCrediticio.getDocumento()
+							: "")
+						+ ";" + (bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getInstitucionFinanciera() != null ?
+							bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getInstitucionFinanciera()
+							: "")
+						+ ";" + (bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion() != null ?
+							bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion() 
+							: "");
+					
+					printWriter.println(line.replaceAll("\n", ""));
+				}
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }

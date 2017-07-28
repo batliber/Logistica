@@ -93,5 +93,7 @@ public interface IContratoBean {
 	
 	public String exportarAExcelNucleo(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	
+	public String exportarAExcelVentasNuestroCredito(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
 	public Contrato update(Contrato contrato);
 }

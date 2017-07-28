@@ -12,7 +12,9 @@ var estados = [
 	"Lista negra"
 ];
 
-$(document).ready(function() {
+$(document).ready(init);
+	
+function init() {
 	$("#inputExportarAExcel").prop("disabled", true);
 	$("#inputExportarSubconjunto").prop("disabled", true);
 	$("#inputAsignar").prop("disabled", true);
@@ -23,7 +25,7 @@ $(document).ready(function() {
 	$("#inputListaNegra").prop("disabled", true);
 	
 	selectTipoRegistroOnChange();
-});
+}
 
 function inputActualizarOnClick(event, element) {
 	reloadData();
@@ -304,41 +306,38 @@ function inputExportarAExcelOnClick(event) {
 	metadataConsulta.tamanoSubconjunto = grid.getCount();
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		if (confirm("Se exportar�n " + grid.getCount() + " registros.")) {
+		if (confirm("Se exportarán " + grid.getCount() + " registros.")) {
 			ACMInterfaceContratoDWR.exportarAExcel(
 				metadataConsulta,
 				{
 					callback: function(data) {
-						alert("Archivo generado: " + data);
-						
-						reloadData();
-					}
+						document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+						document.getElementById("formExportarAExcel").submit();
+					}, async: false
 				}
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		if (confirm("Se exportar�n " + grid.getCount() + " registros.")) {
+		if (confirm("Se exportarán " + grid.getCount() + " registros.")) {
 			ACMInterfacePrepagoDWR.exportarAExcel(
 				metadataConsulta,
 				{
 					callback: function(data) {
-						alert("Archivo generado: " + data);
-						
-						reloadData();
-					}
+						document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+						document.getElementById("formExportarAExcel").submit();
+					}, async: false
 				}
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-		if (confirm("Se exportar�n " + grid.getCount() + " registros.")) {
+		if (confirm("Se exportarán " + grid.getCount() + " registros.")) {
 			ACMInterfaceListaNegraDWR.exportarAExcel(
 				metadataConsulta,
 				{
 					callback: function(data) {
-						alert("Archivo generado: " + data);
-						
-						reloadData();
-					}
+						document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+						document.getElementById("formExportarAExcel").submit();
+					}, async: false
 				}
 			);
 		}
@@ -351,7 +350,7 @@ function inputExportarSubconjuntoOnClick(event) {
 	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		if (confirm("Se exportar�n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 			ACMInterfaceContratoDWR.exportarAExcel(
 				metadataConsulta,
 				{
@@ -364,7 +363,7 @@ function inputExportarSubconjuntoOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		if (confirm("Se exportar�n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 			ACMInterfacePrepagoDWR.exportarAExcel(
 				metadataConsulta,
 				{
@@ -377,7 +376,7 @@ function inputExportarSubconjuntoOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "listaNegra") {
-		if (confirm("Se exportar�n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 			ACMInterfaceListaNegraDWR.exportarAExcel(
 				metadataConsulta,
 				{
@@ -560,7 +559,7 @@ function inputDeshacerAsignacionOnClick(event) {
 	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		if (confirm("Se anular� la �ltima asignaci�n.")) {
+		if (confirm("Se anulará la última asignación.")) {
 			ACMInterfaceContratoDWR.deshacerAsignacion(
 				metadataConsulta,
 				{
@@ -571,7 +570,7 @@ function inputDeshacerAsignacionOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		if (confirm("Se anular� la �ltima asignaci�n.")) {
+		if (confirm("Se anulará la última asignación.")) {
 			ACMInterfacePrepagoDWR.deshacerAsignacion(
 				metadataConsulta,
 				{
@@ -593,7 +592,7 @@ function inputReprocesarOnClick(event) {
 	var observaciones = null;
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		observaciones = prompt("Se reprocesar�n " + grid.getCount() + " registros.");
+		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfaceContratoDWR.reprocesar(
@@ -607,7 +606,7 @@ function inputReprocesarOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		observaciones = prompt("Se reprocesar�n " + grid.getCount() + " registros.");
+		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfacePrepagoDWR.reprocesar(
@@ -621,7 +620,7 @@ function inputReprocesarOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-		observaciones = prompt("Se reprocesar�n " + grid.getCount() + " registros.");
+		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfaceMidDWR.reprocesarSinDatos(
@@ -644,7 +643,7 @@ function inputReprocesarSubconjuntoOnClick(event) {
 	var observaciones = null;
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		observaciones = prompt("Se reprocesar�n " + metadataConsulta.tamanoSubconjunto + " registros.");
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfaceContratoDWR.reprocesar(
@@ -658,7 +657,7 @@ function inputReprocesarSubconjuntoOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		observaciones = prompt("Se reprocesar�n " + metadataConsulta.tamanoSubconjunto + " registros.");
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfacePrepagoDWR.reprocesar(
@@ -672,7 +671,7 @@ function inputReprocesarSubconjuntoOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-		observaciones = prompt("Se reprocesar�n " + metadataConsulta.tamanoSubconjunto + " registros.");
+		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
 		
 		if (observaciones != null) {
 			ACMInterfaceMidDWR.reprocesarSinDatos(
@@ -694,7 +693,7 @@ function inputListaNegraOnClick(event) {
 	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		if (confirm("Se agregar�n " + grid.getCount() + " registros a la lista negra.")) {
+		if (confirm("Se agregarán " + grid.getCount() + " registros a la lista negra.")) {
 			ACMInterfaceContratoDWR.agregarAListaNegra(
 				metadataConsulta,
 				{
@@ -705,7 +704,7 @@ function inputListaNegraOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
-		if (confirm("Se agregar�n " + grid.getCount() + " registros a la lista negra.")) {
+		if (confirm("Se agregarán " + grid.getCount() + " registros a la lista negra.")) {
 			ACMInterfacePrepagoDWR.agregarAListaNegra(
 				metadataConsulta,
 				{
@@ -716,7 +715,7 @@ function inputListaNegraOnClick(event) {
 			);
 		}
 	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
-		if (confirm("Se agregar�n " + grid.getCount() + " registros a la lista negra.")) {
+		if (confirm("Se agregarán " + grid.getCount() + " registros a la lista negra.")) {
 			ACMInterfaceMidDWR.agregarAListaNegraSinDatos(
 				metadataConsulta,
 				{

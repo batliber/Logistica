@@ -1,0 +1,59 @@
+.inputValeNumero {
+	width: 50px;
+}
+
+.inputCapitalPrestado {
+	width: 50px;
+}
+
+.inputInteresesCompensatorios {
+	width: 50px;
+}
+
+.inputGastosAdministracion {
+	width: 50px;
+}
+
+.inputIVA {
+	width: 50px;
+}
+
+.inputTotal {
+	width: 50px;
+}
+
+.inputAgente {
+	width: 100px;
+}
+
+.inputCuotas {
+	width: 30px;
+}
+
+.inputValorCuota {
+	width: 50px;
+}
+
+.inputFechaVencimientoPrimeraCuota {
+	width: 58px;
+}
+
+.inputPorcentajeMora {
+	width: 35px;
+}
+
+.inputDomicilioAcreedor {
+	width: 250px;
+}
+
+.inputTasaEfectivaAnual {
+	width: 30px;
+}
+
+.inputTasaEfectivaMensual {
+	width: 30px;
+}
+
+.inputGastosAdministrativosUIPorCuota {
+	width: 30px;
+}

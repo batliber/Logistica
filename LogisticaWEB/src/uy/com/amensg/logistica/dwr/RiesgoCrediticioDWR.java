@@ -1,6 +1,8 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
@@ -13,11 +15,17 @@ import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IRiesgoCrediticioBean;
 import uy.com.amensg.logistica.bean.RiesgoCrediticioBean;
+import uy.com.amensg.logistica.entities.CalificacionRiesgoCrediticioAntel;
+import uy.com.amensg.logistica.entities.CalificacionRiesgoCrediticioBCU;
+import uy.com.amensg.logistica.entities.Empresa;
+import uy.com.amensg.logistica.entities.EstadoRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.RiesgoCrediticio;
 import uy.com.amensg.logistica.entities.RiesgoCrediticioTO;
+import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
+import uy.com.amensg.logistica.util.Configuration;
 
 @RemoteProxy
 public class RiesgoCrediticioDWR {
@@ -112,10 +120,157 @@ public class RiesgoCrediticioDWR {
 		return result;
 	}
 
+	public void registrarAnalisisAprobadoManual(Long empresaId, String documento) {
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				Date date = GregorianCalendar.getInstance().getTime();
+				
+				IRiesgoCrediticioBean iRiesgoCrediticioBean = lookupBean();
+				
+				RiesgoCrediticio riesgoCrediticio = new RiesgoCrediticio();
+				riesgoCrediticio.setDocumento(documento);
+				riesgoCrediticio.setFechaImportacion(date);
+				
+				CalificacionRiesgoCrediticioAntel calificacionRiesgoCrediticioAntel = new CalificacionRiesgoCrediticioAntel();
+				calificacionRiesgoCrediticioAntel.setId(
+					new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioAntel.OK"))
+				);
+				
+				riesgoCrediticio.setCalificacionRiesgoCrediticioAntel(calificacionRiesgoCrediticioAntel);
+				
+				CalificacionRiesgoCrediticioBCU calificacionRiesgoCrediticioBCU = new CalificacionRiesgoCrediticioBCU();
+				calificacionRiesgoCrediticioBCU.setId(
+					new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDATOS"))
+				);
+				
+				riesgoCrediticio.setCalificacionRiesgoCrediticioBCU(calificacionRiesgoCrediticioBCU);
+				
+				Empresa empresa = new Empresa();
+//				Se define que el registro se cargue a nombre de Gazaler S.A.
+//				empresa.setId(empresaId);
+				empresa.setId(
+					new Long(Configuration.getInstance().getProperty("empresa.GazalerSA"))
+				);
+				
+				riesgoCrediticio.setEmpresa(empresa);
+				
+				EstadoRiesgoCrediticio estadoRiesgoCrediticio = new EstadoRiesgoCrediticio();
+				estadoRiesgoCrediticio.setId(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesar"))
+				);
+				
+				riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticio);
+				
+				TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio = new TipoControlRiesgoCrediticio();
+				tipoControlRiesgoCrediticio.setId(
+					new Long(Configuration.getInstance().getProperty("tipoControlRiesgoCrediticio.ACMYBCU"))
+				);
+				
+				riesgoCrediticio.setTipoControlRiesgoCrediticio(tipoControlRiesgoCrediticio);
+				
+				riesgoCrediticio.setFact(date);
+				riesgoCrediticio.setTerm(new Long(1));
+				riesgoCrediticio.setUact(usuarioId);
+				
+				iRiesgoCrediticioBean.save(riesgoCrediticio);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void registrarAnalisisRechazadoManual(Long empresaId, String documento) {
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				Date date = GregorianCalendar.getInstance().getTime();
+				
+				IRiesgoCrediticioBean iRiesgoCrediticioBean = lookupBean();
+				
+				RiesgoCrediticio riesgoCrediticio = new RiesgoCrediticio();
+				riesgoCrediticio.setDocumento(documento);
+				riesgoCrediticio.setFechaImportacion(date);
+				
+				CalificacionRiesgoCrediticioAntel calificacionRiesgoCrediticioAntel = new CalificacionRiesgoCrediticioAntel();
+				calificacionRiesgoCrediticioAntel.setId(
+					new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioAntel.TieneDeuda"))
+				);
+				
+				riesgoCrediticio.setCalificacionRiesgoCrediticioAntel(calificacionRiesgoCrediticioAntel);
+				
+				CalificacionRiesgoCrediticioBCU calificacionRiesgoCrediticioBCU = new CalificacionRiesgoCrediticioBCU();
+				calificacionRiesgoCrediticioBCU.setId(
+					new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.5"))
+				);
+				
+				riesgoCrediticio.setCalificacionRiesgoCrediticioBCU(calificacionRiesgoCrediticioBCU);
+				
+				Empresa empresa = new Empresa();
+//				Se define que el registro se cargue a nombre de Gazaler S.A.
+//				empresa.setId(empresaId);
+				empresa.setId(
+					new Long(Configuration.getInstance().getProperty("empresa.GazalerSA"))
+				);
+				
+				riesgoCrediticio.setEmpresa(empresa);
+				
+				EstadoRiesgoCrediticio estadoRiesgoCrediticio = new EstadoRiesgoCrediticio();
+				estadoRiesgoCrediticio.setId(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesar"))
+				);
+				
+				riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticio);
+				
+				TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio = new TipoControlRiesgoCrediticio();
+				tipoControlRiesgoCrediticio.setId(
+					new Long(Configuration.getInstance().getProperty("tipoControlRiesgoCrediticio.ACMYBCU"))
+				);
+				
+				riesgoCrediticio.setTipoControlRiesgoCrediticio(tipoControlRiesgoCrediticio);
+				
+				riesgoCrediticio.setFact(date);
+				riesgoCrediticio.setTerm(new Long(1));
+				riesgoCrediticio.setUact(usuarioId);
+				
+				iRiesgoCrediticioBean.save(riesgoCrediticio);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IRiesgoCrediticioBean iRiesgoCrediticioBean = lookupBean();
+				
+				result = iRiesgoCrediticioBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public static RiesgoCrediticioTO transform(RiesgoCrediticio riesgoCrediticio) {
 		RiesgoCrediticioTO result = new RiesgoCrediticioTO();
 
 		result.setDocumento(riesgoCrediticio.getDocumento());
+		result.setFechaImportacion(riesgoCrediticio.getFechaImportacion());
 		result.setFechaVigenciaDesde(riesgoCrediticio.getFechaVigenciaDesde());
 		
 		if (riesgoCrediticio.getCalificacionRiesgoCrediticioAntel() != null) {

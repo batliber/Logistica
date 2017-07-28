@@ -78,7 +78,7 @@ public class SeguridadFilter implements Filter {
 			
 			if ((httpSession == null) || (httpSession.getAttribute("sesion") == null)) {
 				if (userAgent.toLowerCase().contains("mobile")) {
-					httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/mobile/mlogin.jsp");
+					httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/mobile/mlogin/mlogin.jsp");
 				} else {
 					httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/login/login.jsp");
 				}

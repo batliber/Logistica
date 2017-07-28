@@ -1,9 +1,10 @@
 package uy.com.amensg.logistica.entities;
 
-import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -19,19 +20,19 @@ public class Rol extends BaseEntity {
 	@Column(name = "nombre")
 	private String nombre;
 
-	@ManyToMany
+	@ManyToMany( fetch=FetchType.EAGER )
 	@JoinTable(name = "seguridad_menu_rol", 
 		joinColumns=@JoinColumn(name = "seguridad_rol_id"),
 		inverseJoinColumns=@JoinColumn(name = "seguridad_menu_id")
 	)
-	private Collection<Menu> menus;
+	private Set<Menu> menus;
 	
-	@OneToMany
+	@OneToMany( fetch=FetchType.EAGER )
 	@JoinTable(name = "seguridad_rol_jerarquia", 
 		joinColumns=@JoinColumn(name = "rol_id"),
 		inverseJoinColumns=@JoinColumn(name = "rol_subordinado_id")
 	)
-	private Collection<Rol> subordinados;
+	private Set<Rol> subordinados;
 	
 	public String getNombre() {
 		return nombre;
@@ -41,19 +42,19 @@ public class Rol extends BaseEntity {
 		this.nombre = nombre;
 	}
 
-	public Collection<Menu> getMenus() {
+	public Set<Menu> getMenus() {
 		return menus;
 	}
 
-	public void setMenus(Collection<Menu> menus) {
+	public void setMenus(Set<Menu> menus) {
 		this.menus = menus;
 	}
 
-	public Collection<Rol> getSubordinados() {
+	public Set<Rol> getSubordinados() {
 		return subordinados;
 	}
 	
-	public void setSubordinados(Collection<Rol> subordinados) {
+	public void setSubordinados(Set<Rol> subordinados) {
 		this.subordinados = subordinados;
 	}
 }

@@ -150,7 +150,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par醡etros seg鷑 las condiciones del filtro
+			// Setear los par谩metros seg煤n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -213,7 +213,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				}
 			}
 			
-			// Acotar al tama駉 de la muestra
+			// Acotar al tama帽o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -255,7 +255,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par醡etros seg鷑 las condiciones del filtro
+			// Setear los par谩metros seg煤n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -326,16 +326,52 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		return result;
 	}
 	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long usuarioId) {
+		String result = null;
+		
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName =
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
+					
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
+			
+			for (ACMInterfaceContrato acmInterfaceContrato : this.listSubconjunto(metadataConsulta)) {
+				printWriter.println(this.buildCSVLine(acmInterfaceContrato, null));
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	/**
-	 * Calcula estad韘tcas para la asignaci髇 de MIDs con los criterios seleccionados.
+	 * Calcula estad铆stcas para la asignaci贸n de MIDs con los criterios seleccionados.
 	 * Devuelve un String con 3 tipos de caso:
 	 *     - Cantidad a asignar
 	 *     - Cantidad a omitir
 	 *     - Cantidad a reemplazar
 	 * 
-	 * @param filtro con la selecci髇
-	 * @param Empresa a asignar la selecci髇
-	 * @return String con las estad韘ticas de la asignaci髇 de la selecci髇 a la empresa.
+	 * @param filtro con la selecci贸n
+	 * @param Empresa a asignar la selecci贸n
+	 * @return String con las estad铆sticas de la asignaci贸n de la selecci贸n a la empresa.
 	 */
 	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa) {
 		String result = null;
@@ -369,9 +405,9 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			}
 			
 			result =
-				"Se asignar醤 " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribir醤 " + sobreescribir + " MIDs.|"
-				+ "Se omitir醤 " + omitir + " MIDs.";
+				"Se asignar谩n " + importar + " MIDs nuevos.|"
+				+ "Se sobreescribir谩n " + sobreescribir + " MIDs.|"
+				+ "Se omitir谩n " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -382,9 +418,9 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 	/**
 	 * Asigna los MIDs que cumplen con los criterios a la Empresa.
 	 * 
-	 * @param filtro con la selecci髇
-	 * @param Empresa a asignar la selecci髇
-	 * @param observaciones a inclu韗 en la asignaci髇.
+	 * @param filtro con la selecci贸n
+	 * @param Empresa a asignar la selecci贸n
+	 * @param observaciones a inclu铆r en la asignaci贸n.
 	 */
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones) {
 		String result = null;
@@ -560,7 +596,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				
 				acmInterfaceContrato = entityManager.merge(acmInterfaceContrato);
 				
-				// Agregar l韓ea al archivo.
+				// Agregar l铆nea al archivo.
 				printWriter.println(this.buildCSVLine(acmInterfaceContrato, observaciones));
 				
 				switch (map.get(acmInterfaceContrato.getMid())) {

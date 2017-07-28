@@ -4,27 +4,11 @@ var __ROL_ACTIVADOR = 10;
 
 var mode = __ROL_ACTIVADOR;
 
-var filtroDinamico = new FiltroDinamico(
-	{
-		tdContratoMid: { campo: "mid", descripcion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
-		tdContratoFinContrato: { campo: "fechaFinContrato", descripcion: "Fin de contrato", tipo: __TIPO_CAMPO_FECHA },
-		tdContratoNuevoPlan: { campo: "nuevoPlan", descripcion: "Plan", tipo: __TIPO_CAMPO_STRING },
-		tdContratoDocumento: { campo: "documento", descripcion: "Documento", tipo: __TIPO_CAMPO_STRING },
-		tdContratoNumeroContrato: { campo: "numeroContrato", descripcion: "Nro. contrato", tipo: __TIPO_CAMPO_NUMERICO },
-		tdContratoNombre: { campo: "nombre", descripcion: "Nombre", tipo: __TIPO_CAMPO_STRING },
-		tdContratoDireccion: { campo: "direccion", descripcion: "Direcci�n", tipo: __TIPO_CAMPO_STRING },
-		tdContratoLocalidad: { campo: "localidad", descripcion: "Localidad", tipo: __TIPO_CAMPO_STRING },
-		tdContratoEquipo: { campo: "equipo", descripcion: "Equipo", tipo: __TIPO_CAMPO_STRING },
-		tdActivador: { campo: "usuario.nombre", descripcion: "Activador", tipo: __TIPO_CAMPO_STRING },
-		tdEmpresa: { campo: "empresa.nombre", descripcion: "Empresa", tipo: __TIPO_CAMPO_STRING },
-		tdActivarEn: { campo: "fechaActivarEn", descripcion: "Activar", tipo: __TIPO_CAMPO_STRING },
-		tdEstado: { campo: "estado.nombre", descripcion: "Estado", tipo: __TIPO_CAMPO_STRING }
-	}, reloadData
-);
-
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonAsignar").hide();
 	$("#divButtonExportarAExcel").hide();
 	
@@ -50,7 +34,7 @@ $(document).ready(function() {
 								tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
 								tdFechaActivarEn: { campo: "fechaActivarEn", descripcion: "Activar en", abreviacion: "Act. en", tipo: __TIPO_CAMPO_FECHA },
 								tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
-								tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto por distribuidor", abreviacion: "Distribu�do", tipo: __TIPO_CAMPO_FECHA },
+								tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto por distribuidor", abreviacion: "Distribuído", tipo: __TIPO_CAMPO_FECHA },
 								tdContratoObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING },
 								tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 90 },
 								tdActivador: { campo: "activador.nombre", clave: "activador.id", descripcion: "Activador", abreviacion: "Activador", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listActivadores, clave: "id", valor: "nombre" }, ancho: 90 },
@@ -63,22 +47,18 @@ $(document).ready(function() {
 						
 						grid.rebuild();
 						
-						grid.filtroDinamico.agregarFiltro(null, null);
-						$("#selectCampo1").val("estado.nombre");
-						grid.filtroDinamico.campoOnChange(null, null, 1, true);
-						
-						$("#selectCondicion1").val("keq");
-						grid.filtroDinamico.condicionOnChange(null, null, 1, true, "estado.nombre");
-						
-						$("#inputValor1").val("10");
-						grid.filtroDinamico.valorOnChange(null, null, 1, true);
-						
-						grid.filtroDinamico.agregarFiltro(null, null);
-						$("#selectCampo2").val("usuario.nombre");
-						grid.filtroDinamico.campoOnChange(null, null, 2, true);
-						
-						$("#selectCondicion2").val("nl");
-						grid.filtroDinamico.condicionOnChange(null, null, 2, true, "usuario.nombre");
+						grid.filtroDinamico.agregarFiltrosManuales([
+							{
+								campo: "estado.nombre",
+								operador: "keq",
+								valores: ["10"]
+							}, 
+							{
+								campo: "usuario.nombre",
+								operador: "nl",
+								valores: []
+							}
+						]);
 						
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
 						
@@ -102,7 +82,7 @@ $(document).ready(function() {
 							tdContratoEquipo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 90 },
 							tdContratoTelefonoContacto: { campo: "telefonoContacto", descripcion: "Teléfono contacto", abreviacion: "Teléfono", tipo: __TIPO_CAMPO_STRING },
 							tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
-							tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto por distribuidor", abreviacion: "Distribu�do", tipo: __TIPO_CAMPO_FECHA },
+							tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto por distribuidor", abreviacion: "Distribuído", tipo: __TIPO_CAMPO_FECHA },
 							tdFechaActivarEn: { campo: "fechaActivarEn", descripcion: "Activar en", abreviacion: "Act. en", tipo: __TIPO_CAMPO_FECHA },
 							tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
 							tdContratoObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING },
@@ -115,17 +95,17 @@ $(document).ready(function() {
 					
 					grid.rebuild();
 					
+					reloadData();
+					
 					mode = __ROL_ACTIVADOR;
 				}
 			}, async: false
 		}
 	);
 	
-	reloadData();
-	
 	$("#divIFrameContrato").draggable();
 	$("#divIFrameSeleccionActivador").draggable();
-});
+}
 
 function listEmpresas() {
 	var result = [];
@@ -147,22 +127,6 @@ function listModelos() {
 	var result = [];
 	
 	ModeloDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listPlanes() {
-	var result = [];
-	
-	PlanDWR.list(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -299,17 +263,15 @@ function closeDialog() {
 
 function inputAsignarOnClick() {
 	metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-	metadataConsulta.tamanoSubconjunto = 
-		Math.min(
-			$("#inputTamanoSubconjunto").val(),
-			$("#divCantidadRegistrosValue").text()
-		);
+	if (metadataConsulta.tamanoSubconjunto > grid.getCount()) {
+		metadataConsulta.tamanoSubconjunto = grid.getCount();
+	}
 	
 	ContratoDWR.chequearAsignacion(
 		metadataConsulta,
 		{
 			callback: function(data) {
-				if (data || confirm("Atenci�n: se modificar�n registros que ya se encuentran asignados.")) {
+				if (data || confirm("Atención: se modificarán registros que ya se encuentran asignados.")) {
 					$("#selectActivador > option").remove();
 					
 					$("#selectActivador").append("<option value='0'>Seleccione...</option>");
@@ -351,19 +313,17 @@ function inputAceptarOnClick(event, element) {
 		};
 		
 		metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divCantidadRegistrosValue").text()
-			);
+		if (metadataConsulta.tamanoSubconjunto > grid.getCount()) {
+			metadataConsulta.tamanoSubconjunto = grid.getCount();
+		}
 		
-		if (confirm("Se asignar�n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		if (confirm("Se asignarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 			ContratoDWR.asignarActivador(
 				activador,
 				metadataConsulta,
 				{
 					callback: function(data) {
-						alert("Operaci�n exitosa.");
+						alert("Operación exitosa.");
 						
 						reloadData();
 					}, async: false

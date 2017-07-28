@@ -1,13 +1,36 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	$("#divEliminarPlan").hide();
+	
+	TipoPlanDWR.list(
+		{
+			callback: function(data) {
+				$("#selectPlanTipoPlan option").remove();
+				
+				var html =
+					"<option id='0' value='0'>Seleccione...</option>";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
+				}
+				
+				$("#selectPlanTipoPlan").append(html);
+			}, async: false
+		}
+	);
 	
 	if (id != null) {
 		PlanDWR.getById(
 			id,
 			{
 				callback: function(data) {
+					if (data.tipoPlan != null) {
+						$("#selectPlanTipoPlan").val(data.tipoPlan.id);
+					}
+					
 					$("#inputPlanDescripcion").val(data.descripcion);
 					$("#inputPlanAbreviacion").val(data.abreviacion);
 					$("#inputPlanConsumoMinimo").val(data.consumoMinimo);
@@ -38,7 +61,7 @@ $(document).ready(function() {
 			}
 		);
 	}
-});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -106,7 +129,7 @@ function checkRequiredFields() {
 
 function inputGuardarOnClick(event) {
 	if (!checkRequiredFields()) {
-		alert("Informaci�n incompleta.");
+		alert("Información incompleta.");
 		return;
 	}
 	
@@ -134,6 +157,12 @@ function inputGuardarOnClick(event) {
 		cantidadFijosAntelMinutosGratis: $("#inputPlanCantidadFijosAntelMinutosGratis").val()
 	};
 	
+	if ($("#selectPlanTipoPlan").val() != 0) {
+		plan.tipoPlan = {
+			id: $("#selectPlanTipoPlan").val()
+		};
+	}
+	
 	if (id != null) {
 		plan.id = id;
 		
@@ -141,7 +170,7 @@ function inputGuardarOnClick(event) {
 			plan,
 			{
 				callback: function(data) {
-					alert("Operaci�n exitosa");
+					alert("Operación exitosa");
 				}, async: false
 			}
 		);
@@ -150,7 +179,7 @@ function inputGuardarOnClick(event) {
 			plan,
 			{
 				callback: function(data) {
-					alert("Operaci�n exitosa");
+					alert("Operación exitosa");
 					
 					$("#inputEliminarPlan").prop("disabled", false);
 				}, async: false

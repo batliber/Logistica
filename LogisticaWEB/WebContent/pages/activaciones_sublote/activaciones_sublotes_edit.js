@@ -8,7 +8,9 @@ var chips = {
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	UsuarioRolEmpresaDWR.listDistribuidoresByContext(
@@ -90,7 +92,9 @@ $(document).ready(function() {
 		},
 		false,
 		reloadGrid,
-		trActivacionOnClick
+		trActivacionOnClick,
+		null,
+		17
 	);
 	
 	grid.rebuild();
@@ -144,7 +148,7 @@ $(document).ready(function() {
 			}
 		);
 	}
-});
+}
 
 function refinarForm() {
 	$("#divButtonImprimir").hide();
@@ -324,11 +328,11 @@ function reloadGrid() {
 
 function trActivacionOnClick(eventObject) {
 	var target = eventObject.currentTarget;
-	var imei = $(target).children("[campo='tdIMEI']").html();
+	var imei = $(target).children("[campo='tdChip']").html();
 	
 	var i=0;
 	for (i=0; i<chips.registrosMuestra.length; i++) {
-		if (chips.registrosMuestra[i].imei == imei) {
+		if (chips.registrosMuestra[i].chip == imei) {
 			break;
 		}
 	}
@@ -360,7 +364,9 @@ function inputChipOnChange(event, element) {
 			{
 				callback: function(data) {
 					if (data != null) {
-						if (chips.cantidadRegistros > 0 && chips.registrosMuestra[0].empresa.id != data.empresa.id) {
+						if (chips.cantidadRegistros > 0 
+							&& chips.registrosMuestra[0].empresa.id != data.empresa.id
+						) {
 							alert("El chip ingresado fue activado por otra Empresa");
 						} else {
 							$("#divEmpresa").text(data.empresa.nombre);
@@ -435,7 +441,7 @@ function inputGuardarOnClick(event) {
 			id: chips.registrosMuestra[i].id
 		}
 	}
-
+	
 	if (id != null) {
 		activacionSublote.id = id;
 		activacionSublote.numero = $("#divNumero").text();
@@ -455,6 +461,8 @@ function inputGuardarOnClick(event) {
 			{
 				callback: function(data) {
 					alert("Operación exitosa.");
+					
+					window.parent.closeDialog();
 				}, async: false
 			}
 		);
@@ -470,15 +478,7 @@ function inputGuardarOnClick(event) {
 					
 					alert("Se ha creado el sub-lote nro: " + data);
 					
-					$("#selectDistribuidor").val(0);
-					$("#selectPuntoVenta").val(0);
-					
-					chips = {
-						cantidadRegistros: 0,
-						registrosMuestra: []
-					};
-					
-					reloadGrid();
+					window.parent.closeDialog();
 				}, async: false
 			}
 		);

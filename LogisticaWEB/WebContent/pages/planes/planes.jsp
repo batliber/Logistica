@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoPlanDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PlanDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>

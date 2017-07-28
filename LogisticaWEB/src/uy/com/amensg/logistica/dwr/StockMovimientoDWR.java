@@ -15,10 +15,18 @@ import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IStockMovimientoBean;
 import uy.com.amensg.logistica.bean.StockMovimientoBean;
+import uy.com.amensg.logistica.entities.EmpresaTO;
 import uy.com.amensg.logistica.entities.Marca;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.Modelo;
+import uy.com.amensg.logistica.entities.StockActual;
+import uy.com.amensg.logistica.entities.StockActualTO;
 import uy.com.amensg.logistica.entities.StockMovimiento;
 import uy.com.amensg.logistica.entities.StockMovimientoTO;
+import uy.com.amensg.logistica.entities.TipoProducto;
+import uy.com.amensg.logistica.entities.TipoProductoTO;
 
 @RemoteProxy
 public class StockMovimientoDWR {
@@ -51,6 +59,65 @@ public class StockMovimientoDWR {
 		return result;
 	}
 	
+	public MetadataConsultaResultadoTO listStockActualContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IStockMovimientoBean iStockMovimientoBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iStockMovimientoBean.listStockActual(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object stockActual : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(transform((StockActual) stockActual));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countStockActualContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IStockMovimientoBean iStockMovimientoBean = lookupBean();
+				
+				result = 
+					iStockMovimientoBean.countStockActual(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<StockMovimientoTO> listStockByEmpresaId(Long id) {
 		Collection<StockMovimientoTO> result = new LinkedList<StockMovimientoTO>();
 		
@@ -58,6 +125,27 @@ public class StockMovimientoDWR {
 			IStockMovimientoBean iStockMovimientoBean = lookupBean();
 			
 			for (StockMovimiento stockMovimiento : iStockMovimientoBean.listStockByEmpresaId(id)) {
+				result.add(transform(stockMovimiento));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<StockMovimientoTO> listStockByEmpresaTipoProducto(EmpresaTO empresaTO, TipoProductoTO tipoProductoTO) {
+		Collection<StockMovimientoTO> result = new LinkedList<StockMovimientoTO>();
+		
+		try {
+			IStockMovimientoBean iStockMovimientoBean = lookupBean();
+			
+			for (StockMovimiento stockMovimiento : 
+				iStockMovimientoBean.listStockByEmpresaTipoProducto(
+					EmpresaDWR.transform(empresaTO), 
+					TipoProductoDWR.transform(tipoProductoTO)
+				)
+			) {
 				result.add(transform(stockMovimiento));
 			}
 		} catch (Exception e) {
@@ -168,6 +256,10 @@ public class StockMovimientoDWR {
 			result.setModelo(ModeloDWR.transform(stockMovimiento.getModelo()));
 		}
 		
+		if (stockMovimiento.getTipoProducto() != null) {
+			result.setTipoProducto(TipoProductoDWR.transform(stockMovimiento.getTipoProducto()));
+		}
+		
 		if (stockMovimiento.getProducto() != null) {
 			result.setProducto(ProductoDWR.transform(stockMovimiento.getProducto()));
 		}
@@ -180,6 +272,30 @@ public class StockMovimientoDWR {
 		result.setId(stockMovimiento.getId());
 		result.setTerm(stockMovimiento.getTerm());
 		result.setUact(stockMovimiento.getUact());
+		
+		return result;
+	}
+	
+	public static StockActualTO transform(StockActual stockActual) {
+		StockActualTO result = new StockActualTO();
+		
+		result.setCantidad(stockActual.getCantidad());
+		
+		if (stockActual.getEmpresa() != null) {
+			result.setEmpresa(EmpresaDWR.transform(stockActual.getEmpresa()));
+		}
+
+		if (stockActual.getMarca() != null) {
+			result.setMarca(MarcaDWR.transform(stockActual.getMarca()));
+		}
+		
+		if (stockActual.getModelo() != null) {
+			result.setModelo(ModeloDWR.transform(stockActual.getModelo()));
+		}
+		
+		if (stockActual.getTipoProducto() != null) {
+			result.setTipoProducto(TipoProductoDWR.transform(stockActual.getTipoProducto()));
+		}
 		
 		return result;
 	}
@@ -206,6 +322,13 @@ public class StockMovimientoDWR {
 			modelo.setId(stockMovimientoTO.getModelo().getId());
 			
 			result.setModelo(modelo);
+		}
+		
+		if (stockMovimientoTO.getTipoProducto() != null) {
+			TipoProducto tipoProducto = new TipoProducto();
+			tipoProducto.setId(stockMovimientoTO.getTipoProducto().getId());
+			
+			result.setTipoProducto(tipoProducto);
 		}
 		
 		if (stockMovimientoTO.getProducto() != null) {

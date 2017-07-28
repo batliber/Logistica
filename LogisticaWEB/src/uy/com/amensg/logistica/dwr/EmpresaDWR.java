@@ -3,7 +3,9 @@ package uy.com.amensg.logistica.dwr;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -115,6 +117,7 @@ public class EmpresaDWR {
 		EmpresaTO empresaTO = new EmpresaTO();
 		
 		empresaTO.setCodigoPromotor(empresa.getCodigoPromotor());
+		empresaTO.setDireccion(empresa.getDireccion());
 		empresaTO.setLogoURL(empresa.getLogoURL());
 		empresaTO.setNombre(empresa.getNombre());
 		empresaTO.setNombreContrato(empresa.getNombreContrato());
@@ -139,16 +142,17 @@ public class EmpresaDWR {
 	}
 
 	public static Empresa transform(EmpresaTO empresaTO) {
-		Empresa empresa = new Empresa();
+		Empresa result = new Empresa();
 		
-		empresa.setCodigoPromotor(empresaTO.getCodigoPromotor());
-		empresa.setLogoURL(empresaTO.getLogoURL());
-		empresa.setNombre(empresaTO.getNombre());
-		empresa.setNombreContrato(empresaTO.getNombreContrato());
-		empresa.setNombreSucursal(empresaTO.getNombreSucursal());
+		result.setCodigoPromotor(empresaTO.getCodigoPromotor());
+		result.setDireccion(empresaTO.getDireccion());
+		result.setLogoURL(empresaTO.getLogoURL());
+		result.setNombre(empresaTO.getNombre());
+		result.setNombreContrato(empresaTO.getNombreContrato());
+		result.setNombreSucursal(empresaTO.getNombreSucursal());
 		
 		if (empresaTO.getFormaPagos() != null) {
-			Collection<FormaPago> formaPagos = new LinkedList<FormaPago>();
+			Set<FormaPago> formaPagos = new HashSet<FormaPago>();
 			
 			for (FormaPagoTO formaPagoTO : empresaTO.getFormaPagos()) {
 				FormaPago formaPago = new FormaPago();
@@ -158,20 +162,20 @@ public class EmpresaDWR {
 				formaPagos.add(formaPago);
 			}
 			
-			empresa.setFormaPagos(formaPagos);
+			result.setFormaPagos(formaPagos);
 		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
-		empresa.setFact(date);
-		empresa.setId(empresaTO.getId());
-		empresa.setTerm(new Long(1));
+		result.setFact(date);
+		result.setId(empresaTO.getId());
+		result.setTerm(new Long(1));
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
-		empresa.setUact(usuarioId);
+		result.setUact(usuarioId);
 		
-		return empresa;
+		return result;
 	}
 }

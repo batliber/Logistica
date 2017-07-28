@@ -13,12 +13,13 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/BarrioDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoPuntoVentaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PuntoVentaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
 	<script type="text/javascript" src="./punto_venta_edit.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb6ZHkQPu3YqYlFLsBAGZ-79aVjSXwEig&libraries=places"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
 	<link rel="stylesheet" type="text/css" href="./punto_venta_edit.css"/>
 </head>
@@ -34,6 +35,7 @@
 	</div>
 	<div class="divPopupWindow">
 		<div class="divFormLabelExtended">Nombre:</div><div id="divPuntoVentaNombre" class="divFormValue"><input type="text" id="inputPuntoVentaNombre"/></div>
+		<div class="divFormLabelExtended">Estado:</div><div id="divPuntoVentaEstado" class="divFormValue"><select id="selectPuntoVentaEstado"></select></div>
 		<div class="divFormLabelExtended">Departamento:</div><div id="divPuntoVentaDepartamento" class="divFormValue"><select id="selectPuntoVentaDepartamento" onchange="javascript:selectDepartamentoOnChange(event, this)"></select></div>
 		<div class="divFormLabelExtended">Barrio:</div><div id="divPuntoVentaBarrio" class="divFormValue"><select id="selectPuntoVentaBarrio"></select></div>
 		<div class="divFormLabelExtended">Direcci&oacute;n:</div><div id="divPuntoVentaDireccion" class="divFormValue"><input type="text" id="inputPuntoVentaDireccion"/></div>

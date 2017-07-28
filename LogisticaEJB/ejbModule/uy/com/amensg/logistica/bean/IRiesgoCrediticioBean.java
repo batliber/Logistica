@@ -19,6 +19,8 @@ public interface IRiesgoCrediticioBean {
 
 	public RiesgoCrediticio getSiguienteDocumentoParaControlar();
 	
+	public RiesgoCrediticio getLastByDocumento(String documento);
+	
 	public RiesgoCrediticio getLastByEmpresaDocumento(Empresa empresa, String documento);
 	
 	public String preprocesarArchivoEmpresa(String fileName, Long empresaId);
@@ -31,7 +33,11 @@ public interface IRiesgoCrediticioBean {
 	
 	public void actualizarDatosRiesgoCrediticioBCU(BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio);
 	
+	public void actualizarDatosRiesgoCrediticioBCUSinDatos(BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio);
+	
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
 		BCUInterfaceRiesgoCrediticioInstitucionFinanciera bcuInterfaceRiesgoCrediticioInstitucionFinanciera
 	);
+
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 }

@@ -13,11 +13,16 @@ import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Marca;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Producto;
+import uy.com.amensg.logistica.entities.StockActual;
 import uy.com.amensg.logistica.entities.StockMovimiento;
 import uy.com.amensg.logistica.entities.StockTipoMovimiento;
+import uy.com.amensg.logistica.entities.TipoProducto;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class StockMovimientoBean implements IStockMovimientoBean {
@@ -39,9 +44,9 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 		
 		try {
 			Query query = entityManager.createQuery(
-				"SELECT s.empresa.id, s.marca.id, s.modelo.id, SUM(s.cantidad) AS cantidad"
+				"SELECT s.empresa.id, s.marca.id, s.modelo.id, s.tipoProducto.id, SUM(s.cantidad) AS cantidad"
 				+ " FROM StockMovimiento s"
-				+ " GROUP BY s.empresa.id, s.marca.id, s.modelo.id"
+				+ " GROUP BY s.empresa.id, s.marca.id, s.modelo.id, s.tipoProducto.id"
 			);
 			
 			for (Object object : query.getResultList()) {
@@ -61,10 +66,38 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 				
 				stockMovimiento.setModelo(modelo);
 				
-				stockMovimiento.setCantidad((Long) values[3]);
+				TipoProducto tipoProducto = entityManager.find(TipoProducto.class, (Long) values[3]);
+				
+				stockMovimiento.setTipoProducto(tipoProducto);
+				
+				stockMovimiento.setCantidad((Long) values[4]);
 				
 				result.add(stockMovimiento);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultado listStockActual(MetadataConsulta metadataConsulta) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<StockActual>().list(entityManager, metadataConsulta, new StockActual());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	public Long countStockActual(MetadataConsulta metadataConsulta) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<StockActual>().count(entityManager, metadataConsulta, new StockActual());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -77,11 +110,11 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 		
 		try {
 			Query query = entityManager.createQuery(
-				"SELECT s.marca.id, s.modelo.id, SUM(s.cantidad) AS cantidad"
+				"SELECT s.marca.id, s.modelo.id, s.tipoProducto.id, SUM(s.cantidad) AS cantidad"
 				+ " FROM StockMovimiento s"
 				+ " WHERE s.empresa.id = :empresaId"
 				+ " AND s.modelo.fechaBaja IS NULL"
-				+ " GROUP BY s.marca.id, s.modelo.id"
+				+ " GROUP BY s.marca.id, s.modelo.id, s.tipoProducto.id"
 			);
 			query.setParameter("empresaId", id);
 			
@@ -98,7 +131,54 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 				
 				stockMovimiento.setModelo(modelo);
 				
-				stockMovimiento.setCantidad((Long) values[2]);
+				TipoProducto tipoProducto = entityManager.find(TipoProducto.class, (Long) values[2]);
+				
+				stockMovimiento.setTipoProducto(tipoProducto);
+				
+				stockMovimiento.setCantidad((Long) values[3]);
+				
+				result.add(stockMovimiento);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<StockMovimiento> listStockByEmpresaTipoProducto(Empresa empresa, TipoProducto tipoProducto) {
+		Collection<StockMovimiento> result = new LinkedList<StockMovimiento>();
+		
+		try {
+			Query query = entityManager.createQuery(
+				"SELECT s.marca.id, s.modelo.id, s.tipoProducto.id, SUM(s.cantidad) AS cantidad"
+				+ " FROM StockMovimiento s"
+				+ " WHERE s.empresa.id = :empresaId"
+				+ " AND s.tipoProducto.id = :tipoProductoId"
+				+ " AND s.modelo.fechaBaja IS NULL"
+				+ " GROUP BY s.marca.id, s.modelo.id, s.tipoProducto.id"
+			);
+			query.setParameter("empresaId", empresa.getId());
+			query.setParameter("tipoProductoId", tipoProducto.getId());
+			
+			for (Object object : query.getResultList()) {
+				Object[] values = (Object[]) object;
+				
+				StockMovimiento stockMovimiento = new StockMovimiento();
+				
+				Marca marcaManaged = entityManager.find(Marca.class, (Long) values[0]);
+				
+				stockMovimiento.setMarca(marcaManaged);
+				
+				Modelo modeloManaged = entityManager.find(Modelo.class, (Long) values[1]);
+				
+				stockMovimiento.setModelo(modeloManaged);
+				
+				TipoProducto tipoProductoManaged = entityManager.find(TipoProducto.class, (Long) values[2]);
+				
+				stockMovimiento.setTipoProducto(tipoProductoManaged);
+				
+				stockMovimiento.setCantidad((Long) values[3]);
 				
 				result.add(stockMovimiento);
 			}
@@ -202,6 +282,7 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 				stockMovimientoBaja.setFecha(stockMovimiento.getFact());
 				stockMovimientoBaja.setMarca(stockMovimiento.getMarca());
 				stockMovimientoBaja.setModelo(stockMovimiento.getModelo());
+				stockMovimientoBaja.setTipoProducto(stockMovimiento.getTipoProducto());
 				stockMovimientoBaja.setProducto(stockMovimiento.getProducto());
 				stockMovimientoBaja.setStockTipoMovimiento(stockTipoMovimientoBaja);
 				
@@ -218,6 +299,7 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 				stockMovimientoAlta.setFecha(stockMovimiento.getFact());
 				stockMovimientoAlta.setMarca(stockMovimiento.getMarca());
 				stockMovimientoAlta.setModelo(stockMovimiento.getModelo());
+				stockMovimientoAlta.setTipoProducto(stockMovimiento.getTipoProducto());
 				stockMovimientoAlta.setProducto(stockMovimiento.getProducto());
 				stockMovimientoAlta.setStockTipoMovimiento(stockTipoMovimientoAlta);
 				

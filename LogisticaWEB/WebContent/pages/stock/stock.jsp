@@ -11,6 +11,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/StockMovimientoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
@@ -43,11 +44,6 @@
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divMainWindow">
-				<div>
-					<div id="divAgregarFiltroContainer">
-						<div style="float: left;">Mostrar equipos dados de baja:</div><div style="float: left;"><input type="checkbox" id="inputMostrarFechaBaja" onchange="javascript:inputMostrarFechaBajaOnClick(event, this)"/></div>
-					</div>
-				</div> 
 				<div id="divTableStockMovimientos">&nbsp;</div>
 			</div>
 		</div>

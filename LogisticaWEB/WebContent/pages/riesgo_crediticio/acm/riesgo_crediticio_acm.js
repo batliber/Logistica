@@ -1,4 +1,5 @@
 var __ROL_ADMINISTRADOR = 1;
+var __ROL_ENCARGADO_ANALISIS_FINANCIERO = 13;
 
 var grid = null;
 
@@ -11,7 +12,8 @@ function init() {
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ANALISIS_FINANCIERO) {
 						$("#divButtonExportarAExcel").show();
 						
 						grid = new Grid(
@@ -120,4 +122,16 @@ function inputActualizarOnClick(event, element) {
 
 function trAnalisisRiesgoOnClick(eventObject) {
 	
+}
+
+function inputExportarAExcelOnClick(event, element) {
+	ACMInterfaceRiesgoCrediticioDWR.exportarAExcel(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+				document.getElementById("formExportarAExcel").submit();
+			}, async: false
+		}
+	);
 }

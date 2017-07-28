@@ -22,11 +22,17 @@ import uy.com.amensg.logistica.bean.IUsuarioBean;
 import uy.com.amensg.logistica.bean.UsuarioBean;
 import uy.com.amensg.logistica.entities.Menu;
 import uy.com.amensg.logistica.entities.MenuTO;
+import uy.com.amensg.logistica.entities.MetadataCondicion;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresaTO;
 import uy.com.amensg.logistica.entities.UsuarioTO;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.MD5Utils;
 
 @RemoteProxy
@@ -76,6 +82,192 @@ public class UsuarioDWR {
 				if (result.size() == 0) {
 					result.add(transform(usuarioLogged, true));
 				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			IUsuarioBean iUsuarioBean = lookupBean();
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				MetadataConsulta metadataConsulta = 
+					MetadataConsultaDWR.transform(
+						metadataConsultaTO
+					);
+				
+				Collection<Long> empresaIds = new LinkedList<Long>();
+				for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
+					if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
+						metadataConsulta.getMetadataCondiciones().remove(metadataCondicion);
+						
+						for (Object valor : metadataCondicion.getValores()) {
+							empresaIds.add((Long)valor);
+						}
+					}
+				}
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iUsuarioBean.list(
+						metadataConsulta,
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object object : metadataConsultaResultado.getRegistrosMuestra()) {
+					Usuario usuario = (Usuario) object;
+					
+					for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
+						if (empresaIds.contains(usuarioRolEmpresa.getEmpresa().getId())) {
+							registrosMuestra.add(transform((Usuario) object, true));
+							break;
+						}
+					}
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultadoTO listVigentesContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			IUsuarioBean iUsuarioBean = lookupBean();
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				MetadataConsulta metadataConsulta = MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				);
+				
+				MetadataCondicion metadataCondicionVigente = new MetadataCondicion();
+				metadataCondicionVigente.setCampo("fechaBaja");
+				metadataCondicionVigente.setOperador(Constants.__METADATA_CONDICION_OPERADOR_NULL);
+				metadataCondicionVigente.setValores(new LinkedList<String>());
+				
+				metadataConsulta.getMetadataCondiciones().add(metadataCondicionVigente);
+				
+				Long empresaId = null;
+				for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
+					if (metadataCondicion.getCampo().equals("empresa.id")) {
+						metadataConsulta.getMetadataCondiciones().remove(metadataCondicion);
+						
+						empresaId = new Long((String) metadataCondicion.getValores().iterator().next());
+					}
+				}
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iUsuarioBean.list(
+						metadataConsulta,
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object object : metadataConsultaResultado.getRegistrosMuestra()) {
+					Usuario usuario = (Usuario) object;
+					
+					if (empresaId != null) {
+						for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
+							if (empresaId.equals(usuarioRolEmpresa.getEmpresa().getId())) {
+								registrosMuestra.add(transform((Usuario) object, true));
+								
+								break;
+							}
+						}
+					} else {
+						registrosMuestra.add(transform((Usuario) object, true));
+					}
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			IUsuarioBean iUsuarioBean = lookupBean();
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				result = 
+					iUsuarioBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countVigentesContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			IUsuarioBean iUsuarioBean = lookupBean();
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				MetadataConsulta metadataConsulta = MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				);
+				
+				MetadataCondicion metadataCondicionVigente = new MetadataCondicion();
+				metadataCondicionVigente.setCampo("fechaBaja");
+				metadataCondicionVigente.setOperador(Constants.__METADATA_CONDICION_OPERADOR_NULL);
+				metadataCondicionVigente.setValores(new LinkedList<String>());
+				
+				metadataConsulta.getMetadataCondiciones().add(metadataCondicionVigente);
+				
+				for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
+					if (metadataCondicion.getCampo().equals("empresa.id")) {
+						metadataConsulta.getMetadataCondiciones().remove(metadataCondicion);
+					}
+				}
+				
+				result = 
+					iUsuarioBean.count(
+						metadataConsulta,
+						usuarioId
+					);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -137,7 +329,7 @@ public class UsuarioDWR {
 		
 		try {
 			if (!nueva.equals(confirma)) {
-				result = "Las contraseñas no coinciden";
+				result = "Las contraseÃ±as no coinciden";
 			} else {
 				HttpSession httpSession = WebContextFactory.get().getSession(false);
 				Long usuarioId = (Long) httpSession.getAttribute("sesion");
@@ -155,15 +347,15 @@ public class UsuarioDWR {
 					
 					iUsuarioBean.update(usuario);
 					
-					result = "Operación exitosa.";
+					result = "OperaciÃ³n exitosa.";
 				} else {
-					result = "Contraseña incorrecta";
+					result = "ContraseÃ±a incorrecta";
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			result = "Error en la operación.";
+			result = "Error en la operaciÃ³n.";
 		}
 		
 		return result;

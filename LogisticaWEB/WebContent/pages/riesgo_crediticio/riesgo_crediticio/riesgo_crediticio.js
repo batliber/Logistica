@@ -1,4 +1,5 @@
 var __ROL_ADMINISTRADOR = 1;
+var __ROL_ENCARGADO_ANALISIS_FINANCIERO = 13;
 
 var grid = null;
 
@@ -12,7 +13,8 @@ function init() {
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ANALISIS_FINANCIERO) {
 						$("#divButtonSubirArchivo").show();
 						$("#divButtonExportarAExcel").show();
 						
@@ -21,6 +23,7 @@ function init() {
 							{
 								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
 								tdDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING },
+								tdFechaImportacion: { campo: "fechaImportacion", descripcion: "Fecha de importación", abreviacion: "Importado", tipo: __TIPO_CAMPO_FECHA, ancho: 80 },
 								tdTipoControlRiesgoCrediticio: { campo: "tipoControlRiesgoCrediticio.descripcion", clave: "tipoControlRiesgoCrediticio.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoControlRiesgoCrediticios, clave: "id", valor: "descripcion" }, ancho: 100 },
 								tdCalificacionRiesgoCrediticioAntel: { campo: "calificacionRiesgoCrediticioAntel.descripcion", clave: "calificacionRiesgoCrediticioAntel.id", descripcion: "Calificación ANTEL", abreviacion: "Calif. ANTEL", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listCalificacionRiesgoCrediticioAntel, clave: "id", valor: "descripcion" }, ancho: 100 },
 								tdCalificacionRiesgoCrediticioBCU: { campo: "calificacionRiesgoCrediticioBCU.descripcion", clave: "calificacionRiesgoCrediticioBCU.id", descripcion: "Calificación BCU", abreviacion: "Calif. BCU", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listCalificacionRiesgoCrediticioBCU, clave: "id", valor: "descripcion" }, ancho: 100 },
@@ -256,4 +259,16 @@ function inputAceptarSubirArchivoOnClick(event, element) {
 			alert(xmlHTTPRequest.responseText);
 		}
 	}
+}
+
+function inputExportarAExcelOnClick(event, element) {
+	RiesgoCrediticioDWR.exportarAExcel(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+				document.getElementById("formExportarAExcel").submit();
+			}, async: false
+		}
+	);
 }

@@ -3,7 +3,9 @@ var __ROL_ENCARGADO_ACTIVACIONES = 12;
 
 var grid = null;
 		
-$(document).ready(function() {
+$(document).ready(init)
+
+function init() {
 	$("#divButtonNuevo").hide();
 	
 	SeguridadDWR.getActiveUserData(
@@ -57,7 +59,7 @@ $(document).ready(function() {
 	reloadData();
 
 	$("#divIFrameActivacionSublote").draggable();
-});
+}
 
 function listEmpresas() {
 	var result = [];

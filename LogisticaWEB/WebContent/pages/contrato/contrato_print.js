@@ -1,8 +1,13 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	ContratoDWR.getById(
 		id,
 		{
 			callback: function(data) {
+				$(".divHeader").html(
+					data.empresa != null ? data.empresa.nombre : "&nbsp;"
+				);
 				$("#divNumeroTramite").html(
 					data.numeroTramite != null ? data.numeroTramite : "&nbsp;"
 				);
@@ -39,7 +44,7 @@ $(document).ready(function() {
 					data.nuevoPlan != null ? data.nuevoPlan.descripcion : "&nbsp;"
 				);
 				$("#divEquipo").html(
-					data.producto != null ? data.producto.descripcion 
+					data.producto != null ? data.producto.modelo.descripcion 
 						: (data.modelo != null ?
 							data.modelo.descripcion 
 							: "&nbsp;")
@@ -128,6 +133,9 @@ $(document).ready(function() {
 				$("#divPrecio").html(
 					data.precio != null ? data.precio : "&nbsp;"
 				);
+				$("#divFormaPago").html(
+					data.formaPago != null ? data.formaPago.descripcion : "&nbsp;"
+				);
 				$(".divDepartamento").html(
 					data.zona != null ? data.zona.departamento.nombre : "&nbsp;"
 				);
@@ -175,4 +183,4 @@ $(document).ready(function() {
 			}, async: false
 		}
 	);
-});
+}

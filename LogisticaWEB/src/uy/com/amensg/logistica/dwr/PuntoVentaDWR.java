@@ -1,9 +1,12 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -17,8 +20,13 @@ import uy.com.amensg.logistica.bean.IPuntoVentaBean;
 import uy.com.amensg.logistica.bean.PuntoVentaBean;
 import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.Departamento;
+import uy.com.amensg.logistica.entities.EstadoPuntoVenta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.PuntoVenta;
 import uy.com.amensg.logistica.entities.PuntoVentaTO;
+import uy.com.amensg.logistica.util.Configuration;
 
 @RemoteProxy
 public class PuntoVentaDWR {
@@ -51,6 +59,64 @@ public class PuntoVentaDWR {
 		return result;
 	}
 	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IPuntoVentaBean iPuntoVentaBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iPuntoVentaBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object puntoVenta : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(transform((PuntoVenta) puntoVenta));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IPuntoVentaBean iPuntoVentaBean = lookupBean();
+				
+				result = 
+					iPuntoVentaBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<PuntoVentaTO> listByDepartamentoId(Long departamentoId) {
 		Collection<PuntoVentaTO> result = new LinkedList<PuntoVentaTO>();
 		
@@ -70,7 +136,33 @@ public class PuntoVentaDWR {
 		return result;
 	}
 	
-	public Collection<PuntoVentaTO> listByBarrioId(Long barrioId) {
+	public Collection<PuntoVentaTO> listByDepartamentoIdLocationAware(Long departamentoId, Double latitud, Double longitud) {
+		Collection<PuntoVentaTO> result = new LinkedList<PuntoVentaTO>();
+		
+		try {
+			IPuntoVentaBean iPuntoVentaBean = lookupBean();
+			
+			Departamento departamento = new Departamento();
+			departamento.setId(departamentoId);
+			
+			for (PuntoVenta puntoVenta : iPuntoVentaBean.listByDepartamento(departamento)) {
+				result.add(transform(puntoVenta));
+			}
+			
+			List<PuntoVentaTO> toOrder = new LinkedList<PuntoVentaTO>();
+			toOrder.addAll(result);
+			
+			Collections.sort(toOrder, new ComparatorLocation(latitud, longitud));
+			
+			result = toOrder;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+ 	public Collection<PuntoVentaTO> listByBarrioId(Long barrioId) {
 		Collection<PuntoVentaTO> result = new LinkedList<PuntoVentaTO>();
 		
 		try {
@@ -89,6 +181,32 @@ public class PuntoVentaDWR {
 		return result;
 	}
 	
+ 	public Collection<PuntoVentaTO> listByBarrioIdLocationAware(Long barrioId, Double latitud, Double longitud) {
+		Collection<PuntoVentaTO> result = new LinkedList<PuntoVentaTO>();
+		
+		try {
+			IPuntoVentaBean iPuntoVentaBean = lookupBean();
+			
+			Barrio barrio = new Barrio();
+			barrio.setId(barrioId);
+			
+			for (PuntoVenta puntoVenta : iPuntoVentaBean.listByBarrio(barrio)) {
+				result.add(transform(puntoVenta));
+			}
+			
+			List<PuntoVentaTO> toOrder = new LinkedList<PuntoVentaTO>();
+			toOrder.addAll(result);
+			
+			Collections.sort(toOrder, new ComparatorLocation(latitud, longitud));
+			
+			result = toOrder;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+ 	
 	public PuntoVentaTO getById(Long id) {
 		PuntoVentaTO result = null;
 		
@@ -111,6 +229,25 @@ public class PuntoVentaDWR {
 			IPuntoVentaBean iPuntoVentaBean = lookupBean();
 			
 			iPuntoVentaBean.save(transform(puntoVentaTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void addMobile(PuntoVentaTO puntoVentaTO) {
+		try {
+			IPuntoVentaBean iPuntoVentaBean = lookupBean();
+			
+			PuntoVenta puntoVenta = transform(puntoVentaTO);
+			
+			EstadoPuntoVenta estadoPuntoVenta = new EstadoPuntoVenta();
+			estadoPuntoVenta.setId(
+				new Long(Configuration.getInstance().getProperty("estadoPuntoVenta.Pendiente"))
+			);
+			
+			puntoVenta.setEstadoPuntoVenta(estadoPuntoVenta);
+			
+			iPuntoVentaBean.save(puntoVenta);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -156,6 +293,10 @@ public class PuntoVentaDWR {
 			result.setDepartamento(DepartamentoDWR.transform(puntoVenta.getDepartamento()));
 		}
 		
+		if (puntoVenta.getEstadoPuntoVenta() != null) {
+			result.setEstadoPuntoVenta(EstadoPuntoVentaDWR.transform(puntoVenta.getEstadoPuntoVenta()));
+		}
+		
 		result.setFact(puntoVenta.getFact());
 		result.setId(puntoVenta.getId());
 		result.setTerm(puntoVenta.getTerm());
@@ -190,6 +331,13 @@ public class PuntoVentaDWR {
 			result.setDepartamento(departamento);
 		}
 		
+		if (puntoVentaTO.getEstadoPuntoVenta() != null) {
+			EstadoPuntoVenta estadoPuntoVenta = new EstadoPuntoVenta();
+			estadoPuntoVenta.setId(puntoVentaTO.getEstadoPuntoVenta().getId());
+			
+			result.setEstadoPuntoVenta(estadoPuntoVenta);
+		}
+		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
 		result.setFact(date);
@@ -203,4 +351,53 @@ public class PuntoVentaDWR {
 		
 		return result;
 	}
+}
+
+class ComparatorLocation implements Comparator<PuntoVentaTO> {
+	
+	private final Double latitudFinal;
+	private final Double longitudFinal;
+	
+	public ComparatorLocation(Double latitud, Double longitud) {
+		this.latitudFinal = latitud;
+		this.longitudFinal = longitud;
+	}
+	
+	public int compare(PuntoVentaTO o1, PuntoVentaTO o2) {
+		if (latitudFinal == null || longitudFinal == null) {
+			// Si la ubicación con la cual comparar es null, son iguales.
+			return 0;
+		}
+		
+		if (o1.getLatitud() == null || o1.getLongitud() == null) {
+			// Si la ubicación del punto de venta o1 es null
+			if (o2.getLatitud() == null || o2.getLongitud() == null) {
+				// Si la ubicación del punto de venta o2 es null, entonces son iguales.
+				return 0;
+			} else {
+				// Si la ubicación del punto de venta o2 no es null, entonces la distancia al punto de venta o2 es menor.
+				return 1;
+			}
+		} else if (o2.getLatitud() == null || o2.getLongitud() == null) {
+			// Si la ubicación del punto de venta o1 no es null y la del punto de venta o2 es null, entnoces la distancia al punto de venta o1 es menor.
+			return -1;
+		} else {
+			// Si todas las ubicaciones están definidas, entonces las comparamos:
+			Double distanceO1 = 
+				3959 
+				* Math.acos(Math.cos(Math.toRadians(o1.getLatitud())) 
+				* Math.cos(Math.toRadians(latitudFinal)) 
+				* Math.cos(Math.toRadians(longitudFinal) - Math.toRadians(o1.getLongitud())) 
+				+ Math.sin(Math.toRadians(o1.getLatitud())) * Math.sin(Math.toRadians(latitudFinal)));
+			
+			Double distanceO2 = 
+				3959 
+				* Math.acos(Math.cos(Math.toRadians(o2.getLatitud())) 
+				* Math.cos(Math.toRadians(latitudFinal)) 
+				* Math.cos(Math.toRadians(longitudFinal) - Math.toRadians(o2.getLongitud())) 
+				+ Math.sin(Math.toRadians(o2.getLatitud())) * Math.sin(Math.toRadians(latitudFinal)));
+			
+			return distanceO1.compareTo(distanceO2);
+		}
+	}				
 }

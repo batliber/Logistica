@@ -49,4 +49,45 @@ public class RolBean implements IRolBean {
 		
 		return result;
 	}
+
+	public void save(Rol rol) {
+		try {
+			entityManager.persist(rol);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void remove(Rol rol) {
+		try {
+			Rol managedRol = entityManager.find(Rol.class, rol.getId());
+			
+			managedRol.setFact(rol.getFact());
+			managedRol.setTerm(rol.getTerm());
+			managedRol.setUact(rol.getUact());
+			
+			entityManager.merge(managedRol);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void update(Rol rol) {
+		try {
+			Rol rolManaged = entityManager.find(Rol.class, rol.getId());
+			
+			rolManaged.setNombre(rol.getNombre());
+			
+			rolManaged.setMenus(rol.getMenus());
+			rolManaged.setSubordinados(rol.getSubordinados());
+			
+			rolManaged.setFact(rol.getFact());
+			rolManaged.setTerm(rol.getTerm());
+			rolManaged.setUact(rol.getUact());
+			
+			entityManager.merge(rolManaged);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

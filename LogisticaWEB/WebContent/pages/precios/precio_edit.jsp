@@ -12,6 +12,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MonedaDWR.js"></script>
@@ -38,6 +39,7 @@
 	</div>
 	<div class="divPopupWindow">
 		<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa"></select></div>
+		<div class="divFormLabelExtended">Tipo:</div><div id="divTipoProducto" class="divFormValue"><select id="selectTipoProducto" onchange="javascript:selectTipoProductoOnChange(event, this)"></select></div>
 		<div class="divFormLabelExtended">Marca:</div><div id="divMarca" class="divFormValue"><select id="selectMarca" onchange="javascript:selectMarcaOnChange(event, this)"></select></div>
 		<div class="divFormLabelExtended">Modelo:</div><div id="divModelo" class="divFormValue"><select id="selectModelo"></select></div>
 		<div class="divFormLabelExtended">Moneda:</div><div id="divMoneda" class="divFormValue"><select id="selectMoneda"></select></div>

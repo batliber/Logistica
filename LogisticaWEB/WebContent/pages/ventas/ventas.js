@@ -28,6 +28,7 @@ function init() {
 						grid = new Grid(
 							document.getElementById("divTableContratos"),
 							{
+								tdContratoNumeroTramite: { campo: "numeroTramite", descripcion: "Número de trámite", abreviacion: "Trámite", tipo: __TIPO_CAMPO_NUMERICO },
 								tdContratoMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
 								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 90 },
 								tdContratoFinContrato: { campo: "fechaFinContrato", abreviacion: "Fin", descripcion: "Fin de contrato", tipo: __TIPO_CAMPO_FECHA },
@@ -39,11 +40,11 @@ function init() {
 								tdContratoFormaPago: { campo: "formaPago.descripcion", clave: "formaPago.id", descripcion: "Forma de pago", abreviacion: "Forma pago", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listFormaPagos, clave: "id", valor: "descripcion" }, ancho: 90 },
 								tdContratoObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING, ancho: 90 },
 								tdVendedor: { campo: "vendedor.nombre", clave: "vendedor.id", descripcion: "Vendedor", abreviacion: "Vendedor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listVendedores, clave: "id", valor: "nombre" }, ancho: 90 },
-								tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 90 },
-								tdFechaEntregaDistribuidor: { campo: "fechaEntregaDistribuidor", descripcion: "Entregado", abreviacion: "Entregado", tipo: __TIPO_CAMPO_FECHA },
-								tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto", abreviacion: "Devuelto", tipo: __TIPO_CAMPO_FECHA },
-								tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", clave: "resultadoEntregaDistribucion.id", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listResultadoEntregaDistribuciones, clave: "id", valor: "descripcion" } },
-								tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de env�o a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
+								tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 90, oculto: true },
+								tdFechaEntregaDistribuidor: { campo: "fechaEntregaDistribuidor", descripcion: "Entregado", abreviacion: "Entregado", tipo: __TIPO_CAMPO_FECHA, oculto: true },
+								tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto", abreviacion: "Devuelto", tipo: __TIPO_CAMPO_FECHA, oculto: true },
+								tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", clave: "resultadoEntregaDistribucion.id", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listResultadoEntregaDistribuciones, clave: "id", valor: "descripcion" }, oculto: true },
+								tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA, oculto: true },
 								tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 90 },
 								tdEstado: { campo: "estado.nombre", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "nombre" }, ancho: 90 },
 							}, 
@@ -54,22 +55,18 @@ function init() {
 						
 						grid.rebuild();
 						
-						grid.filtroDinamico.agregarFiltro(null, null);
-						$("#selectCampo1").val("estado.nombre");
-						grid.filtroDinamico.campoOnChange(null, null, 1, true);
-						
-						$("#selectCondicion1").val("keq");
-						grid.filtroDinamico.condicionOnChange(null, null, 1, true, "estado.nombre");
-						
-						$("#inputValor1").val("1");
-						grid.filtroDinamico.valorOnChange(null, null, 1, true);
-						
-						grid.filtroDinamico.agregarFiltro(null, null);
-						$("#selectCampo2").val("usuario.nombre");
-						grid.filtroDinamico.campoOnChange(null, null, 2, true);
-						
-						$("#selectCondicion2").val("nl");
-						grid.filtroDinamico.condicionOnChange(null, null, 2, true, "usuario.nombre");
+						grid.filtroDinamico.agregarFiltrosManuales([
+							{
+								campo: "estado.nombre",
+								operador: "keq",
+								valores: ["1"]
+							},
+							{
+								campo: "usuario.nombre",
+								operador: "nl",
+								valores: []
+							}
+						]);
 						
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleSextupleSize");
 						break;
@@ -86,7 +83,7 @@ function init() {
 							tdContratoNuevoPlan: { campo: "nuevoPlan", descripcion: "Nuevo plan", abreviacion: "Nuevo plan", tipo: __TIPO_CAMPO_STRING },
 							tdContratoDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING },
 							tdContratoNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING },
-							tdContratoDireccionFactura: { campo: "direccionFactura", descripcion: "Direcci�n factura", abreviacion: "Direcci�n", tipo: __TIPO_CAMPO_STRING },
+							tdContratoDireccionFactura: { campo: "direccionFactura", descripcion: "Dirección factura", abreviacion: "Dirección", tipo: __TIPO_CAMPO_STRING },
 							tdContratoLocalidad: { campo: "localidad", descripcion: "Localidad", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING },
 							tdContratoZona: { campo: "zona.nombre", clave: "zona.id", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listZonas, clave: "id", valor: "nombre"} },
 							tdContratoEquipo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 90 },
@@ -99,13 +96,13 @@ function init() {
 					);
 					
 					grid.rebuild();
+					
+					reloadData();
 				}
 			}, async: false
 		}
 	);
 	
-	reloadData();
-
 	$("#divIFrameContrato").draggable();
 	$("#divIFrameSeleccionVendedor").draggable();
 	$("#divIFrameImportacionArchivo").draggable();
@@ -307,7 +304,23 @@ function trContratoOnClick(eventObject) {
 		|| estadoId == __ESTADO_RELLAMAR
 		|| estadoId == __ESTADO_RECHAZADO
 		|| estadoId == __ESTADO_REAGENDAR) {
+		
 		formMode = __FORM_MODE_VENTA;
+		
+		SeguridadDWR.getActiveUserData(
+				{
+					callback: function(data) {
+						for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+							if ((data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_CALL_CENTER)
+								|| (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR)){
+								formMode = __FORM_MODE_SUPERVISOR_CALL_CENTER;
+								
+								break;
+							}
+						}
+					}, async: false
+				}
+		);
 	} else if (estadoId == __ESTADO_RECOORDINAR
 		|| estadoId == __ESTADO_FALTA_DOCUMENTACION) {
 		formMode = __FORM_MODE_RECOORDINACION;
@@ -356,17 +369,15 @@ function inputSubirArchivoOnClick(event, element) {
 
 function inputAsignarOnClick() {
 	metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-	metadataConsulta.tamanoSubconjunto = 
-		Math.min(
-			$("#inputTamanoSubconjunto").val(),
-			$("#divCantidadRegistrosValue").text()
-		);
+	if (metadataConsulta.tamanoSubconjunto > grid.getCount()) {
+		metadataConsulta.tamanoSubconjunto = grid.getCount();
+	}
 	
 	ContratoDWR.chequearAsignacion(
 		metadataConsulta,
 		{
 			callback: function(data) {
-				if (data || confirm("Atenci�n: se modificar�n registros que ya se encuentran asignados.")) {
+				if (data || confirm("Atención: se modificarán registros que ya se encuentran asignados.")) {
 					$("#selectVendedor > option").remove();
 					
 					$("#selectVendedor").append("<option value='0'>Seleccione...</option>");
@@ -408,19 +419,17 @@ function inputAceptarOnClick(event, element) {
 		};
 		
 		metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divCantidadRegistrosValue").text()
-			);
+		if (metadataConsulta.tamanoSubconjunto > grid.getCount()) {
+			metadataConsulta.tamanoSubconjunto = grid.getCount();
+		}
 		
-		if (confirm("Se asignar�n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		if (confirm("Se asignarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 			ContratoDWR.asignarVentas(
 				vendedor,
 				metadataConsulta,
 				{
 					callback: function(data) {
-						alert("Operaci�n exitosa.");
+						alert("Operación exitosa.");
 						
 						reloadData();
 					}, async: false

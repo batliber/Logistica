@@ -17,6 +17,7 @@ import uy.com.amensg.logistica.bean.IPlanBean;
 import uy.com.amensg.logistica.bean.PlanBean;
 import uy.com.amensg.logistica.entities.Plan;
 import uy.com.amensg.logistica.entities.PlanTO;
+import uy.com.amensg.logistica.entities.TipoPlan;
 
 @RemoteProxy
 public class PlanDWR {
@@ -135,6 +136,10 @@ public class PlanDWR {
 		planTO.setSmsGratisMesCelularesAntel(plan.getSmsGratisMesCelularesAntel());
 		planTO.setTopeFacturacionMensualTraficoDatos(plan.getTopeFacturacionMensualTraficoDatos());
 		
+		if (plan.getTipoPlan() != null) {
+			planTO.setTipoPlan(TipoPlanDWR.transform(plan.getTipoPlan()));
+		}
+		
 		planTO.setFact(plan.getFact());
 		planTO.setId(plan.getId());
 		planTO.setTerm(plan.getTerm());
@@ -168,6 +173,13 @@ public class PlanDWR {
 		plan.setRendimientoMinutosMensualOtrasOperadoras(planTO.getRendimientoMinutosMensualOtrasOperadoras());
 		plan.setSmsGratisMesCelularesAntel(planTO.getSmsGratisMesCelularesAntel());
 		plan.setTopeFacturacionMensualTraficoDatos(planTO.getTopeFacturacionMensualTraficoDatos());
+		
+		if (planTO.getTipoPlan() != null) {
+			TipoPlan tipoPlan = new TipoPlan();
+			tipoPlan.setId(planTO.getTipoPlan().getId());
+			
+			plan.setTipoPlan(tipoPlan);
+		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		

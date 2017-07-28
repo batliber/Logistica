@@ -53,7 +53,8 @@ public class RiesgoCrediticioProxy {
 		String castigadoPorQuitasYDesistimiento,
 		String previsionesTotales,
 		String contingencias,
-		String otorgantesGarantias
+		String otorgantesGarantias,
+		String sinDatos
 	) {
 		iConnectionStrategy.actualizarDatosRiesgoCrediticioBCU(
 			empresaId,
@@ -69,7 +70,8 @@ public class RiesgoCrediticioProxy {
 			castigadoPorQuitasYDesistimiento,
 			previsionesTotales,
 			contingencias,
-			otorgantesGarantias
+			otorgantesGarantias,
+			sinDatos
 		);
 	}
 	
@@ -129,7 +131,8 @@ public class RiesgoCrediticioProxy {
 				args[11],
 				args[12],
 				args[13],
-				args[14]
+				args[14],
+				args[15]
 			);
 		} else if (args[0].equals("actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera")) {
 			new RiesgoCrediticioProxy().actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(

@@ -22,6 +22,7 @@ public class DownloadServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String fileName = request.getParameter("fn");
+		String folder = request.getParameter("f");
 		
 		ServletOutputStream servletOutputStream = null;
 		BufferedInputStream bufferedInputStream = null;
@@ -30,11 +31,16 @@ public class DownloadServlet extends HttpServlet {
 				"Content-Disposition", "attachment; filename=" + fileName
 			);
 			
+			String carpeta = Configuration.getInstance().getProperty("exportacion.carpeta");
+			if (folder != null && !folder.isEmpty() && folder.equals("s")) {
+				carpeta = Configuration.getInstance().getProperty("streaming.carpeta");
+			}
+			
 			servletOutputStream = response.getOutputStream();
 			bufferedInputStream = 
 				new BufferedInputStream(
 					new FileInputStream(
-						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+						carpeta + fileName
 					)
 				);
 			

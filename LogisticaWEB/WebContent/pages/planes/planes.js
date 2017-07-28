@@ -2,13 +2,16 @@ var __ROL_ADMINISTRADOR = 1;
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNew").hide();
 	
 	grid = new Grid(
 		document.getElementById("divTablePlanes"),
 		{
-			tdPlanDescripcion: { campo: "descripcion", descripcion: "Descripción", abreviacion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
+			tdPlanTipoPlan: { campo: "tipoPlan.descripcion", clave: "tipoPlan.id", descripcion: "Tipo de plan", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoPlanes, clave: "id", valor: "descripcion" }},
+			tdPlanDescripcion: { campo: "descripcion", descripcion: "Descripción", abreviacion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 250 }
 		}, 
 		false,
 		reloadData,
@@ -37,11 +40,25 @@ $(document).ready(function() {
 	reloadData();
 	
 	$("#divIFramePlan").draggable();
-});
+}
+
+function listTipoPlanes() {
+	var result = [];
+	
+	TipoPlanDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
 
 function reloadData() {
-	
-	
 	PlanDWR.list(
 		{
 			callback: function(data) {
@@ -89,14 +106,7 @@ function reloadData() {
 				for (var i=0; i<ordered.length; i++) {
 					if ($("#inputMostrarFechaBaja").prop("checked")
 						|| ordered[i].fechaBaja == null) {
-						registros.registrosMuestra[registros.registrosMuestra.length] = {
-							id: ordered[i].id,
-							descripcion: ordered[i].descripcion,
-							fechaBaja: ordered[i].fechaBaja,
-							uact: ordered[i].uact,
-							fact: ordered[i].fact,
-							term: ordered[i].term
-						};
+						registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
 					}
 				}
 				

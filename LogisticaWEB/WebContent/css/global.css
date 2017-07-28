@@ -256,6 +256,7 @@ tr:hover {
 }
 
 .divTitleBarText {
+	float: left;
 	width: 200px;
 	padding-top: 2px;
 	padding-left: 2px;

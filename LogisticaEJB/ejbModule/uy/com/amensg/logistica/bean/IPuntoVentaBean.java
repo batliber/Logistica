@@ -6,12 +6,18 @@ import javax.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.Departamento;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.PuntoVenta;
 
 @Remote
 public interface IPuntoVentaBean {
 
 	public Collection<PuntoVenta> list();
+	
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
+
+	public Long count(MetadataConsulta metadataConsulta);
 	
 	public Collection<PuntoVenta> listByDepartamento(Departamento departamento);
 	

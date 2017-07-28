@@ -33,6 +33,10 @@ public class StockMovimiento extends BaseEntity {
 	private Modelo modelo;
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "tipo_producto_id", nullable = true)
+	private TipoProducto tipoProducto;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "producto_id", nullable = true)
 	private Producto producto;
 
@@ -84,6 +88,14 @@ public class StockMovimiento extends BaseEntity {
 		this.modelo = modelo;
 	}
 	
+	public TipoProducto getTipoProducto() {
+		return tipoProducto;
+	}
+
+	public void setTipoProducto(TipoProducto tipoProducto) {
+		this.tipoProducto = tipoProducto;
+	}
+
 	public Producto getProducto() {
 		return producto;
 	}

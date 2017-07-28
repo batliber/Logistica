@@ -216,6 +216,9 @@ public class Contrato extends BaseEntity {
 	@Column(name = "direccion_factura_observaciones")
 	private String direccionFacturaObservaciones;
 	
+	@Column(name = "numero_vale")
+	private Long numeroVale;
+	
 	@Column(name = "intereses")
 	private Double intereses;
 	
@@ -265,6 +268,10 @@ public class Contrato extends BaseEntity {
 	@JoinColumn(name = "turno_id", nullable = true)
 	private Turno turno;
 
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "tipo_producto_id", nullable = true)
+	private TipoProducto tipoProducto;
+	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "marca_id", nullable = true)
 	private Marca marca;
@@ -858,6 +865,14 @@ public class Contrato extends BaseEntity {
 		this.direccionFacturaObservaciones = direccionFacturaObservaciones;
 	}
 
+	public Long getNumeroVale() {
+		return numeroVale;
+	}
+
+	public void setNumeroVale(Long numeroVale) {
+		this.numeroVale = numeroVale;
+	}
+	
 	public Double getIntereses() {
 		return intereses;
 	}
@@ -968,6 +983,14 @@ public class Contrato extends BaseEntity {
 
 	public void setTurno(Turno turno) {
 		this.turno = turno;
+	}
+
+	public TipoProducto getTipoProducto() {
+		return tipoProducto;
+	}
+
+	public void setTipoProducto(TipoProducto tipoProducto) {
+		this.tipoProducto = tipoProducto;
 	}
 
 	public Marca getMarca() {

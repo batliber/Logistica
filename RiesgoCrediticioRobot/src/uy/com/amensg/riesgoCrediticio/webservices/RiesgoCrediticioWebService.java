@@ -91,7 +91,9 @@ public interface RiesgoCrediticioWebService {
         @WebParam(name = "arg12", targetNamespace = "")
         java.lang.String arg12,
         @WebParam(name = "arg13", targetNamespace = "")
-        java.lang.String arg13
+        java.lang.String arg13,
+        @WebParam(name = "arg14", targetNamespace = "")
+        java.lang.String arg14
     );
     
     @WebMethod

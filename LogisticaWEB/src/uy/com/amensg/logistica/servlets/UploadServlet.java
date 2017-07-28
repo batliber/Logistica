@@ -2,11 +2,10 @@ package uy.com.amensg.logistica.servlets;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import javax.naming.Context;
@@ -76,7 +75,7 @@ public class UploadServlet extends HttpServlet {
 			e.printStackTrace();
 			
 			String json = "{"
-				+ "\"message\": \"No se ha podido completar la operaci髇.\""
+				+ "\"message\": \"No se ha podido completar la operaci贸n.\""
 				+ "}";
 			
 			response.addHeader("Content-Type", "application/json");
@@ -87,9 +86,9 @@ public class UploadServlet extends HttpServlet {
 	
 	/**
 	 * Procesamiento de informes de entrega de contratos.
-	 * Necesario por el upload de im醙enes de documentaci髇
+	 * Necesario por el upload de im谩genes de documentaci贸n
 	 * 
-	 * @param request HttpServletRequest con el contexto de la invocaci髇.
+	 * @param request HttpServletRequest con el contexto de la invocaci贸n.
 	 * @param response HttpServletResponse con el contexto de retorno.
 	 * @throws ServletException
 	 * @throws IOException
@@ -216,10 +215,10 @@ public class UploadServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Procesamiento de archivos de importaci髇 de contratos para empresas.
+	 * Procesamiento de archivos de importaci贸n de contratos para empresas.
 	 * Requiere un archivo .csv con los datos a importar.
 	 * 
-	 * @param request HttpServletRequest con el contexto de la invocaci髇.
+	 * @param request HttpServletRequest con el contexto de la invocaci贸n.
 	 * @param response HttpServletResponse con el contexto de retorno.
 	 * @throws ServletException
 	 * @throws IOException
@@ -274,10 +273,10 @@ public class UploadServlet extends HttpServlet {
 	}
 
 	/**
-	 * Procesamiento de alta y modificaci髇 de Empresas.
+	 * Procesamiento de alta y modificaci贸n de Empresas.
 	 * Necesario por el upload del logo de la empresa.
 	 * 
-	 * @param request HttpServletRequest con el contexto de la invocaci髇.
+	 * @param request HttpServletRequest con el contexto de la invocaci贸n.
 	 * @param response HttpServletResponse con el contexto de retorno.
 	 * @throws ServletException
 	 * @throws IOException
@@ -291,10 +290,11 @@ public class UploadServlet extends HttpServlet {
 			new Long(request.getParameter("inputEmpresaCodigoPromotor").toString()) : null;
 		String empresaNombreContrato = request.getParameter("inputEmpresaNombreContrato").toString();
 		String empresaNombreSucursal = request.getParameter("inputEmpresaNombreSucursal").toString();
+		String empresaDireccion = request.getParameter("inputEmpresaDireccion").toString();
 		
 		IFormaPagoBean iFormaPagoBean = lookupFormaPagoBean();
 		
-		Collection<FormaPago> formaPagos = new LinkedList<FormaPago>();
+		Set<FormaPago> formaPagos = new HashSet<FormaPago>();
 		for (FormaPago formaPago : iFormaPagoBean.list()) {
 			String inputFormaPagoValue = request.getParameter("inputFormaPago" + formaPago.getId());
 			
@@ -341,6 +341,7 @@ public class UploadServlet extends HttpServlet {
 		empresa.setCodigoPromotor(empresaCodigoPromotor);
 		empresa.setNombreContrato(empresaNombreContrato);
 		empresa.setNombreSucursal(empresaNombreSucursal);
+		empresa.setDireccion(empresaDireccion);
 		
 		empresa.setFormaPagos(formaPagos);
 		
@@ -355,7 +356,7 @@ public class UploadServlet extends HttpServlet {
 		}
 		
 		String json = "{"
-			+ "\"message\": \"Operaci髇 exitosa.\","
+			+ "\"message\": \"Operaci贸n exitosa.\","
 			+ "\"fileName\": \"" + empresa.getLogoURL() + "\","
 			+ "\"empresaId\": \"" + empresaId + "\""
 			+ "}";
@@ -366,10 +367,10 @@ public class UploadServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Procesamiento de archivos de importaci髇 de activaciones para empresas.
+	 * Procesamiento de archivos de importaci贸n de activaciones para empresas.
 	 * Requiere un archivo .csv con los datos a importar.
 	 * 
-	 * @param request HttpServletRequest con el contexto de la invocaci髇.
+	 * @param request HttpServletRequest con el contexto de la invocaci贸n.
 	 * @param response HttpServletResponse con el contexto de retorno.
 	 * @throws ServletException
 	 * @throws IOException
@@ -428,10 +429,10 @@ public class UploadServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Procesamiento de archivos de importaci髇 de controles para empresas.
+	 * Procesamiento de archivos de importaci贸n de controles para empresas.
 	 * Requiere un archivo .csv con los datos a importar.
 	 * 
-	 * @param request HttpServletRequest con el contexto de la invocaci髇.
+	 * @param request HttpServletRequest con el contexto de la invocaci贸n.
 	 * @param response HttpServletResponse con el contexto de retorno.
 	 * @throws ServletException
 	 * @throws IOException
@@ -490,7 +491,7 @@ public class UploadServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Procesamiento de archivos de importaci髇 de controles de riesgo crediticio para empresas.
+	 * Procesamiento de archivos de importaci贸n de controles de riesgo crediticio para empresas.
 	 * Requiere un archivo .csv con los datos a importar.
 	 * 
 	 * @param request

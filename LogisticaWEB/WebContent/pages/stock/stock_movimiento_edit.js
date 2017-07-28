@@ -3,7 +3,9 @@ var imeis = {
 	registrosMuestra: []
 };
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	EmpresaDWR.list(
@@ -51,6 +53,21 @@ $(document).ready(function() {
 		}
 	);
 	
+	TipoProductoDWR.list(
+		{
+			callback: function(data) {
+				var html =
+					"<option id='0' value='0'>Seleccione...</option>";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
+				}
+				
+				$("#selectTipoProducto").append(html);
+			}, async: false
+		}
+	);
+	
 	grid = new Grid(
 		document.getElementById("divTableIMEIs"),
 		{
@@ -60,7 +77,9 @@ $(document).ready(function() {
 		},
 		false,
 		reloadGrid,
-		trIMEIOnClick
+		trIMEIOnClick,
+		null,
+		16
 	);
 	
 	grid.rebuild();
@@ -68,7 +87,7 @@ $(document).ready(function() {
 	$("#selectModelo").append("<option id='0' value='0'>Seleccione...</option>");
 	$("#inputCantidad").prop("disabled", true);
 	$("#inputIMEI").prop("disabled", true);
-});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -89,7 +108,7 @@ function listMarcas() {
 }
 
 function listModelos() {
-	ModeloDWR.list(
+	ModeloDWR.listVigentes(
 		{
 			callback: function(data) {
 				return data;
@@ -141,11 +160,7 @@ function reloadGrid() {
 		registrosMuestra: []
 	};
 	for (var i=0; i<ordered.length; i++) {
-		registros.registrosMuestra[registros.registrosMuestra.length] = {
-			imei: ordered[i].imei,
-			marca: ordered[i].marca,
-			modelo: ordered[i].modelo
-		};
+		registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
 	}
 	
 	grid.reload(registros);
@@ -154,6 +169,7 @@ function reloadGrid() {
 function selectStockTipoMovimientoOnChange() {
 	$("#selectMarca").val(0);
 	$("#selectModelo").val(0);
+	$("#selectTipoProducto").val(0);
 	$("#inputCantidad").val(0);
 	$("#inputIMEI").val(null);
 	
@@ -174,7 +190,7 @@ function selectStockTipoMovimientoOnChange() {
 function selectMarcaOnChange() {
 	$("#selectModelo > option").remove();
 	
-	ModeloDWR.listByMarcaId(
+	ModeloDWR.listVigentesByMarcaId(
 		$("#selectMarca").val(), 
 		{
 			callback: function(data) {
@@ -293,6 +309,15 @@ function inputGuardarOnClick(event) {
 		return;
 	}
 	
+	var tipoProducto = {};
+	if ($("#selectTipoProducto").length > 0 && $("#selectTipoProducto").val() != 0) {
+		tipoProducto.id = $("#selectTipoProducto").length > 0 ? $("#selectTipoProducto").val() : $("#divTipoProducto").attr("tpid");
+	} else {
+		alert("Debe seleccionar un tipo de producto.");
+		
+		return;
+	}
+	
 	if ($("#selectStockTipoMovimiento").val() == 3) {
 		var stockMovimientos = [];
 		
@@ -307,7 +332,8 @@ function inputGuardarOnClick(event) {
 					modelo: modelo
 				},
 				marca: marca,
-				modelo: modelo
+				modelo: modelo,
+				tipoProducto: tipoProducto
 			}
 		}
 		
@@ -325,7 +351,8 @@ function inputGuardarOnClick(event) {
 			empresa: empresa,
 			cantidad: $("#inputCantidad").val(),
 			marca: marca,
-			modelo: modelo
+			modelo: modelo,
+			tipoProducto: tipoProducto
 		}
 		
 		StockMovimientoDWR.add(

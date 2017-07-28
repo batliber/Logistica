@@ -16,7 +16,7 @@ import uy.com.amensg.logistica.entities.UnidadIndexada;
 @Stateless
 public class UnidadIndexadaBean implements IUnidadIndexadaBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogisticaXA")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
 	private EntityManager entityManager;
 
 	public Collection<UnidadIndexada> list() {

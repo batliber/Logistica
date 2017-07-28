@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	EmpresaDWR.list(
@@ -12,6 +14,21 @@ $(document).ready(function() {
 				}
 				
 				$("#selectEmpresa").append(html);
+			}, async: false
+		}
+	);
+	
+	TipoProductoDWR.list(
+		{
+			callback: function(data) {
+				var html =
+					"<option id='0' value='0'>Seleccione...</option>";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
+				}
+				
+				$("#selectTipoProducto").append(html);
 			}, async: false
 		}
 	);
@@ -50,6 +67,7 @@ $(document).ready(function() {
 	
 	if (id != null) {
 		$("#selectEmpresa").prop("disabled", true);
+		$("#selectTipoProducto").prop("disabled", true);
 		$("#selectMarca").prop("disabled", true);
 		$("#selectModelo").prop("disabled", true);
 		$("#selectMoneda").prop("disabled", true);
@@ -58,13 +76,13 @@ $(document).ready(function() {
 			id,
 			{
 				callback: function(data) {
-					$("#selectEmpresa").val(data.empresa.id);
-					$("#selectMarca").val(data.marca.id);
-					
 					$("#selectModelo").append(
 						"<option id='" + data.modelo.id + "' value='" + data.modelo.id + "'>" + data.modelo.descripcion + "</option>"
 					);
 					
+					$("#selectEmpresa").val(data.empresa.id);
+					$("#selectTipoProducto").val(data.tipoProducto.id);
+					$("#selectMarca").val(data.marca.id);
 					$("#selectModelo").val(data.modelo.id);
 					$("#selectMoneda").val(data.moneda.id);
 					$("#inputPrecio").val(data.precio);
@@ -78,14 +96,18 @@ $(document).ready(function() {
 			}
 		);
 	}
-});
+}
 
 function refinarForm() {
 	
 }
 
+function selectTipoProductoOnChange() {
+	return false;
+}
+
 function selectMarcaOnChange() {
-	$("#selectModelo > option").remove();
+	$("#selectModelo > option:gt(0)").remove();
 	
 	ModeloDWR.listByMarcaId(
 		$("#selectMarca").val(), 
@@ -98,7 +120,7 @@ function selectMarcaOnChange() {
 					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
 				}
 				
-				$("#selectModelo").append(html);
+				$("#selectModelo").html(html);
 			}, async: false
 		}
 	);
@@ -110,6 +132,15 @@ function inputGuardarOnClick(event) {
 		empresa.id = $("#selectEmpresa").length > 0 ? $("#selectEmpresa").val() : $("#divEmpresa").attr("eid");
 	} else {
 		alert("Debe seleccionar una empresa.");
+		
+		return;
+	}
+	
+	var tipoProducto = {};
+	if ($("#selectTipoProducto").length > 0 && $("#selectTipoProducto").val() != 0) {
+		tipoProducto.id = $("#selectTipoProducto").length > 0 ? $("#selectTipoProducto").val() : $("#divTipoProducto").attr("tpid");
+	} else {
+		alert("Debe seleccionar un tipo.");
 		
 		return;
 	}
@@ -143,6 +174,7 @@ function inputGuardarOnClick(event) {
 	
 	var precio = {
 		empresa: empresa,
+		tipoProducto: tipoProducto,
 		marca: marca,
 		modelo: modelo,
 		moneda: moneda,

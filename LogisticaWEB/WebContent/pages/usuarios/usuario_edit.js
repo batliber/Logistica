@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	$("#divEliminarUsuario").hide();
@@ -114,7 +116,7 @@ $(document).ready(function() {
 		$("#inputUsuarioContrasena").prop("disabled", false);
 		$("#inputCambiarContrasena").prop("checked", true);
 	}
-});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -172,7 +174,7 @@ function inputGuardarOnClick(event) {
 			usuario,
 			{
 				callback: function(data) {
-					alert("OperaciÛn exitosa");
+					alert("Operaci√≥n exitosa");
 				}, async: false
 			}
 		);
@@ -188,7 +190,7 @@ function inputGuardarOnClick(event) {
 							usuario,
 							{
 								callback: function(data) {
-									alert("OperaciÛn exitosa");
+									alert("Operaci√≥n exitosa");
 									
 									$("#inputEliminarUsuario").prop("disabled", false);
 								}, async: false
@@ -204,7 +206,7 @@ function inputGuardarOnClick(event) {
 }
 
 function inputEliminarOnClick(event) {
-	if ((id != null) && confirm("Se eliminar· el Usuario")) {
+	if ((id != null) && confirm("Se eliminar√° el Usuario")) {
 		var usuario = {
 			id: id
 		};
@@ -213,7 +215,7 @@ function inputEliminarOnClick(event) {
 			usuario,
 			{
 				callback: function(data) {
-					alert("OperaciÛn exitosa");
+					alert("Operaci√≥n exitosa");
 				}, async: false
 			}
 		);

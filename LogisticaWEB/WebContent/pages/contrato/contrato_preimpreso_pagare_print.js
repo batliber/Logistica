@@ -1,4 +1,6 @@
-var __VALOR_IVA = 1.22;
+var __VALOR_IVA = 0.22;
+var __OFFSET_DIAS_FECHA_VENCIMIENTO_PRIMERA_CUOTA = 30;
+
 var meses = [
 	"Enero",
 	"Febrero",
@@ -15,7 +17,9 @@ var meses = [
 ];
 var usuario = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
@@ -30,17 +34,23 @@ $(document).ready(function() {
 			callback: function(data) {
 				var fecha = new Date();
 				
-				$(".inputValeNumero").val(null);
-				$(".inputCapitalPrestado").val(formatDecimal(data.precio, 0));
-				$(".inputInteresesCompensatorios").val(formatDecimal(data.intereses, 0));
-				$(".inputGastosAdministracion").val(formatDecimal(data.gastosAdministrativosTotales, 0));
-				$(".inputIVA").val(formatDecimal(data.precio * __VALOR_IVA, 0));
-				$(".inputTotal").val(formatDecimal((data.precio + data.intereses + data.gastosAdministrativosTotales), 0));
 				
-				$(".inputDepartamento").val(data.direccionFacturaLocalidad != null ? data.direccionFacturaLocalidad : "");
-//				$(".inputDia").val(fecha.getDate());
-//				$(".inputMes").val(meses[fecha.getMonth()]);
-//				$(".inputAno").val(fecha.getFullYear());
+				$(".inputValeNumero").val(data.numeroVale);
+				$(".inputCapitalPrestado").val(formatDecimal(data.precio, 2));
+				
+				var interesesSinIVA = data.intereses / (1 + __VALOR_IVA);
+				$(".inputInteresesCompensatorios").val(formatDecimal(interesesSinIVA, 2));
+				
+				var gastosAdministrativosSinIVA = data.gastosAdministrativosTotales / (1 + __VALOR_IVA);
+				$(".inputGastosAdministracion").val(formatDecimal(gastosAdministrativosSinIVA, 2));
+				
+				var iva = (interesesSinIVA + gastosAdministrativosSinIVA) * __VALOR_IVA;
+				$(".inputIVA").val(formatDecimal(iva, 2));
+				
+				var total = data.precio + interesesSinIVA + gastosAdministrativosSinIVA + iva;
+				$(".inputTotal").val(formatDecimal(total, 2));
+				
+				$(".inputDepartamento").val(data.direccionEntregaDepartamento != null ? data.direccionEntregaDepartamento.nombre : "");
 				
 				// Se establece que la fecha del pagaré es la fecha de activación.
 				var fechaActivarEn = data.fechaActivarEn;
@@ -48,31 +58,52 @@ $(document).ready(function() {
 					$(".inputDia").val(fechaActivarEn.getDate());
 					$(".inputMes").val(meses[fechaActivarEn.getMonth()]);
 					$(".inputAno").val(fechaActivarEn.getFullYear());
+					
+//					var fechaVencimientoPrimeraCuota = 
+//						new Date(fechaActivarEn.getTime() + (__OFFSET_DIAS_FECHA_VENCIMIENTO_PRIMERA_CUOTA * 24 * 60 * 60 * 1000));
+					
+					var fechaVencimientoPrimeraCuota = 
+						new Date(fechaActivarEn.getFullYear(), fechaActivarEn.getMonth() + 1, fechaActivarEn.getDate(), 0, 0, 0, 0);
+					$(".inputFechaVencimientoPrimeraCuota").val(formatShortDate(fechaVencimientoPrimeraCuota));
 				}
 				
+				$(".inputAgente").val(data.empresa.nombreContrato);
 				$(".inputCuotas").val(data.cuotas);
 				$(".inputValorCuota").val(formatDecimal(data.valorCuota, 2));
-				$(".inputFechaVencimientoPrimeraCuota").val(null);
-				$(".inputFormaPago").val(null);
 				
-				$(".inputPorcentajeMora").val(null);
+				$(".inputFormaPagoCuota").val(data.tipoProducto.formaPagoCuota.descripcion);
 				
-				$(".inputDomicilioAcreedor").val(null);
+				$(".inputPorcentajeMora").val(formatDecimal(((data.valorTasaInteresEfectivaAnual / 1.55) * 1.8 * 100), 2));
 				
-				$(".inputTasaEfectivaAnual").val(formatDecimal(data.valorTasaInteresEfectivaAnual * 100, 0));
-				$(".inputTasaEfectivaMensual").val(formatDecimal(data.valorTasaInteresEfectivaAnual * 100 / 12, 0));
-				$(".inputGastosAdministrativosUIPorCuota").val(formatDecimal(data.gastosAdministrativosTotales / data.valorUnidadIndexada / data.cuotas, 0));
+				$(".inputDomicilioAcreedor").val(data.empresa.direccion);
 				
-				$(".inputCedulaIdentidad").val(null);
+				$(".inputTasaEfectivaAnual").val(formatDecimal(data.valorTasaInteresEfectivaAnual * 100, 2));
+				
+				var diasPorMes = 30;
+				var diasPorAno = 360;
+				var tasaEfectivaMensual = Math.pow(1 + data.valorTasaInteresEfectivaAnual, diasPorMes / diasPorAno) - 1;
+				
+				$(".inputTasaEfectivaMensual").val(formatDecimal(tasaEfectivaMensual * 100, 2));
+				
+				var gastosAdministrativosUIPorCuota =
+					gastosAdministrativosSinIVA / data.valorUnidadIndexada / data.cuotas;
+				$(".inputGastosAdministrativosUIPorCuota").val(formatDecimal(gastosAdministrativosUIPorCuota, 2));
+				
+				$(".inputCI").val(null);
 				$(".inputDomicilio").val(null);
 				$(".inputLocalidadDepartamento").val(null);
 				$(".inputFirma").val(null);
-				$(".inputFirma").val(null);
 				$(".inputAclaracion").val(null);
+				
+				$(".inputCI").hide();
+				$(".inputDomicilio").hide();
+				$(".inputLocalidadDepartamento").hide();
+				$(".inputFirma").hide();
+				$(".inputAclaracion").hide();
 			}, async: false
 		}
 	);
-});
+}
 
 function inputImprimirOnClick() {
 	$("input[type='text']").css("background-color", "white");

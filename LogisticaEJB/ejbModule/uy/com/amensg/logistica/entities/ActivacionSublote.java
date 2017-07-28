@@ -1,13 +1,12 @@
 package uy.com.amensg.logistica.entities;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -42,13 +41,8 @@ public class ActivacionSublote extends BaseEntity {
 	@JoinColumn(name = "punto_venta_id", nullable = true)
 	private PuntoVenta puntoVenta;
 
-	@OneToMany(fetch=FetchType.EAGER)
-	@JoinTable(
-		name = "activacion_sublote_activacion", 
-		joinColumns = @JoinColumn(name = "activacion_sublote_id"),
-		inverseJoinColumns = @JoinColumn(name = "activacion_id")
-	)
-	private Collection<Activacion> activaciones;
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="activacionSublote")
+	private Set<Activacion> activaciones;
 	
 	public Long getNumero() {
 		return numero;
@@ -106,11 +100,11 @@ public class ActivacionSublote extends BaseEntity {
 		this.puntoVenta = puntoVenta;
 	}
 
-	public Collection<Activacion> getActivaciones() {
+	public Set<Activacion> getActivaciones() {
 		return activaciones;
 	}
 
-	public void setActivaciones(Collection<Activacion> activaciones) {
+	public void setActivaciones(Set<Activacion> activaciones) {
 		this.activaciones = activaciones;
 	}
 }

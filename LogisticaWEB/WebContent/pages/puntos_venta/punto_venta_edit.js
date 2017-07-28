@@ -1,25 +1,22 @@
 var map = null;
+var marker = null;
 
-var latitud = null;
-var longitud = null;
+$(document).ready(init);
 
-$(document).ready(function() {
-	DepartamentoDWR.list(
+function init() {
+	EstadoPuntoVentaDWR.list(
 		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectPuntoVentaDepartamento").append(html);
-			}, async: false
+			callback: fillSelectPuntoVentaEstado, async: false
 		}
 	);
 	
-	$("#selectPuntoVentaBarrio").append("<option id='0' value='0'>Seleccione...</option>");
+	DepartamentoDWR.list(
+		{
+			callback: fillSelectDepartamento, async: false
+		}
+	);
+	
+	fillSelectBarrio([]);
 	
 	refinarForm();
 	
@@ -48,20 +45,22 @@ $(document).ready(function() {
 						$("#selectPuntoVentaBarrio").val(data.barrio.id);
 					}
 					
-					latitud = data.latitud;
-					longitud = data.longitud;
+					if (data.estadoPuntoVenta != null) {
+						$("#selectPuntoVentaEstado").val(data.estadoPuntoVenta.id);
+					}
 					
-					var latlng = {
-						lat: data.latitud, lng: data.longitud
-					};
-					
-					var marker = new google.maps.Marker({
-						position: latlng,
-						map: map,
-						title: data.nombre
-					});
-					
-					map.setCenter(latlng);
+					if (data.latitud != null && data.longitud != null) {
+						var latlng = {
+							lat: data.latitud, lng: data.longitud
+						};
+						
+						marker.setPosition(latlng);
+						
+						map.setCenter(latlng);
+						if (data.precision != null) {
+							map.setZoom(data.precision);
+						}
+					}
 					
 					if (mode == __FORM_MODE_ADMIN) {
 						$("#divEliminarPuntoVenta").show();
@@ -71,7 +70,7 @@ $(document).ready(function() {
 			}
 		);
 	}
-});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -83,27 +82,42 @@ function refinarForm() {
 
 function initMap() {
 	var divMap = document.getElementById("divMapa");
+	
+	var initialCenter = {lat: -34.9017, lng: -56.1634};
+	
 	map = new google.maps.Map(
 		divMap, {
-			center: {lat: 0, lng: 0},
-			zoom: 8
+			center: initialCenter,
+			zoom: 15
     	}
 	);
+	
+	marker = new google.maps.Marker({
+		position: initialCenter,
+		map: map
+	});
+	
+	map.addListener('center_changed', function() {
+		var coords = map.getCenter();
+		
+		marker.setPosition(coords);
+	});
+	
+	map.addListener('zoom_changed', function() {
+		var coords = map.getCenter();
+		
+		marker.setPosition(coords);
+	});
 	
 	var input = document.getElementById("inputBusqueda");
 	var searchBox = new google.maps.places.SearchBox(input);
 	
 	map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 	
-	// Bias the SearchBox results towards current map's viewport.
 	map.addListener('bounds_changed', function() {
 		searchBox.setBounds(map.getBounds());
 	});
 	
-	var markers = [];
-	
-	// Listen for the event fired when the user selects a prediction and retrieve
-	// more details for that place.
 	searchBox.addListener('places_changed', function() {
 		var places = searchBox.getPlaces();
 		
@@ -111,27 +125,15 @@ function initMap() {
 			return;
 		}
 		
-		// Clear out the old markers.
-		markers.forEach(function(marker) {
-			marker.setMap(null);
-		});
-		
-		markers = [];
-		
 		var bounds = new google.maps.LatLngBounds();
 		
 		places.forEach(function(place) {
-			latitud = place.geometry.location.lat();
-			longitud = place.geometry.location.lng();
+			var latitud = place.geometry.location.lat();
+			var longitud = place.geometry.location.lng();
 			
-			markers.push(new google.maps.Marker({
-				map: map,
-				title: place.name,
-				position: place.geometry.location
-			}));
+			marker.setPosition(new google.maps.LatLng(latitud, longitud));
 		
 			if (place.geometry.viewport) {
-				// Only geocodes have viewport.
 				bounds.union(place.geometry.viewport);
 			} else {
 				bounds.extend(place.geometry.location);
@@ -142,26 +144,59 @@ function initMap() {
 	});
 }
 
-function selectDepartamentoOnChange(event, element) {
-	$("#selectPuntoVentaBarrio > option:gt(0)").remove();
+function fillSelectPuntoVentaEstado(data) {
+	$("#selectDepartamento > option").remove();
 	
-	if ($("#selectPuntoVentaDepartamento").val() != 0) {
+	var html =
+		"<option id='0' value='0'>Seleccione...</option>";
+	
+	for (var i=0; i<data.length; i++) {
+		html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+	}
+	
+	$("#selectPuntoVentaEstado").append(html);
+}
+
+function fillSelectDepartamento(data) {
+	$("#selectPuntoVentaDepartamento > option").remove();
+	
+	html =
+		"<option value='0'>Seleccione...</option>";
+	
+	for (var i=0; i<data.length; i++) {
+		html +=
+			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+	}
+	
+	$("#selectPuntoVentaDepartamento").append(html);
+}
+
+function fillSelectBarrio(data) {
+	$("#selectPuntoVentaBarrio > option").remove();
+	
+	html =
+		"<option value=0>Seleccione...</option>";
+	
+	for (var i=0; i<data.length; i++) {
+		html +=
+			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+	}
+	
+	$("#selectPuntoVentaBarrio").append(html);
+}
+
+function selectDepartamentoOnChange(event, element) {
+	var departamentoId = $("#selectPuntoVentaDepartamento").val();
+	
+	fillSelectBarrio([]);
+	
+	if (departamentoId != 0) {
 		BarrioDWR.listByDepartamentoId(
 			$("#selectPuntoVentaDepartamento").val(),
 			{
-				callback: function(data) {
-					var html = "";
-					
-					for (var i=0; i<data.length; i++) {
-						html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-					}
-					
-					$("#selectPuntoVentaBarrio").append(html);
-				}, async: false
+				callback: fillSelectBarrio, async: false
 			}
 		);
-	} else {
-		$("#selectPuntoVentaBarrio").val(0);
 	}
 }
 
@@ -172,18 +207,28 @@ function inputGuardarOnClick(event) {
 		telefono: $("#inputPuntoVentaTelefono").val(),
 		contacto: $("#inputPuntoVentaContacto").val(),
 		documento: $("#inputPuntoVentaDocumento").val(),
-		latitud: latitud,
-		longitud: longitud,
+		latitud: marker.getPosition().lat(),
+		longitud: marker.getPosition().lng(),
+		precision: map.getZoom(),
 		departamento: {
 			id: $("#selectPuntoVentaDepartamento").val()
 		},
 		barrio: {
 			id: $("#selectPuntoVentaBarrio").val()
+		},
+		estadoPuntoVenta: {
+			id: $("#selectPuntoVentaEstado").val()
 		}
 	};
 	
 	if (puntoVenta.nombre == "") {
 		alert("Debe ingresar un nombre.");
+		
+		return;
+	}
+	
+	if (puntoVenta.estadoPuntoVenta.id == 0) {
+		alert("Debe ingresar un estado.")
 		
 		return;
 	}

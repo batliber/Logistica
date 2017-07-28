@@ -85,7 +85,8 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 		String castigadoPorQuitasYDesistimiento,
 		String previsionesTotales,
 		String contingencias,
-		String otorgantesGarantias
+		String otorgantesGarantias,
+		String sinDatos
 	) {
 		try {
 			Service service = Service.create(
@@ -109,7 +110,8 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 				castigadoPorQuitasYDesistimiento,
 				previsionesTotales,
 				contingencias,
-				otorgantesGarantias
+				otorgantesGarantias,
+				sinDatos
 			);
 		} catch (Exception e) {
 			e.printStackTrace();

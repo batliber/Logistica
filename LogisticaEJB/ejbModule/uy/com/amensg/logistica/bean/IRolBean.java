@@ -12,4 +12,10 @@ public interface IRolBean {
 	public Collection<Rol> list();
 	
 	public Rol getById(Long id);
+	
+	public void save(Rol rol);
+	
+	public void remove(Rol rol);
+	
+	public void update(Rol rol);
 }

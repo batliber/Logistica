@@ -13,8 +13,10 @@ import uy.com.amensg.logistica.entities.DatosElegibilidadFinanciacionTO;
 import uy.com.amensg.logistica.entities.DatosFinanciacion;
 import uy.com.amensg.logistica.entities.DatosFinanciacionTO;
 import uy.com.amensg.logistica.entities.EmpresaTO;
+import uy.com.amensg.logistica.entities.FormaPagoTO;
 import uy.com.amensg.logistica.entities.Moneda;
 import uy.com.amensg.logistica.entities.MonedaTO;
+import uy.com.amensg.logistica.util.Configuration;
 
 @RemoteProxy
 public class FinanciacionDWR {
@@ -70,6 +72,50 @@ public class FinanciacionDWR {
 						cuotas
 					)
 				);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String validarFinanciacion(MonedaTO monedaTO, FormaPagoTO formaPago, Double monto) {
+		String result = null;
+		
+		try {
+			Long formaPagoNuestroCreditoId = 
+				new Long(Configuration.getInstance().getProperty("formaPago.NuestroCredito"));
+			
+			if (formaPago.getId().equals(formaPagoNuestroCreditoId)) {
+				Long monedaPesosUruguayosId =
+					new Long(Configuration.getInstance().getProperty("moneda.PesosUruguayos"));
+				Long monedaDolaresAmericanosId =
+					new Long(Configuration.getInstance().getProperty("moneda.DolaresAmericanos"));
+				
+				if (monedaTO.getId().equals(monedaPesosUruguayosId)) {
+					Double montoMinimoPesosUruguayos = 
+						new Double(
+							Configuration.getInstance().getProperty(
+								"financiacion.creditoDeLaCasa.montoMinimo.PesosUruguayos"
+							)
+						);
+					
+					if (monto < montoMinimoPesosUruguayos) {
+						result = "No se puede financiar con Nuestro crédito por montos inferiores a $U 2500.";
+					}
+				} else if (monedaTO.getId().equals(monedaDolaresAmericanosId)) {
+					Double montoMinimoDolaresAmericanos =
+						new Double(
+							Configuration.getInstance().getProperty(
+								"financiacion.creditoDeLaCasa.montoMinimo.DolaresAmericanos"
+							)
+						);
+					
+					if (monto < montoMinimoDolaresAmericanos) {
+						result = "No se puede financiar con Nuestro crédito por montos inferiores a U$S 100.";
+					}
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

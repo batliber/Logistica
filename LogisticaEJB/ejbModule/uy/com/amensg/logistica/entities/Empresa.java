@@ -1,6 +1,6 @@
 package uy.com.amensg.logistica.entities;
 
-import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -32,12 +32,15 @@ public class Empresa extends BaseEntity {
 	@Column(name = "nombre_sucursal")
 	private String nombreSucursal;
 	
+	@Column(name = "direccion")
+	private String direccion;
+	
 	@OneToMany( cascade=CascadeType.ALL, fetch=FetchType.EAGER )
 	@JoinTable(name = "forma_pago_empresa", 
 		joinColumns=@JoinColumn(name = "empresa_id"),
 		inverseJoinColumns=@JoinColumn(name = "forma_pago_id")
 	)
-	private Collection<FormaPago> formaPagos;
+	private Set<FormaPago> formaPagos;
 	
 	public String getNombre() {
 		return nombre;
@@ -79,11 +82,19 @@ public class Empresa extends BaseEntity {
 		this.nombreSucursal = nombreSucursal;
 	}
 
-	public Collection<FormaPago> getFormaPagos() {
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public Set<FormaPago> getFormaPagos() {
 		return formaPagos;
 	}
 
-	public void setFormaPagos(Collection<FormaPago> formaPagos) {
+	public void setFormaPagos(Set<FormaPago> formaPagos) {
 		this.formaPagos = formaPagos;
 	}
 }

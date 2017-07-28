@@ -9,6 +9,8 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoPuntoVentaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PuntoVentaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
@@ -17,7 +19,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb6ZHkQPu3YqYlFLsBAGZ-79aVjSXwEig"></script>
 	<script type="text/javascript" src="/LogisticaWEB/pages/puntos_venta/puntos_venta.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>

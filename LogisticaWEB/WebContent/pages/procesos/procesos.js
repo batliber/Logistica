@@ -1,6 +1,8 @@
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	grid = new Grid(
 		document.getElementById("divTableProcesos"),
 		{
@@ -11,7 +13,7 @@ $(document).ready(function() {
 			tdCantidadRegistrosEnProceso: { campo: "cantidadRegistrosEnProceso", descripcion: "En proceso", abreviacion: "En proceso", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
 			tdCantidadRegistrosParaProcesarPrioritario: { campo: "cantidadRegistrosParaProcesarPrioritario", descripcion: "Para procesar prioritario", abreviacion: "Prioritarios", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
 			tdCantidadRegistrosProcesado: { campo: "cantidadRegistrosProcesado", descripcion: "Procesados", abreviacion: "Procesados", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-			tdCantidadRegistrosListaVacia: { campo: "cantidadRegistrosListaVacia", descripcion: "Lista vac�a", abreviacion: "Lista vac�a", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 }
+			tdCantidadRegistrosListaVacia: { campo: "cantidadRegistrosListaVacia", descripcion: "Lista vacía", abreviacion: "Lista vacía", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 }
 		}, 
 		false,
 		reloadData,
@@ -21,7 +23,7 @@ $(document).ready(function() {
 	grid.rebuild();
 	
 	reloadData();
-});
+}
 
 function reloadData() {
 	ACMInterfaceProcesoDWR.listEstadisticas(

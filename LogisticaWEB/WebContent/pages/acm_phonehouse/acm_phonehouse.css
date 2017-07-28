@@ -13,13 +13,10 @@
 	background-color: #F0F0F0;
 }
 
-#iFrameSeleccionEmpresa {
-	width: 400px;
-	height: 300px;
-	border: none;
-}
-
 #divSeleccionEmpresa {
+	position: absolute;
+	top: 21px;
+	left: 0;
 	padding-left: 8px;
 	padding-right: 8px;
 	width: 95%;

@@ -95,36 +95,36 @@ public class MarcaDWR {
 	}
 
 	public static MarcaTO transform(Marca marca) {
-		MarcaTO marcaTO = new MarcaTO();
+		MarcaTO result = new MarcaTO();
 		
-		marcaTO.setNombre(marca.getNombre());
-		marcaTO.setFechaBaja(marca.getFechaBaja());
+		result.setNombre(marca.getNombre());
+		result.setFechaBaja(marca.getFechaBaja());
 		
-		marcaTO.setFact(marca.getFact());
-		marcaTO.setId(marca.getId());
-		marcaTO.setTerm(marca.getTerm());
-		marcaTO.setUact(marca.getUact());
+		result.setFact(marca.getFact());
+		result.setId(marca.getId());
+		result.setTerm(marca.getTerm());
+		result.setUact(marca.getUact());
 		
-		return marcaTO;
+		return result;
 	}
 	
 	public static Marca transform(MarcaTO marcaTO) {
-		Marca marca = new Marca();
+		Marca result = new Marca();
 		
-		marca.setNombre(marcaTO.getNombre());
-		marca.setFechaBaja(marcaTO.getFechaBaja());
+		result.setNombre(marcaTO.getNombre());
+		result.setFechaBaja(marcaTO.getFechaBaja());
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
-		marca.setFact(date);
-		marca.setId(marcaTO.getId());
-		marca.setTerm(new Long(1));
+		result.setFact(date);
+		result.setId(marcaTO.getId());
+		result.setTerm(new Long(1));
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
-		marca.setUact(usuarioId);
+		result.setUact(usuarioId);
 		
-		return marca;
+		return result;
 	}
 }

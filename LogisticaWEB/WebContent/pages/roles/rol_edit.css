@@ -1,0 +1,55 @@
+#divRolNombre {
+	float: left;
+	width: 75%;
+}
+
+#inputRolNombre {
+	margin-left: 2px;
+	width: 38%;
+}
+
+#divMenu {
+	float: left;
+	width: 30%;
+}
+
+#selectMenu {
+	margin-left: 2px;
+	width: 80%;
+}
+
+#inputAgregarMenu {
+	margin-left: 5px;
+	background-image: url('/LogisticaWEB/images/add.png');
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+#divRol {
+	float: left;
+	width: 30%;
+}
+
+#inputAgregarRol {
+	margin-left: 5px;
+	background-image: url('/LogisticaWEB/images/add.png');
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+#selectRol {
+	margin-left: 2px;
+	width: 80%;
+}
+
+#divTableMenus {
+	float: left;
+	margin-left: 4px;
+	margin-top: 8px;
+}
+
+#divTableSubordinados {
+	float: left;
+	margin-left: 4px;
+	margin-top: 8px;
+}

@@ -18,6 +18,7 @@ public class PuntoVentaTO extends BaseTO {
 	private String contacto;
 	private DepartamentoTO departamento;
 	private BarrioTO barrio;
+	private EstadoPuntoVentaTO estadoPuntoVenta;
 
 	public String getNombre() {
 		return nombre;
@@ -105,5 +106,13 @@ public class PuntoVentaTO extends BaseTO {
 
 	public void setBarrio(BarrioTO barrio) {
 		this.barrio = barrio;
+	}
+
+	public EstadoPuntoVentaTO getEstadoPuntoVenta() {
+		return estadoPuntoVenta;
+	}
+
+	public void setEstadoPuntoVenta(EstadoPuntoVentaTO estadoPuntoVenta) {
+		this.estadoPuntoVenta = estadoPuntoVenta;
 	}
 }

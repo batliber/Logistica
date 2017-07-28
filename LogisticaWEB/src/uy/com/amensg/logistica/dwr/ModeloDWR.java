@@ -51,6 +51,22 @@ public class ModeloDWR {
 		return result;
 	}
 	
+	public Collection<ModeloTO> listVigentes() {
+		Collection<ModeloTO> result = new LinkedList<ModeloTO>();
+		
+		try {
+			IModeloBean iModeloBean = lookupBean();
+			
+			for (Modelo modelo : iModeloBean.listVigentes()) {
+				result.add(transform(modelo));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<ModeloTO> listByMarcaId(Long marcaId) {
 		Collection<ModeloTO> result = new LinkedList<ModeloTO>();
 		
@@ -58,6 +74,22 @@ public class ModeloDWR {
 			IModeloBean iModeloBean = lookupBean();
 			
 			for (Modelo modelo : iModeloBean.listByMarcaId(marcaId)) {
+				result.add(transform(modelo));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<ModeloTO> listVigentesByMarcaId(Long marcaId) {
+		Collection<ModeloTO> result = new LinkedList<ModeloTO>();
+		
+		try {
+			IModeloBean iModeloBean = lookupBean();
+			
+			for (Modelo modelo : iModeloBean.listVigentesByMarcaId(marcaId)) {
 				result.add(transform(modelo));
 			}
 		} catch (Exception e) {

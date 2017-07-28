@@ -12,6 +12,7 @@ public class EmpresaTO extends BaseTO {
 	private Long codigoPromotor;
 	private String nombreContrato;
 	private String nombreSucursal;
+	private String direccion;
 	private Collection<FormaPagoTO> formaPagos;
 
 	public String getNombre() {
@@ -52,6 +53,14 @@ public class EmpresaTO extends BaseTO {
 
 	public void setNombreSucursal(String nombreSucursal) {
 		this.nombreSucursal = nombreSucursal;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
 	}
 
 	public Collection<FormaPagoTO> getFormaPagos() {

@@ -17,4 +17,6 @@ public interface IBCUInterfaceRiesgoCrediticioBean {
 	public BCUInterfaceRiesgoCrediticio getLastByEmpresaDocumento(Empresa empresa, String documento);
 	
 	public void save(BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio);
+
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 }

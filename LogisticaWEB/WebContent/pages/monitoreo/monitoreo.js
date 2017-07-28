@@ -1,7 +1,9 @@
 var grid = null;
 var formularioContrato = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	grid = new Grid(
 		document.getElementById("divTableContratos"),
 		{
@@ -17,7 +19,7 @@ $(document).ready(function() {
 			tdBackoffice: { campo: "backoffice.nombre", clave: "backoffice.id", descripcion: "Backoffice", abreviacion: "Backoffice", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listBackoffices, clave: "id", valor: "nombre" }, ancho: 80 },
 			tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 80 },
 			tdActivador: { campo: "activador.nombre", clave: "activador.id", descripcion: "Activador", abreviacion: "Activador", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listActivadores, clave: "id", valor: "nombre" }, ancho: 90 },
-			tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de env�o a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
+			tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
 			tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 90 },
 			tdEstado: { campo: "estado.nombre", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "nombre" }, ancho: 90 },
 		}, 
@@ -32,7 +34,7 @@ $(document).ready(function() {
 	
 //	formularioContrato = new FormularioContrato(document.getElementById("divFormularioContrato"));
 	$("#divIFrameContrato").draggable();
-});
+}
 
 function listEmpresas() {
 	var result = [];

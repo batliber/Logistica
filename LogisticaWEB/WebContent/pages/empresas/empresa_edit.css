@@ -37,6 +37,16 @@
 	width: 100%;
 }
 
+#inputEmpresaDireccion {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divEmpresaDireccion {
+	float: left;
+	width: 70%;
+}
+
 .divEmpresasRoles {
 	float: left;
 	width: 71%;

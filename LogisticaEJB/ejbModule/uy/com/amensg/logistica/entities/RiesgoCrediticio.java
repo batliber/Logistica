@@ -18,6 +18,9 @@ public class RiesgoCrediticio extends BaseEntity {
 	@Column(name = "documento")
 	private String documento;
 	
+	@Column(name = "fecha_importacion")
+	private Date fechaImportacion;
+	
 	@Column(name = "fecha_vigencia_desde")
 	private Date fechaVigenciaDesde;
 	
@@ -47,6 +50,14 @@ public class RiesgoCrediticio extends BaseEntity {
 
 	public void setDocumento(String documento) {
 		this.documento = documento;
+	}
+
+	public Date getFechaImportacion() {
+		return fechaImportacion;
+	}
+
+	public void setFechaImportacion(Date fechaImportacion) {
+		this.fechaImportacion = fechaImportacion;
 	}
 
 	public Date getFechaVigenciaDesde() {

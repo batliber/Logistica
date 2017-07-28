@@ -8,6 +8,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 public class RiesgoCrediticioTO extends BaseTO {
 
 	private String documento;
+	private Date fechaImportacion;
 	private Date fechaVigenciaDesde;
 	private EmpresaTO empresa;
 	private EstadoRiesgoCrediticioTO estadoRiesgoCrediticio;
@@ -21,6 +22,14 @@ public class RiesgoCrediticioTO extends BaseTO {
 
 	public void setDocumento(String documento) {
 		this.documento = documento;
+	}
+
+	public Date getFechaImportacion() {
+		return fechaImportacion;
+	}
+
+	public void setFechaImportacion(Date fechaImportacion) {
+		this.fechaImportacion = fechaImportacion;
 	}
 
 	public Date getFechaVigenciaDesde() {

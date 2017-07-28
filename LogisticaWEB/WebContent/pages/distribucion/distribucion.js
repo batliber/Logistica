@@ -30,18 +30,18 @@ function init() {
 								tdContratoMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
 								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 80 },
 								tdContratoEquipo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 80 },
-								tdContratoPrecio: { campo: "precio", descripcion: "Precio", abreviacion: "Precio", tipo: __TIPO_CAMPO_NUMERICO },
+								tdContratoPrecio: { campo: "precio", descripcion: "Precio", abreviacion: "Precio", tipo: __TIPO_CAMPO_NUMERICO, ancho: 50 },
 								tdContratoFechaEntrega: { campo: "fechaEntrega", descripcion: "Fecha de entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_FECHA },
 								tdContratoDepartamento: { campo: "zona.departamento.nombre", clave: "zona.departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"}, ancho: 80 },
 								tdContratoBarrio: { campo: "barrio.nombre", clave: "barrio.id", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listBarrios, clave: "id", valor: "nombre" }, ancho: 80 },
-								tdContratoZona: { campo: "zona.nombre", clave: "zona.id", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listZonas, clave: "id", valor: "nombre"}, ancho: 65 },
-								tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
+								tdContratoZona: { campo: "zona.nombre", clave: "zona.id", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listZonas, clave: "id", valor: "nombre"}, ancho: 55 },
+								tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING, ancho: 95 },
 								tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 80 },
 								tdFechaBackoffice: { campo: "fechaBackoffice", descripcion: "Fecha de armado", abreviacion: "Armado", tipo: __TIPO_CAMPO_FECHA },
 								tdFechaEntregaDistribuidor: { campo: "fechaEntregaDistribuidor", descripcion: "Entregado", abreviacion: "Entregado", tipo: __TIPO_CAMPO_FECHA },
 								tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto", abreviacion: "Devuelto", tipo: __TIPO_CAMPO_FECHA },
 								tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", clave: "resultadoEntregaDistribucion.id", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listResultadoEntregaDistribuciones, clave: "id", valor: "descripcion" } },
-								tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de env�o a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
+								tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
 								tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 80 },
 								tdEstado: { campo: "estado.nombre", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "nombre" }, ancho: 80 },
 							}, 
@@ -52,33 +52,27 @@ function init() {
 						
 						grid.rebuild();
 						
-						grid.filtroDinamico.agregarFiltro(null, null);
-						$("#selectCampo1").val("estado.nombre");
-						grid.filtroDinamico.campoOnChange(null, null, 1, true);
-						
-						$("#selectCondicion1").val("keq");
-						grid.filtroDinamico.condicionOnChange(null, null, 1, true, "estado.nombre");
-						
-						$("#inputValor1").val("8");
-						grid.filtroDinamico.valorOnChange(null, null, 1, true);
-						
-						grid.filtroDinamico.agregarFiltro(null, null);
-						$("#selectCampo2").val("usuario.nombre");
-						grid.filtroDinamico.campoOnChange(null, null, 2, true);
-						
-						$("#selectCondicion2").val("nl");
-						grid.filtroDinamico.condicionOnChange(null, null, 2, true, "usuario.nombre");
-						
-						grid.filtroDinamico.agregarFiltro(null, null);
-						$("#selectCampo3").val("fechaEntregaDistribuidor");
-						grid.filtroDinamico.campoOnChange(null, null, 3, true);
-						
-						$("#selectCondicion3").val("nl");
-						grid.filtroDinamico.condicionOnChange(null, null, 3, true, "fechaEntregaDistribuidor");
-						
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
+						grid.filtroDinamico.agregarFiltrosManuales([
+							{
+								campo: "estado.nombre",
+								operador: "keq",
+								valores: ["8"]
+							},
+							{
+								campo: "usuario.nombre",
+								operador: "nl",
+								valores: []
+							},
+							{
+								campo: "fechaEntregaDistribuidor",
+								operador: "nl",
+								valores: []
+							}
+						]);
 						
 						rol = data.usuarioRolEmpresas[i].rol.id;
+						
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
 						
 						break;
 					}
@@ -107,12 +101,12 @@ function init() {
 					);
 					
 					grid.rebuild();
+					
+					reloadData();
 				}
 			}, async: false
 		}
 	);
-	
-	reloadData();
 	
 	$("#divIFrameContrato").draggable();
 	$("#divIFrameSeleccionDistribuidor").draggable();
@@ -344,17 +338,15 @@ function closeDialog() {
 
 function inputAsignarOnClick() {
 	metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-	metadataConsulta.tamanoSubconjunto = 
-		Math.min(
-			$("#inputTamanoSubconjunto").val(),
-			$("#divCantidadRegistrosValue").text()
-		);
+	if (metadataConsulta.tamanoSubconjunto > grid.getCount()) {
+		metadataConsulta.tamanoSubconjunto = grid.getCount();
+	}
 	
 	ContratoDWR.chequearAsignacion(
 		metadataConsulta,
 		{
 			callback: function(data) {
-				if (data || confirm("Atenci�n: se modificar�n registros que ya se encuentran asignados.")) {
+				if (data || confirm("Atencián: se modificarán registros que ya se encuentran asignados.")) {
 					$("#selectDistribuidor > option").remove();
 					
 					$("#selectDistribuidor").append("<option value='0'>Seleccione...</option>");
@@ -396,19 +388,17 @@ function inputAceptarOnClick(event, element) {
 		};
 		
 		metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divCantidadRegistrosValue").text()
-			);
+		if (metadataConsulta.tamanoSubconjunto > grid.getCount()) {
+			metadataConsulta.tamanoSubconjunto = grid.getCount();
+		}
 		
-		if (confirm("Se asignar�n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		if (confirm("Se asignarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 			ContratoDWR.asignarDistribuidor(
 				distribuidor,
 				metadataConsulta,
 				{
 					callback: function(data) {
-						alert("Operaci�n exitosa.");
+						alert("Operación exitosa.");
 						
 						reloadData();
 					}, async: false

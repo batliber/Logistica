@@ -5,6 +5,7 @@ var __FORMA_PAGO_NUESTRO_CREDITO_CUOTAS_DEFAULT = 12;
 var __ELEGIBILIDAD_FINANCIACION_RECHAZAR = 0;
 var __ELEGIBILIDAD_FINANCIACION_REALIZAR_CLEARING = 1;
 var __ELEGIBILIDAD_FINANCIACION_NO_REALIZAR_CLEARING = 2;
+var __ELEGIBILIDAD_SIN_ANALISIS = -1;
 
 var gridArchivosAdjuntos = null;
 
@@ -161,31 +162,11 @@ function init() {
 		);
 	}
 	
-	if ($("#selectBarrio").length > 0) {
-		BarrioDWR.list(
+	if ($("#selectTipoProducto").length > 0) {
+		TipoProductoDWR.list(
 			{
 				callback: function(data) {
-					fillSelect("selectBarrio", data, "id", "nombre");
-				}, async: false
-			}
-		);
-	}
-	
-	if ($("#selectZona").length > 0) {
-		ZonaDWR.list(
-			{
-				callback: function(data) {
-					fillSelect("selectZona", data, "id", "nombre");
-				}, async: false
-			}
-		);
-	}
-	
-	if ($("#selectTurno").length > 0) {
-		TurnoDWR.list(
-			{
-				callback: function(data) {
-					fillSelect("selectTurno", data, "id", "nombre");
+					fillSelect("selectTipoProducto", data, "id", "descripcion");
 				}, async: false
 			}
 		);
@@ -193,6 +174,10 @@ function init() {
 	
 	$("#selectFechaEntrega").append("<option value='0'>Seleccione...</option>");
 	$("#selectEquipo").append("<option value='0'>Seleccione...</option>");
+	$("#selectBarrio").append("<option value='0'>Seleccione...</option>");
+	$("#selectZona").append("<option value='0'>Seleccione...</option>");
+	$("#selectTurno").append("<option value='0'>Seleccione...</option>");
+	$("#selectFormaPago").append("<option value='0'>Seleccione...</option>");
 	
 	if (id != null) {
 		ContratoDWR.getById(
@@ -236,8 +221,22 @@ function init() {
 					populateField("numeroContrato", data, "numeroContrato", "numeroContrato");
 					populateField("plan", data, "tipoContratoDescripcion", "tipoContratoDescripcion");
 					populateField("nuevoPlanString", data, "nuevoPlanString", "nuevoPlanString");
+					
+					if (data.nuevoPlan != null) {
+						if ($("#selectNuevoPlan").length > 0) {
+							if ($("#selectNuevoPlan > option[value='" + data.nuevoPlan.id + "']").length == 0) {
+								$("#selectNuevoPlan> option:first").after(
+									"<option value='" + data.nuevoPlan.id + "'>" 
+										+ data.nuevoPlan.descripcion
+									+ "</option>"
+								);
+							}
+						}
+					}
 					populateField("nuevoPlan", data, "nuevoPlan.id", "nuevoPlan.descripcion");
+					
 					populateField("motivoCambioPlan", data, "motivoCambioPlan.id", "motivoCambioPlan.descripcion");
+					populateField("tipoProducto", data, "tipoProducto.id", "tipoProducto.descripcion");
 					
 					if (data.empresa != null) {
 						if ($("#selectEquipo").length > 0) {
@@ -254,7 +253,8 @@ function init() {
 													id: dataStock[i].modelo.id,
 													descripcion: dataStock[i].marca.nombre + " " + dataStock[i].modelo.descripcion + " (" + dataStock[i].cantidad + ")",
 													marca: dataStock[i].marca,
-													modelo: dataStock[i].modelo
+													modelo: dataStock[i].modelo,
+													tipoProducto: dataStock[i].tipoProducto
 												};
 												
 												found = 
@@ -267,18 +267,19 @@ function init() {
 												id: data.modelo.id,
 												descripcion: data.marca.nombre + " " + data.modelo.descripcion,
 												marca: data.marca,
-												modelo: data.modelo
+												modelo: data.modelo,
+												tipoProducto: data.tipoProducto
 											};
 										}
 										
-										fillSelect("selectEquipo", equipos, "id", "descripcion", "maid", "marca.id", "moid", "modelo.id");
+										fillSelect("selectEquipo", equipos, "id", "descripcion", "maid", "marca.id");
 										
-										populateField("equipo", data, "modelo.id", "modelo.descripcion", "moid", "modelo.id");
+										populateField("equipo", data, "modelo.id", "modelo.descripcion");
 									}, async: false
 								}
 							);
 						} else {
-							populateField("equipo", data, "modelo.id", "modelo.descripcion", "moid", "modelo.id");
+							populateField("equipo", data, "modelo.id", "modelo.descripcion");
 						}
 						
 						reloadFormasPago(data.empresa.id, data.documento);
@@ -311,6 +312,7 @@ function init() {
 						if (data.formaPago.id == __FORMA_PAGO_NUESTRO_CREDITO_ID) {
 							showField("valorCuota");
 							$("#divInputImprimirPagare").show();
+//							$("#divLabelFechaActivarEn").addClass("requiredFormLabel");
 						}
 					} else {
 						$("#selectFormaPago").val(__FORMA_PAGO_NUESTRO_CREDITO_ID);
@@ -328,6 +330,7 @@ function init() {
 						showField("cuotas");
 					}
 					populateField("valorCuota", data, "valorCuota", "valorCuota");
+					populateField("numeroVale", data, "numeroVale", "numeroVale");
 					populateField("intereses", data, "intereses", "intereses");
 					populateField("gastosAdministrativos", data, "gastosAdministrativos", "gastosAdministrativos");
 					populateField("gastosConcesion", data, "gastosConcesion", "gastosConcesion");
@@ -349,12 +352,59 @@ function init() {
 					populateField("telefonoContacto", data, "telefonoContacto", "telefonoContacto");
 					populateField("email", data, "email", "email");
 					
+					if (data.departamento != null) {
+						if ($("#selectDepartamento").length > 0) {
+							if ($("#selectDepartamento > option[value='" + data.departamento.id + "']").length == 0) {
+								$("#selectDepartamento > option:first").after(
+									"<option value='" + data.departamento.id + "'>" 
+										+ data.departamento.nombre
+									+ "</option>"
+								);
+							}
+						}
+					}
 					populateField("departamento", data, "zona.departamento.id", "zona.departamento.nombre");
+					
+					if (data.barrio != null) {
+						if ($("#selectBarrio").length > 0) {
+							if ($("#selectBarrio > option[value='" + data.barrio.id + "']").length == 0) {
+								$("#selectBarrio > option:first").after(
+									"<option value='" + data.barrio.id + "'>" 
+										+ data.barrio.nombre
+									+ "</option>"
+								);
+							}
+						}
+					}
 					populateField("barrio", data, "barrio.id", "barrio.nombre");
+					
+					if (data.zona != null) {
+						if ($("#selectZona").length > 0) {
+							if ($("#selectZona > option[value='" + data.zona.id + "']").length == 0) {
+								$("#selectZona > option:first").after(
+									"<option value='" + data.zona.id + "'>" 
+										+ data.zona.nombre
+									+ "</option>"
+								);
+							}
+						}
+					}
 					populateField("zona", data, "zona.id", "zona.nombre");
+					
+					if (data.turno != null) {
+						if ($("#selectTurno").length > 0) {
+							if ($("#selectTurno > option[value='" + data.turno.id + "']").length == 0) {
+								$("#selectTurno > option:first").after(
+									"<option value='" + data.turno.id + "'>" 
+										+ data.turno.nombre
+									+ "</option>"
+								);
+							}
+						}
+					}
 					populateField("turno", data, "turno.id", "turno.nombre");
 					
-					if ($("#selectTurno").length) {
+					if ($("#selectTurno").length > 0) {
 						selectTurnoOnChange();
 					}
 					
@@ -431,7 +481,12 @@ function initTabArchivosAdjuntos() {
 	
 	gridArchivosAdjuntos.rebuild();
 	
-	buildGallery();
+	var html = "";
+	
+	html +=
+		"<div class='divGalleryContent'>&nbsp;</div>";
+	
+	$("#divResultadoEntregaDistribucionDocumentos").html(html);
 }
 
 function reloadArchivosAdjuntosData(contrato) {
@@ -439,14 +494,33 @@ function reloadArchivosAdjuntosData(contrato) {
 			
 	if (contrato != null) {
 		data.cantidadRegistros = contrato.archivosAdjuntos.length;
-		data.registrosMuestra = contrato.archivosAdjuntos;
+		data.registrosMuestra = [];
+		
+		for (var i=0; i<contrato.archivosAdjuntos.length; i++) {
+			var url =
+				"<a href=\"/LogisticaWEB/Download?fn=" + contrato.archivosAdjuntos[i].url + "&f=s\">" 
+					+ contrato.archivosAdjuntos[i].url 
+				+ "</a>";
+			
+			data.registrosMuestra[i] = contrato.archivosAdjuntos[i];
+			data.registrosMuestra[i].url = url;
+		}
 	} else {
 		ContratoArchivoAdjuntoDWR.listByContratoId(
 			id,
 			{
 				callback: function(archivoAdjuntos) {
 					data.cantidadRegistros = archivoAdjuntos.length;
-					data.registrosMuestra = archivoAdjuntos;
+					
+					for (var i=0; i<archivoAdjuntos.length; i++) {
+						var url =
+							"<a href=\"/LogisticaWEB/Download?fn=" + archivoAdjuntos[i].url + "&f=s\">" 
+								+ archivoAdjuntos[i].url 
+							+ "</a>";
+						
+						data.registrosMuestra[i] = archivoAdjuntos[i];
+						data.registrosMuestra[i].url = url;
+					}
 				}, async: false
 			}
 		);
@@ -480,38 +554,6 @@ function trArchivosAdjuntosOnClick(eventObject) {
 	$(img).attr("class", "imgGalleryActive");
 }
 
-function buildGallery() {
-	var html = "";
-	
-	html +=
-		"<div class='divGalleryContent'>&nbsp;</div>";
-//		"<div class='divGalleryLeft'><</div>"
-//		+ "<div class='divGalleryContent'>&nbsp;</div>"
-//		+ "<div class='divGalleryRight'>></div>";
-	
-	$("#divResultadoEntregaDistribucionDocumentos").html(html);
-	
-//	$(".divGalleryLeft").click(function() {
-//		var activeItem = $($(".divGalleryContent > .imgGalleryActive")[0]);
-//		
-//		if (activeItem.prev() != null && activeItem.prev().length > 0) {
-//			activeItem.attr("class", "imgGalleryInactive");
-//			activeItem.prev().attr("class", "imgGalleryActive");
-//		}
-//	});
-//	
-//	$(".divGalleryRight").click(function() {
-//		var activeItem = $($(".divGalleryContent > .imgGalleryActive")[0]);
-//		
-//		if (activeItem.next() != null && activeItem.next().length > 0) {
-//			activeItem.attr("class", "imgGalleryInactive");
-//			activeItem.next().attr("class", "imgGalleryActive");
-//		}
-//	});
-
-	return false;
-}
-
 function inputAgregarAdjuntoOnClick(event, element) {
 	var inputFile = $("#inputAdjunto").val();
 	
@@ -542,36 +584,6 @@ function inputAgregarAdjuntoOnClick(event, element) {
 	}
 }
 
-function buildGallery() {
-	var html = "";
-	
-	html +=
-		"<div class='divGalleryLeft'><</div>"
-		+ "<div class='divGalleryContent'>"
-			+ "<img class='imgGalleryActive' src='#'/>"
-			+ "<img class='imgGalleryInactive' src='#'/>"
-		+ "</div>"
-		+ "<div class='divGalleryRight'>></div>";
-	
-	$("#divResultadoEntregaDistribucionDocumentos").append(html);
-	
-	$(".divGalleryLeft").click(function() {
-		var activeItem = $($(".divGalleryContent > .imgGalleryActive")[0]);
-		var inactiveItem = $($(".divGalleryContent > .imgGalleryInactive")[0]);
-		
-		activeItem.attr("class", "imgGalleryInactive");
-		inactiveItem.attr("class", "imgGalleryActive");
-	});
-	
-	$(".divGalleryRight").click(function() {
-		var activeItem = $($(".divGalleryContent > .imgGalleryActive")[0]);
-		var inactiveItem = $($(".divGalleryContent > .imgGalleryInactive")[0]);
-		
-		activeItem.attr("class", "imgGalleryInactive");
-		inactiveItem.attr("class", "imgGalleryActive");
-	});
-}
-
 function refinarForm() {
 	hideField("empresa");
 	hideField("rol");
@@ -588,6 +600,7 @@ function refinarForm() {
 	hideField("fechaEnvioAntel");
 	hideField("fechaActivacion");
 	hideField("fechaCoordinacion");
+	hideField("nuevoPlanString");
 	hideField("resultadoEntregaDistribucion");
 	hideField("resultadoEntregaDistribucionObservaciones");
 	hideField("resultadoEntregaDistribucionLatitud");
@@ -596,6 +609,7 @@ function refinarForm() {
 	hideField("tarjetaCredito");
 	hideField("cuotas");
 	hideField("valorCuota");
+	hideField("numeroVale");
 	hideField("intereses");
 	hideField("gastosAdministrativos");
 	hideField("gastosConcesion");
@@ -616,6 +630,7 @@ function refinarForm() {
 		$("#divNumeroContrato").html("&nbsp;");
 		$("#divNuevoPlan").html("&nbsp;");
 		$("#divMotivoCambioPlan").html("&nbsp;");
+		$("#divTipoProducto").html("&nbsp;");
 		$("#divEquipo").html("&nbsp;");
 		$("#divNumeroSerie").html("&nbsp;");
 		$("#divNumeroChip").html("&nbsp;");
@@ -701,6 +716,60 @@ function refinarForm() {
 		
 		$("#divButtonTitleFourfoldSize").hide();
 		$("#divButtonTitleDoubleSize").attr("id", "divButtonTitleSingleSize");
+	} else if (mode == __FORM_MODE_SUPERVISOR_CALL_CENTER) {
+		$("#divEmpresa").html("&nbsp;");
+		$("#divMid").html("&nbsp;");
+		
+		$("#divNumeroSerie").html("&nbsp;");
+		hideField("numeroSerie");
+		
+		$("#divNumeroChip").html("&nbsp;");
+		hideField("numeroChip");
+		
+		$("#divNumeroBloqueo").html("&nbsp;");
+		hideField("numeroBloqueo");
+		
+		$("#divNumeroFactura").html("&nbsp;");
+		hideField("numeroFactura");
+		
+		$("#divNumeroFacturaRiverGreen").html("&nbsp;");
+		hideField("numeroFacturaRiverGreen");
+		
+		$("#divFechaAtivarEn").html("&nbsp;");
+		hideField("fechaActivarEn");
+		
+		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
+		$("#divLabelTipoProducto").addClass("requiredFormLabel");
+		$("#divLabelEquipo").addClass("requiredFormLabel");
+		$("#divLabelFormaPago").addClass("requiredFormLabel");
+		$("#divLabelDocumento").addClass("requiredFormLabel");
+		$("#divLabelNombre").addClass("requiredFormLabel");
+		$("#divLabelApellido").addClass("requiredFormLabel");
+		$("#divLabelFechaNacimiento").addClass("requiredFormLabel");
+		$("#divLabelSexo").addClass("requiredFormLabel");
+		$("#divLabelDireccionFactura").addClass("requiredFormLabel");
+		$("#divLabelDireccionEntrega").addClass("requiredFormLabel");
+		$("#divLabelTelefonoContacto").addClass("requiredFormLabel");
+		$("#divLabelEmail").addClass("requiredFormLabel");
+		$("#divLabelDepartamento").addClass("requiredFormLabel");
+		$("#divLabelBarrio").addClass("requiredFormLabel");
+		$("#divLabelZona").addClass("requiredFormLabel");
+		$("#divLabelTurno").addClass("requiredFormLabel");
+		$("#divLabelFechaEntrega").addClass("requiredFormLabel");
+		
+		$("#divInputAgendar").show();
+		$("#divInputPosponer").show();
+		$("#divInputRechazar").show();
+		$("#divInputTelelink").show();
+		$("#divInputRenovo").show();
+
+		$("#divInputEstadoRiesgoCrediticio").show();
+		$("#divInputGuardar").show();
+		
+		$(".divButtonBarSeparator").show();
+		$(".divButtonTitleBar > div").show();
+		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
+		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
 	} else if (mode == __FORM_MODE_VENTA) {
 		$("#divEmpresa").html("&nbsp;");
 		$("#divMid").html("&nbsp;");
@@ -724,7 +793,9 @@ function refinarForm() {
 		hideField("fechaActivarEn");
 		
 		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
+		$("#divLabelTipoProducto").addClass("requiredFormLabel");
 		$("#divLabelEquipo").addClass("requiredFormLabel");
+		$("#divLabelFormaPago").addClass("requiredFormLabel");
 		$("#divLabelDocumento").addClass("requiredFormLabel");
 		$("#divLabelNombre").addClass("requiredFormLabel");
 		$("#divLabelApellido").addClass("requiredFormLabel");
@@ -762,7 +833,9 @@ function refinarForm() {
 //		hideField("fechaActivarEn");
 		
 		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
+		$("#divLabelTipoProducto").addClass("requiredFormLabel");
 		$("#divLabelEquipo").addClass("requiredFormLabel");
+		$("#divLabelFormaPago").addClass("requiredFormLabel");
 		$("#divLabelDocumento").addClass("requiredFormLabel");
 		$("#divLabelNombre").addClass("requiredFormLabel");
 		$("#divLabelApellido").addClass("requiredFormLabel");
@@ -805,7 +878,9 @@ function refinarForm() {
 		hideField("fechaActivarEn");
 		
 		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
+		$("#divLabelTipoProducto").addClass("requiredFormLabel");
 		$("#divLabelEquipo").addClass("requiredFormLabel");
+		$("#divLabelFormaPago").addClass("requiredFormLabel");
 		$("#divLabelDocumento").addClass("requiredFormLabel");
 		$("#divLabelNombre").addClass("requiredFormLabel");
 		$("#divLabelApellido").addClass("requiredFormLabel");
@@ -861,7 +936,9 @@ function refinarForm() {
 		hideField("fechaActivarEn");
 		
 		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
+		$("#divLabelTipoProducto").addClass("requiredFormLabel");
 		$("#divLabelEquipo").addClass("requiredFormLabel");
+		$("#divLabelFormaPago").addClass("requiredFormLabel");
 		$("#divLabelDocumento").addClass("requiredFormLabel");
 		$("#divLabelNombre").addClass("requiredFormLabel");
 		$("#divLabelApellido").addClass("requiredFormLabel");
@@ -917,7 +994,9 @@ function refinarForm() {
 		hideField("fechaActivarEn");
 		
 		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
+		$("#divLabelTipoProducto").addClass("requiredFormLabel");
 		$("#divLabelEquipo").addClass("requiredFormLabel");
+		$("#divLabelFormaPago").addClass("requiredFormLabel");
 		$("#divLabelDocumento").addClass("requiredFormLabel");
 		$("#divLabelNombre").addClass("requiredFormLabel");
 		$("#divLabelApellido").addClass("requiredFormLabel");
@@ -952,7 +1031,9 @@ function refinarForm() {
 		$("#divMid").html("&nbsp;");
 		
 		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
+		$("#divLabelTipoProducto").addClass("requiredFormLabel");
 		$("#divLabelEquipo").addClass("requiredFormLabel");
+		$("#divLabelFormaPago").addClass("requiredFormLabel");
 		$("#divLabelDocumento").addClass("requiredFormLabel");
 		$("#divLabelNombre").addClass("requiredFormLabel");
 		$("#divLabelApellido").addClass("requiredFormLabel");
@@ -987,7 +1068,9 @@ function refinarForm() {
 		$("#divMid").html("&nbsp;");
 		
 		$("#divLabelNuevoPlan").addClass("requiredFormLabel");
+		$("#divLabelTipoProducto").addClass("requiredFormLabel");
 		$("#divLabelEquipo").addClass("requiredFormLabel");
+		$("#divLabelFormaPago").addClass("requiredFormLabel");
 		$("#divLabelDocumento").addClass("requiredFormLabel");
 		$("#divLabelNombre").addClass("requiredFormLabel");
 		$("#divLabelApellido").addClass("requiredFormLabel");
@@ -1023,10 +1106,14 @@ function refinarForm() {
 }
 
 function fillSelect(
-	selectId, data, 
-	valueField, descriptionField, 
-	extraAttributeName, extraAttributeValueField, 
-	extraAttribute2Name, extraAttribute2ValueField
+	selectId, 
+	data, 
+	valueField, 
+	descriptionField, 
+	extraAttributeName, 
+	extraAttributeValueField, 
+	extraAttribute2Name, 
+	extraAttribute2ValueField
 ) {
 	$("#" + selectId + " > option").remove();
 	
@@ -1051,11 +1138,15 @@ function fillSelect(
 			if (extraAttributeName != null) {
 				extraValue = eval("data[" + i + "]." + extraAttributeValueField);
 			}
+		} catch (e) {
+			extraValue = null;
+		}
+		
+		try {
 			if (extraAttribute2Name != null) {
 				extraValue2 = eval("data[" + i + "]." + extraAttribute2ValueField)
 			}
 		} catch (e) {
-			extraValue = null;
 			extraValue2 = null;
 		}
 		
@@ -1194,6 +1285,8 @@ function inputDocumentoOnChange(event, element) {
 	var documento = $("#inputDocumento").val();
 	
 	if (documento != null && documento != "") {
+		documento = documento.trim();
+		
 		if (empresaId != null && empresaId != "") {
 			reloadFormasPago(empresaId, documento);
 		}
@@ -1201,104 +1294,6 @@ function inputDocumentoOnChange(event, element) {
 		reloadPrecio();
 		reloadDatosFinanciacion();
 	}
-}
-
-function fillSelect(selectId, data, valueField, descriptionField, extraAttributeName, extraAttributeValueField) {
-	$("#" + selectId + " > option").remove();
-	
-	var html = "<option value='0'>Seleccione...</option>";
-	
-	var values = {};
-	
-	for (var i=0; i<data.length; i++) {
-		var value = null;
-		var description = null;
-		var extraValue = null;
-		try {
-			value = eval("data[" + i + "]." + valueField);
-			description = eval("data[" + i + "]." + descriptionField);
-			if (extraAttributeName != null) {
-				extraValue = eval("data[" + i + "]." + extraAttributeValueField);
-			}
-		} catch (e) {
-			value = null;
-			description = null;
-			extraValue = null;
-		}
-		
-		if (values[value] == null || !values[value]) {
-			html += 
-				"<option value='" + value + "'"
-					+ (extraAttributeName != null ? " " + extraAttributeName + "='" + extraValue + "'" : "") 
-				+ ">" 
-					+ description 
-				+ "</option>";
-			
-			values[value] = true;
-		}
-	}
-	
-	$("#" + selectId).append(html);
-}
-
-function populateField(elementId, data, field, alternativeField, extraAttributeName, extraAttributeValueField, formatter) {
-	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, field.length);
-	
-	var value = null;
-	var alternativeValue = null;
-	var extraValue = null;
-	try {
-		value = eval("data." + field);
-		alternativeValue = eval("data." + alternativeField);
-		extraValue = eval("data." + extraAttributeValueField);
-	} catch (e) {
-		value = null;
-		alternativeValue = null;
-		extraValue = null;
-	}
-	
-	if ($("#input" + elementSuffix).length > 0) {
-		$("#input" + elementSuffix).val(formatter != null ? formatter(value) : value);
-		
-		if (extraAttributeName != null) {
-			$("#input" + elementSuffix).attr(extraAttributeName, extraValue);
-		}
-	} else if ($("#select" + elementSuffix).length > 0) {
-		if (value != null) {
-			$("#select" + elementSuffix).val(value);
-		}
-		if (extraAttributeName != null) {
-			$("#select" + elementSuffix).attr(extraAttributeName, extraValue);
-		}
-	} else if ($("#textarea" + elementSuffix).length > 0) {
-		$("#textarea" + elementSuffix).val(value);
-		
-		if (extraAttributeName != null) {
-			$("#textarea" + elementSuffix).attr(extraAttributeName, extraValue);
-		}
-	} else if (alternativeValue != null && alternativeValue != "") {
-		$("#div" + elementSuffix).html(formatter != null ? formatter(alternativeValue) : alternativeValue);
-		
-		if (extraAttributeName != null) {
-			$("#div" + elementSuffix).attr(extraAttributeName, extraValue);
-		}
-	} else {
-		$("#div" + elementSuffix).html("&nbsp;");
-	}
-}
-
-function hideField(elementId) {
-	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, elementId.length);
-	
-	$("#divLabel" + elementSuffix).hide();
-	$("#div" + elementSuffix).hide();
-}
-
-function showField(elementId) {
-	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, elementId.length);
-	
-	$("#divLabel" + elementSuffix).show();
-	$("#div" + elementSuffix).show();
 }
 
 function selectDepartamentoOnChange() {
@@ -1420,16 +1415,19 @@ function selectFechaEntregaOnChange() {
 function reloadPrecio() {
 	$("#inputPrecio").val(null);
 	
-	if (($("#selectEquipo").val() != 0) && ($("#selectMoneda").val() != 0)) {
-		PrecioDWR.getActualByEmpresaMarcaModeloMoneda(
+	if (($("#selectTipoProducto").val() != 0) && ($("#selectEquipo").val() != 0) && ($("#selectMoneda").val() != 0)) {
+		PrecioDWR.getActualByEmpresaTipoProductoMarcaModeloMoneda(
 			{
 				id: $("#selectEmpresa").length > 0 ? $("#selectEmpresa").val() : $("#divEmpresa").attr("eid")
+			},
+			{
+				id: $("#selectTipoProducto").length > 0 ? $("#selectTipoProducto").val() : $("#divTipoProducto").attr("tpid")
 			},
 			{
 				id: $("#selectEquipo").length > 0 ? $("#selectEquipo option:selected").attr("maid") : $("#divEquipo").attr("maid")
 			},
 			{
-				id: $("#selectEquipo").length > 0 ? $("#selectEquipo option:selected").attr("moid") : $("#divEquipo").attr("moid")
+				id: $("#selectEquipo").length > 0 ? $("#selectEquipo").val() : $("#divEquipo").attr("moid")
 			},
 			{
 				id: $("#selectMoneda").length > 0 ? $("#selectMoneda").val() : $("#divMoneda").attr("mid")
@@ -1484,6 +1482,42 @@ function reloadDatosFinanciacion() {
 	}
 }
 
+function selectTipoProductoOnChange() {
+	reloadPrecio();
+	reloadDatosFinanciacion();
+	reloadStock();
+}
+
+function reloadStock() {
+	StockMovimientoDWR.listStockByEmpresaTipoProducto(
+		{
+			id: $("#selectEmpresa").length > 0 ? $("#selectEmpresa").val() : $("#divEmpresa").attr("eid")
+		},
+		{
+			id: $("#selectTipoProducto").length > 0 ? $("#selectTipoProducto").val() : $("#divTipoProducto").attr("tpid")
+		},
+		{
+			callback: function(data) {
+				var equipos = [];
+				
+				for (var i=0; i<data.length; i++) {
+					if (data[i].cantidad > 0 && data[i].fechaBaja == null) {
+						equipos[equipos.length] = {
+							id: data[i].modelo.id,
+							descripcion: data[i].marca.nombre + " " + data[i].modelo.descripcion + " (" + data[i].cantidad + ")",
+							marca: data[i].marca,
+							modelo: data[i].modelo,
+							tipoProducto: data[i].tipoProducto
+						};
+					}
+				}
+				
+				fillSelect("selectEquipo", equipos, "id", "descripcion", "maid", "marca.id");
+			}, async: false
+		}
+	);
+}
+
 function selectEquipoOnChange() {
 	reloadPrecio();
 	reloadDatosFinanciacion();
@@ -1508,7 +1542,7 @@ function selectFormaPagoOnChange() {
 		showField("cuotas");
 		hideField("valorCuota");
 	} else if ($("#selectFormaPago").val() == __FORMA_PAGO_NUESTRO_CREDITO_ID) {
-		hideField("selectTarjetaCredito");
+		hideField("tarjetaCredito");
 		
 		$("#selectCuotas").val(__FORMA_PAGO_NUESTRO_CREDITO_CUOTAS_DEFAULT);
 		
@@ -1653,6 +1687,7 @@ function collectContratoData() {
 		valorCuota: $("#inputValorCuota").length > 0 ? 
 			($("#inputValorCuota").val().trim() != "" ? $("#inputValorCuota").val().trim() : null) :
 				$("#divValorCuota").text().trim(),
+		numeroVale: $("#divNumeroVale").text().trim() != "" ? $("#divNumeroVale").text().trim() : null,
 		intereses: $("#divIntereses").text().trim() != "" ? $("#divIntereses").text().trim() : null,
 		gastosAdministrativos: $("#divGastosAdministrativos").text().trim() != "" ? $("#divGastosAdministrativos").text().trim() : null,
 		gastosConcesion: $("#divGastosConcesion").text().trim() != "" ? $("#divGastosConcesion").text().trim() : null,
@@ -1791,13 +1826,19 @@ function collectContratoData() {
 		};
 	}
 	
+	if ($("#selectTipoProducto").val() != "0") {
+		contrato.tipoProducto = {
+			id: $("#selectTipoProducto").val()
+		};
+	}
+	
 	if ($("#selectEquipo").val() != "0") {
 		contrato.marca = {
 			id: $("#selectEquipo").length > 0 ? $("#selectEquipo option:selected").attr("maid") : $("#divEquipo").attr("maid")
 		};
 		
 		contrato.modelo = {
-			id: $("#selectEquipo").length > 0 ? $("#selectEquipo option:selected").attr("moid") : $("#divEquipo").attr("moid")
+			id: $("#selectEquipo").length > 0 ? $("#selectEquipo").val() : $("#divEquipo").attr("moid")
 		};
 	}
 	
@@ -1987,15 +2028,71 @@ function inputImprimirContratoOnClick() {
 	window.open("/LogisticaWEB/pages/contrato/contrato_preimpreso_print.jsp?cid=" + contrato.id);
 }
 
-function inputImprimirAdjuntosOnClick() {
-	if (!checkRequiredFields()) {
-		alert("Informaci�n incompleta.");
-		return;
+function inputEstadoRiesgoCrediticioOnClick() {
+	var empresaId = $("#divEmpresa").attr("eid");
+	var documento = $("#inputDocumento").val();
+	
+	if (documento != null && documento != "") {
+		documento = documento.trim();
+		
+		if (empresaId != null && empresaId != "") {
+			FinanciacionDWR.analizarElegibilidadFinanaciacion(
+				{
+					id: empresaId,
+				},
+				documento,
+				{
+					callback: function(data) {
+						if (data != null) {
+							if (data.elegibilidad == __ELEGIBILIDAD_SIN_ANALISIS) {
+								if (confirm("No hay información de análisis de riesgo crediticio.\n"
+										+ "¿Desea registrarlo manualmente?")) {
+									if (confirm("¿El control realizado permite habilitar la financiación con Nuestro crédito?\n"
+										+ "(Aceptar = Sí / Cancelar = No)")) {
+										RiesgoCrediticioDWR.registrarAnalisisAprobadoManual(
+											empresaId,
+											documento,
+											{
+												callback: function(data) {
+													alert("Operación exitosa.");
+													
+													reloadFormasPago(empresaId, documento);
+												}, async: false
+											}
+										);
+									} else {
+										RiesgoCrediticioDWR.registrarAnalisisRechazadoManual(
+											empresaId,
+											documento,
+											{
+												callback: function(data) {
+													alert("Operación exitosa.");
+													
+													reloadFormasPago(empresaId, documento);
+												}, async: false
+											}
+										);
+									}
+								} else {
+									// No hacer nada.
+								}
+							} else if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_NO_REALIZAR_CLEARING) {
+								alert("Se ha aprobado la financiación con Nuestro Crédito.");
+							} else if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_REALIZAR_CLEARING) {
+								alert("Se debe realizar análisis de Clearing para la financiación con Nuestro Crédito.");
+							} else if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_RECHAZAR) {
+								alert("Se ha rechazado la financiación con Nuestro Crédito.");
+							}
+						}
+					}, async: false
+				}
+			);
+		} else {
+			alert("Los datos de la empresa no se han cargado correctamente.");
+		}
+	} else {
+		alert("No se ha ingresado el documento.");
 	}
-	
-	var contrato = collectContratoData();
-	
-	window.open("/LogisticaWEB/pages/contrato/contrato_adjunto_print.jsp?cid=" + contrato.id);
 }
 
 function inputGuardarOnClick() {
@@ -2029,13 +2126,28 @@ function inputAgendarOnClick() {
 		return;
 	}
 	
-	ContratoDWR.agendar(
-		collectContratoData(),
+	var contrato = collectContratoData();
+	
+	FinanciacionDWR.validarFinanciacion(
+		contrato.moneda,
+		contrato.formaPago,
+		contrato.precio,
 		{
 			callback: function(data) {
-				alert("Operación exitosa");
-				
-				window.parent.closeDialog();
+				if (data != null) {
+					alert(data);
+				} else {
+					ContratoDWR.agendar(
+						contrato,
+						{
+							callback: function(data) {
+								alert("Operación exitosa");
+								
+								window.parent.closeDialog();
+							}, async: false
+						}
+					);
+				}
 			}, async: false
 		}
 	);
@@ -2073,13 +2185,28 @@ function inputDistribuirOnClick() {
 		return;
 	}
 	
-	ContratoDWR.distribuir(
-		collectContratoData(),
+	var contrato = collectContratoData();
+	
+	FinanciacionDWR.validarFinanciacion(
+		contrato.moneda,
+		contrato.formaPago,
+		contrato.precio,
 		{
 			callback: function(data) {
-				alert("Operación exitosa");
-				
-				window.parent.closeDialog();
+				if (data != null) {
+					alert(data);
+				} else {
+					ContratoDWR.distribuir(
+						contrato,
+						{
+							callback: function(data) {
+								alert("Operación exitosa");
+								
+								window.parent.closeDialog();
+							}, async: false
+						}
+					);
+				}
 			}, async: false
 		}
 	);
@@ -2148,13 +2275,28 @@ function inputActivarOnClick() {
 		return;
 	}
 	
-	ContratoDWR.activar(
-		collectContratoData(),
+	var contrato = collectContratoData();
+	
+	FinanciacionDWR.validarFinanciacion(
+		contrato.moneda,
+		contrato.formaPago,
+		contrato.precio,
 		{
 			callback: function(data) {
-				alert("Operación exitosa");
-				
-				window.parent.closeDialog();
+				if (data != null) {
+					alert(data);
+				} else {
+					ContratoDWR.activar(
+						contrato,
+						{
+							callback: function(data) {
+								alert("Operación exitosa");
+								
+								window.parent.closeDialog();
+							}, async: false
+						}
+					);
+				}
 			}, async: false
 		}
 	);
@@ -2210,13 +2352,28 @@ function inputAgendarActivacionOnClick() {
 		return;
 	}
 	
-	ContratoDWR.agendarActivacion(
-		collectContratoData(),
+	var contrato = collectContratoData();
+	
+	FinanciacionDWR.validarFinanciacion(
+		contrato.moneda,
+		contrato.formaPago,
+		contrato.precio,
 		{
 			callback: function(data) {
-				alert("Operación exitosa");
-				
-				window.parent.closeDialog();
+				if (data != null) {
+					alert(data);
+				} else {
+					ContratoDWR.agendarActivacion(
+						contrato,
+						{
+							callback: function(data) {
+								alert("Operación exitosa");
+								
+								window.parent.closeDialog();
+							}, async: false
+						}
+					);
+				}
 			}, async: false
 		}
 	);
@@ -2228,13 +2385,28 @@ function inputEnviarAAntelOnClick() {
 		return;
 	}
 	
-	ContratoDWR.enviarAAntel(
-		collectContratoData(),
+	var contrato = collectContratoData();
+	
+	FinanciacionDWR.validarFinanciacion(
+		contrato.moneda,
+		contrato.formaPago,
+		contrato.precio,
 		{
 			callback: function(data) {
-				alert("Operación exitosa");
-				
-				window.parent.closeDialog();
+				if (data != null) {
+					alert(data);
+				} else {
+					ContratoDWR.enviarAAntel(
+						contrato,
+						{
+							callback: function(data) {
+								alert("Operación exitosa");
+								
+								window.parent.closeDialog();
+							}, async: false
+						}
+					);
+				}
 			}, async: false
 		}
 	);
@@ -2246,13 +2418,28 @@ function inputTerminarOnClick() {
 		return;
 	}
 	
-	ContratoDWR.terminar(
-		collectContratoData(),
+	var contrato = collectContratoData();
+	
+	FinanciacionDWR.validarFinanciacion(
+		contrato.moneda,
+		contrato.formaPago,
+		contrato.precio,
 		{
 			callback: function(data) {
-				alert("Operación exitosa");
-				
-				window.parent.closeDialog();
+				if (data != null) {
+					alert(data);
+				} else {
+					ContratoDWR.terminar(
+						contrato,
+						{
+							callback: function(data) {
+								alert("Operación exitosa");
+								
+								window.parent.closeDialog();
+							}, async: false
+						}
+					);
+				}
 			}, async: false
 		}
 	);

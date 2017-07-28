@@ -29,6 +29,8 @@ public interface IACMInterfaceContratoBean {
 	
 	public Long count(MetadataConsulta metadataConsulta);
 	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
 	public Collection<TipoContrato> listTipoContratos();
 	
 	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta);

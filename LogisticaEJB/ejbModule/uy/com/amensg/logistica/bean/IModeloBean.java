@@ -11,7 +11,11 @@ public interface IModeloBean {
 
 	public Collection<Modelo> list();
 	
+	public Collection<Modelo> listVigentes();
+	
 	public Collection<Modelo> listByMarcaId(Long marcaId);
+	
+	public Collection<Modelo> listVigentesByMarcaId(Long marcaId);
 	
 	public Modelo getById(Long id);
 	

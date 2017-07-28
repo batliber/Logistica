@@ -1,10 +1,12 @@
-var __ROL_ADMINISTRADOR = 1;
+var __ROL_ADMINISTRADOR= 1;
 
 var mode = __FORM_MODE_USER;
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNew").hide();
 	
 	grid = new Grid(
@@ -13,9 +15,11 @@ $(document).ready(function() {
 			tdUsuarioLogin: { campo: "login", descripcion: "Login", abreviacion: "Login", tipo: __TIPO_CAMPO_STRING },
 			tdUsuarioNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
 			tdUsuarioRol: { campo: "rolNombre", descripcion: "Rol", abreviacion: "Rol", tipo: __TIPO_CAMPO_STRING, ancho: 300 }, 
-			tdUsuarioEmpresa: { campo: "empresaNombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_STRING, ancho: 300 }
+//			tdUsuarioEmpresa: { campo: "empresaNombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_STRING, ancho: 300 }
+//			tdUsuarioEmpresa: { campo: "empresa.nombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_MULTIPLE, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 300 },
+			tdUsuarioEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 300 },
 		}, 
-		false,
+		true,
 		reloadData,
 		trUsuarioOnClick
 	);
@@ -42,97 +46,85 @@ $(document).ready(function() {
 	reloadData();
 	
 	$("#divIFrameUsuario").draggable();
-});
+}
+
+function listEmpresas() {
+	var result = [];
+	
+	EmpresaDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
 
 function reloadData() {
-	UsuarioDWR.list(
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	UsuarioDWR.listVigentesContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
 		{
 			callback: function(data) {
 				var registros = {
-					cantidadRegistros: data.length,
 					registrosMuestra: []
 				};
 				
-				for (var i=0; i<data.length; i++) {
+				for (var i=0; i<data.registrosMuestra.length; i++) {
 					var todas = false;
 					var empresaId = 0;
 					var empresaNombre = "";
 					var rolNombre = "";
-					for (var j=0; j<data[i].usuarioRolEmpresas.length; j++) {
+					for (var j=0; j<data.registrosMuestra[i].usuarioRolEmpresas.length; j++) {
 						if (empresaId == 0) {
-							empresaId = data[i].usuarioRolEmpresas[j].empresa.id;
-							empresaNombre += data[i].usuarioRolEmpresas[j].empresa.nombre;
-							rolNombre += data[i].usuarioRolEmpresas[j].rol.nombre;
+							empresaId = data.registrosMuestra[i].usuarioRolEmpresas[j].empresa.id;
+							empresaNombre += data.registrosMuestra[i].usuarioRolEmpresas[j].empresa.nombre;
+							rolNombre += data.registrosMuestra[i].usuarioRolEmpresas[j].rol.nombre;
 						} else {
-							if (empresaNombre.indexOf(data[i].usuarioRolEmpresas[j].empresa.nombre) < 0) {
-								empresaNombre += ", " + data[i].usuarioRolEmpresas[j].empresa.nombre;
+							if (empresaNombre.indexOf(data.registrosMuestra[i].usuarioRolEmpresas[j].empresa.nombre) < 0) {
+								empresaNombre += ", " + data.registrosMuestra[i].usuarioRolEmpresas[j].empresa.nombre;
 							}
-							if (rolNombre.indexOf(data[i].usuarioRolEmpresas[j].rol.nombre) < 0) {
-								rolNombre += ", " + data[i].usuarioRolEmpresas[j].rol.nombre;
+							if (rolNombre.indexOf(data.registrosMuestra[i].usuarioRolEmpresas[j].rol.nombre) < 0) {
+								rolNombre += ", " + data.registrosMuestra[i].usuarioRolEmpresas[j].rol.nombre;
 							}
 						}
 						
-//						if (data[i].usuarioRolEmpresas[j].empresa.id != empresaId) {
+//						if (data.registrosMuestra[i].usuarioRolEmpresas[j].empresa.id != empresaId) {
 //							todas = true;
 //							break;
 //						}
 					}
 					
 					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: data[i].id,
-						login: data[i].login,
-						contrasena: data[i].contrasena,
-						nombre: data[i].nombre,
-						fechaBaja: data[i].fechaBaja,
+						id: data.registrosMuestra[i].id,
+						login: data.registrosMuestra[i].login,
+						contrasena: data.registrosMuestra[i].contrasena,
+						nombre: data.registrosMuestra[i].nombre,
+						fechaBaja: data.registrosMuestra[i].fechaBaja,
 						rolNombre: rolNombre,
-						empresaNombre: (todas ? "Todas" : empresaNombre),
-						uact: data[i].uact,
-						fact: data[i].fact,
-						term: data[i].term
+						empresa: { id: 1, nombre: (todas ? "Todas" : empresaNombre) },
+						uact: data.registrosMuestra[i].uact,
+						fact: data.registrosMuestra[i].fact,
+						term: data.registrosMuestra[i].term
 					};
 				}
 				
-				var ordered = registros.registrosMuestra;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = registros.registrosMuestra.sort(function(a, b) {
-						var result = 0;
-						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
-						
-						return result;
-					});
-				}
-				
-				registros.registrosMuestra = ordered;
-				
 				grid.reload(registros);
-			}, async: false
+			}
+		}
+	);
+	
+	UsuarioDWR.countVigentesContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.setCount(data);
+			}
 		}
 	);
 }

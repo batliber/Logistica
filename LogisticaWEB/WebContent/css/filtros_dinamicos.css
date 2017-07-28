@@ -1,57 +1,62 @@
-#divTamanoMuestra {
+.divFiltros {
+	float: left;
+	width: 1360px;
+}
+
+.divTamanoMuestra {
 	float: left;
 	width: 150px;
 	height: 20px;
 }
 
-#divTamanoSubconjunto {
+.divTamanoSubconjunto {
 	float: left;
 	height: 20px;
 }
 
-#divAgregarFiltroContainer {
+.divAgregarFiltroContainer {
 	width: 100%;
 	height: 24px;
 	float: left;
 }
 
-#divAgregarFiltro {
+.divAgregarFiltro {
 	float: left;
 	width: 150px;
 	height: 24px;
 }
 
-#inputAgregarFiltro {
+.inputAgregarFiltro {
 	background-image: url('/LogisticaWEB/images/filter_add.png');
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
-#divLimpiarFiltros {
+.divLimpiarFiltros {
 	float: left;
 	width: 150px;
 	height: 24px;
 }
 
-#inputLimpiarFiltros {
+.inputLimpiarFiltros {
 	background-image: url('/LogisticaWEB/images/broom.png');
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
-#divSeleccionarColumnas {
+.divSeleccionarColumnas {
 	float: left;
 	width: 150px;
 	height: 24px;
 }
 
-#inputSeleccionarColumnas {
+.inputSeleccionarColumnas {
 	background-image: url('/LogisticaWEB/images/table_gear.png');
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
-#divIFrameSeleccionColumnas {
+.divIFrameSeleccionColumnas {
 	display: none;
 	position: relative;
 	top: -22px;
@@ -63,7 +68,7 @@
 	background-color: #F0F0F0;
 }
 
-#divSeleccionColumnas {
+.divSeleccionColumnas {
 	position: absolute;
 	top: 21px;
 	left: 0;
@@ -73,54 +78,64 @@
 	background-color: #F0F0F0;
 }
 
-#divSeleccionColumnasTitulo {
+.divSeleccionColumnasTitulo {
 	float: left;
 	width: 100%;
 	text-align: center;
 }
 
-#divSeleccionColumnasLista {
+.divSeleccionColumnasLista {
 	float: left;
 	width: 100%;
 	height: 240px;
 	overflow: auto;
 }
 
-#divSeleccionColumna {
+.divSeleccionColumna {
 	float: left;
 	width: 100%;
 	height: 24px;
 }
 
-#divSeleccionColumnasBotonera {
+.divSeleccionColumnasCampo {
+	float: left;
+	width: 88%;
+}
+
+.divSeleccionColumnasCampoCheck {
+	float: left;
+	width: 10%;
+}
+
+.divSeleccionColumnasBotonera {
 	float: left;
 	width: 100%;
 	height: 25px;
 	text-align: right;
 }
 
-#inputSeleccionColumnasAceptar {
+.inputSeleccionColumnasAceptar {
 	background-image: url('/LogisticaWEB/images/tick.png');
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
-#divFiltros {
-	float: left;
-	width: 1360px;
-}
-
 .divFiltro {
 	float: left;
 	width: 1000px;
+	height: 22px;
 }
 
-.divCampo {
+.divLabelCampo {
 	float: left;
 	width: 70px;
 	height: 20px;
 	text-align: right;
 	margin-top: 2px;
+}
+
+.divCampo {
+	float: left;
 }
 
 .divCondicion {
@@ -137,7 +152,20 @@
 	float: left;
 }
 
+.divValor {
+	float: left;
+}
+
+.divValorMin {
+	float: left;
+}
+
+.divValorMax {
+	float: left;
+}
+
 .divValoresMultiples {
+	float: left;
 	width: 125px;
 	height: 75px;
 	background-color: white;

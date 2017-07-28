@@ -3,7 +3,9 @@ package uy.com.amensg.logistica.dwr;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -24,6 +26,7 @@ import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.PuntoVenta;
+import uy.com.amensg.logistica.entities.PuntoVentaTO;
 import uy.com.amensg.logistica.entities.Usuario;
 
 @RemoteProxy
@@ -64,12 +67,46 @@ public class ActivacionSubloteDWR {
 			HttpSession httpSession = WebContextFactory.get().getSession(false);
 			
 			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
-				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
 				
 				IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
 				
 				MetadataConsultaResultado metadataConsultaResultado = 
 					iActivacionSubloteBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object activacionSublote : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(ActivacionSubloteDWR.transform((ActivacionSublote) activacionSublote, false));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultadoTO listMisSublotesContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iActivacionSubloteBean.listMisSublotes(
 						MetadataConsultaDWR.transform(
 							metadataConsultaTO
 						),
@@ -99,12 +136,37 @@ public class ActivacionSubloteDWR {
 			HttpSession httpSession = WebContextFactory.get().getSession(false);
 			
 			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
-				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
 				
 				IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
 				
 				result = 
 					iActivacionSubloteBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countMisSublotesContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
+				
+				result = 
+					iActivacionSubloteBean.countMisSublotes(
 						MetadataConsultaDWR.transform(
 							metadataConsultaTO
 						),
@@ -171,6 +233,19 @@ public class ActivacionSubloteDWR {
 			IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
 			
 			iActivacionSubloteBean.update(transform(activacionSubloteTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void asignarAPuntoVentaContextAware(ActivacionSubloteTO activacionSubloteTO, PuntoVentaTO puntoVentaTO) {
+		try {
+			IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
+			
+			iActivacionSubloteBean.asignarAPuntoVenta(
+				transform(activacionSubloteTO), 
+				PuntoVentaDWR.transform(puntoVentaTO)
+			);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -243,13 +318,14 @@ public class ActivacionSubloteDWR {
 			result.setPuntoVenta(puntoVenta);
 		}
 		
-		Collection<Activacion> activaciones = null;
+		Set<Activacion> activaciones = null;
 		if (activacionSubloteTO.getActivaciones() != null) {
-			activaciones = new LinkedList<Activacion>();
+			activaciones = new HashSet<Activacion>();
 			
 			for (ActivacionTO activacionTO : activacionSubloteTO.getActivaciones()) {
 				Activacion activacion = new Activacion();
 				activacion.setId(activacionTO.getId());
+				activacion.setActivacionSublote(result);
 				
 				activaciones.add(activacion);
 			}

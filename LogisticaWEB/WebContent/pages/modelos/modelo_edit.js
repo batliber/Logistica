@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(init)
+
+function init() {
 	refinarForm();
 	
 	$("#divEliminarModelo").hide();
@@ -60,7 +62,7 @@ $(document).ready(function() {
 			}
 		);
 	}
-});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
