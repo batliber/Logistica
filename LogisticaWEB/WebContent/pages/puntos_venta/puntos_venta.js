@@ -1,5 +1,6 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_ENCARGADO_ACTIVACIONES = 12;
+var __ROL_DEMO = 21;
 
 var grid = null;
 var map = null;
@@ -9,34 +10,45 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	grid = new Grid(
-		document.getElementById("divTablePuntosVenta"),
-		{
-			tdNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
-			tdTelefono: { campo: "telefono", descripcion: "Teléfono", abreviacion: "Tel.", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
-			tdContacto: { campo: "contacto", descripcion: "Contacto", abreviacion: "Contacto", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
-			tdDepartamento: { campo: "departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"} },
-			tdBarrio: { campo: "barrio.nombre", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
-			tdEstado: { campo: "estadoPuntoVenta.nombre", clave: "estadoPuntoVenta.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoPuntoVentas, clave: "id", valor: "nombre"}, ancho: 100 }
-		},
-		true,
-		reloadData,
-		trPuntoVentaOnClick
-	);
-	
-	grid.rebuild();
-	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES) {
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO) {
 						mode = __FORM_MODE_ADMIN;
-						
 						$("#divButtonNew").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						
+						grid = new Grid(
+							document.getElementById("divTablePuntosVenta"),
+							{
+								tdNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
+								tdTelefono: { campo: "telefono", descripcion: "Teléfono", abreviacion: "Tel.", tipo: __TIPO_CAMPO_STRING, ancho: 100 },
+								tdContacto: { campo: "contacto", descripcion: "Contacto", abreviacion: "Contacto", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
+								tdDepartamento: { campo: "departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"} },
+								tdBarrio: { campo: "barrio.nombre", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
+								tdEstado: { campo: "estadoPuntoVenta.nombre", clave: "estadoPuntoVenta.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoPuntoVentas, clave: "id", valor: "nombre"}, ancho: 100 },
+								tdFechaBaja: { campo: "fechaBaja", descripcion: "Eliminado", abreviacion: "Eliminado", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdUcre: { campo: "ucre", descripcion: "Creado por", abreviacion: "Creado por", tipo: __TIPO_CAMPO_STRING, oculto: true },
+								tdFcre: { campo: "fcre", descripcion: "Creado", abreviacion: "Creado", tipo: __TIPO_CAMPO_FECHA_HORA }
+							},
+							true,
+							reloadData,
+							trPuntoVentaOnClick
+						);
+						
+						grid.rebuild();
+						
+						grid.filtroDinamico.agregarFiltroManual(
+							{
+								campo: "fechaBaja",
+								operador: "nl",
+								valores: []
+							}
+						);
+						
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						break;
 					}
 				}

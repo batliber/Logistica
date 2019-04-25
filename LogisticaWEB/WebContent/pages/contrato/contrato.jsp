@@ -16,11 +16,13 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DisponibilidadEntregaEmpresaZonaTurnoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/FormaPagoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoTasaInteresEfectivaAnualDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MonedaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MotivoCambioPlanDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PlanDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModalidadVentaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PrecioDWR.js"></script>
@@ -36,6 +38,8 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ZonaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoArchivoAdjuntoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoArchivoAdjuntoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoRelacionDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
@@ -70,18 +74,25 @@
 		<div class="divButton" id="divInputGestionInterna"><input type="submit" value="Gestión interna" onclick="javascript:inputGestionInternaOnClick(event)"/></div>
 		<div class="divButton" id="divInputGestionDistribucion"><input type="submit" value="Gestión distribución" onclick="javascript:inputGestionDistribucionOnClick(event)"/></div>
 		<div class="divButton" id="divInputEquipoPerdido"><input type="submit" value="Equipo perdido" onclick="javascript:inputEquipoPerdidoOnClick(event)"/></div>
+		<div class="divButton" id="divInputFacturaImpaga"><input type="submit" value="Factura impaga" onclick="javascript:inputFacturaImpagaOnClick(event)"/></div>
+		<div class="divButton" id="divInputEnviadoANucleo"><input type="submit" value="Enviado a Núcleo" onclick="javascript:inputEnviadoANucleoOnClick(event)"/></div>
+		<div class="divButton" id="divInputCanceladoPorCliente"><input type="submit" value="Cancelado por Cliente" onclick="javascript:inputCanceladoPorClienteOnClick(event)"/></div>
+		<div class="divButton" id="divInputEquiposPagos"><input type="submit" value="Equipos pagos" onclick="javascript:inputEquiposPagosOnClick(event)"/></div>
+		<div class="divButton" id="divInputEquipoDevuelto"><input type="submit" value="Equipo devuelto" onclick="javascript:inputEquipoDevueltoOnClick(event)"/></div>
+		<div class="divButton" id="divInputNoRecuperado"><input type="submit" value="No recuperado" onclick="javascript:inputNoRecuperadoOnClick(event)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton" id="divInputEstadoRiesgoCrediticio"><input type="submit" value="Estado Riesgo" onclick="javascript:inputEstadoRiesgoCrediticioOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirKit"><input type="submit" value="Imprimir kit" onclick="javascript:inputImprimirKitOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirContrato"><input type="submit" value="Imprimir contrato" onclick="javascript:inputImprimirContratoOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirPagare"><input type="submit" value="Imprimir pagare" onclick="javascript:inputImprimirPagareOnClick(event)"/></div>
+		<div class="divButton" id="divInputImprimirRemito"><input type="submit" value="Imprimir remito" onclick="javascript:inputImprimirRemitoOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirAdjuntos"><input type="submit" value="Imprimir adjuntos" onclick="javascript:inputImprimirAdjuntosOnClick(event)"/></div>
 		<div class="divButton" id="divInputGuardar"><input type="submit" value="Guardar" onclick="javascript:inputGuardarOnClick(event)"/></div>
 	</div>
 	<div class="divButtonTitleBar">
 		<div id="divButtonTitleFourfoldSize" class="divButtonTitleBarTitle">Procesos</div>
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
-		<div id="divButtonTitleFourfoldSize" class="divButtonTitleBarTitle">Acciones</div>
+		<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Acciones</div>
 	</div>
 	<div class="divPopupWindow">
 		<div class="divLayoutColumn">
@@ -94,32 +105,42 @@
 			<div class="divFormLabelExtended" id="divLabelRol">Rol:</div><div id="divRol" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelUsuario">Usuario:</div><div id="divUsuario" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelNumeroTramite">Tr&aacute;mite:</div><div id="divNumeroTramite" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelAntelNroTrn">Nro Trn:</div><div id="divAntelNroTrn" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelAntelFormaPago">Forma de pago:</div><div id="divAntelFormaPago" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelAntelNroServicioCuenta">Nro servicio cuenta:</div><div id="divAntelNroServicioCuenta" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelAntelImporte">Importe:</div><div id="divAntelImporte" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelMid">MID:</div><div id="divMid" class="divFormValue"><input type="text" id="inputMid"/></div>
 			<div class="divFormLabelExtended" id="divLabelEstado">Estado:</div><div id="divEstado" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelRandom">Random:</div><div id="divRandom" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaVenta">Fecha de venta:</div><div id="divFechaVenta" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaVentaMostrar">Fecha de venta:</div><div id="divFechaVentaMostrar" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaBackoffice">Fecha de backoffice:</div><div id="divFechaBackoffice" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaEntregaDistribuidor">Fecha de entrega distribuidor:</div><div id="divFechaEntregaDistribuidor" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaDevolucionDistribuidor">Fecha de devoluci&oacute;n distribuidor:</div><div id="divFechaDevolucionDistribuidor" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaEnvioAntel">Fecha de env&iacute;o a ANTEL:</div><div id="divFechaEnvioAntel" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaActivacion">Fecha de activaci&oacute;n:</div><div id="divFechaActivacion" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaCoordinacion">Fecha de cordinaci&oacute;n:</div><div id="divFechaCoordinacion" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaEnvioANucleo">Fecha de env. N&uacute;cleo:</div><div id="divFechaEnvioANucleo" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelLocalidad">Localidad:</div><div id="divLocalidad" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelCodigoPostal">C&oacute;digo postal:</div><div id="divCodigoPostal" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaVencimiento">Fecha de vencimiento:</div><div id="divFechaVencimiento" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelNumeroContrato">N&uacute;mero de contrato:</div><div id="divNumeroContrato" class="divFormValue"><input type="text" id="inputNumeroContrato"/></div>
 			<div class="divFormLabelExtended" id="divLabelPlan">Plan:</div><div id="divPlan" class="divFormValue"><input type="text" id="inputPlan"/></div>
 			<div class="divFormLabelExtended" id="divLabelNuevoPlanString">Nuevo plan (digit):</div><div id="divNuevoPlanString" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelModalidadVenta">Modalidad de venta:</div><div id="divModalidadVenta" class="divFormValue"><select id="selectModalidadVenta"></select></div>
 			<div class="divFormLabelExtended" id="divLabelNuevoPlan">Nuevo plan:</div><div id="divNuevoPlan" class="divFormValue"><select id="selectNuevoPlan"></select></div>
-			<div class="divFormLabelExtended" id="divLabelNuevoPlan">Motivo cambio plan:</div><div id="divMotivoCambioPlan" class="divFormValue"><select id="selectMotivoCambioPlan"></select></div>
+			<div class="divFormLabelExtended" id="divLabelMotivoCambioPlan">Motivo cambio plan:</div><div id="divMotivoCambioPlan" class="divFormValue"><select id="selectMotivoCambioPlan"></select></div>
 			<div class="divFormLabelExtended" id="divLabelTipoProducto">Tipo de producto:</div><div id="divTipoProducto" class="divFormValue"><select id="selectTipoProducto" onchange="javascript:selectTipoProductoOnChange(event, this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelEquipo">Equipo:</div><div id="divEquipo" class="divFormValue"><select id="selectEquipo" onchange="javascript:selectEquipoOnChange(event, this)"></select></div>
+			<div class="divFormLabelExtended" id="divLabelIncluirChip">Inclu&iacute;r chip:</div><div id="divIncluirChip" class="divFormValue"><input type="checkbox" id="inputIncluirChip"/></div>
+			<div class="divFormLabelExtended" id="divLabelCostoEnvio">Costo env&iacute;o:</div><div id="divCostoEnvio" class="divFormValue"><input type="text" id="inputCostoEnvio"/></div>
 			<div class="divFormLabelExtended" id="divLabelMoneda">Moneda:</div><div id="divMoneda" class="divFormValue"><select id="selectMoneda" onchange="javascript:selectMonedaOnChange(event, this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelPrecio">Precio:</div><div id="divPrecio" class="divFormValue"><input type="text" id="inputPrecio" onchange="javascript:inputPrecioOnChange(event, this)"/></div>
+			<div class="divFormLabelExtended" id="divLabelTipoTasaInteresEfectivaAnual">Tipo TEA:</div><div id="divTipoTasaInteresEfectivaAnual" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFormaPago">Forma de pago:</div><div id="divFormaPago" class="divFormValue"><select id="selectFormaPago" onchange="javascript:selectFormaPagoOnChange(this)"></select><div id="divRealizarClearing">Realizar clearing.</div></div>
 			<div class="divFormLabelExtended" id="divLabelTarjetaCredito">Tarjeta de cr&eacute;dito:</div><div id="divTarjetaCredito" class="divFormValue"><select id="selectTarjetaCredito" onchange="javascript:selectTarjetaCreditoOnChange(this)"></select></div>
-			<div class="divFormLabelExtended" id="divLabelCuotas">Cuotas:</div><div id="divCuotas" class="divFormValue"><select id="selectCuotas" onchange="javascript:selectCuotasOnChange(event, this)"></select></div>
+			<div class="divFormLabelExtended" id="divLabelCuotas">Cuotas:</div><div id="divCuotas" class="divFormValue"><select id="selectCuotas" onchange="javascript:selectCuotasOnChange(event, this)"></select><div class="divFormLabel" id="divLabelValorCuota">Cuota:</div><div id="divValorCuota" class="divFormValue"><input type="text" id="inputValorCuota"/></div></div>
 			<div class="divFormLabelExtended" id="divLabelNumeroVale">Vale:</div><div id="divNumeroVale" class="divFormValue">&nbsp;</div>
-			<div class="divFormLabel" id="divLabelValorCuota">Cuota:</div><div id="divValorCuota" class="divFormValue"><input type="text" id="inputValorCuota"/></div>
 			<div class="divFormLabelExtended" id="divLabelGastosAdministrativos">Gastos administrativos:</div><div id="divGastosAdministrativos" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelGastosConcesion">Gastos concesi&oacute;n:</div><div id="divGastosConcesion" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelGastosAdministrativosTotales">Gastos administrativos totales:</div><div id="divGastosAdministrativosTotales" class="divFormValue">&nbsp;</div>
@@ -151,7 +172,7 @@
 			<div class="divFormLabelExtended" id="divLabelZona">Zona:</div><div id="divZona" class="divFormValue"><select id="selectZona" onchange="javascript:selectZonaOnChange(this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelTurno">Turno:</div><div id="divTurno" class="divFormValue"><select id="selectTurno" onchange="javascript:selectTurnoOnChange(this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelFechaEntrega">Fecha de entrega:</div><div id="divFechaEntrega" class="divFormValue"><select id="selectFechaEntrega"></select></div>
-			<div class="divFormLabelExtended" id="divLabelFechaActivarEn" id="divLabelFechaActivarEn">Activar en:</div><div id="divFechaActivarEn" class="divFormValue"><input type="text" id="inputFechaActivarEn"/></div>
+			<div class="divFormLabelExtended" id="divLabelFechaActivarEn">Activar en:</div><div id="divFechaActivarEn" class="divFormValue"><input type="text" id="inputFechaActivarEn"/></div>
 			<div class="divFormLabelExtended" id="divLabelObservaciones">Observaciones:</div><div id="divObservaciones" class="divFormValue"><textarea id="textareaObservaciones"></textarea></div>
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionObservaciones">Obs. entrega:</div><div id="divResultadoEntregaDistribucionObservaciones" class="divFormValue"><textarea id="textareaResultadoEntregaDistribucionObservaciones"></textarea></div>
 		</div>
@@ -161,7 +182,8 @@
 				<div class="divTabTitleSelected" id="divTabTitle1">Direcci&oacute;n de entrega</div>
 				<div class="divTabTitle" id="divTabTitle2">Direcci&oacute;n de env&iacute;o de factura</div>
 				<div class="divTabTitle" id="divTabTitle3">Archivos adjuntos</div>
-				<div class="divTabTitleFiller" id="divTabTitle4">&nbsp;</div>
+				<div class="divTabTitle" id="divTabTitle4">Tr&aacute;mites relacionados</div>
+				<div class="divTabTitleFiller" id="divTabTitle5">&nbsp;</div>
 			</div>
 			<div class="divTab" id="divTab1">
 				<div class="divLayoutColumnFull">
@@ -169,7 +191,7 @@
 				</div>
 				<div class="divLayoutColumn">
 					<div class="divFormLabelExtended" id="divLabelDireccionEntregaNumero">N&uacute;mero:</div><div id="divDireccionEntregaNumero" class="divFormValue"  style="width: 125px;"><input type="text" id="inputDireccionEntregaNumero"/></div>
-					<div class="divFormLabel" id="divLabelDireccionEntregaBis" style="width: 50px;">Bis:</div><div id="divDireccionEntregaBis" class="divFormValue" style="width: 40px;"><input type="checkbox" id="inputDireccionEntregaBis"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionEntregaBis">Bis:</div><div id="divDireccionEntregaBis" class="divFormValue" style="width: 130px;"><input type="checkbox" id="inputDireccionEntregaBis"/></div>
 					<div class="divFormLabelExtended" id="divLabelDireccionEntregaApto">Apto.:</div><div id="divDireccionEntregaApto" class="divFormValue"><input type="text" id="inputDireccionEntregaApto"/></div>
 					<div class="divFormLabelExtended" id="divLabelDireccionEntregaManzana">Manzana:</div><div id="divDireccionEntregaManzana" class="divFormValue"><input type="text" id="inputDireccionEntregaManzana"/></div>
 					<div class="divFormLabelExtended" id="divLabelDireccionEntregaCodigoPostal">C.P.:</div><div id="divDireccionEntregaCodigoPostal" class="divFormValue"><input type="text" id="inputDireccionEntregaCodigoPostal"/></div>
@@ -190,7 +212,7 @@
 				</div>
 				<div class="divLayoutColumn">
 					<div class="divFormLabelExtended" id="divLabelDireccionFacturaNumero">N&uacute;mero:</div><div id="divDireccionFacturaNumero" class="divFormValue" style="width: 125px;"><input type="text" id="inputDireccionFacturaNumero"/></div>
-					<div class="divFormLabel" id="divLabelDireccionFacturaBis" style="width: 50px;">Bis:</div><div id="divDireccionFacturaBis" class="divFormValue" style="width: 40px;"><input type="checkbox" id="inputDireccionFacturaBis"/></div>
+					<div class="divFormLabelExtended" id="divLabelDireccionFacturaBis">Bis:</div><div id="divDireccionFacturaBis" class="divFormValue" style="width: 130px;"><input type="checkbox" id="inputDireccionFacturaBis"/></div>
 					<div class="divFormLabelExtended" id="divLabelDireccionFacturaApto">Apto.:</div><div id="divDireccionFacturaApto" class="divFormValue"><input type="text" id="inputDireccionFacturaApto"/></div>
 					<div class="divFormLabelExtended" id="divLabelDireccionFacturaManzana">Manzana:</div><div id="divDireccionFacturaManzana" class="divFormValue"><input type="text" id="inputDireccionFacturaManzana"/></div>
 					<div class="divFormLabelExtended" id="divLabelDireccionFacturaCodigoPostal">C.P.:</div><div id="divDireccionFacturaCodigoPostal" class="divFormValue"><input type="text" id="inputDireccionFacturaCodigoPostal"/></div>
@@ -206,12 +228,19 @@
 				</div>
 			</div>
 			<div class="divTab" id="divTab3">
-				<div class="divLayoutColumn" style="width: 70%;">
+				<div class="divLayoutColumn" style="width: 85%;">
+					<div class="divFormLabel" id="divLabelTipoArchivoAdjunto">Tipo:</div><div class="divFormValue" id="divTipoArchivoAdjunto"><select id="selectTipoArchivoAdjunto"></select></div>
 					<div class="divFormLabel" id="divLabelAgregarAdjunto">Archivo:</div><div class="divFormValue" id="divAgregarAdjunto"><form id="formArchivo" method="POST" action="/LogisticaWEB/Upload"><input type="file" id="inputAdjunto" name="inputAdjunto"/><input type="button" id="inputAgregarAdjunto" value="" onclick="javascript:inputAgregarAdjuntoOnClick(event, this)"/></form></div>
 					<div id="divTableArchivosAdjuntos">&nbsp;</div>
 				</div>
-				<div class="divLayoutColumn" style="width: 25%;">
+				<div class="divLayoutColumn" style="width: 15%;">
 					<div id="divResultadoEntregaDistribucionDocumentos">&nbsp;</div>
+				</div>
+			</div>
+			<div class="divTab" id="divTab4">
+				<div class="divLayoutColumn" style="width: 100%;">
+					<div class="divFormLabel" id="divLabelNumeroTramiteRelacionado">Nro. Tr&aacute;mite:</div><div class="divFormValue" id="divNumeroTramiteRelacionado"><input id="inputNumeroTramiteRelacionado"/></div><div><input type="button" id="inputAgregarContratoRelacionado" value="" onclick="javascript:inputAgregarContratoRelacionadoOnClick(event, this)"/></div>
+					<div id="divTableContratosRelacionados">&nbsp;</div>
 				</div>
 			</div>
 		</div>

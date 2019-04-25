@@ -1,32 +1,36 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_SUPERVISOR_DISTRIBUCION = 7;
+var __ROL_MAESTROS_RIVERGREEN = 20;
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNew").hide();
-	
-	grid = new Grid(
-		document.getElementById("divTableBarrios"),
-		{
-			tdBarrioNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
-			tdZona: { campo: "zona.nombre", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
-			tdDepartamento: { campo: "departamento.nombre", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
-		}, 
-		false,
-		reloadData,
-		trBarrioOnClick
-	);
-	
-	grid.rebuild();
 	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION) {
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN) {
 						mode = __FORM_MODE_ADMIN;
+						
+						grid = new Grid(
+							document.getElementById("divTableBarrios"),
+							{
+								tdBarrioNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 350 },
+								tdBarrioZona: { campo: "zona.nombre", clave: "zona.id", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listZonas, clave: "id", valor: "nombre" }, ancho: 250 },
+								tdBarrioDepartamento: { campo: "departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre" }, ancho: 150 }
+							}, 
+							true,
+							reloadData,
+							trBarrioOnClick
+						);
+						
+						grid.rebuild();
 						
 						$("#divButtonNew").show();
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
@@ -41,72 +45,58 @@ $(document).ready(function() {
 	reloadData();
 	
 	$("#divIFrameBarrio").draggable();
-});
+}
 
-function reloadData() {
-	BarrioDWR.list(
+function listZonas() {
+	var result = [];
+	
+	ZonaDWR.list(
 		{
 			callback: function(data) {
-				var registros = {
-					cantidadRegistros: data.length,
-					registrosMuestra: []
-				};
-				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
-						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
-						
-						return result;
-					});
+				if (data != null) {
+					result = data;
 				}
-				
-				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						nombre: ordered[i].nombre,
-						departamento: {
-							nombre: ordered[i].departamento.nombre,
-						},
-						zona: {
-							nombre: ordered[i].zona.nombre,
-						},
-						uact: ordered[i].uact,
-						fact: ordered[i].fact,
-						term: ordered[i].term
-					};
-				}
-				
-				grid.reload(registros);
 			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listDepartamentos() {
+	var result = [];
+	
+	DepartamentoDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function reloadData() {
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	BarrioDWR.listContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.reload(data);
+			}, async: false
+		}
+	);
+	
+	BarrioDWR.countContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.setCount(data);
+			}
 		}
 	);
 }

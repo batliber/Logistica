@@ -19,4 +19,9 @@ public class Constants {
 	public static final int __COMPROBACION_IMPORTACION_IMPORTAR = 0;
 	public static final int __COMPROBACION_IMPORTACION_SOBREESCRIBIR = 1;
 	public static final int __COMPROBACION_IMPORTACION_OMITIR = 2;
+	
+	public static final int __TIPO_DATO_INTEGER = 1;
+	public static final int __TIPO_DATO_STRING = 2;
+	public static final int __TIPO_DATO_TIMESTAMP = 3;
+	public static final int __TIPO_DATO_DOUBLE_PRECISION = 4;
 }

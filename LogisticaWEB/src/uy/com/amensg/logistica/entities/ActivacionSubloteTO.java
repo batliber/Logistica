@@ -12,6 +12,7 @@ public class ActivacionSubloteTO extends BaseTO {
 	private String descripcion;
 	private Date fechaAsignacionDistribuidor;
 	private Date fechaAsignacionPuntoVenta;
+	private Double porcentajeActivacion;
 	private EmpresaTO empresa;
 	private UsuarioTO distribuidor;
 	private PuntoVentaTO puntoVenta;
@@ -47,6 +48,14 @@ public class ActivacionSubloteTO extends BaseTO {
 
 	public void setFechaAsignacionPuntoVenta(Date fechaAsignacionPuntoVenta) {
 		this.fechaAsignacionPuntoVenta = fechaAsignacionPuntoVenta;
+	}
+
+	public Double getPorcentajeActivacion() {
+		return porcentajeActivacion;
+	}
+
+	public void setPorcentajeActivacion(Double porcentajeActivacion) {
+		this.porcentajeActivacion = porcentajeActivacion;
 	}
 
 	public EmpresaTO getEmpresa() {

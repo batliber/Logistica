@@ -1,275 +1,369 @@
 package uy.com.amensg.logistica.robot.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import junit.framework.TestCase;
-import uy.com.amensg.logistica.robot.ConnectionStrategyDirect;
+import uy.com.amensg.logistica.robot.ConnectionStrategyWebService;
 import uy.com.amensg.logistica.robot.IConnectionStrategy;
 import uy.com.amensg.logistica.robot.util.Configuration;
 
-public class TestLogisticaProxy extends TestCase {
+public class TestLogisticaProxy {
 
 	private Connection connection;
 	private IConnectionStrategy strategy;
 	
-	protected void setUp() throws Exception {
-		super.setUp();
-		
-		strategy = new ConnectionStrategyDirect();
+	@Before
+	public void setUp() throws Exception {
+//		strategy = new ConnectionStrategyDirect();
 //		strategy = new ConnectionStrategyRemoting();
+		strategy = new ConnectionStrategyWebService();
 		
 		Class.forName("org.postgresql.Driver");
 		
 		this.connection = DriverManager.getConnection(
-				Configuration.getInstance().getProperty("db.connectionURL"), 
-				Configuration.getInstance().getProperty("db.connectionUser"), 
-				Configuration.getInstance().getProperty("db.connectionPassword")
-			);
+			Configuration.getInstance().getProperty("db.connectionURL"), 
+			Configuration.getInstance().getProperty("db.connectionUser"), 
+			Configuration.getInstance().getProperty("db.connectionPassword")
+		);
 			
 		this.connection.setAutoCommit(true);
 	}
 
-//	@Test
-//	public final void testGetSiguienteMidSinProcesar() {
-//		try {
-//			PreparedStatement preparedStatement = this.connection.prepareStatement(
-//				"select mid from acm_interface_mid where estado in (?, ?) order by estado desc"
-//			);
-//			preparedStatement.setLong(1, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesar")));
-//			preparedStatement.setLong(2, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesarPrioritario")));
-//			preparedStatement.setMaxRows(1);
-//			
-//			ResultSet resultSet = preparedStatement.executeQuery();
-//			
-//			resultSet.next();
-//			
-//			Long expectedMidSinProcesar = resultSet.getLong(1);
-//			
-//			assertEquals(expectedMidSinProcesar, strategy.getSiguienteMidSinProcesar());
-//			
-//			preparedStatement = this.connection.prepareStatement(
-//				"select mid from acm_interface_mid where estado = ? order by fact desc"
-//			);
-//			preparedStatement.setLong(1, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso")));
-//			
-//			resultSet = preparedStatement.executeQuery();
-//			
-//			resultSet.next();
-//			
-//			Long expectedMidEnProceso = resultSet.getLong(1);
-//			
-//			assertEquals(expectedMidEnProceso, expectedMidSinProcesar);
-//			
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
-//	@Test
-//	public final void testActualizarDatosMidContrato() {
-//		try {
-//			String mid = strategy.getSiguienteMidSinProcesar();
-//			
-//			strategy.actualizarDatosMidContrato(
-//				"direccion",
-//				"1",
-//				"documento",
-//				"01/01/2014",
-//				"localidad",
-//				"CP",
-//				mid,
-//				"nombre",
-//				"0",
-//				"tipoContratoDescripcion",
-//				"agente",
-//				"equipo",
-//				"0",
-//				"0"
-//			);
-//			
-//			PreparedStatement preparedStatement = this.connection.prepareStatement(
-//				"select mid, estado from acm_interface_mid where mid = ?"
-//			);
-//			preparedStatement.setLong(1, new Long(mid));
-//			
-//			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
-//			
-//			ResultSet resultSet = preparedStatement.executeQuery();
-//			
-//			resultSet.next();
-//			
-//			assertEquals(expectedEstado, new Long(resultSet.getLong(2)));
-//			
-//			preparedStatement = this.connection.prepareStatement(
-//				"select direccion, documento_tipo, documento,"
-//					+ " fecha_fin_contrato, localidad, codigo_postal, nombre,"
-//					+ " tipo_contrato_codigo,"
-//					+ " tipo_contrato_descripcion,"
-//					+ " agente,"
-//					+ " equipo,"
-//					+ " numero_cliente,"
-//					+ " numero_contrato"
-//				+ " from acm_interface_contrato where mid = ?"
-//			);
-//			preparedStatement.setLong(1, new Long(mid));
-//			
-//			resultSet = preparedStatement.executeQuery();
-//			
-//			resultSet.next();
-//			
-//			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-//			
-//			assertEquals("direccion", resultSet.getString(1));
-//			assertEquals("1", resultSet.getString(2));
-//			assertEquals("documento", resultSet.getString(3));
-//			assertEquals(format.parse("01/01/2014"), resultSet.getDate(4));
-//			assertEquals("localidad", resultSet.getString(5));
-//			assertEquals("CP", resultSet.getString(6));
-//			assertEquals("nombre", resultSet.getString(7));
-//			assertEquals("0", resultSet.getString(8));
-//			assertEquals("tipoContratoDescripcion", resultSet.getString(9));
-//			assertEquals("agente", resultSet.getString(10));
-//			assertEquals("equipo", resultSet.getString(11));
-//			assertEquals("0", resultSet.getString(12));
-//			assertEquals("0", resultSet.getString(13));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	@Test
-//	public final void testActualizarDatosMidPrepago() {
-//		try {
-//			String mid = strategy.getSiguienteMidSinProcesar();
-//			
-//			strategy.actualizarDatosMidPrepago(
-//				"01/2013",
-//				mid,
-//				"10",
-//				"10",
-//				"10",
-//				"01/11/2013"
-//			);
-//			
-//			PreparedStatement preparedStatement = this.connection.prepareStatement(
-//				"select mid, estado from acm_interface_mid where mid = ?"
-//			);
-//			preparedStatement.setLong(1, new Long(mid));
-//			
-//			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
-//			
-//			ResultSet resultSet = preparedStatement.executeQuery();
-//			
-//			resultSet.next();
-//			
-//			assertEquals(expectedEstado, new Long(resultSet.getLong(2)));
-//			
-//			preparedStatement = this.connection.prepareStatement(
-//				"select mes_ano, monto_mes_actual, monto_mes_anterior_1,"
-//					+ " monto_mes_anterior_2, monto_promedio, fecha_activacion_kit"
-//				+ " from acm_interface_prepago where mid = ?"
-//			);
-//			preparedStatement.setLong(1, new Long(mid));
-//			
-//			resultSet = preparedStatement.executeQuery();
-//			
-//			resultSet.next();
-//			
-//			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-//			
-//			assertEquals(format.parse("01/01/2013"), resultSet.getDate(1));
-//			assertEquals(new Double("10"), resultSet.getDouble(2));
-//			assertEquals(new Double("10"), resultSet.getDouble(3));
-//			assertEquals(new Double("10"), resultSet.getDouble(4));
-//			assertEquals(new Double("10"), resultSet.getDouble(5));
-//			assertEquals(format.parse("01/11/2013"), resultSet.getDate(6));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
-//	@Test
-//	public final void testActualizarDatosMidListaVacia() {
-//		try {
-//			String mid = strategy.getSiguienteMidSinProcesar();
-//			
-//			strategy.actualizarDatosMidListaVacia(mid);
-//			
-//			PreparedStatement preparedStatement = this.connection.prepareStatement(
-//				"select mid, estado from acm_interface_mid where mid = ?"
-//			);
-//			preparedStatement.setLong(1, new Long(mid));
-//			
-//			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia"));
-//			
-//			ResultSet resultSet = preparedStatement.executeQuery();
-//			
-//			resultSet.next();
-//			
-//			assertEquals(expectedEstado, new Long(resultSet.getLong(2)));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
+	@Test
+	public final void testGetSiguienteMidSinProcesar() {
+		try {
+			PreparedStatement preparedStatement = this.connection.prepareStatement(
+				"select mid from acm_interface_mid where estado in (?, ?) order by estado desc"
+			);
+			preparedStatement.setLong(1, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesar")));
+			preparedStatement.setLong(2, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesarPrioritario")));
+			preparedStatement.setMaxRows(1);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			Long expectedMidSinProcesar = resultSet.getLong(1);
+			
+			String datosMid = strategy.getSiguienteMidSinProcesar();
+			String mid = datosMid.substring(2, 10);
+			
+			assertEquals(expectedMidSinProcesar, mid);
+			
+			preparedStatement = this.connection.prepareStatement(
+				"select mid from acm_interface_mid where estado = ? order by fact desc"
+			);
+			preparedStatement.setLong(1, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso")));
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			Long expectedMidEnProceso = resultSet.getLong(1);
+			
+			assertEquals(expectedMidEnProceso, expectedMidSinProcesar);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Ignore
+	@Test
+	public final void testGetSiguienteNumeroContratoSinProcesar() {
+		try {
+			PreparedStatement preparedStatement = this.connection.prepareStatement(
+				"select numero_contrato from acm_interface_numero_contrato where estado in (?, ?) order by estado desc"
+			);
+			preparedStatement.setLong(1, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesar")));
+			preparedStatement.setLong(2, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesarPrioritario")));
+			preparedStatement.setMaxRows(1);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			Long expectedNumeroContratoSinProcesar = resultSet.getLong(1);
+			
+			assertEquals(expectedNumeroContratoSinProcesar.toString(), strategy.getSiguienteNumeroContratoSinProcesar());
+			
+			preparedStatement = this.connection.prepareStatement(
+				"select numero_contrato from acm_interface_numero_contrato where estado = ? order by fact desc"
+			);
+			preparedStatement.setLong(1, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso")));
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			Long expectedNumeroContratoEnProceso = resultSet.getLong(1);
+			
+			assertEquals(expectedNumeroContratoEnProceso, expectedNumeroContratoSinProcesar);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Ignore
+	@Test
+	public final void testActualizarDatosMidContrato() {
+		try {
+			String datosMid = strategy.getSiguienteMidSinProcesar();
+			String mid = datosMid.substring(2, 10);
+			
+			strategy.actualizarDatosMidContrato(
+				"direccion",
+				"1",
+				"documento",
+				"01/01/2014",
+				"localidad",
+				"CP",
+				mid,
+				"nombre",
+				"0",
+				"tipoContratoDescripcion",
+				"agente",
+				"equipo",
+				"0",
+				"0",
+				"0"
+			);
+			
+			PreparedStatement preparedStatement = this.connection.prepareStatement(
+				"select mid, estado from acm_interface_mid where mid = ?"
+			);
+			preparedStatement.setLong(1, new Long(mid));
+			
+			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			assertEquals(expectedEstado, new Long(resultSet.getLong(2)));
+			
+			preparedStatement = this.connection.prepareStatement(
+				"select direccion, documento_tipo, documento,"
+					+ " fecha_fin_contrato, localidad, codigo_postal, nombre,"
+					+ " tipo_contrato_codigo,"
+					+ " tipo_contrato_descripcion,"
+					+ " agente,"
+					+ " equipo,"
+					+ " numero_cliente,"
+					+ " numero_contrato"
+				+ " from acm_interface_contrato where mid = ?"
+			);
+			preparedStatement.setLong(1, new Long(mid));
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
+			assertEquals("direccion", resultSet.getString(1));
+			assertEquals("1", resultSet.getString(2));
+			assertEquals("documento", resultSet.getString(3));
+			assertEquals(format.parse("01/01/2014"), resultSet.getDate(4));
+			assertEquals("localidad", resultSet.getString(5));
+			assertEquals("CP", resultSet.getString(6));
+			assertEquals("nombre", resultSet.getString(7));
+			assertEquals("0", resultSet.getString(8));
+			assertEquals("tipoContratoDescripcion", resultSet.getString(9));
+			assertEquals("agente", resultSet.getString(10));
+			assertEquals("equipo", resultSet.getString(11));
+			assertEquals("0", resultSet.getString(12));
+			assertEquals("0", resultSet.getString(13));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Ignore
+	@Test
+	public final void testActualizarDatosMidPrepago() {
+		try {
+			String datosMid = strategy.getSiguienteMidSinProcesar();
+			String mid = datosMid.substring(2, 10);
+			
+			strategy.actualizarDatosMidPrepago(
+				"01/2013",
+				mid,
+				"10",
+				"10",
+				"10",
+				"01/11/2013",
+				"agente"
+			);
+			
+			PreparedStatement preparedStatement = this.connection.prepareStatement(
+				"select mid, estado from acm_interface_mid where mid = ?"
+			);
+			preparedStatement.setLong(1, new Long(mid));
+			
+			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			assertEquals(expectedEstado, new Long(resultSet.getLong(2)));
+			
+			preparedStatement = this.connection.prepareStatement(
+				"select mes_ano, monto_mes_actual, monto_mes_anterior_1,"
+					+ " monto_mes_anterior_2, monto_promedio, fecha_activacion_kit"
+				+ " from acm_interface_prepago where mid = ?"
+			);
+			preparedStatement.setLong(1, new Long(mid));
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			
+			assertEquals(format.parse("01/01/2013"), resultSet.getDate(1));
+			assertSame(new Double("10"), resultSet.getDouble(2));
+			assertSame(new Double("10"), resultSet.getDouble(3));
+			assertSame(new Double("10"), resultSet.getDouble(4));
+			assertSame(new Double("10"), resultSet.getDouble(5));
+			assertEquals(format.parse("01/11/2013"), resultSet.getDate(6));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Ignore
+	@Test
+	public final void testActualizarDatosMidListaVacia() {
+		try {
+			String datosMid = strategy.getSiguienteMidSinProcesar();
+			String mid = datosMid.substring(2, 10);
+			
+			strategy.actualizarDatosMidListaVacia(mid);
+			
+			PreparedStatement preparedStatement = this.connection.prepareStatement(
+				"select mid, estado from acm_interface_mid where mid = ?"
+			);
+			preparedStatement.setLong(1, new Long(mid));
+			
+			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia"));
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			assertEquals(expectedEstado, new Long(resultSet.getLong(2)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Ignore
+	@Test
+	public final void testActualizarDatosNumeroContratoListaVacia() {
+		try {
+			String numeroContrato = strategy.getSiguienteNumeroContratoSinProcesar();
+			
+			strategy.actualizarDatosNumeroContratoListaVacia(numeroContrato);
+			
+			PreparedStatement preparedStatement = this.connection.prepareStatement(
+				"select numero_contrato, estado from acm_interface_numero_contrato where numero_contrato = ?"
+			);
+			preparedStatement.setLong(1, new Long(numeroContrato));
+			
+			Long expectedEstado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia"));
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			resultSet.next();
+			
+			assertEquals(expectedEstado, new Long(resultSet.getLong(2)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Ignore
 	@Test
 	public final void testInsertarDatosPersona() {
 		try {
+			String millis = new Long(GregorianCalendar.getInstance().getTimeInMillis()).toString();
+			
 			strategy.actualizarDatosPersona(
-				"123456",
+				millis,
 				"99455097",
-				"URUGUAY",
-				"CI",
-				"42273192",
-				"BATALLA",
-				"LIBER",
-				"RS", 
+				"URUGUAY" + millis,
+				"CI" + millis,
+				"42273192" + millis,
+				"BATALLA" + millis,
+				"LIBER" + millis,
+				"RS" + millis, 
 				"TC", 
 				"AC", 
 				"22/02/1983",
 				"M", 
-				"AVDA. BUSCHENTAL", 
+				"AVDA. BUSCHENTAL" + millis, 
 				"3327", 
 				"F", 
 				"AP", 
-				"FELIX OLMEDO", 
+				"FELIX OLMEDO" + millis, 
 				"BL", 
 				"M", 
 				"S", 
 				"OBS", 
 				"MONTEVIDEO", 
 				"12400", 
-				"AVDA. BUSCHENTAL 3327", 
+				"AVDA. BUSCHENTAL 3327" + millis, 
 				"1", 
 				"2355 4232", 
-				"AVISO", 
+				"AVISO" + millis, 
 				"FAX", 
-				"BATLIBER@GMAIL.COM"
+				"BATLIBER@GMAIL.COM" + millis
 			);
 			
 			PreparedStatement preparedStatement = this.connection.prepareStatement(
-				"select count(0) from acm_interface_persona where id_cliente = ?"
+				"select id from acm_interface_persona where id_cliente = ?"
 			);
-			preparedStatement.setString(1, "123456");
+			preparedStatement.setString(1, millis);
 			
-			Long expectedCantidad = new Long(1);
+			ResultSet resultSetPersona = preparedStatement.executeQuery();
 			
-			ResultSet resultSet = preparedStatement.executeQuery();
+			resultSetPersona.next();
 			
-			resultSet.next();
+			Long id = new Long(resultSetPersona.getLong(1));
 			
-			assertEquals(expectedCantidad, new Long(resultSet.getLong(1)));
+			assertNotNull(id);
+			
+			preparedStatement = this.connection.prepareStatement(
+				"select mid from acm_interface_mid_persona where persona_id = ?"
+			);
+			preparedStatement.setLong(1, id);
+			
+			ResultSet resultSetMidPersona = preparedStatement.executeQuery();
+			
+			Long mid = new Long(resultSetMidPersona.getLong(1));
+			
+			assertEquals(new Long(99455097), mid);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	@Ignore
 	@Test
 	public final void testActualizarDatosPersona() {
 		try {
@@ -342,10 +436,9 @@ public class TestLogisticaProxy extends TestCase {
 			e.printStackTrace();
 		}
 	}
-	
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		
+
+	@After
+	public void tearDown() throws Exception {
 		this.connection.close();
 	}
 }

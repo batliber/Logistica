@@ -103,6 +103,16 @@
 	width: 25%;
 }
 
+#divPlanPrecioMinutoNumerosAmigos {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanPrecioMinutoNumerosAmigos {
+	margin-left: 2px;
+	width: 25%;
+}
+
 #divPlanPrecioMinutoOtrasOperadoras {
 	float: left;
 	width: 40%;
@@ -231,4 +241,23 @@
 #inputPlanCantidadFijosAntelMinutosGratis {
 	margin-left: 2px;
 	width: 25%;
+}
+
+#divPlanPiePagina {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanPiePagina {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#divPlanBeneficioIncluidoEnLlamadas {
+	float: left;
+	width: 40%;
+}
+
+#inputPlanBeneficioIncluidoEnLlamadas {
+	margin-left: 2px;
 }

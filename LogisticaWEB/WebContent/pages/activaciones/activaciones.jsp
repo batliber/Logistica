@@ -14,6 +14,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoActivacionDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PuntoVentaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ActivacionDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
@@ -42,6 +43,17 @@
 				<div class="divButton" id="divButtonExportarAExcel">
 					<form method="post" id="formExportarAExcel" action="#"><input type="submit" id="inputExportarAExcel" value="Exporta a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></form>
 				</div>
+				
+				<div class="divButton" id="divButtonExportarAExcelSupervisorDistribucionChips">
+					<form method="post" id="formExportarAExcelSupervisorDistribucionChips" action="#"><input type="submit" id="inputExportarAExcelSupervisorDistribucionChips" value="Exporta a Excel" onclick="javascript:inputExportarAExcelSupervisorDistribucionChipsOnClick(event, this)"/></form>
+				</div>
+				<div class="divButton" id="divButtonExportarAExcelEncargadoActivaciones">
+					<form method="post" id="formExportarAExcelEncargadoActivaciones" action="#"><input type="submit" id="inputExportarAExcelEncargadoActivaciones" value="Exporta a Excel" onclick="javascript:inputExportarAExcelEncargadoActivacionesOnClick(event, this)"/></form>
+				</div>
+				<div class="divButton" id="divButtonExportarAExcelEncargadoActivacionesSinDistribucion">
+					<form method="post" id="formExportarAExcelEncargadoActivacionesSinDistribucion" action="#"><input type="submit" id="inputExportarAExcelEncargadoActivacionesSinDistribucion" value="Exporta a Excel" onclick="javascript:inputExportarAExcelEncargadoActivacionesSinDistribucionOnClick(event, this)"/></form>
+				</div>
+				
 				<div class="divButtonBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divButtonTitleBar">
@@ -61,27 +73,6 @@
 			<div id="divCloseIFrameActivacion" class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
 		</div>
 		<iframe id="iFrameActivacion" frameborder="0" src="#"></iframe>
-	</div>
-	<div id="divIFrameSeleccionVendedor" style="display: none;">
-		<div class="divTitleBar">
-			<div class="divTitleBarText" style="float:left;">Vendedor</div>
-			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
-		</div>
-		<div id="divSeleccionVendedor">
-			<div class="divButtonBar">
-				<div class="divButton"><input type="submit" value="Aceptar" onclick="javascript:inputAceptarOnClick(event)"/></div>
-				<div class="divButton"><input type="submit" value="Cancelar" onclick="javascript:inputCancelarOnClick(event)"/></div>
-				<div class="divButtonBarSeparator">&nbsp;</div>
-			</div>
-			<div class="divButtonTitleBar">
-				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
-				<div class="divButtonTitleBarSeparator">&nbsp;</div>
-			</div>
-			<div class="divPopupWindow">
-				<div class="divFormLabelExtended">Vendedor:</div><div id="divVendedor"><select id="selectVendedor"></select></div>
-				<div class="divFormLabelExtended">Observaciones:</div><div id="divObservaciones"><textarea id="textareaObservaciones"></textarea></div>
-			</div>
-		</div>
 	</div>
 	<div id="divIFrameImportacionArchivo" style="display: none;">
 		<div class="divTitleBar">

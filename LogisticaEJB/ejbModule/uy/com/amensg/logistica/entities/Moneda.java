@@ -16,6 +16,9 @@ public class Moneda extends BaseEntity {
 	@Column(name = "simbolo")
 	private String simbolo;
 
+	@Column(name = "codigo_iso")
+	private String codigoISO;
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -30,5 +33,13 @@ public class Moneda extends BaseEntity {
 
 	public void setSimbolo(String simbolo) {
 		this.simbolo = simbolo;
+	}
+
+	public String getCodigoISO() {
+		return codigoISO;
+	}
+
+	public void setCodigoISO(String codigoISO) {
+		this.codigoISO = codigoISO;
 	}
 }

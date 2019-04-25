@@ -1,32 +1,36 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_SUPERVISOR_DISTRIBUCION = 7;
+var __ROL_DEMO = 21;
 
 var grid = null;
 
-$(document).ready(function() {
-	grid = new Grid(
-		document.getElementById("divTableStockMovimientos"),
-		{
-			tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
-			tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 80 },
-			tdModelo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Modelo", abreviacion: "Modelo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 200 },
-			tdStockTipoMovimiento: { campo: "stockTipoMovimiento.descripcion", clave: "stockTipoMovimiento.id", descripcion: "Tipo de movimiento", abreviacion: "Tipo mov.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listStockTipoMovimientos, clave: "id", valor: "descripcion" }, ancho: 200 },
-			tdFecha: { campo: "fecha", descripcion: "Fecha", abreviacion: "Fecha", tipo: __TIPO_CAMPO_FECHA_HORA }
-		},
-		false,
-		reloadData,
-		trStockMovimientoOnClick
-	);
-	
-	grid.rebuild();
-	
+$(document).ready(init);
+
+function init() {
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION) {
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO) {
 						mode = __FORM_MODE_ADMIN;
+						
+						grid = new Grid(
+							document.getElementById("divTableStockMovimientos"),
+							{
+								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
+								tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 80 },
+								tdModelo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Modelo", abreviacion: "Modelo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 200 },
+								tdStockTipoMovimiento: { campo: "stockTipoMovimiento.descripcion", clave: "stockTipoMovimiento.id", descripcion: "Tipo de movimiento", abreviacion: "Tipo mov.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listStockTipoMovimientos, clave: "id", valor: "descripcion" }, ancho: 200 },
+								tdFecha: { campo: "fecha", descripcion: "Fecha", abreviacion: "Fecha", tipo: __TIPO_CAMPO_FECHA_HORA }
+							},
+							false,
+							reloadData,
+							trStockMovimientoOnClick
+						);
+						
+						grid.rebuild();
 						
 						break;
 					}
@@ -36,12 +40,12 @@ $(document).ready(function() {
 	);
 	
 	reloadData();
-});
+}
 
 function listEmpresas() {
 	var result = [];
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				if (data != null) {

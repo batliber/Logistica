@@ -81,7 +81,7 @@ function inputGuardarOnClick(event) {
 		return;
 	}
 	
-	if (menu.padre == "") {
+	if (menu.padre == 0) {
 		menu.padre = null;
 	}
 	

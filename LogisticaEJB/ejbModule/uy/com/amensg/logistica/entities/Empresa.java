@@ -1,11 +1,9 @@
-package uy.com.amensg.logistica.entities;
+	package uy.com.amensg.logistica.entities;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -35,12 +33,19 @@ public class Empresa extends BaseEntity {
 	@Column(name = "direccion")
 	private String direccion;
 	
-	@OneToMany( cascade=CascadeType.ALL, fetch=FetchType.EAGER )
+	@OneToMany
 	@JoinTable(name = "forma_pago_empresa", 
 		joinColumns=@JoinColumn(name = "empresa_id"),
 		inverseJoinColumns=@JoinColumn(name = "forma_pago_id")
 	)
 	private Set<FormaPago> formaPagos;
+	
+	@OneToMany
+	@JoinTable(name = "empresa_usuario_contrato", 
+		joinColumns=@JoinColumn(name = "empresa_id"),
+		inverseJoinColumns=@JoinColumn(name = "usuario_id")
+	)
+	private Set<Usuario> empresaUsuarioContratos;
 	
 	public String getNombre() {
 		return nombre;
@@ -96,5 +101,13 @@ public class Empresa extends BaseEntity {
 
 	public void setFormaPagos(Set<FormaPago> formaPagos) {
 		this.formaPagos = formaPagos;
+	}
+
+	public Set<Usuario> getEmpresaUsuarioContratos() {
+		return empresaUsuarioContratos;
+	}
+
+	public void setEmpresaUsuarioContratos(Set<Usuario> empresaUsuarioContratos) {
+		this.empresaUsuarioContratos = empresaUsuarioContratos;
 	}
 }

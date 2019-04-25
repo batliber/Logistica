@@ -54,7 +54,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 		
 		try {
 			// Obtener el usuario para el cual se consulta
-			Usuario usuario = iUsuarioBean.getById(usuarioId);
+			Usuario usuario = iUsuarioBean.getById(usuarioId, true);
 			
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			
@@ -151,7 +151,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parï¿½metros segï¿½n las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -214,7 +214,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 				}
 			}
 			
-			// Acotar al tamaño de la muestra
+			// Acotar al tamaï¿½o de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -295,7 +295,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 			queryCount.setParameter("usuario2", usuario);
 			queryCount.setParameter("usuario3", usuario);
 			
-			// Setear los parámetros según las condiciones del filtro
+			// Setear los parï¿½metros segï¿½n las condiciones del filtro
 			i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -387,7 +387,39 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 			query.setParameter("contratoId", contratoId);
 			
 			for (ContratoRoutingHistory contratoRoutingHistory : query.getResultList()) {
-				contratoRoutingHistory.setUsuarioAct(iUsuarioBean.getById(contratoRoutingHistory.getUact()));
+				contratoRoutingHistory.setUsuarioAct(iUsuarioBean.getById(contratoRoutingHistory.getUact(), false));
+				
+				result.add(contratoRoutingHistory);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Lista las asignaciones existentes para el contrato con nÃºmero de trÃ¡mite numeroTramite.
+	 * 
+	 * @param numeroTramite nÃºmero de trÃ¡mite del Contrato a consultar.
+	 * @return La lista de asignaciones del Contrato especificado.
+	 */
+	public Collection<ContratoRoutingHistory> listByNumeroTramite(Long numeroTramite) {
+		Collection<ContratoRoutingHistory> result = new LinkedList<ContratoRoutingHistory>();
+		
+		try {
+			TypedQuery<ContratoRoutingHistory> query = 
+				entityManager.createQuery(
+					"SELECT crh"
+					+ " FROM ContratoRoutingHistory crh"
+					+ " WHERE crh.contrato.numeroTramite = :numeroTramite"
+					+ " ORDER BY crh.id DESC",
+					ContratoRoutingHistory.class
+				);
+			query.setParameter("numeroTramite", numeroTramite);
+			
+			for (ContratoRoutingHistory contratoRoutingHistory : query.getResultList()) {
+				contratoRoutingHistory.setUsuarioAct(iUsuarioBean.getById(contratoRoutingHistory.getUact(), false));
 				
 				result.add(contratoRoutingHistory);
 			}

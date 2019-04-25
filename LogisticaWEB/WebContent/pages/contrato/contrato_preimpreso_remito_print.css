@@ -1,0 +1,223 @@
+body {
+	margin: 0px;
+	background-color: #EEEEEE;
+}
+
+.divPrintingButtonBar {
+	margin: auto;
+	width: 197mm;
+	height: 80px;
+}
+
+.divPrintingButton {
+	float: left;
+}
+
+.divA4Sheet {
+	font-size: 9pt;
+	font-family: Calibri, Segoe UI;
+	width: 197mm;
+	height: 287mm;
+	background-color: white;
+	margin: auto;
+	top: 0;
+	left: 0;
+	border: dotted 1px black;
+}
+
+.divPageHeading {
+	margin: auto;
+	width: 90%;
+	height: 5mm;
+}
+
+.divPageContent {
+	margin: auto;
+	width: 99%;
+	height: 275mm;
+	overflow: hidden;
+}
+
+.divRemito {
+	float: left;
+	width: 99%;
+	height: 50%;
+	margin-left: 0;
+}
+
+.divCabezal {
+	float: left;
+	width: 100%;
+	height: 32%;
+}
+
+.divCabezalDatosCliente {
+	float: left;
+	width: 60%;
+	height: 100%;
+}
+
+.divCabezalDatosClienteFiller {
+	float: left;
+	width: 100%;
+	height: 52%;
+}
+
+.divCabezalDatosClienteDatos {
+	float: left;
+	width: 95%;
+	height: 48%;
+}
+
+.divCabezalDatosClienteNombre {
+	float: left;
+	width: 80%;
+	height: 40%;
+	margin-top: 0;
+	margin-left: 20%
+}
+
+.divCabezalDatosClienteDireccion {
+	float: left;
+	width: 80%;
+	height: 40%;
+	margin-top: 0;
+	margin-left: 20%
+}
+
+.divCabezalDatosFacturacion {
+	float: left;
+	width: 40%;
+	height: 100%;
+}
+
+.divCabezalDatosFacturacionTipoDoc {
+	float: left;
+	width: 55%;
+	height: 30%;
+	text-align: center;
+	padding-top: 15%;
+}
+
+.divCabezalDatosFacturacionFecha {
+	float: left;
+	width: 45%;
+	height: 30%;
+	text-align: center;
+	padding-top: 15%;
+}
+
+.divCabezalDatosFacturacionRUTComprador {
+	float: left;
+	width: 65%;
+	height: 45%;
+	text-align: center;
+}
+
+.divCabezalDatosFacturacionConsFinal {
+	float: left;
+	width: 35%;
+	height: 45%;
+	text-align: center;
+}
+
+.divLineas {
+	float: left;
+	width: 100%;
+	height: 46%;
+}
+
+.divLineasCantidad {
+	float: left;
+	width: 10%;
+	height: 100%;
+	padding-top: 3%;
+}
+
+.divLineaCantidad {
+	float: left;
+	width: 100%;
+	height: 10%;
+	text-align: center;
+}
+
+.divLineasDescripcion {
+	float: left;
+	width: 55%;
+	height: 100%;
+	padding-top: 3%;
+}
+
+.divLineaDescripcion {
+	float: left;
+	width: 100%;
+	height: 10%;
+	text-align: center;
+}
+
+.divLineasPrecioUnitario {
+	float: left;
+	width: 15%;
+	height: 100%;
+	padding-top: 3%;
+}
+
+.divLineaPrecioUnitario {
+	float: left;
+	width: 100%;
+	height: 10%;
+	text-align: center;
+}
+
+.divLineasImporte {
+	float: left;
+	width: 20%;
+	height: 100%;
+	padding-top: 3%;
+}
+
+.divLineaImporte {
+	float: left;
+	width: 100%;
+	height: 10%;
+	text-align: center;
+}
+
+.divPie {
+	float: left;
+	width: 100%;
+	height: 21%;
+}
+
+.divPieFiller {
+	float: left;
+	width: 80%;
+	height: 100%;
+}
+
+.divPieTotales {
+	float: left;
+	width: 20%;
+	height: 100%;
+}
+
+.divPieSubtotal {
+	float: left;
+	width: 100%;
+	height: 20%;
+	margin-top: 1%;
+}
+
+.divPieIVA {
+	float: left;
+	width: 100%;
+	height: 20%;
+	margin-top: 1%;
+}
+
+.divPieTotal {
+	float: left;
+	width: 100%;
+	height: 20%;
+	margin-top: 1%;
+}

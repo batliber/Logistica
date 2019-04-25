@@ -26,9 +26,11 @@ public class SessionExpirationListener implements HttpSessionListener {
 			if ((now - session.getLastAccessedTime()) >= ((long) session.getMaxInactiveInterval() * 1000)) {
 				Long usuarioId = (Long) session.getAttribute("sesion");
 				
-				ISeguridadBean iSeguridadBean = lookupBean();
-				
-				iSeguridadBean.sessionTimeout(usuarioId);
+				if (usuarioId != null) {
+					ISeguridadBean iSeguridadBean = lookupBean();
+					
+					iSeguridadBean.sessionTimeout(usuarioId);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

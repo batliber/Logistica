@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.ITarjetaCreditoBean;
@@ -45,29 +49,39 @@ public class TarjetaCreditoDWR {
 		return result;
 	}
 	
-	public static TarjetaCreditoTO transform(TarjetaCredito TarjetaCredito) {
-		TarjetaCreditoTO TarjetaCreditoTO = new TarjetaCreditoTO();
+	public static TarjetaCreditoTO transform(TarjetaCredito tarjetaCredito) {
+		TarjetaCreditoTO result = new TarjetaCreditoTO();
 		
-		TarjetaCreditoTO.setNombre(TarjetaCredito.getNombre());
+		result.setNombre(tarjetaCredito.getNombre());
 		
-		TarjetaCreditoTO.setFact(TarjetaCredito.getFact());
-		TarjetaCreditoTO.setId(TarjetaCredito.getId());
-		TarjetaCreditoTO.setTerm(TarjetaCredito.getTerm());
-		TarjetaCreditoTO.setUact(TarjetaCredito.getUact());
+		result.setFcre(tarjetaCredito.getFcre());
+		result.setFact(tarjetaCredito.getFact());
+		result.setId(tarjetaCredito.getId());
+		result.setTerm(tarjetaCredito.getTerm());
+		result.setUact(tarjetaCredito.getUact());
+		result.setUcre(tarjetaCredito.getUcre());
 		
-		return TarjetaCreditoTO;
+		return result;
 	}
 	
-	public static TarjetaCredito transform(TarjetaCreditoTO TarjetaCreditoTO) {
-		TarjetaCredito TarjetaCredito = new TarjetaCredito();
+	public static TarjetaCredito transform(TarjetaCreditoTO tarjetaCreditoTO) {
+		TarjetaCredito result = new TarjetaCredito();
 		
-		TarjetaCredito.setNombre(TarjetaCreditoTO.getNombre());
+		result.setNombre(tarjetaCreditoTO.getNombre());
 		
-		TarjetaCredito.setFact(TarjetaCreditoTO.getFact());
-		TarjetaCredito.setId(TarjetaCreditoTO.getId());
-		TarjetaCredito.setTerm(TarjetaCreditoTO.getTerm());
-		TarjetaCredito.setUact(TarjetaCreditoTO.getUact());
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		return TarjetaCredito;
+		result.setFcre(tarjetaCreditoTO.getFcre());
+		result.setFact(date);
+		result.setId(tarjetaCreditoTO.getId());
+		result.setTerm(tarjetaCreditoTO.getTerm());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(tarjetaCreditoTO.getUcre());
+		
+		return result;
 	}
 }

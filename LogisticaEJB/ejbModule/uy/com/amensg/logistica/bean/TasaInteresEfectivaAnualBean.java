@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.TasaInteresEfectivaAnual;
+import uy.com.amensg.logistica.entities.TipoTasaInteresEfectivaAnual;
 
 @Stateless
 public class TasaInteresEfectivaAnualBean implements ITasaInteresEfectivaAnualBean {
@@ -49,9 +50,39 @@ public class TasaInteresEfectivaAnualBean implements ITasaInteresEfectivaAnualBe
 				entityManager.createQuery(
 					"SELECT t"
 					+ " FROM TasaInteresEfectivaAnual t"
-					+ " WHERE t.fechaVigenciaHasta IS NULL",
+					+ " WHERE t.fechaVigenciaHasta IS NULL"
+					+ " ORDER BY t.tipoTasaInteresEfectivaAnual.descripcion,"
+						+ " t.cuotasDesde,"
+						+ " t.cuotasHasta,"
+						+ " t.montoDesde,"
+						+ " t.montoHasta",
 					TasaInteresEfectivaAnual.class
 				);
+			
+			Collection<TasaInteresEfectivaAnual> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				result = resultList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<TasaInteresEfectivaAnual> listVigentesByTipo(TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual) {
+		Collection<TasaInteresEfectivaAnual> result = new LinkedList<TasaInteresEfectivaAnual>();
+		
+		try {
+			TypedQuery<TasaInteresEfectivaAnual> query = 
+				entityManager.createQuery(
+					"SELECT t"
+					+ " FROM TasaInteresEfectivaAnual t"
+					+ " WHERE t.fechaVigenciaHasta IS NULL"
+					+ " AND t.tipoTasaInteresEfectivaAnual.id = :tipoTasaInteresEfectivaAnualId",
+					TasaInteresEfectivaAnual.class
+				);
+			query.setParameter("tipoTasaInteresEfectivaAnualId", tipoTasaInteresEfectivaAnual.getId());
 			
 			Collection<TasaInteresEfectivaAnual> resultList = query.getResultList();
 			if (resultList.size() > 0) {
@@ -78,6 +109,9 @@ public class TasaInteresEfectivaAnualBean implements ITasaInteresEfectivaAnualBe
 	
 	public void save(TasaInteresEfectivaAnual tasaInteresEfectivaAnual) {
 		try {
+			tasaInteresEfectivaAnual.setFcre(tasaInteresEfectivaAnual.getFact());
+			tasaInteresEfectivaAnual.setUcre(tasaInteresEfectivaAnual.getUact());
+			
 			entityManager.persist(tasaInteresEfectivaAnual);
 		} catch (Exception e) {
 			e.printStackTrace();

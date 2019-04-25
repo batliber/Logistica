@@ -54,7 +54,7 @@ public class TestProceso {
 	
 	public TestProceso() {
 		try {
-			Usuario supervisorCallCenterELARED = iUsuarioBean.getByLogin("sccELARED2");
+			Usuario supervisorCallCenterELARED = iUsuarioBean.getByLogin("sccELARED2", false);
 			
 			// Listar un MID en estado LLAMAR sin asignar
 			MetadataConsulta metadataConsulta = new MetadataConsulta();
@@ -91,18 +91,18 @@ public class TestProceso {
 				contrato = ((Contrato) registro);
 			}
 			
-			System.out.println("MID - " + contrato.getMid() + ". Tr醡ite - " + contrato.getNumeroTramite() + ". Estado - " + contrato.getEstado().getNombre());
+			System.out.println("MID - " + contrato.getMid() + ". Tr谩mite - " + contrato.getNumeroTramite() + ". Estado - " + contrato.getEstado().getNombre());
 			
-			// Asignaci髇 a empresa ANBEL
-			Empresa empresaANBEL = iEmpresaBean.getById(new Long(3));
-			Usuario supervisorCallCenterANBEL = iUsuarioBean.getByLogin("sccANBEL1");
+			// Asignaci贸n a empresa ANBEL
+			Empresa empresaANBEL = iEmpresaBean.getById(new Long(3), false);
+			Usuario supervisorCallCenterANBEL = iUsuarioBean.getByLogin("sccANBEL1", false);
 			String resultadoAsignacion = this.asignarManualmenteAOtraEmpresa(empresaANBEL, supervisorCallCenterANBEL, contrato.getMid());
 			
 			System.out.println("MID - " + contrato.getMid() + " asignado a ANBEL.");
 			System.out.println(resultadoAsignacion);
 			
-			// Asignaci髇 a un Vendedor ccANBEL1
-			Usuario vendedorANBEL = iUsuarioBean.getByLogin("ccANBEL1");
+			// Asignaci贸n a un Vendedor ccANBEL1
+			Usuario vendedorANBEL = iUsuarioBean.getByLogin("ccANBEL1", false);
 			
 			this.asignarAVendedor(contrato.getMid(), supervisorCallCenterANBEL, vendedorANBEL);
 			
@@ -113,16 +113,16 @@ public class TestProceso {
 			
 			System.out.println("MID - " + contrato.getMid() + " rechazado.");
 			
-			// Asignaci髇 a empresa RELPONT
-			Empresa empresaRELPONT = iEmpresaBean.getById(new Long(2));
-			Usuario supervisorCallCenterRELPONT = iUsuarioBean.getByLogin("sccRELPONT1"); 
+			// Asignaci贸n a empresa RELPONT
+			Empresa empresaRELPONT = iEmpresaBean.getById(new Long(2), false);
+			Usuario supervisorCallCenterRELPONT = iUsuarioBean.getByLogin("sccRELPONT1", false); 
 			resultadoAsignacion = this.asignarManualmenteAOtraEmpresa(empresaRELPONT, supervisorCallCenterRELPONT, contrato.getMid());
 			
 			System.out.println("MID - " + contrato.getMid() + " asignado a RELPONT.");
 			System.out.println(resultadoAsignacion);
 			
-			// Asignaci髇 a un Vendedor ccRELPONT1
-			Usuario vendedorRELPONT = iUsuarioBean.getByLogin("ccRELPONT1");
+			// Asignaci贸n a un Vendedor ccRELPONT1
+			Usuario vendedorRELPONT = iUsuarioBean.getByLogin("ccRELPONT1", false);
 			this.asignarAVendedor(contrato.getMid(), supervisorCallCenterRELPONT, vendedorRELPONT);
 						
 			System.out.println("MID - " + contrato.getMid() + " asignado a " + vendedorRELPONT.getNombre() + ".");
@@ -133,7 +133,7 @@ public class TestProceso {
 			System.out.println("MID - " + contrato.getMid() + " marcado para rellamar.");
 			
 			// Asignacion a un Vendedor ccELARED2
-			Usuario vendedorELARED = iUsuarioBean.getByLogin("ccELARED2");
+			Usuario vendedorELARED = iUsuarioBean.getByLogin("ccELARED2", false);
 			this.asignarAVendedor(contrato.getMid(), supervisorCallCenterELARED, vendedorELARED);
 			
 			System.out.println("MID - " + contrato.getMid() + " asignado a " + vendedorELARED.getNombre() + ".");
@@ -143,9 +143,9 @@ public class TestProceso {
 			
 			System.out.println("MID - " + contrato.getMid() + " vendido.");
 			
-			// Asignaci髇 a un Backoffice bo1
-			Usuario backoffice = iUsuarioBean.getByLogin("bo1");
-			Usuario supervisorBackoffice = iUsuarioBean.getByLogin("sbo1");
+			// Asignaci贸n a un Backoffice bo1
+			Usuario backoffice = iUsuarioBean.getByLogin("bo1", false);
+			Usuario supervisorBackoffice = iUsuarioBean.getByLogin("sbo1", false);
 			
 			this.asignarABackoffice(contrato.getMid(), supervisorBackoffice, backoffice);
 			
@@ -156,33 +156,33 @@ public class TestProceso {
 			
 			System.out.println("MID - " + contrato.getMid() + " distribuido.");
 			
-			// Asignaci髇 a un distribuidor d1
-			Usuario distribuidor = iUsuarioBean.getByLogin("d1");
-			Usuario supervisorDistribucion = iUsuarioBean.getByLogin("sd1");
+			// Asignaci贸n a un distribuidor d1
+			Usuario distribuidor = iUsuarioBean.getByLogin("d1", false);
+			Usuario supervisorDistribucion = iUsuarioBean.getByLogin("sd1", false);
 			
 			this.asignarADistribuidor(contrato.getMid(), supervisorDistribucion, distribuidor);
 			
 			System.out.println("MID - " + contrato.getMid() + " asignado a " + distribuidor.getNombre() + ".");
 			
-			// Recepci髇 de distribuci髇
+			// Recepci贸n de distribuci贸n
 			this.activar(contrato.getMid(), supervisorDistribucion);
 			
 			System.out.println("MID - " + contrato.getMid() + " recibido del distribuidor.");
 			
-			// Asignaci髇 a un activador a1
-			Usuario activador = iUsuarioBean.getByLogin("a1");
-			Usuario supervisorActivacion = iUsuarioBean.getByLogin("sa1");
+			// Asignaci贸n a un activador a1
+			Usuario activador = iUsuarioBean.getByLogin("a1", false);
+			Usuario supervisorActivacion = iUsuarioBean.getByLogin("sa1", false);
 			
 			this.asignarAActivador(contrato.getMid(), supervisorActivacion, activador);
 			
 			System.out.println("MID - " + contrato.getMid() + " asignado a " + activador.getNombre() + ".");
 			
-			// Env韔 a ANTEL
+			// Env铆o a ANTEL
 			this.enviarAANTEL(contrato.getMid(), activador);
 			
 			System.out.println("MID - " + contrato.getMid() + " enviado a ANTEL.");
 			
-			// Terminaci髇
+			// Terminaci贸n
 			this.terminar(contrato.getMid(), activador);
 			
 			System.out.println("MID - " + contrato.getMid() + " terminado.");
@@ -192,7 +192,11 @@ public class TestProceso {
 	}
 	
 	private String asignarManualmenteAOtraEmpresa(Empresa empresa, Usuario supervisorCallCenter, Long mid) {
-		Rol rolSupervisorCallCenter = iRolBean.getById(new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")));
+		Rol rolSupervisorCallCenter = 
+			iRolBean.getById(
+				new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+				false
+			);
 		
 		Contrato contrato = new Contrato();
 		contrato.setMid(mid);

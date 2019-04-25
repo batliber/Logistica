@@ -54,10 +54,12 @@ public class TipoPlanDWR {
 		
 		result.setDescripcion(tipoPlan.getDescripcion());
 		
+		result.setFcre(tipoPlan.getFcre());
 		result.setFact(tipoPlan.getFact());
 		result.setId(tipoPlan.getId());
 		result.setTerm(tipoPlan.getTerm());
 		result.setUact(tipoPlan.getUact());
+		result.setUcre(tipoPlan.getUcre());
 		
 		return result;
 	}
@@ -69,6 +71,7 @@ public class TipoPlanDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(tipoPlanTO.getFcre());
 		result.setFact(date);
 		result.setId(tipoPlanTO.getId());
 		result.setTerm(new Long(1));
@@ -77,6 +80,7 @@ public class TipoPlanDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(tipoPlanTO.getUcre());
 		
 		return result;
 	}

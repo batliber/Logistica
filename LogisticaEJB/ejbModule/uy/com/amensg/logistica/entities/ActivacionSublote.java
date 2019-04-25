@@ -29,6 +29,9 @@ public class ActivacionSublote extends BaseEntity {
 	@Column(name = "fecha_asignacion_punto_venta")
 	private Date fechaAsignacionPuntoVenta;
 	
+	@Column(name = "porcentaje_activacion")
+	private Double porcentajeActivacion;
+	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "empresa_id", nullable = true)
 	private Empresa empresa;
@@ -41,7 +44,7 @@ public class ActivacionSublote extends BaseEntity {
 	@JoinColumn(name = "punto_venta_id", nullable = true)
 	private PuntoVenta puntoVenta;
 
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="activacionSublote")
+	@OneToMany(mappedBy="activacionSublote")
 	private Set<Activacion> activaciones;
 	
 	public Long getNumero() {
@@ -74,6 +77,14 @@ public class ActivacionSublote extends BaseEntity {
 
 	public void setFechaAsignacionPuntoVenta(Date fechaAsignacionPuntoVenta) {
 		this.fechaAsignacionPuntoVenta = fechaAsignacionPuntoVenta;
+	}
+
+	public Double getPorcentajeActivacion() {
+		return porcentajeActivacion;
+	}
+
+	public void setPorcentajeActivacion(Double porcentajeActivacion) {
+		this.porcentajeActivacion = porcentajeActivacion;
 	}
 
 	public Empresa getEmpresa() {

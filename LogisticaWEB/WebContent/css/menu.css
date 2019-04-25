@@ -66,7 +66,7 @@
 
 .divUserInfo {
 	float: right;
-	width: 100px;
+	width: 125px;
 	height: 100%;
 	text-align: right;
 	border-bottom: solid 1px gray;
@@ -80,6 +80,7 @@
 .divActiveUserName {
 	float: right;
 	margin-right: 2px;
+	font-size: 8pt;
 }
 
 .divLogout {

@@ -14,6 +14,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/BarrioDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoPuntoVentaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoVisitaPuntoVentaDistribuidorDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PuntoVentaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
@@ -42,6 +43,11 @@
 		<div class="divFormLabelExtended">Tel&eacute;fono:</div><div id="divPuntoVentaTelefono" class="divFormValue"><input type="text" id="inputPuntoVentaTelefono"/></div>
 		<div class="divFormLabelExtended">Contacto:</div><div id="divPuntoVentaContacto" class="divFormValue"><input type="text" id="inputPuntoVentaContacto"/></div>
 		<div class="divFormLabelExtended">Documento:</div><div id="divPuntoVentaDocumento" class="divFormValue"><input type="text" id="inputPuntoVentaDocumento"/></div>
+		<div class="divFormLabelExtended" id="divLabelFechaAsignacionDistribuidor">Fecha asignaci&oacute;n distribuidor:</div><div id="divPuntoVentaFechaAsignacionDistribuidor" class="divFormValue">&nbsp;</div>
+		<div class="divFormLabelExtended" id="divLabelDistribuidor">Distribuidor:</div><div id="divPuntoVentaDistribuidor" class="divFormValue">&nbsp;</div>
+		<div class="divFormLabelExtended" id="divLabelFechaVisitaDistribuidor">Fecha visita distribuidor:</div><div id="divPuntoVentaFechaVisitaDistribuidor" class="divFormValue">&nbsp;</div>
+		<div class="divFormLabelExtended" id="divLabelFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor">Fecha &uacute;ltimo cambio estado visita:</div><div id="divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor" class="divFormValue">&nbsp;</div>
+		<div class="divFormLabelExtended" id="divLabelEstadoVisitaPuntoVentaDistribuidor">Estado visita:</div><div id="divPuntoVentaEstadoVisitaPuntoVentaDistribuidor" class="divFormValue">&nbsp;</div>
 		<input type="text" id="inputBusqueda"/>
 		<div id="divMapa">&nbsp;</div>
 	</div>

@@ -339,9 +339,11 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
+			bcuInterfaceRiesgoCrediticio.setFcre(date);
 			bcuInterfaceRiesgoCrediticio.setFact(date);
 			bcuInterfaceRiesgoCrediticio.setTerm(new Long(1));
 			bcuInterfaceRiesgoCrediticio.setUact(new Long(1));
+			bcuInterfaceRiesgoCrediticio.setUcre(new Long(1));
 			
 			entityManager.persist(bcuInterfaceRiesgoCrediticio);
 		} catch (Exception e) {

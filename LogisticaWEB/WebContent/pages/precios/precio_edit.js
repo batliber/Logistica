@@ -3,7 +3,7 @@ $(document).ready(init);
 function init() {
 	refinarForm();
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var html =
@@ -71,6 +71,7 @@ function init() {
 		$("#selectMarca").prop("disabled", true);
 		$("#selectModelo").prop("disabled", true);
 		$("#selectMoneda").prop("disabled", true);
+		$("#inputCuotas").prop("disabled", true);
 		
 		PrecioDWR.getById(
 			id,
@@ -85,6 +86,7 @@ function init() {
 					$("#selectMarca").val(data.marca.id);
 					$("#selectModelo").val(data.modelo.id);
 					$("#selectMoneda").val(data.moneda.id);
+					$("#inputCuotas").val(data.cuotas);
 					$("#inputPrecio").val(data.precio);
 					
 					if (mode == __FORM_MODE_ADMIN) {
@@ -172,13 +174,28 @@ function inputGuardarOnClick(event) {
 		return;
 	}
 	
+	var valorCuotas = $("#inputCuotas").val();
+	if (valorCuotas == null || valorCuotas == "") {
+		alert("Debe ingresar una cantidad de cuotas válida.");
+		
+		return;
+	}
+	
+	var valorPrecio = $("#inputPrecio").val();
+	if (valorPrecio == null || valorPrecio == "") {
+		alert("Debe ingresar un precio válido.");
+		
+		return;
+	}
+	
 	var precio = {
 		empresa: empresa,
 		tipoProducto: tipoProducto,
 		marca: marca,
 		modelo: modelo,
 		moneda: moneda,
-		precio: $("#inputPrecio").val()
+		cuotas: valorCuotas,
+		precio: valorPrecio
 	};
 	
 	if (id != null) {

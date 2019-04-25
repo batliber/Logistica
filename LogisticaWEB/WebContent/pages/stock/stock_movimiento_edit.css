@@ -1,72 +1,27 @@
-#divEmpresa {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
-}
-
 #selectEmpresa {
-	width: 60%;
-}
-
-#divStockTipoMovimiento {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
+	width: 30%;
 }
 
 #selectStockTipoMovimiento {
-	width: 60%;
-}
-
-#divMarca {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
+	width: 30%;
 }
 
 #selectMarca {
-	width: 60%;
-}
-
-#divModelo {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
+	width: 30%;
 }
 
 #selectModelo {
-	width: 60%;
-}
-
-#divTipoProducto {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
+	width: 30%;
 }
 
 #selectTipoProducto {
-	width: 60%;
+	width: 30%;
 }
 
-#divCantidad {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
-}
-
-#divIMEI {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
+#inputCantidad {
+	width: 29%;
 }
 
 #inputIMEI {
-	width: 58%;
+	width: 29%;
 }

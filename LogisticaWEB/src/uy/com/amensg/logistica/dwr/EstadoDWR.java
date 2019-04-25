@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.EstadoBean;
@@ -46,28 +50,38 @@ public class EstadoDWR {
 	}
 	
 	public static EstadoTO transform(Estado estado) {
-		EstadoTO estadoTO = new EstadoTO();
+		EstadoTO result = new EstadoTO();
 		
-		estadoTO.setNombre(estado.getNombre());
+		result.setNombre(estado.getNombre());
 		
-		estadoTO.setFact(estado.getFact());
-		estadoTO.setId(estado.getId());
-		estadoTO.setTerm(estado.getTerm());
-		estadoTO.setUact(estado.getUact());
+		result.setFcre(estado.getFcre());
+		result.setFact(estado.getFact());
+		result.setId(estado.getId());
+		result.setTerm(estado.getTerm());
+		result.setUact(estado.getUact());
+		result.setUact(estado.getUcre());
 		
-		return estadoTO;
+		return result;
 	}
 	
 	public static Estado transform(EstadoTO estadoTO) {
-		Estado estado = new Estado();
+		Estado result = new Estado();
 		
-		estado.setNombre(estadoTO.getNombre());
+		result.setNombre(estadoTO.getNombre());
 		
-		estado.setFact(estadoTO.getFact());
-		estado.setId(estadoTO.getId());
-		estado.setTerm(estadoTO.getTerm());
-		estado.setUact(estadoTO.getUact());
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		return estado;
+		result.setFcre(estadoTO.getFcre());
+		result.setFact(date);
+		result.setId(estadoTO.getId());
+		result.setTerm(estadoTO.getTerm());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(estadoTO.getUcre());
+		
+		return result;
 	}
 }

@@ -47,15 +47,17 @@ public class SexoDWR {
 	}
 	
 	public static SexoTO transform(Sexo sexo) {
-		SexoTO sexoTO = new SexoTO();
+		SexoTO result = new SexoTO();
 		
-		sexoTO.setDescripcion(sexo.getDescripcion());
+		result.setDescripcion(sexo.getDescripcion());
 		
-		sexoTO.setFact(sexo.getFact());
-		sexoTO.setId(sexo.getId());
-		sexoTO.setTerm(sexo.getTerm());
-		sexoTO.setUact(sexo.getUact());
+		result.setFcre(sexo.getFcre());
+		result.setFact(sexo.getFact());
+		result.setId(sexo.getId());
+		result.setTerm(sexo.getTerm());
+		result.setUact(sexo.getUact());
+		result.setUcre(sexo.getUcre());
 		
-		return sexoTO;
+		return result;
 	}
 }

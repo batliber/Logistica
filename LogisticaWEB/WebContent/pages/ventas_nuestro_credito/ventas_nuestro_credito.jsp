@@ -11,6 +11,9 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoProductoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
@@ -46,6 +49,13 @@
 				<div id="divTableContratos">&nbsp;</div>
 			</div>
 		</div>
+	</div>
+	<div id="divIFrameContrato" style="display: none;">
+		<div class="divTitleBar">
+			<div class="divTitleBarText" style="float:left;">Contrato</div>
+			<div id="divCloseIFrameContrato" class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
+		</div>
+		<iframe id="iFrameContrato" frameborder="0" src="#"></iframe>
 	</div>
 	<div id="divModalBackground">&nbsp;</div>
 <%@ include file="/includes/footer.jsp" %>

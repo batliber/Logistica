@@ -13,7 +13,7 @@ var estados = [
 ];
 
 $(document).ready(init);
-	
+
 function init() {
 	$("#inputExportarAExcel").prop("disabled", true);
 	$("#inputExportarSubconjunto").prop("disabled", true);
@@ -23,6 +23,7 @@ function init() {
 	$("#inputReprocesar").prop("disabled", true);
 	$("#inputReprocesarSubconjunto").prop("disabled", true);
 	$("#inputListaNegra").prop("disabled", true);
+	$("#inputControlarRiesgoCrediticio").prop("disabled", true);
 	
 	selectTipoRegistroOnChange();
 }
@@ -46,6 +47,8 @@ function habilitarAcciones(habilitar, force) {
 			$("#inputReprocesar").prop("disabled", true);
 			$("#inputReprocesarSubconjunto").prop("disabled", true);
 			$("#inputListaNegra").prop("disabled", true);
+			$("#inputControlarRiesgoCrediticio").prop("disabled", true);
+			$("#inputControlarRiesgoCrediticioSubconjunto").prop("disabled", true);
 			
 			$("#inputHabilitarAcciones").val("Habilitar acciones");
 		} else {
@@ -57,6 +60,8 @@ function habilitarAcciones(habilitar, force) {
 			$("#inputReprocesar").prop("disabled", false);
 			$("#inputReprocesarSubconjunto").prop("disabled", false);
 			$("#inputListaNegra").prop("disabled", false);
+			$("#inputControlarRiesgoCrediticio").prop("disabled", false);
+			$("#inputControlarRiesgoCrediticioSubconjunto").prop("disabled", false);
 			
 			$("#inputHabilitarAcciones").val("Deshabilitar acciones");
 		}
@@ -73,6 +78,8 @@ function habilitarAcciones(habilitar, force) {
 		$("#inputReprocesar").prop("disabled", !habilitar);
 		$("#inputReprocesarSubconjunto").prop("disabled", !habilitar);
 		$("#inputListaNegra").prop("disabled", !habilitar);
+		$("#inputControlarRiesgoCrediticio").prop("disabled", !habilitar);
+		$("#inputControlarRiesgoCrediticioSubconjunto").prop("disabled", !habilitar);
 		
 		$("#inputHabilitarAcciones").val(habilitar ? "Deshabilitar acciones" : "Habilitar acciones" );
 	}
@@ -91,6 +98,7 @@ function selectTipoRegistroOnChange() {
 				tdContratoDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING, ancho: 90 },
 				tdContratoNumeroCliente: { campo: "numeroCliente", descripcion: "Número de cliente", abreviacion: "Cliente", tipo: __TIPO_CAMPO_NUMERICO },
 				tdContratoNumeroContrato: { campo: "numeroContrato", descripcion: "Número de contrato", abreviacion: "Contrato", tipo: __TIPO_CAMPO_NUMERICO },
+				tdContratoEstadoContrato: { campo: "estadoContrato", descripcion: "Estado del contrato", abreviacion: "Estado", tipo: __TIPO_CAMPO_STRING },
 				tdContratoNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING },
 				tdContratoDireccion: { campo: "direccion", descripcion: "Dirección", abreviacion: "Dirección", tipo: __TIPO_CAMPO_STRING },
 				tdContratoCodigoPostal: { campo: "codigoPostal", descripcion: "Código postal", abreviacion: "C.P.", tipo: __TIPO_CAMPO_STRING, ancho: 60 },
@@ -102,8 +110,11 @@ function selectTipoRegistroOnChange() {
 				tdContratoPersonaDocumento: { campo: "acmInterfacePersona.documento", descripcion: "Documento (Persona)", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING, ancho: 90, oculto: true },
 				tdContratoPersonaNombre: { campo: "acmInterfacePersona.nombre", descripcion: "Nombre (Persona)", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, oculto: true },
 				tdContratoPersonaApellido: { campo: "acmInterfacePersona.apellido", descripcion: "Apellido (Persona)", abreviacion: "Apellido", tipo: __TIPO_CAMPO_STRING, oculto: true },
+				tdContratoPersonaCalificacionRiesgoCrediticioAntel: { campo: "acmInterfacePersona.riesgoCrediticio.calificacionRiesgoCrediticioAntel.descripcion", clave: "acmInterfacePersona.riesgoCrediticio.calificacionRiesgoCrediticioAntel.id", descripcion: "Calificación ANTEL", abreviacion: "Calif. ANTEL", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listCalificacionRiesgoCrediticioAntel, clave: "id", valor: "descripcion" }, ancho: 100 },
+				tdContratoPersonaCalificacionRiesgoCrediticioBCU: { campo: "acmInterfacePersona.riesgoCrediticio.calificacionRiesgoCrediticioBCU.descripcion", clave: "acmInterfacePersona.riesgoCrediticio.calificacionRiesgoCrediticioBCU.id", descripcion: "Calificación BCU", abreviacion: "Calif. BCU", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listCalificacionRiesgoCrediticioBCU, clave: "id", valor: "descripcion" }, ancho: 100 },
+				tdContratoPersonaFechaControlRiesgo: { campo: "acmInterfacePersona.riesgoCrediticio.fact", descripcion: "Fecha control riesgo", abreviacion: "Controlado", tipo: __TIPO_CAMPO_FECHA },
 				tdContratoPersonaSexo: { campo: "acmInterfacePersona.sexo", descripcion: "Sexo (Persona)", abreviacion: "Sexo", tipo: __TIPO_CAMPO_STRING, ancho: 60, oculto: true },
-				tdContratoPersonaFechaNacimiento: { campo: "acmInterfacePersona.fechaNacimiento", descripcion: "Fecha de nacimiento (Persona)", abreviacion: "F. Nac.", tipo: __TIPO_CAMPO_STRING, ancho: 70, oculto: true },
+				tdContratoPersonaFechaNacimiento: { campo: "acmInterfacePersona.fechaNacimiento", descripcion: "Fecha de nacimiento (Persona)", abreviacion: "F. Nac.", tipo: __TIPO_CAMPO_FECHA, ancho: 70, oculto: true },
 				tdContratoPersonaDireccion: { campo: "acmInterfacePersona.direccion", descripcion: "Direccion (Persona)", abreviacion: "Direccion", tipo: __TIPO_CAMPO_STRING, oculto: true },
 				tdContratoPersonaLocalidad: { campo: "acmInterfacePersona.localidad", descripcion: "Localidad (Persona)", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING, oculto: true }
 			}, 
@@ -128,8 +139,11 @@ function selectTipoRegistroOnChange() {
 				tdPrepagoPersonaDocumento: { campo: "acmInterfacePersona.documento", descripcion: "Documento (Persona)", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING, ancho: 90, oculto: true },
 				tdPrepagoPersonaNombre: { campo: "acmInterfacePersona.nombre", descripcion: "Nombre (Persona)", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, oculto: true },
 				tdPrepagoPersonaApellido: { campo: "acmInterfacePersona.apellido", descripcion: "Apellido (Persona)", abreviacion: "Apellido", tipo: __TIPO_CAMPO_STRING, oculto: true },
+				tdPrepagoPersonaCalificacionRiesgoCrediticioAntel: { campo: "acmInterfacePersona.riesgoCrediticio.calificacionRiesgoCrediticioAntel.descripcion", clave: "acmInterfacePersona.riesgoCrediticio.calificacionRiesgoCrediticioAntel.id", descripcion: "Calificación ANTEL", abreviacion: "Calif. ANTEL", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listCalificacionRiesgoCrediticioAntel, clave: "id", valor: "descripcion" }, ancho: 100 },
+				tdPrepagoPersonaCalificacionRiesgoCrediticioBCU: { campo: "acmInterfacePersona.riesgoCrediticio.calificacionRiesgoCrediticioBCU.descripcion", clave: "acmInterfacePersona.riesgoCrediticio.calificacionRiesgoCrediticioBCU.id", descripcion: "Calificación BCU", abreviacion: "Calif. BCU", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listCalificacionRiesgoCrediticioBCU, clave: "id", valor: "descripcion" }, ancho: 100 },
+				tdPrepagoPersonaFechaControlRiesgo: { campo: "acmInterfacePersona.riesgoCrediticio.fact", descripcion: "Fecha control riesgo", abreviacion: "Controlado", tipo: __TIPO_CAMPO_FECHA },
 				tdPrepagoPersonaSexo: { campo: "acmInterfacePersona.sexo", descripcion: "Sexo (Persona)", abreviacion: "Sexo", tipo: __TIPO_CAMPO_STRING, ancho: 60, oculto: true },
-				tdPrepagoPersonaFechaNacimiento: { campo: "acmInterfacePersona.fechaNacimiento", descripcion: "Fecha de nacimiento (Persona)", abreviacion: "F. Nac.", tipo: __TIPO_CAMPO_STRING, ancho: 70, oculto: true },
+				tdPrepagoPersonaFechaNacimiento: { campo: "acmInterfacePersona.fechaNacimiento", descripcion: "Fecha de nacimiento (Persona)", abreviacion: "F. Nac.", tipo: __TIPO_CAMPO_FECHA, ancho: 70, oculto: true },
 				tdPrepagoPersonaDireccion: { campo: "acmInterfacePersona.direccion", descripcion: "Direccion (Persona)", abreviacion: "Direccion", tipo: __TIPO_CAMPO_STRING, oculto: true },
 				tdPrepagoPersonaLocalidad: { campo: "acmInterfacePersona.localidad", descripcion: "Localidad (Persona)", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING, oculto: true }
 			}, 
@@ -149,13 +163,25 @@ function selectTipoRegistroOnChange() {
 			reloadData,
 			trListaNegraOnClick
 		);
+	} else if ($("#selectTipoRegistro").val() == "numeroContrato") {
+		grid = new Grid(
+			document.getElementById("divTabla"),
+			{
+				tdNumeroContratoNumero: { campo: "numeroContrato", descripcion: "Número de contrato", abreviacion: "Nro. contrato", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+				tdNumeroContratoEstado: { campo: "estado.descripcion", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "descripcion" }, ancho: 150 },
+				tdNumeroContratoFcre: { campo: "fcre", descripcion: "Creado", abreviacion: "Creado", tipo: __TIPO_CAMPO_FECHA_HORA, ancho: 100 },
+				tdNumeroContratoFact: { campo: "fact", descripcion: "Obtenido", abreviacion: "Obtenido", tipo: __TIPO_CAMPO_FECHA_HORA, ancho: 100 }
+			}, 
+			true,
+			reloadData,
+			trNumeroContratoOnClick
+		);
 	} else {
 		grid = new Grid(
 			document.getElementById("divTabla"),
 			{
 				tdSinDatosMID: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
-//				tdSinDatosEstado: { campo: "estado", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_STRING },
-				tdEstado: { campo: "estado.descripcion", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "descripcion" }, ancho: 90 },
+				tdSinDatosEstado: { campo: "estado.descripcion", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "descripcion" }, ancho: 150 },
 				tdSinDatosFact: { campo: "fact", descripcion: "Obtenido", abreviacion: "Obtenido", tipo: __TIPO_CAMPO_FECHA }
 			}, 
 			true,
@@ -165,8 +191,6 @@ function selectTipoRegistroOnChange() {
 	}
 	
 	grid.rebuild();
-	
-	$(".divButtonBar").css("width", "875");
 	
 	reloadData();
 }
@@ -204,6 +228,38 @@ function listEstados() {
 	return result;
 }
 
+function listCalificacionRiesgoCrediticioAntel() {
+	var result = [];
+	
+	CalificacionRiesgoCrediticioAntelDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listCalificacionRiesgoCrediticioBCU() {
+	var result = [];
+	
+	CalificacionRiesgoCrediticioBCUDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
 function inputTamanoMuestraOnChange(event) {
 	reloadData();
 }
@@ -221,6 +277,10 @@ function trListaNegraOnClick() {
 }
 
 function trSinDatosOnClick() {
+	
+}
+
+function trNumeroContratoOnClick() {
 	
 }
 
@@ -276,6 +336,26 @@ function reloadData() {
 					
 					$("#inputHabilitarAcciones").prop("disabled", false);
 				}, async: false
+			}
+		);
+	} else if ($("#selectTipoRegistro").val() == "numeroContrato") {
+		ACMInterfaceNumeroContratoDWR.list(
+			grid.filtroDinamico.calcularMetadataConsulta(),
+			{
+				callback: function(data) {
+					grid.reload(data);
+					
+					$("#inputHabilitarAcciones").prop("disabled", false);
+				}, async: false
+			}
+		);
+		
+		ACMInterfaceNumeroContratoDWR.count(
+			grid.filtroDinamico.calcularMetadataConsulta(),
+			{
+				callback: function(data) {
+					grid.setCount(data);
+				}
 			}
 		);
 	} else {
@@ -398,7 +478,7 @@ function inputAsignarOnClick(event) {
 	
 	$("#selectEmpresa").append("<option value='0'>Seleccione...</option>");
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var html = "";
@@ -424,7 +504,7 @@ function inputAsignarSubconjuntoOnClick(event) {
 	
 	$("#selectEmpresa").append("<option value='0'>Seleccione...</option>");
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var html = "";
@@ -592,19 +672,10 @@ function inputReprocesarOnClick(event) {
 	var observaciones = null;
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
+		$("#selectTipoProcesamiento").val(0);
+		$("#textareaSeleccionTipoProcesamientoObservaciones").val("");
 		
-		if (observaciones != null) {
-			ACMInterfaceContratoDWR.reprocesar(
-				metadataConsulta,
-				observaciones,
-				{
-					callback: function(data) {
-						reloadData();
-					}
-				}
-			);
-		}
+		showPopUp(document.getElementById("divIFrameSeleccionTipoProcesamiento"));
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
 		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
 		
@@ -619,6 +690,25 @@ function inputReprocesarOnClick(event) {
 				}
 			);
 		}
+	} else if ($("#selectTipoRegistro").val() == "numeroContrato") {
+		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
+		
+		if (observaciones != null) {
+			ACMInterfaceNumeroContratoDWR.reprocesar(
+				metadataConsulta,
+				observaciones,
+				{
+					callback: function(data) {
+						reloadData();
+					}, async: false
+				}
+			);
+		}
+//		$("#inputRangoNumeroContratoDesde").val(0);
+//		$("#inputRangoNumeroContratoHasta").val(0);
+//		$("#textareaNumeroContratoObservaciones").val("");
+//		
+//		showPopUp(document.getElementById("divIFrameSeleccionRangoNumerosContratos"));
 	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
 		observaciones = prompt("Se reprocesarán " + grid.getCount() + " registros.");
 		
@@ -643,19 +733,10 @@ function inputReprocesarSubconjuntoOnClick(event) {
 	var observaciones = null;
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
-		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		$("#selectTipoProcesamiento").val(0);
+		$("#textareaSeleccionTipoProcesamientoObservaciones").val("");
 		
-		if (observaciones != null) {
-			ACMInterfaceContratoDWR.reprocesar(
-				metadataConsulta,
-				observaciones,
-				{
-					callback: function(data) {
-						reloadData();
-					}
-				}
-			);
-		}
+		showPopUp(document.getElementById("divIFrameSeleccionTipoProcesamiento"));
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
 		observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
 		
@@ -665,8 +746,10 @@ function inputReprocesarSubconjuntoOnClick(event) {
 				observaciones,
 				{
 					callback: function(data) {
+						alert("Operación exitosa.")
+						
 						reloadData();
-					}
+					}, async: false
 				}
 			);
 		}
@@ -679,14 +762,265 @@ function inputReprocesarSubconjuntoOnClick(event) {
 				observaciones,
 				{
 					callback: function(data) {
+						alert("Operación exitosa.")
+						
 						reloadData();
-					}
+					}, async: false
 				}
 			);
 		}
 	} else {
 		alert("Funcionalidad no habilitada para el tipo de registro.");
 	}
+}
+
+function inputCancelarRangoNumerosContratosOnClick(event) {
+	closePopUp(event, document.getElementById("divIFrameSeleccionRangoNumerosContratos"));
+	
+	$("#inputRangoNumeroContratoDesde").val(0);
+	$("#inputRangoNumeroContratoHasta").val(0);
+	$("#textareaNumeroContratoObservaciones").val("");
+	
+	reloadData();
+}
+
+function inputAceptarRangoNumerosContratosOnClick(event) {
+	var numeroContratoDesde = $("#inputRangoNumeroContratoDesde").val();
+	var numeroContratoHasta = $("#inputRangoNumeroContratoHasta").val();
+	var observaciones = $("#textareaNumeroContratoObservaciones").val();
+	
+	if (numeroContratoDesde == null || numeroContratoDesde == "") {
+		alert("Debe ingresar un rango válido.")
+	}
+	
+	if (numeroContratoHasta == null || numeroContratoHasta == "") {
+		alert("Debe ingresar un rango válido.")
+	}
+	
+	var metadataConsulta = {
+		metadataOrdenaciones: [],
+		metadataCondiciones: [
+			{
+				campo: "numeroContrato",
+				condicion: "ge",
+				valores: [ numeroContratoDesde ]
+			},
+			{
+				campo: "numeroContrato",
+				condicion: "le",
+				valores: [ numeroContratoHasta ]
+			}
+		]
+	};
+	
+	ACMInterfaceNumeroContratoDWR.reprocesar(
+		metadataConsulta,
+		observaciones,
+		{
+			callback: function(data) {
+				alert("Operación exitosa");
+				
+				inputCancelarRangoNumerosContratosOnClick();
+				
+				reloadData();
+			}, async: false
+		}
+	);
+}
+
+function inputCancelarSeleccionTipoProcesamientoOnClick(event) {
+	closePopUp(event, document.getElementById("divIFrameSeleccionTipoProcesamiento"));
+	
+	$("#selectTipoProcesamiento").val(0);
+	$("#textareaSeleccionTipoProcesamientoObservaciones").val("");
+	
+	reloadData();
+}
+
+function inputAceptarSeleccionTipoProcesamientoOnClick(event) {
+	var tipoProcesamiento = $("#selectTipoProcesamiento").val();
+	var observaciones = $("#textareaSeleccionTipoProcesamientoObservaciones").val();
+	
+	if (tipoProcesamiento == 0) {
+		alert("Debe seleccionar un tipo de procesamiento.")
+	} else if (tipoProcesamiento == 1) {
+		var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+		
+		ACMInterfaceContratoDWR.reprocesarPorMID(
+			metadataConsulta,
+			observaciones,
+			{
+				callback: function(data) {
+					alert("Operación exitosa");
+					
+					inputCancelarSeleccionTipoProcesamientoOnClick();
+					
+					reloadData();
+				}, async: false
+			}
+		);
+	} else {
+		var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+		
+		ACMInterfaceContratoDWR.reprocesarPorNumeroContrato(
+			metadataConsulta,
+			observaciones,
+			{
+				callback: function(data) {
+					alert("Operación exitosa");
+					
+					inputCancelarSeleccionTipoProcesamientoOnClick();
+					
+					reloadData();
+				}, async: false
+			}
+		);
+	}
+}
+
+function inputControlarRiesgoCrediticioOnClick(event) {
+	$("#selectTipoControlRiesgoCrediticioEmpresa > option").remove();
+	$("#selectTipoControlRiesgoCrediticio > option").remove();
+	
+	$("#selectTipoControlRiesgoCrediticioEmpresa").append("<option value='0'>Seleccione...</option>");
+	$("#selectTipoControlRiesgoCrediticio").append("<option value='0'>Seleccione...</option>");
+	
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
+		{
+			callback: function(data) {
+				var html = "";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+				}
+				
+				$("#selectTipoControlRiesgoCrediticioEmpresa").append(html);
+			}, async: false
+		}
+	);
+	
+	TipoControlRiesgoCrediticioDWR.list(
+		{
+			callback: function(data) {
+				var html = "";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
+				}
+				
+				$("#selectTipoControlRiesgoCrediticio").append(html);
+			}, async: false
+		}
+	);
+	
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	$("#inputTipoControlRiesgoCrediticioTamanoSubconjunto").val(grid.getCount());
+	
+	showPopUp(document.getElementById("divIFrameSeleccionTipoControlRiesgoCrediticio"));
+}
+
+function inputCancelarSeleccionTipoControlRiesgoCrediticioOnClick(event) {
+	closePopUp(event, document.getElementById("divIFrameSeleccionTipoControlRiesgoCrediticio"));
+	
+	$("#selectTipoControlRiesgoCrediticioEmpresa").val("0");
+	$("#selectTipoControlRiesgoCrediticio").val("0");
+	$("#inputTipoControlRiesgoCrediticioTamanoSubconjunto").val("0");
+}
+	
+function inputAceptarSeleccionTipoControlRiesgoCrediticioOnClick(event) {
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	
+	if ($("#selectTipoControlRiesgoCrediticioEmpresa").val() == 0) {
+		alert("Debe seleccionar una Empresa.");
+		return false;
+	}
+	
+	if ($("#selectTipoControlRiesgoCrediticio").val() == 0) {
+		alert("Debe seleccionar un tipo de control de riesgo.");
+		return false;
+	}
+	
+	var cantidadRegistros = $("#inputTipoControlRiesgoCrediticioTamanoSubconjunto").val();
+	metadataConsulta.tamanoSubconjunto = cantidadRegistros;
+	
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		if (confirm("Se controlará el riesgo crediticio para " + cantidadRegistros + " registros.")) {
+			ACMInterfaceContratoDWR.controlarRiesgoCrediticio(
+				metadataConsulta,
+				$("#selectTipoControlRiesgoCrediticioEmpresa").val(),
+				$("#selectTipoControlRiesgoCrediticio").val(),
+				{
+					callback: function(data) {
+						alert("Operación exitosa.");
+						
+						inputCancelarSeleccionTipoControlRiesgoCrediticioOnClick();
+						
+						reloadData();
+					}, async: false
+				}
+			);
+		}
+	} else if ($("#selectTipoRegistro").val() == "prepago") {
+		if (confirm("Se controlará el riesgo crediticio para " + cantidadRegistros + " registros.")) {
+			ACMInterfacePrepagoDWR.controlarRiesgoCrediticio(
+				metadataConsulta,
+				$("#selectTipoControlRiesgoCrediticioEmpresa").val(),
+				$("#selectTipoControlRiesgoCrediticio").val(),
+				{
+					callback: function(data) {
+						alert("Operación exitosa.");
+						
+						inputCancelarSeleccionTipoControlRiesgoCrediticioOnClick();
+						
+						reloadData();
+					}, async: false
+				}
+			);
+		}
+	} else {
+		alert("Funcionalidad no habilitada para el tipo de registro.");
+	}
+}
+
+function inputControlarRiesgoCrediticioSubconjuntoOnClick(event) {
+	$("#selectTipoControlRiesgoCrediticioEmpresa > option").remove();
+	$("#selectTipoControlRiesgoCrediticio > option").remove();
+	
+	$("#selectTipoControlRiesgoCrediticioEmpresa").append("<option value='0'>Seleccione...</option>");
+	$("#selectTipoControlRiesgoCrediticio").append("<option value='0'>Seleccione...</option>");
+	
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
+		{
+			callback: function(data) {
+				var html = "";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+				}
+				
+				$("#selectTipoControlRiesgoCrediticioEmpresa").append(html);
+			}, async: false
+		}
+	);
+	
+	TipoControlRiesgoCrediticioDWR.list(
+		{
+			callback: function(data) {
+				var html = "";
+				
+				for (var i=0; i<data.length; i++) {
+					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
+				}
+				
+				$("#selectTipoControlRiesgoCrediticio").append(html);
+			}, async: false
+		}
+	);
+	
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	$("#inputTipoControlRiesgoCrediticioTamanoSubconjunto").val(metadataConsulta.tamanoSubconjunto);
+	
+	showPopUp(document.getElementById("divIFrameSeleccionTipoControlRiesgoCrediticio"));
 }
 
 function inputListaNegraOnClick(event) {

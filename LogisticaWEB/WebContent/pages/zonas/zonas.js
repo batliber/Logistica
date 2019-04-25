@@ -1,34 +1,38 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_SUPERVISOR_DISTRIBUCION = 7;
+var __ROL_MAESTROS_RIVERGREEN = 20;
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNew").hide();
-	
-	grid = new Grid(
-		document.getElementById("divTableZonas"),
-		{
-			tdZonaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
-			tdUsuarioDetalle: { campo: "detalle", descripcion: "Detalle", abreviacion: "Detalle", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
-			tdZonaDepartamento: { campo: "departamento.nombre", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_STRING, ancho: 200 } 
-		}, 
-		false,
-		reloadData,
-		trZonaOnClick
-	);
-	
-	grid.rebuild();
 	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION) {
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN) {
 						mode = __FORM_MODE_ADMIN;
-						
 						$("#divButtonNew").show();
+						
+						grid = new Grid(
+							document.getElementById("divTableZonas"),
+							{
+								tdZonaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
+								tdZonaDetalle: { campo: "detalle", descripcion: "Detalle", abreviacion: "Detalle", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
+								tdZonaDepartamento: { campo: "departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre" } } 
+							}, 
+							true,
+							reloadData,
+							trZonaOnClick
+						);
+						
+						grid.rebuild();
+							
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						
 						break;
@@ -41,70 +45,42 @@ $(document).ready(function() {
 	reloadData();
 	
 	$("#divIFrameZona").draggable();
-});
+}
 
-function reloadData() {
-	ZonaDWR.list(
+function listDepartamentos() {
+	var result = [];
+	
+	DepartamentoDWR.list(
 		{
 			callback: function(data) {
-				var registros = {
-					cantidadRegistros: data.length,
-					registrosMuestra: []
-				};
-				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
-						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
-						
-						return result;
-					});
+				if (data != null) {
+					result = data;
 				}
-				
-				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						nombre: ordered[i].nombre,
-						detalle: ordered[i].detalle,
-						departamento: {
-							nombre: ordered[i].departamento.nombre,
-						},
-						uact: ordered[i].uact,
-						fact: ordered[i].fact,
-						term: ordered[i].term
-					};
-				}
-				
-				grid.reload(registros);
 			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function reloadData() {
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	ZonaDWR.listContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.reload(data);
+			}, async: false
+		}
+	);
+	
+	ZonaDWR.countContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.setCount(data);
+			}
 		}
 	);
 }

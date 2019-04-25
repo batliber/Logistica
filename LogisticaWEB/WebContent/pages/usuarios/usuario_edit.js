@@ -1,3 +1,16 @@
+var gridEmpresas = null;
+var gridRoles = null;
+
+var empresas = {
+	cantidadRegistros: 0,
+	registrosMuestra: []
+};
+
+var roles = {
+	cantidadRegistros: 0,
+	registrosMuestra: []
+};
+
 $(document).ready(init);
 
 function init() {
@@ -7,41 +20,46 @@ function init() {
 	$("#inputUsuarioContrasena").prop("disabled", true);
 	$("#inputCambiarContrasena").prop("checked", false);
 	
-	EmpresaDWR.list(
+	gridEmpresas = new Grid(
+		document.getElementById("divTableEmpresas"),
+		{
+			tdNombre: { campo: "nombre", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_STRING, ancho: 166 } 
+		}, 
+		false,
+		reloadEmpresas,
+		trEmpresasOnClick,
+		null,
+		17
+	);
+	
+	gridEmpresas.rebuild();
+	
+	gridRoles = new Grid(
+		document.getElementById("divTableRoles"),
+		{
+			tdNombre: { campo: "nombre", descripcion: "Rol", abreviacion: "Rol", tipo: __TIPO_CAMPO_STRING, ancho: 169 } 
+		}, 
+		false,
+		reloadRoles,
+		trRolesOnClick,
+		null,
+		17
+	);
+	
+	gridRoles.rebuild();
+	
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
-				$("#tableEmpresas > tbody:last > tr").remove();
-				
-				html = "";
+				var html = 
+					"<option value='0'>Seleccione...</option>";
 				
 				for (var i=0; i<data.length; i++) {
-					html += 
-						"<tr>"
-							+ "<td><div class='divEmpresaNombre'>" + data[i].nombre + "</div></td>"
-							+ "<td><div><input type='checkbox' id='" + data[i].id + "'/></div></td>"
-						+ "</tr>";
+					html +=
+						"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
 				}
 				
-				$("#tableEmpresas > tbody:last").append(html);
-				
-				$("#tableEmpresas > tbody:last > tr:odd").css("background-color", "#F8F8F8");
-				$("#tableEmpresas > tbody:last > tr:odd").hover(
-					function() {
-						$(this).css("background-color", "orange");
-					},
-					function() {
-						$(this).css("background-color", "#F8F8F8");
-					}
-				);
-				$("#tableEmpresas > tbody:last > tr:even").css("background-color", "#FFFFFF");
-				$("#tableEmpresas > tbody:last > tr:even").hover(
-					function() {
-						$(this).css("background-color", "orange");
-					},
-					function() {
-						$(this).css("background-color", "#FFFFFF");
-					}
-				);
+				$("#selectEmpresa").html(html);
 			}, async: false
 		}
 	);
@@ -49,38 +67,15 @@ function init() {
 	RolDWR.list(
 		{
 			callback: function(data) {
-				$("#tableRoles > tbody:last > tr").remove();
-				
-				html = "";
+				var html = 
+					"<option value='0'>Seleccione...</option>";
 				
 				for (var i=0; i<data.length; i++) {
-					html += 
-						"<tr>"
-							+ "<td><div class='divRolNombre'>" + data[i].nombre + "</div></td>"
-							+ "<td><div><input type='checkbox' id='" + data[i].id + "'/></div></td>"
-						+ "</tr>";
+					html +=
+						"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
 				}
 				
-				$("#tableRoles > tbody:last").append(html);
-				
-				$("#tableRoles > tbody:last > tr:odd").css("background-color", "#F8F8F8");
-				$("#tableRoles > tbody:last > tr:odd").hover(
-					function() {
-						$(this).css("background-color", "orange");
-					},
-					function() {
-						$(this).css("background-color", "#F8F8F8");
-					}
-				);
-				$("#tableRoles > tbody:last > tr:even").css("background-color", "#FFFFFF");
-				$("#tableRoles > tbody:last > tr:even").hover(
-					function() {
-						$(this).css("background-color", "orange");
-					},
-					function() {
-						$(this).css("background-color", "#FFFFFF");
-					}
-				);
+				$("#selectRol").html(html);
 			}, async: false
 		}
 	);
@@ -93,21 +88,44 @@ function init() {
 					$("#inputUsuarioLogin").val(data.login);
 					$("#inputUsuarioNombre").val(data.nombre);
 					$("#inputUsuarioDocumento").val(data.documento);
+					$("#inputUsuarioBloqueado").prop("checked", data.bloqueado);
 					
 					for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-						$("#tableEmpresas > tbody > tr > td > div > input[id=" + data.usuarioRolEmpresas[i].empresa.id + "]").prop("checked", true);
-						$("#tableRoles > tbody > tr > td > div > input[id=" + data.usuarioRolEmpresas[i].rol.id + "]").prop("checked", true);
+						var usuarioRolEmpresa = data.usuarioRolEmpresas[i];
+						
+						var found = false;
+						for (var j=0; j<empresas.registrosMuestra.length; j++) {
+							if (empresas.registrosMuestra[j].id == usuarioRolEmpresa.empresa.id) {
+								found = true;
+							}
+						}
+						
+						if (!found) {
+							empresas.registrosMuestra[empresas.registrosMuestra.length] = usuarioRolEmpresa.empresa;
+							empresas.cantidadRegistros++;
+						}
+						
+						found = false;
+						for (var j=0; j<roles.registrosMuestra.length; j++) {
+							if (roles.registrosMuestra[j].id == usuarioRolEmpresa.rol.id) {
+								found = true;
+							}
+						}
+						
+						if (!found) {
+							roles.registrosMuestra[roles.registrosMuestra.length] = usuarioRolEmpresa.rol;
+							roles.cantidadRegistros++;
+						}
 					}
 					
+					reloadEmpresas();
+					reloadRoles();
+					
 					if (mode == __FORM_MODE_ADMIN) {
-						$("#tableEmpresas > tbody > tr > td > div > input").prop("disabled", false);
-						$("#tableRoles > tbody > tr > td > div > input").prop("disabled", false);
-						
 						$("#divEliminarUsuario").show();
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 					} else {
-						$("#tableEmpresas > tbody > tr > td > div > input").prop("disabled", true);
-						$("#tableRoles > tbody > tr > td > div > input").prop("disabled", true);
+						
 					}
 				}, async: false
 			}
@@ -118,6 +136,14 @@ function init() {
 	}
 }
 
+function reloadEmpresas() {
+	gridEmpresas.reload(empresas);
+}
+
+function reloadRoles() {
+	gridRoles.reload(roles);
+}
+
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
 		
@@ -125,6 +151,98 @@ function refinarForm() {
 		$("#divEmpresa").html("&nbsp;");
 		$("#divRol").html("&nbsp;");
 	}
+}
+
+function inputAgregarEmpresaOnClick(event, element) {
+	var empresaId = $("#selectEmpresa").val();
+	if (empresaId != 0) {
+		var found = false;
+		for (i=0; i<empresas.registrosMuestra.length; i++) {
+			if (empresas.registrosMuestra[i].id == empresaId) {
+				found = true;
+				break;
+			}
+		}
+		
+		if (!found) {
+			EmpresaDWR.getById(
+				empresaId,
+				{
+					callback: function(data) {
+						empresas.cantidadRegistros = empresas.cantidadRegistros + 1;
+						empresas.registrosMuestra[empresas.registrosMuestra.length] = data;
+						
+						reloadEmpresas();
+					}, async: false
+				}
+			);
+		}
+	} else {
+		alert("Debe seleccionar una empresa.");
+	}
+}
+
+function inputAgregarRolOnClick(event, element) {
+	var rolId = $("#selectRol").val();
+	if (rolId != 0) {
+		var found = false;
+		for (i=0; i<roles.registrosMuestra.length; i++) {
+			if (roles.registrosMuestra[i].id == rolId) {
+				found = true;
+				break;
+			}
+		}
+		
+		if (!found) {
+			RolDWR.getById(
+				rolId,
+				{
+					callback: function(data) {
+						roles.cantidadRegistros = roles.cantidadRegistros + 1;
+						roles.registrosMuestra[roles.registrosMuestra.length] = data;
+						
+						reloadRoles();
+					}, async: false
+				}
+			);
+		}
+	} else {
+		alert("Debe seleccionar un rol.");
+	}
+}
+
+function trEmpresasOnClick(eventObject) {
+	var target = eventObject.currentTarget;
+	var id = $(target).attr("id");
+	
+	var i=0;
+	for (i=0; i<empresas.registrosMuestra.length; i++) {
+		if (empresas.registrosMuestra[i].id == id) {
+			break;
+		}
+	}
+	
+	empresas.cantidadRegistros = empresas.cantidadRegistros - 1;
+	empresas.registrosMuestra.splice(i, 1);
+	
+	reloadEmpresas();
+}
+
+function trRolesOnClick(eventObject) {
+	var target = eventObject.currentTarget;
+	var id = $(target).attr("id");
+	
+	var i=0;
+	for (i=0; i<roles.registrosMuestra.length; i++) {
+		if (roles.registrosMuestra[i].id == id) {
+			break;
+		}
+	}
+	
+	roles.cantidadRegistros = roles.cantidadRegistros - 1;
+	roles.registrosMuestra.splice(i, 1);
+	
+	reloadRoles();
 }
 
 function inputCambiarContrasenaOnChange(event, element) {
@@ -140,34 +258,52 @@ function inputGuardarOnClick(event) {
 		documento: $("#inputUsuarioDocumento").val(),
 		login: $("#inputUsuarioLogin").val(),
 		nombre: $("#inputUsuarioNombre").val(),
+		bloqueado: $("#inputUsuarioBloqueado").prop("checked"),
+		
 		usuarioRolEmpresas: []
 	};
 	
-	var checksEmpresas = $("#tableEmpresas > tbody > tr > td > div > input");
-	for (var i=0; i<checksEmpresas.length; i++) {
-		if ($(checksEmpresas[i]).prop("checked")) {
-			var checksRoles = $("#tableRoles > tbody > tr > td > div > input");
-			for (var j=0; j<checksRoles.length; j++) {
-				if ($(checksRoles[j]).prop("checked")) {
-					usuario.usuarioRolEmpresas[usuario.usuarioRolEmpresas.length] = {
-						usuario: { id: id },
-						rol: { 
-							id: $(checksRoles[j]).attr("id")
-						},
-						empresa: { 
-							id: $(checksEmpresas[i]).attr("id")
-						}
-					};
-				}
+	if (usuario.login == null || usuario.login == "") {
+		alert("El login no puede estar vacío.");
+		return false;
+	}
+	
+	if (usuario.nombre == null || usuario.nombre == "") {
+		alert("El nombre no puede estar vacío.");
+		return false;
+	}
+	
+	if (usuario.documento == null || usuario.documento == "") {
+		alert("El documento no puede estar vacío.");
+		return false;
+	}
+	
+	if (empresas.registrosMuestra.length == 0) {
+		alert("Debe seleccionar al menos una empresa");
+		return false;
+	}
+	
+	if (roles.registrosMuestra.length == 0) {
+		alert("Debe seleccionar al menos un rol.");
+		return false;
+	}
+	
+	for (var i=0; i<empresas.registrosMuestra.length; i++) {
+		for (var j=0; j<roles.registrosMuestra.length; j++) {
+			usuario.usuarioRolEmpresas[usuario.usuarioRolEmpresas.length] = {
+				usuario: { id: id },
+				rol: roles.registrosMuestra[j],
+				empresa: empresas.registrosMuestra[i]
 			}
 		}
 	}
-	
+
 	if (id != null) {
 		usuario.id = id;
 		
 		if ($("#inputCambiarContrasena").prop("checked")) {
 			usuario.contrasena = $("#inputUsuarioContrasena").val();
+			usuario.cambioContrasenaProximoLogin = true;
 		}
 		
 		UsuarioDWR.update(

@@ -1,8 +1,11 @@
 var __ROL_ADMINISTRADOR = 1;
+var __ROL_DEMO = 21;
 
 var grid = null;
 		
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonAsignar").hide();
 	$("#divButtonSubirArchivo").hide();
 	$("#divButtonAgregarMid").hide();
@@ -12,7 +15,8 @@ $(document).ready(function() {
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR){
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO) {
 //						$("#divButtonAsignar").show();
 						$("#divButtonSubirArchivo").show();
 						$("#divButtonAgregarMid").show();
@@ -22,14 +26,21 @@ $(document).ready(function() {
 							document.getElementById("divTableControles"),
 							{
 								tdMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
-								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
-								tdFechaControl: { campo: "fechaControl", abreviacion: "F. Control", descripcion: "Fecha de control", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
-								tdFechaActivacion: { campo: "fechaActivacion", abreviacion: "F. Activación", descripcion: "Fecha de activación", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
-								tdFechaImportacion: { campo: "fechaImportacion", abreviacion: "F. Importación", descripcion: "Fecha de importación", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
-								tdCargaInicial: { campo: "cargaInicial", descripcion: "Carga inicial", abreviacion: "Carga ini.", tipo: __TIPO_CAMPO_NUMERICO, ancho: 90 },
-								tdMontoCargar: { campo: "montoCargar", descripcion: "Monto a cargar", abreviacion: "Monto cargar", tipo: __TIPO_CAMPO_NUMERICO, ancho: 90 },
-								tdEstadoControl: { campo: "estadoControl.nombre", clave: "estadoControl.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoControles, clave: "id", valor: "nombre" }, ancho: 200 },
-								tdTipoControl: { campo: "tipoControl.descripcion", clave: "tipoControl.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoControles, clave: "id", valor: "descripcion" }, ancho: 200 }
+								tdChip: { campo: "chip", abreviacion: "Chip", descripcion: "Chip", tipo: __TIPO_CAMPO_STRING, ancho: 120, oculto: true },
+								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 100 },
+								tdFechaImportacion: { campo: "fechaImportacion", abreviacion: "Importado", descripcion: "Fecha de importación", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdFechaActivacion: { campo: "fechaActivacion", abreviacion: "Activado", descripcion: "Fecha de activación", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdFechaControl: { campo: "fechaControl", abreviacion: "Controlado", descripcion: "Fecha de control", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdFechaVencimiento: { campo: "fechaVencimiento", abreviacion: "Vence", descripcion: "Fecha de vencimiento", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdCargaInicial: { campo: "cargaInicial", descripcion: "Carga inicial", abreviacion: "Carga ini.", tipo: __TIPO_CAMPO_NUMERICO, ancho: 75 },
+								tdMontoCargar: { campo: "montoCargar", descripcion: "Monto a cargar", abreviacion: "Monto car.", tipo: __TIPO_CAMPO_NUMERICO, ancho: 80 },
+								tdMontoTotal: { campo: "montoTotal", descripcion: "Monto total", abreviacion: "Monto tot.", tipo: __TIPO_CAMPO_NUMERICO, ancho: 80 },
+								tdTipoControl: { campo: "tipoControl.descripcion", clave: "tipoControl.id", descripcion: "Tipo de control", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoControles, clave: "id", valor: "descripcion" } },
+								tdEstadoControl: { campo: "estadoControl.nombre", clave: "estadoControl.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoControles, clave: "id", valor: "nombre" } },
+								tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" } },
+								tdFechaAsignacionDistribuidor: { campo: "fechaAsignacionDistribuidor", abreviacion: "F. Asign. Distr.", descripcion: "Fecha de asign. Distribuidor", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdPuntoVenta: { campo: "puntoVenta.nombre", clave: "puntoVenta.id", descripcion: "Punto de venta", abreviacion: "Pto. venta", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPuntoVentas, clave: "id", valor: "nombre" }, ancho: 100 },
+								tdFechaAsignacionPuntoVenta: { campo: "fechaAsignacionPuntoVenta", abreviacion: "F. Asign. P.V.", descripcion: "Fecha de asign. Pto. venta", tipo: __TIPO_CAMPO_FECHA_HORA },
 							}, 
 							true,
 							reloadData,
@@ -65,12 +76,12 @@ $(document).ready(function() {
 	$("#divIFrameControl").draggable();
 	$("#divIFrameSeleccionVendedor").draggable();
 	$("#divIFrameImportacionArchivo").draggable();
-});
+}
 
 function listEmpresas() {
 	var result = [];
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -115,10 +126,10 @@ function listTipoControles() {
 	return result;
 }
 
-function listProductos() {
+function listDistribuidores() {
 	var result = [];
 	
-	ProductoDWR.list(
+	UsuarioRolEmpresaDWR.listDistribuidoresByContext(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -131,10 +142,10 @@ function listProductos() {
 	return result;
 }
 
-function listDistribuidores() {
+function listPuntoVentas() {
 	var result = [];
 	
-	UsuarioRolEmpresaDWR.listDistribuidoresByContext(
+	PuntoVentaDWR.list(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -175,30 +186,29 @@ function inputActualizarOnClick(event, element) {
 
 function trControlOnClick(eventObject) {
 	var target = eventObject.currentTarget;
-	var estadoId = $(target).children("[campo='tdEstado']").attr("clave");
+//	var estadoId = $(target).children("[campo='tdEstado']").attr("clave");
+//	
+//	var formMode = __FORM_MODE_READ;
+//	if (estadoId == __ESTADO_LLAMAR
+//		|| estadoId == __ESTADO_RELLAMAR
+//		|| estadoId == __ESTADO_RECHAZADO
+//		|| estadoId == __ESTADO_VENDIDO
+//		|| estadoId == __ESTADO_REAGENDAR) {
+//		formMode = __FORM_MODE_VENTA;
+//	} else if (estadoId == __ESTADO_RECOORDINAR
+//		|| estadoId == __ESTADO_FALTA_DOCUMENTACION) {
+//		formMode = __FORM_MODE_RECOORDINACION;
+//	}
 	
-	var formMode = __FORM_MODE_READ;
-	if (estadoId == __ESTADO_LLAMAR
-		|| estadoId == __ESTADO_RELLAMAR
-		|| estadoId == __ESTADO_RECHAZADO
-		|| estadoId == __ESTADO_VENDIDO
-		|| estadoId == __ESTADO_REAGENDAR) {
-		formMode = __FORM_MODE_VENTA;
-	} else if (estadoId == __ESTADO_RECOORDINAR
-		|| estadoId == __ESTADO_FALTA_DOCUMENTACION) {
-		formMode = __FORM_MODE_RECOORDINACION;
-	}
-	
-	document.getElementById("iFrameControl").src = "/LogisticaWEB/pages/controles/control.jsp?m=" + formMode + "&aid=" + $(target).attr("id");
-	showPopUp(document.getElementById("divIFrameControl"));
+//	document.getElementById("iFrameControl").src = "/LogisticaWEB/pages/controles/control.jsp?m=" + formMode + "&aid=" + $(target).attr("id");
+//	showPopUp(document.getElementById("divIFrameControl"));
 }
 
 function divCloseOnClick(event, element) {
 	closePopUp(event, element.parentNode.parentNode);
 	
-	$("#selectVendedor").val("0");
 	$("#selectEmpresa").val("0");
-	$("#textareaObservaciones").val("");
+	$("#selectTipoControl").val("0");
 	$("#inputArchivo").val("");
 	
 	reloadData();
@@ -246,82 +256,14 @@ function inputSubirArchivoOnClick(event, element) {
 	showPopUp(document.getElementById("divIFrameImportacionArchivo"));
 }
 
-function inputAsignarOnClick() {
-	metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-	metadataConsulta.tamanoSubconjunto = 
-		Math.min(
-			$("#inputTamanoSubconjunto").val(),
-			$("#divCantidadRegistrosValue").text()
-		);
-	
-	ContratoDWR.chequearAsignacion(
-		metadataConsulta,
-		{
-			callback: function(data) {
-				if (data || confirm("Atenci�n: se modificar�n registros que ya se encuentran asignados.")) {
-					$("#selectVendedor > option").remove();
-					
-					$("#selectVendedor").append("<option value='0'>Seleccione...</option>");
-					
-					UsuarioRolEmpresaDWR.listVendedoresByContext(
-						{
-							callback: function(data) {
-								var html = "";
-								
-								for (var i=0; i<data.length; i++) {
-									html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-								}
-								
-								$("#selectVendedor").append(html);
-							}, async: false
-						}
-					);
-					
-					showPopUp(document.getElementById("divIFrameSeleccionVendedor"));
-				}
-			}, async: false
-		}
-	);
-}
-
 function inputCancelarOnClick(event, element) {
-	closePopUp(event, document.getElementById("divIFrameSeleccionVendedor"));
+	closePopUp(event, document.getElementById("divIFrameImportacionArchivo"));
 	
-	$("#selectVendedor").val("0");
-	$("#textareaObservaciones").val("");
+	$("#selectEmpresa").val("0");
+	$("#selectTipoControl").val("0");
+	$("#inputArchivo").val("");
 	
 	reloadData();
-}
-
-function inputAceptarOnClick(event, element) {
-	if ($("#selectVendedor").val() != "0") {
-		var vendedor = {
-			id: $("#selectVendedor").val()
-		};
-		
-		metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divCantidadRegistrosValue").text()
-			);
-		
-		if (confirm("Se asignarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-			ContratoDWR.asignarVentas(
-				vendedor,
-				metadataConsulta,
-				{
-					callback: function(data) {
-						alert("Operaci�n exitosa.");
-						
-						reloadData();
-					}, async: false
-				}
-			);
-		}
-	} else {
-		alert("Debe seleccionar un vendedor.");
-	}
 }
 
 function inputAceptarSubirArchivoOnClick(event, element) {
@@ -366,13 +308,8 @@ function inputAceptarSubirArchivoOnClick(event, element) {
 	}
 }
 
-function inputAgregarMidOnClick(event, element) {
-	document.getElementById("iFrameControl").src = "/LogisticaWEB/pages/controles/controles.jsp?m=" + __FORM_MODE_NEW;
-	showPopUp(document.getElementById("divIFrameControl"));
-}
-
 function inputExportarAExcelOnClick(event, element) {
-	ControlesDWR.exportarAExcel(
+	ControlDWR.exportarAExcel(
 		grid.filtroDinamico.calcularMetadataConsulta(),
 		{
 			callback: function(data) {

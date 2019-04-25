@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.ITurnoBean;
@@ -46,28 +50,38 @@ public class TurnoDWR {
 	}
 	
 	public static TurnoTO transform(Turno turno) {
-		TurnoTO turnoTO = new TurnoTO();
+		TurnoTO result = new TurnoTO();
 		
-		turnoTO.setNombre(turno.getNombre());
+		result.setNombre(turno.getNombre());
 		
-		turnoTO.setFact(turno.getFact());
-		turnoTO.setId(turno.getId());
-		turnoTO.setTerm(turno.getTerm());
-		turnoTO.setUact(turno.getUact());
+		result.setFcre(turno.getFcre());
+		result.setFact(turno.getFact());
+		result.setId(turno.getId());
+		result.setTerm(turno.getTerm());
+		result.setUact(turno.getUact());
+		result.setUcre(turno.getUcre());
 		
-		return turnoTO;
+		return result;
 	}
 	
 	public static Turno transform(TurnoTO turnoTO) {
-		Turno turno = new Turno();
+		Turno result = new Turno();
 		
-		turno.setNombre(turnoTO.getNombre());
+		result.setNombre(turnoTO.getNombre());
 		
-		turno.setFact(turnoTO.getFact());
-		turno.setId(turnoTO.getId());
-		turno.setTerm(turnoTO.getTerm());
-		turno.setUact(turnoTO.getUact());
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		return turno;
+		result.setFcre(turnoTO.getFcre());
+		result.setFact(date);
+		result.setId(turnoTO.getId());
+		result.setTerm(turnoTO.getTerm());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(turnoTO.getUcre());
+		
+		return result;
 	}
 }

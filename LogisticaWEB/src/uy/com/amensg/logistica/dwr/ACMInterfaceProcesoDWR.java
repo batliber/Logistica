@@ -6,13 +6,18 @@ import java.util.LinkedList;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.ACMInterfaceProcesoBean;
 import uy.com.amensg.logistica.bean.IACMInterfaceProcesoBean;
 import uy.com.amensg.logistica.entities.ACMInterfaceProcesoEstadistica;
 import uy.com.amensg.logistica.entities.ACMInterfaceProcesoEstadisticaTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 
 @RemoteProxy
 public class ACMInterfaceProcesoDWR {
@@ -29,14 +34,55 @@ public class ACMInterfaceProcesoDWR {
 		return (IACMInterfaceProcesoBean) context.lookup(lookupName);
 	}
 	
-	public Collection<ACMInterfaceProcesoEstadisticaTO> listEstadisticas() {
-		Collection<ACMInterfaceProcesoEstadisticaTO> result = new LinkedList<ACMInterfaceProcesoEstadisticaTO>();
+	public MetadataConsultaResultadoTO listEstadisticas(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
 		
 		try {
-			IACMInterfaceProcesoBean iACMInterfaceProcesoBean = this.lookupBean();
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
 			
-			for (ACMInterfaceProcesoEstadistica acmInterfaceProcesoEstadistica : iACMInterfaceProcesoBean.listEstadisticas()) {
-				result.add(transform(acmInterfaceProcesoEstadistica));
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfaceProcesoBean iACMInterfaceProcesoBean = this.lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iACMInterfaceProcesoBean.listEstadisticas(
+						MetadataConsultaDWR.transform(metadataConsultaTO)
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object object : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(transform((ACMInterfaceProcesoEstadistica) object));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+			
+		return result;
+	}
+	
+	public Long countEstadisticas(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+//				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfaceProcesoBean iACMInterfaceProcesoBean = this.lookupBean();
+				
+				result = 
+					iACMInterfaceProcesoBean.countEstadisticas(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						)
+					);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,7 +102,8 @@ public class ACMInterfaceProcesoDWR {
 	}
 	
 	public static ACMInterfaceProcesoEstadisticaTO transform(
-		ACMInterfaceProcesoEstadistica acmInterfaceProcesoEstadistica) {
+		ACMInterfaceProcesoEstadistica acmInterfaceProcesoEstadistica
+	) {
 		ACMInterfaceProcesoEstadisticaTO result = new ACMInterfaceProcesoEstadisticaTO();
 		
 		result.setCantidadRegistrosEnProceso(acmInterfaceProcesoEstadistica.getCantidadRegistrosEnProceso());

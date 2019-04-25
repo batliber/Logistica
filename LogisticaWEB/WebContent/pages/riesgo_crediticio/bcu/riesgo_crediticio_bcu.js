@@ -87,7 +87,7 @@ function init() {
 function listEmpresas() {
 	var result = [];
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				if (data != null) {

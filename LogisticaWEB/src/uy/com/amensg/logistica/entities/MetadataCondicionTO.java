@@ -9,6 +9,7 @@ public class MetadataCondicionTO {
 
 	private String campo;
 	private String operador;
+	private Boolean fijo;
 	private Collection<String> valores;
 
 	public String getCampo() {
@@ -33,5 +34,13 @@ public class MetadataCondicionTO {
 
 	public void setValores(Collection<String> valores) {
 		this.valores = valores;
+	}
+
+	public Boolean getFijo() {
+		return fijo;
+	}
+
+	public void setFijo(Boolean fijo) {
+		this.fijo = fijo;
 	}
 }

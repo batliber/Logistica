@@ -42,6 +42,9 @@ public class ACMInterfaceContrato implements Serializable {
 
 	@Column(name = "numero_contrato")
 	private Long numeroContrato;
+	
+	@Column(name = "estado_contrato")
+	private String estadoContrato;
 
 	@Column(name = "nombre")
 	private String nombre;
@@ -67,6 +70,9 @@ public class ACMInterfaceContrato implements Serializable {
 	@Column(name = "fecha_exportacion_anterior")
 	private Date fechaExportacionAnterior;
 	
+	@Column(name = "random")
+	private Long random;
+	
 	@Column(name = "uact")
 	private Long uact;
 
@@ -75,7 +81,7 @@ public class ACMInterfaceContrato implements Serializable {
 
 	@Column(name = "term")
 	private Long term;
-
+	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinTable(
 		name = "acm_interface_mid_persona", 
@@ -148,6 +154,14 @@ public class ACMInterfaceContrato implements Serializable {
 		this.numeroContrato = numeroContrato;
 	}
 
+	public String getEstadoContrato() {
+		return estadoContrato;
+	}
+
+	public void setEstadoContrato(String estadoContrato) {
+		this.estadoContrato = estadoContrato;
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -210,6 +224,14 @@ public class ACMInterfaceContrato implements Serializable {
 
 	public void setFechaExportacionAnterior(Date fechaExportacionAnterior) {
 		this.fechaExportacionAnterior = fechaExportacionAnterior;
+	}
+
+	public Long getRandom() {
+		return random;
+	}
+
+	public void setRandom(Long random) {
+		this.random = random;
 	}
 
 	public Long getUact() {

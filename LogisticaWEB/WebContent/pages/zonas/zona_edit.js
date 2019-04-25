@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	$("#divEliminarZona").hide();
@@ -88,7 +90,7 @@ $(document).ready(function() {
 			}
 		);
 	}
-});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -106,12 +108,35 @@ function inputGuardarOnClick(event) {
 	
 	if ($("#selectDepartamento").length > 0 && $("#selectDepartamento").val() != 0) {
 		zona.departamento = {
-			id: $("#selectDepartamento").length > 0 ? $("#selectDepartamento").val() : $("#divDepartamento").attr("did")
+			id: $("#selectDepartamento").length > 0 ? 
+				$("#selectDepartamento").val() : 
+				$("#divDepartamento").attr("did")
 		};
 	} else {
 		alert("Debe seleccionar un departamento.");
 		
 		return;
+	}
+	
+	var empresa = {
+		id: 1
+	};
+	
+	var inputsCantidad = $(".inputCantidad");
+	
+	var disponibilidades = [];
+	for (var i=0; i < inputsCantidad.length; i++) {
+		if (!$(inputsCantidad[i]).prop("disabled")) {
+			disponibilidades[disponibilidades.length] = {
+				empresa: empresa,
+				zona: zona,
+				turno: {
+					id: $(inputsCantidad[i]).attr("tid")
+				},
+				dia: $(inputsCantidad[i]).attr("did"),
+				cantidad: $(inputsCantidad[i]).val()
+			};
+		}
 	}
 	
 	if (id != null) {
@@ -121,7 +146,15 @@ function inputGuardarOnClick(event) {
 			zona,
 			{
 				callback: function(data) {
-					alert("Operación exitosa");
+					DisponibilidadEntregaEmpresaZonaTurnoDWR.updateDisponibilidadByZona(
+						zona,
+						disponibilidades,
+						{
+							callback: function(dataDisponibilidad) {
+								alert("Operación exitosa");
+							}, async: false
+						}
+					);
 				}, async: false
 			}
 		);
@@ -130,9 +163,19 @@ function inputGuardarOnClick(event) {
 			zona,
 			{
 				callback: function(data) {
-					alert("Operación exitosa");
+					zona.id = data.id;
 					
-					$("#inputEliminarZona").prop("disabled", false);
+					DisponibilidadEntregaEmpresaZonaTurnoDWR.updateDisponibilidadByZona(
+						zona,
+						disponibilidades,
+						{
+							callback: function(dataDisponibilidad) {
+								alert("Operación exitosa");
+								
+								$("#inputEliminarZona").prop("disabled", false);
+							}, async: false
+						}
+					);
 				}, async: false
 			}
 		);

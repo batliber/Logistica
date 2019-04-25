@@ -55,6 +55,10 @@ public class Activacion extends BaseEntity {
 	)
 	private ActivacionSublote activacionSublote;
 	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "liquidacion_id", nullable = true)
+	private Liquidacion liquidacion;
+	
 	public Long getMid() {
 		return mid;
 	}
@@ -133,5 +137,13 @@ public class Activacion extends BaseEntity {
 
 	public void setActivacionSublote(ActivacionSublote activacionSublote) {
 		this.activacionSublote = activacionSublote;
+	}
+
+	public Liquidacion getLiquidacion() {
+		return liquidacion;
+	}
+
+	public void setLiquidacion(Liquidacion liquidacion) {
+		this.liquidacion = liquidacion;
 	}
 }

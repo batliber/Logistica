@@ -16,6 +16,7 @@ public class PlanTO extends BaseTO {
 	private Long rendimientoMinutosMensualDestinosAntelHorarioNormal;
 	private Long rendimientoMinutosMensualDestinosAntelHorarioReducido;
 	private Double precioMinutoOtrasOperadoras;
+	private Double precioMinutoNumerosAmigos;
 	private Long rendimientoMinutosMensualOtrasOperadoras;
 	private Double precioSms;
 	private Double montoNavegacionCelular;
@@ -29,6 +30,8 @@ public class PlanTO extends BaseTO {
 	private Long minutosGratisMesFijosAntel;
 	private Long cantidadFijosAntelMinutosGratis;
 	private Date fechaBaja;
+	private String piePagina;
+	private Boolean beneficioIncluidoEnLlamadas;
 	private TipoPlanTO tipoPlan;
 
 	public String getDescripcion() {
@@ -106,6 +109,14 @@ public class PlanTO extends BaseTO {
 	public void setPrecioMinutoOtrasOperadoras(
 			Double precioMinutoOtrasOperadoras) {
 		this.precioMinutoOtrasOperadoras = precioMinutoOtrasOperadoras;
+	}
+
+	public Double getPrecioMinutoNumerosAmigos() {
+		return precioMinutoNumerosAmigos;
+	}
+
+	public void setPrecioMinutoNumerosAmigos(Double precioMinutoNumerosAmigos) {
+		this.precioMinutoNumerosAmigos = precioMinutoNumerosAmigos;
 	}
 
 	public Long getRendimientoMinutosMensualOtrasOperadoras() {
@@ -215,6 +226,22 @@ public class PlanTO extends BaseTO {
 
 	public void setFechaBaja(Date fechaBaja) {
 		this.fechaBaja = fechaBaja;
+	}
+
+	public String getPiePagina() {
+		return piePagina;
+	}
+
+	public void setPiePagina(String piePagina) {
+		this.piePagina = piePagina;
+	}
+	
+	public Boolean getBeneficioIncluidoEnLlamadas() {
+		return beneficioIncluidoEnLlamadas;
+	}
+
+	public void setBeneficioIncluidoEnLlamadas(Boolean beneficioIncluidoEnLlamadas) {
+		this.beneficioIncluidoEnLlamadas = beneficioIncluidoEnLlamadas;
 	}
 
 	public TipoPlanTO getTipoPlan() {

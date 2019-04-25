@@ -10,6 +10,7 @@ public class ContratoArchivoAdjuntoTO extends BaseTO {
 	private String url;
 	private Date fechaSubida;
 	private ContratoTO contrato;
+	private TipoArchivoAdjuntoTO tipoArchivoAdjunto;
 
 	public String getUrl() {
 		return url;
@@ -33,5 +34,13 @@ public class ContratoArchivoAdjuntoTO extends BaseTO {
 
 	public void setContrato(ContratoTO contrato) {
 		this.contrato = contrato;
+	}
+
+	public TipoArchivoAdjuntoTO getTipoArchivoAdjunto() {
+		return tipoArchivoAdjunto;
+	}
+
+	public void setTipoArchivoAdjunto(TipoArchivoAdjuntoTO tipoArchivoAdjunto) {
+		this.tipoArchivoAdjunto = tipoArchivoAdjunto;
 	}
 }

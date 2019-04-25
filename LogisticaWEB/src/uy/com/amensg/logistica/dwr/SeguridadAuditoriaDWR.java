@@ -59,10 +59,12 @@ public class SeguridadAuditoriaDWR {
 			result.setUsuario(UsuarioDWR.transform(seguridadAuditoria.getUsuario(), false));
 		}
 		
+		result.setFcre(seguridadAuditoria.getFcre());
 		result.setFact(seguridadAuditoria.getFact());
 		result.setId(seguridadAuditoria.getId());
 		result.setTerm(seguridadAuditoria.getTerm());
 		result.setUact(seguridadAuditoria.getUact());
+		result.setUcre(seguridadAuditoria.getUcre());
 		
 		return result;
 	}

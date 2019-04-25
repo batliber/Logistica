@@ -3,8 +3,11 @@ package uy.com.amensg.riesgoCrediticio.robot;
 public interface IConnectionStrategy {
 
 	public String getSiguienteDocumentoParaControlar();
+	
+	public String getSiguienteDocumentoParaControlarRiesgoOnLine();
 
 	public void actualizarDatosRiesgoCrediticioACM(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String fechaCelular,
@@ -21,6 +24,7 @@ public interface IConnectionStrategy {
 	);
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String periodo,
@@ -39,6 +43,7 @@ public interface IConnectionStrategy {
 	);
 
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String institucionFinanciera,

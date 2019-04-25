@@ -9,6 +9,8 @@ seguridadTipoEvento.Login=1
 seguridadTipoEvento.Logout=2
 seguridadTipoEvento.Timeout=3
 
+seguridad.maximaCantidadIntentosFallidosLogin=3
+
 acmInterfaceEstado.NoProcesado=0
 acmInterfaceEstado.EnProceso=1
 acmInterfaceEstado.Procesado=2
@@ -17,7 +19,10 @@ acmInterfaceEstado.ParaProcesar=4
 acmInterfaceEstado.ParaProcesarPrioritario=5
 acmInterfaceEstado.ListaNegra=6
 
-finProcesosJob.interavaloEjecucion=10
+robotLogistica.prefijoTipoRegistro.Contrato=C
+robotLogistica.prefijoTipoRegistro.Prepago=P
+
+finProcesosJob.interavaloEjecucion=1440
 
 listaNegra.NoProcesado=No procesado
 
@@ -34,6 +39,15 @@ rol.Distribuidor=8
 rol.SupervisorActivacion=9
 rol.Activador=10
 rol.CoordinadorDistribucion=11
+rol.EncargadoActivaciones=12
+rol.EncargadoAnalisisFinanciero=13
+rol.ANTEL=14
+rol.EncargadoActivacionesSinDistribucion=15
+rol.VentasNuestroCredito=16
+rol.DistribuidorChips=17
+rol.SupervisorDistribucionChips=18
+rol.GerentePhoneHouse=19
+rol.MaestrosRiverGreen=20
 
 estado.LLAMAR=1
 estado.RELLAMAR=2
@@ -58,8 +72,14 @@ estado.CERRADO=20
 estado.GESTIONINTERNA=21
 estado.GESTIONDISTRIBUCION=22
 estado.EQUIPOPERDIDO=23
+estado.FACTURAIMPAGA=24
+estado.CANCELADOPORCLIENTE=25
+estado.EQUIPOSPAGOS=26
+estado.EQUIPODEVUELTO=27
+estado.NORECUPERADO=28
 
-cantidadDiasRetencionVendidoPorOtraEmpresa=30
+cantidadMesesRetencionVenta=6
+cantidadDiasRetencionVendidoPorOtraEmpresa=7
 
 stockTipoMovimiento.AjusteManual=1
 stockTipoMovimiento.Venta=2
@@ -67,9 +87,15 @@ stockTipoMovimiento.BajaPorTransferencia=4
 stockTipoMovimiento.AltaPorTransferencia=5
 
 empresa.ELARED=1
+# Producción
 #empresa.GazalerSA=10822853
+# Desarrollo
 empresa.GazalerSA=6323258
 
+# Producción
+#plan.SinPlan=5527065
+# Desarrollo
+plan.SinPlan=5527065
 producto.SinEquipo=1
 modelo.SinEquipo=1
 
@@ -92,6 +118,8 @@ formaPago.NuestroCredito=4
 
 impuestos.IVA=1.22
 
+financiacion.creditoDeLaCasa.tipoTasaInteresEfectivaAnualLogistica=1
+financiacion.creditoDeLaCasa.tipoTasaInteresEfectivaAnualANTEL=2
 financiacion.creditoDeLaCasa.primeraCuotaAlInicio=true
 financiacion.creditoDeLaCasa.aplicarGastosConcesion=true
 financiacion.creditoDeLaCasa.aplicarSeguro=false
@@ -105,20 +133,27 @@ financiacion.creditoDeLaCasa.porcentajeSeguro=0.003
 financiacion.creditoDeLaCasa.minimoMensualSeguro=6
 financiacion.creditoDeLaCasa.decisorGastosAdministrativosGastosConcesion=8
 financiacion.creditoDeLaCasa.formatoArchivoNucleo.valorNoDisponible=
-financiacion.creditoDeLaCasa.formatoArchivoNucleo.producto=1
+financiacion.creditoDeLaCasa.formatoArchivoNucleo.productoComun=1
+financiacion.creditoDeLaCasa.formatoArchivoNucleo.productoANTEL=3
+financiacion.creditoDeLaCasa.formatoArchivoNucleo.productoANTELTasaInteresEspecial=5
 financiacion.creditoDeLaCasa.montoMinimo.PesosUruguayos=2500
 financiacion.creditoDeLaCasa.montoMinimo.DolaresAmericanos=100
 
 estadoRiesgoCrediticio.ParaProcesar=1
 estadoRiesgoCrediticio.EnProceso=2
 estadoRiesgoCrediticio.Procesado=3
+estadoRiesgoCrediticio.ParaProcesarPrioritario=4
+estadoRiesgoCrediticio.TiempoEnProcesoAgotado=5
 
 tipoControlRiesgoCrediticio.ACM=1
 tipoControlRiesgoCrediticio.BCU=2
 tipoControlRiesgoCrediticio.ACMYBCU=3
+tipoControlRiesgoCrediticio.RIESGOONLINE=4
 
 calificacionRiesgoCrediticioAntel.OK=1
 calificacionRiesgoCrediticioAntel.TieneDeuda=2
+calificacionRiesgoCrediticioAntel.SINDETERMINAR=3
+calificacionRiesgoCrediticioAntel.SINDATOS=4
 
 calificacionRiesgoCrediticioBCU.SINDETERMINAR=1
 calificacionRiesgoCrediticioBCU.1C=2
@@ -129,9 +164,38 @@ calificacionRiesgoCrediticioBCU.4=6
 calificacionRiesgoCrediticioBCU.5=7
 calificacionRiesgoCrediticioBCU.SINDATOS=8
 
+riesgoCrediticio.maximoTiempoEnProcesoMinutos=4
+riesgoCrediticio.maximoTiempoProcesadoDias=10
+
+calificacionRiesgoCrediticioBCU.institucionFinanciera.peorCalificacion=Peor Calificación
+
+creditoAmigo.URL=http://creditoamigo.com.uy/inc/logica_amensg.php
+creditoAmigo.operation.RemoteUpdate=ru
+
 moneda.PesosUruguayos=1
 moneda.DolaresAmericanos=2
 
 tipoPlan.ConLimite=1
 
 estadoPuntoVenta.Pendiente=1
+
+estadoProcesoImportacion.Inicio=1
+estadoProcesoImportacion.EnEjecucion=2
+estadoProcesoImportacion.FinalizadoOK=3
+estadoProcesoImportacion.FinalizadoConErrores=4
+estadoProcesoImportacion.Error=5
+
+tipoProcesoImportacion.Activaciones=1
+tipoProcesoImportacion.Controles=2
+tipoProcesoImportacion.ContratosParaLlamar=3
+tipoProcesoImportacion.RiesgoCrediticio=4
+tipoProcesoImportacion.VentasANTEL=5
+tipoProcesoImportacion.Liquidaciones=6
+
+tipoProducto.ANTEL=1
+tipoProducto.Libres=2
+
+Liquidacion.idConceptoPrepagoNoKitActivado=6
+
+estadoVisitaPuntoVentaDistribuidor.Pendiente=1
+estadoVisitaPuntoVentaDistribuidor.Visitado=2

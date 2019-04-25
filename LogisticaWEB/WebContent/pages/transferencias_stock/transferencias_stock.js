@@ -9,7 +9,7 @@ var imeis = {
 var grid = null;
 
 $(document).ready(function() {
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var html =
@@ -64,13 +64,19 @@ function refinarForm() {
 }
 
 function listEmpresas() {
-	EmpresaDWR.list(
+	var result = [];
+	
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
-				return data;
+				if (data != null) {
+					result = data;
+				}
 			}, async: false
 		}
 	);
+	
+	return result;
 }
 
 function listMarcas() {

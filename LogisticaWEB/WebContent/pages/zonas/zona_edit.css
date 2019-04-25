@@ -1,37 +1,17 @@
-#divZonaNombre {
-	float: left;
-	width: 70%;
-}
-
 #inputZonaNombre {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divZonaDetalle {
-	float: left;
 	width: 70%;
 }
 
 #inputZonaDetalle {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divDepartamento {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
 	width: 70%;
 }
 
 #selectDepartamento {
-	width: 60%;
+	width: 35%;
 }
 
 #divDisponibilidadEntrega {
-	float: left;
-	width: 70%;
+	height: 200px;
 }
 
 .divTitulo {
@@ -45,7 +25,7 @@
 
 .divColumnTurno {
 	float: left;
-	width: 50%;
+	width: 35%;
 }
 
 .divCheckbox {

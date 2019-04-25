@@ -35,6 +35,9 @@ public class ActivacionLoteBean implements IActivacionLoteBean {
 			
 			activacionLote.setNumero(maxNumero);
 			
+			activacionLote.setFcre(activacionLote.getFact());
+			activacionLote.setUcre(activacionLote.getUact());
+			
 			entityManager.persist(activacionLote);
 			
 			result = activacionLote;

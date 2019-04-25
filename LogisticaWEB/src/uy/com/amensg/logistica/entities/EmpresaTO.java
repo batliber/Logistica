@@ -14,6 +14,7 @@ public class EmpresaTO extends BaseTO {
 	private String nombreSucursal;
 	private String direccion;
 	private Collection<FormaPagoTO> formaPagos;
+	private Collection<UsuarioTO> empresaUsuarioContratos;
 
 	public String getNombre() {
 		return nombre;
@@ -69,5 +70,13 @@ public class EmpresaTO extends BaseTO {
 
 	public void setFormaPagos(Collection<FormaPagoTO> formaPagos) {
 		this.formaPagos = formaPagos;
+	}
+
+	public Collection<UsuarioTO> getEmpresaUsuarioContratos() {
+		return empresaUsuarioContratos;
+	}
+
+	public void setEmpresaUsuarioContratos(Collection<UsuarioTO> empresaUsuarioContratos) {
+		this.empresaUsuarioContratos = empresaUsuarioContratos;
 	}
 }

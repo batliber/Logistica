@@ -1,4 +1,5 @@
 var __ROL_ADMINISTRADOR = 1;
+var __ROL_MAESTROS_RIVERGREEN = 20;
 
 var grid = null;
 
@@ -7,30 +8,40 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	grid = new Grid(
-		document.getElementById("divTableModelos"),
-		{
-			tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 80 },
-			tdModeloDescripcion: { campo: "descripcion", descripcion: "Descripción", abreviacion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
-			tdEmpresaService: { campo: "empresaService.nombre", clave: "empresaService.id", descripcion: "Service", abreviacion: "Service", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresaServices, clave: "id", valor: "nombre" }, ancho: 200 }
-		}, 
-		false,
-		reloadData,
-		trModeloOnClick
-	);
-	
-	grid.rebuild();
-	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN) {
 						mode = __FORM_MODE_ADMIN;
 						
 						$("#divButtonNew").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						
+						grid = new Grid(
+							document.getElementById("divTableModelos"),
+							{
+								tdModeloMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 150 },
+								tdModeloDescripcion: { campo: "descripcion", descripcion: "Descripción", abreviacion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 250 },
+								tdModeloEmpresaService: { campo: "empresaService.nombre", clave: "empresaService.id", descripcion: "Service", abreviacion: "Service", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresaServices, clave: "id", valor: "nombre" }, ancho: 200 },
+								tdModeloFechaBaja: { campo: "fechaBaja", descripcion: "Eliminado", abreviacion: "Eliminado", tipo: __TIPO_CAMPO_FECHA_HORA }
+							}, 
+							true,
+							reloadData,
+							trModeloOnClick
+						);
+						
+						grid.rebuild();
+						
+						grid.filtroDinamico.agregarFiltroManual(
+							{
+								campo: "fechaBaja",
+								operador: "nl",
+								valores: []
+							}
+						);
+						
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						break;
 					}
 				}
@@ -76,57 +87,23 @@ function listEmpresaServices() {
 }
 
 function reloadData() {
-	ModeloDWR.listVigentes(
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	ModeloDWR.listContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
 		{
 			callback: function(data) {
-				var registros = {
-					cantidadRegistros: data.length,
-					registrosMuestra: []
-				};
-				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
-						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
-						
-						return result;
-					});
-				}
-				
-				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
-				}
-				
-				grid.reload(registros);
+				grid.reload(data);
 			}, async: false
+		}
+	);
+	
+	ModeloDWR.countContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.setCount(data);
+			}
 		}
 	);
 }

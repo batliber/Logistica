@@ -1,5 +1,7 @@
 package uy.com.amensg.logistica.bean;
 
+import java.util.Collection;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -11,6 +13,7 @@ import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Moneda;
 import uy.com.amensg.logistica.entities.RiesgoCrediticio;
 import uy.com.amensg.logistica.entities.TasaInteresEfectivaAnual;
+import uy.com.amensg.logistica.entities.TipoTasaInteresEfectivaAnual;
 import uy.com.amensg.logistica.util.Configuration;
 
 @Stateless
@@ -111,7 +114,12 @@ public class FinanciacionBean implements IFinanciacionBean {
 		return result;
 	}
 		
-	public DatosFinanciacion calcularFinanciacion(Moneda moneda, Double monto, Long cuotas) {
+	public DatosFinanciacion calcularFinanciacion(
+		Moneda moneda, 
+		TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual,
+		Double monto, 
+		Long cuotas
+	) {
 		DatosFinanciacion result = new DatosFinanciacion();
 		
 		Long diasPorMes = new Long(30);
@@ -130,14 +138,26 @@ public class FinanciacionBean implements IFinanciacionBean {
 		Double gastosAdministrativosCuotaIVA = gastosAdministrativosCuota * iva;
 		Double gastosAdministrativosIVA = Math.min(cuotas, maximoCuotasGastosAdministrativos) * gastosAdministrativosCuotaIVA;
 		
-		Double porcentajeSeguro = new Double(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.porcentajeSeguro"));
+		Double porcentajeSeguro = 
+			new Double(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.porcentajeSeguro"));
+		
+		Collection<TasaInteresEfectivaAnual> tasaInteresEfectivaAnuales = 
+			iTasaInteresEfectivaAnualBean.listVigentesByTipo(tipoTasaInteresEfectivaAnual);
 		
 		Double teaFinanciacion = new Double(0);
-		for (TasaInteresEfectivaAnual tasaInteresEfectivaAnual : iTasaInteresEfectivaAnualBean.listVigentes()) {
-			Long cuotasDesde = tasaInteresEfectivaAnual.getCuotasDesde() != null ? tasaInteresEfectivaAnual.getCuotasDesde() : 0;
-			Long cuotasHasta = tasaInteresEfectivaAnual.getCuotasHasta() != null ? tasaInteresEfectivaAnual.getCuotasHasta() : Long.MAX_VALUE;
-			Double montoDesde = tasaInteresEfectivaAnual.getMontoDesde() != null ? tasaInteresEfectivaAnual.getMontoDesde() * ui : 0;
-			Double montoHasta = tasaInteresEfectivaAnual.getMontoHasta() != null ? tasaInteresEfectivaAnual.getMontoHasta() * ui : Double.MAX_VALUE;
+		for (TasaInteresEfectivaAnual tasaInteresEfectivaAnual : tasaInteresEfectivaAnuales) {
+			Long cuotasDesde = 
+				tasaInteresEfectivaAnual.getCuotasDesde() != null ? 
+					tasaInteresEfectivaAnual.getCuotasDesde() : 0;
+			Long cuotasHasta = 
+				tasaInteresEfectivaAnual.getCuotasHasta() != null ? 
+					tasaInteresEfectivaAnual.getCuotasHasta() : Long.MAX_VALUE;
+			Double montoDesde = 
+				tasaInteresEfectivaAnual.getMontoDesde() != null ? 
+					tasaInteresEfectivaAnual.getMontoDesde() * ui : 0;
+			Double montoHasta = 
+				tasaInteresEfectivaAnual.getMontoHasta() != null ? 
+					tasaInteresEfectivaAnual.getMontoHasta() * ui : Double.MAX_VALUE;
 			Double valor = tasaInteresEfectivaAnual.getValor();
 			
 			if (cuotas > cuotasDesde && cuotas <= cuotasHasta) {

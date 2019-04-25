@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,11 +27,14 @@ import javax.persistence.criteria.Root;
 
 import uy.com.amensg.logistica.entities.Activacion;
 import uy.com.amensg.logistica.entities.ActivacionSublote;
+import uy.com.amensg.logistica.entities.EstadoVisitaPuntoVentaDistribuidor;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.entities.PuntoVenta;
+import uy.com.amensg.logistica.entities.VisitaPuntoVentaDistribuidor;
+import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryBuilder;
 import uy.com.amensg.logistica.util.QueryHelper;
@@ -40,6 +44,12 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
 	private EntityManager entityManager;
+	
+	@EJB
+	private IVisitaPuntoVentaDistribuidorBean iVisitaPuntoVentaDistribuidorBean;
+	
+	@EJB
+	private IEstadoVisitaPuntoVentaDistribuidorBean iEstadoVisitaPuntoVentaDistribuidorBean;
 	
 	public Collection<ActivacionSublote> list() {
 		Collection<ActivacionSublote> result = new LinkedList<ActivacionSublote>();
@@ -332,11 +342,31 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 		return result;
 	}
 	
-	public ActivacionSublote getById(Long id) {
+	public ActivacionSublote getById(Long id, boolean initializeCollections) {
 		ActivacionSublote result = null;
 		
 		try {
 			result = entityManager.find(ActivacionSublote.class, id);
+			
+			TypedQuery<Activacion> queryActivaciones = 
+				entityManager.createQuery(
+					"SELECT a"
+					+ " FROM Activacion a"
+					+ " WHERE a.activacionSublote.id = :id",
+					Activacion.class
+				);
+			queryActivaciones.setParameter("id", id);
+			
+			if (initializeCollections) {
+				entityManager.detach(result);
+				
+				Set<Activacion> activaciones = new HashSet<Activacion>();
+				
+				for (Activacion activacion : queryActivaciones.getResultList()) {
+					activaciones.add(activacion);
+				}
+				result.setActivaciones(activaciones);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -344,7 +374,7 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 		return result;
 	}
 
-	public ActivacionSublote getByNumero(Long numero) {
+	public ActivacionSublote getByNumero(Long numero, boolean initializeCollections) {
 		ActivacionSublote result = null;
 		
 		try {
@@ -357,9 +387,77 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				);
 			query.setParameter("numero", numero);
 			
+			TypedQuery<Activacion> queryActivaciones = 
+				entityManager.createQuery(
+					"SELECT ass"
+					+ " FROM ActivacionSublote asl"
+					+ " JOIN asl.activaciones ass"
+					+ " WHERE asl.id = :id",
+					Activacion.class
+				);
+			
 			List<ActivacionSublote> resultList = query.getResultList();
 			if (resultList.size() > 0) {
 				result = resultList.get(0);
+				entityManager.detach(result);
+				
+				if (initializeCollections) {
+					queryActivaciones.setParameter("id", result.getId());
+					
+					Set<Activacion> activaciones = new HashSet<Activacion>();
+					
+					for (Activacion activacion : queryActivaciones.getResultList()) {
+						activaciones.add(activacion);
+					}
+					result.setActivaciones(activaciones);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public ActivacionSublote getByNumeroUsuario(Long numero, Long usuarioId, boolean initializeCollections) {
+		ActivacionSublote result = null;
+		
+		try {
+			TypedQuery<ActivacionSublote> query = 
+				entityManager.createQuery(
+					"SELECT a"
+					+ " FROM ActivacionSublote a"
+					+ " WHERE a.numero = :numero"
+					+ " AND a.distribuidor.id = :usuarioId", 
+					ActivacionSublote.class
+				);
+			query.setParameter("numero", numero);
+			query.setParameter("usuarioId", usuarioId);
+			
+			TypedQuery<Activacion> queryActivaciones = 
+				entityManager.createQuery(
+					"SELECT ass"
+					+ " FROM ActivacionSublote asl"
+					+ " JOIN asl.activaciones ass"
+					+ " WHERE asl.id = :id",
+					Activacion.class
+				);
+			
+			List<ActivacionSublote> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				result = resultList.get(0);
+				entityManager.detach(result);
+				
+				if (initializeCollections) {
+					queryActivaciones.setParameter("id", result.getId());
+					
+					Set<Activacion> activaciones = new HashSet<Activacion>();
+					
+					for (Activacion activacion : queryActivaciones.getResultList()) {
+						activaciones.add(activacion);
+					}
+					result.setActivaciones(activaciones);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -408,6 +506,9 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 			}
 			activacionSublote.setActivaciones(activaciones);
 			
+			activacionSublote.setFcre(activacionSublote.getFact());
+			activacionSublote.setUcre(activacionSublote.getUact());
+			
 			entityManager.persist(activacionSublote);
 			
 			result = maxNumero;
@@ -420,28 +521,72 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 	
 	public void update(ActivacionSublote activacionSublote) {
 		try {
-			ActivacionSublote activacionSubloteManaged = entityManager.find(ActivacionSublote.class, activacionSublote.getId());
-			
 			Date date = GregorianCalendar.getInstance().getTime();
 			
-			if (activacionSubloteManaged.getDistribuidor() != null && activacionSublote.getDistribuidor() != null) {
-				if (!activacionSubloteManaged.getDistribuidor().getId().equals(activacionSublote.getDistribuidor().getId())) {
-					activacionSublote.setFechaAsignacionDistribuidor(date);
+			ActivacionSublote activacionSubloteManaged = 
+				entityManager.find(ActivacionSublote.class, activacionSublote.getId());
+			
+			activacionSubloteManaged.setDescripcion(activacionSublote.getDescripcion());
+			
+			if (activacionSubloteManaged.getDistribuidor() != null && 
+				activacionSublote.getDistribuidor() != null) {
+				// Si el sublote tenía distribuidor asignado y el sublote parámetro tiene distribuidor asignado.
+				if (!activacionSubloteManaged.getDistribuidor().getId().equals(
+					activacionSublote.getDistribuidor().getId())
+				) {
+					// Si el distribuidor cambia.
+					activacionSubloteManaged.setDistribuidor(activacionSublote.getDistribuidor());
+					activacionSubloteManaged.setFechaAsignacionDistribuidor(date);
+					
+					if (activacionSublote.getPuntoVenta() != null) {
+						iVisitaPuntoVentaDistribuidorBean.crearVisita(
+							activacionSublote.getDistribuidor(), 
+							activacionSublote.getPuntoVenta(), 
+							activacionSublote.getUact()
+						);
+					}
 				}
 			} else if (activacionSubloteManaged.getDistribuidor() != null) {
-				activacionSublote.setFechaAsignacionDistribuidor(null);
-			} else if (activacionSubloteManaged.getDistribuidor() == null && activacionSublote.getDistribuidor() != null) {
-				activacionSublote.setFechaAsignacionDistribuidor(date);
+				// Si el sublote tenía distribuidor asignado y el sublote parámetro no tiene distribuidor.
+				activacionSubloteManaged.setDistribuidor(null);
+				activacionSubloteManaged.setFechaAsignacionDistribuidor(null);
+			} else if (activacionSubloteManaged.getDistribuidor() == null && 
+				activacionSublote.getDistribuidor() != null
+			) {
+				// Si el sublote no tenía distribuidor asignado y el sublote parámetro tiene distribuidor.
+				activacionSubloteManaged.setDistribuidor(activacionSublote.getDistribuidor());
+				activacionSubloteManaged.setFechaAsignacionDistribuidor(date);
+				
+				if (activacionSublote.getPuntoVenta() != null) {
+					iVisitaPuntoVentaDistribuidorBean.crearVisita(
+						activacionSublote.getDistribuidor(), 
+						activacionSublote.getPuntoVenta(), 
+						activacionSublote.getUact()
+					);
+				}
 			}
 			
-			if (activacionSubloteManaged.getPuntoVenta() != null && activacionSublote.getPuntoVenta() != null) {
-				if (!activacionSubloteManaged.getPuntoVenta().getId().equals(activacionSublote.getPuntoVenta().getId())) {
-					activacionSublote.setFechaAsignacionPuntoVenta(date);
+			if (activacionSubloteManaged.getPuntoVenta() != null && 
+				activacionSublote.getPuntoVenta() != null
+			) {
+				// Si el sublote tenía punto de venta asignado y el sublote parámetro tiene punto de venta.
+				if (!activacionSubloteManaged.getPuntoVenta().getId().equals(
+					activacionSublote.getPuntoVenta().getId())
+				) {
+					// Si el punto de venta cambia.
+					activacionSubloteManaged.setFechaAsignacionPuntoVenta(date);
+					activacionSubloteManaged.setPuntoVenta(activacionSublote.getPuntoVenta());
 				}
 			} else if (activacionSubloteManaged.getPuntoVenta() != null) {
-				activacionSublote.setFechaAsignacionPuntoVenta(null);
-			} else if (activacionSubloteManaged.getPuntoVenta() == null && activacionSublote.getPuntoVenta() != null) {
-				activacionSublote.setFechaAsignacionPuntoVenta(date);
+				// Si el sublote tenía punto de venta asignado y el sublote parámetro no tiene punto de venta.
+				activacionSubloteManaged.setFechaAsignacionPuntoVenta(null);
+				activacionSubloteManaged.setPuntoVenta(null);
+			} else if (activacionSubloteManaged.getPuntoVenta() == null && 
+				activacionSublote.getPuntoVenta() != null
+			) {
+				// Si el sublote no tenía punto de venta asignado y el sublote parámetro tiene punto de venta.
+				activacionSubloteManaged.setFechaAsignacionPuntoVenta(date);
+				activacionSubloteManaged.setPuntoVenta(activacionSublote.getPuntoVenta());
 			}
 			
 			Map<Long, Activacion> activacionesManaged = new HashMap<Long, Activacion>();
@@ -466,7 +611,8 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				entityManager.merge(activacion);
 			}
 			
-			entityManager.merge(activacionSublote);
+			activacionSubloteManaged.setFact(activacionSublote.getFact());
+			activacionSubloteManaged.setUcre(activacionSublote.getUact());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -476,18 +622,91 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
-			ActivacionSublote activacionSubloteManaged = entityManager.find(ActivacionSublote.class, activacionSublote.getId());
+			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidorVisitado = 
+				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
+					new Long(Configuration.getInstance().getProperty(
+						"estadoVisitaPuntoVentaDistribuidor.Visitado")
+					)
+				);
 			
-			PuntoVenta puntoVentaManaged = entityManager.find(PuntoVenta.class, puntoVenta.getId());
+			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidorVisitaPermanente = 
+				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
+					new Long(Configuration.getInstance().getProperty(
+						"estadoVisitaPuntoVentaDistribuidor.VisitaPermanente")
+					)
+				);
+			
+			ActivacionSublote activacionSubloteManaged = 
+				entityManager.find(ActivacionSublote.class, activacionSublote.getId());
+			
+			PuntoVenta puntoVentaManaged = 
+				entityManager.find(PuntoVenta.class, puntoVenta.getId());
 			
 			activacionSubloteManaged.setPuntoVenta(puntoVentaManaged);
 			activacionSubloteManaged.setFechaAsignacionPuntoVenta(date);
 			
 			activacionSubloteManaged.setFact(date);
 			activacionSubloteManaged.setTerm(new Long(1));
-			activacionSubloteManaged.setUact(activacionSubloteManaged.getUact());
+			activacionSubloteManaged.setUact(activacionSublote.getUact());
 			
-			entityManager.merge(activacionSubloteManaged);
+			if (puntoVentaManaged.getEstadoVisitaPuntoVentaDistribuidor() == null
+				|| !puntoVentaManaged.getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+					estadoVisitaPuntoVentaDistribuidorVisitaPermanente.getId()
+				)
+			) {
+				puntoVentaManaged.setEstadoVisitaPuntoVentaDistribuidor(estadoVisitaPuntoVentaDistribuidorVisitado);
+				puntoVentaManaged.setFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor(date);
+				puntoVentaManaged.setFechaVisitaDistribuidor(date);
+			}
+			
+			puntoVentaManaged.setFechaVisitaDistribuidor(date);
+			puntoVentaManaged.setFact(date);
+			puntoVentaManaged.setTerm(new Long(1));
+			puntoVentaManaged.setUact(activacionSublote.getUact());
+			
+			VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidorManaged = 
+				iVisitaPuntoVentaDistribuidorBean.getLastByPuntoVentaDistribuidor(
+					activacionSubloteManaged.getDistribuidor(), 
+					puntoVentaManaged
+				);
+			
+			if (visitaPuntoVentaDistribuidorManaged != null) {
+				if (!visitaPuntoVentaDistribuidorManaged.getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+					estadoVisitaPuntoVentaDistribuidorVisitaPermanente.getId()
+				)) {
+					visitaPuntoVentaDistribuidorManaged.setEstadoVisitaPuntoVentaDistribuidor(
+						estadoVisitaPuntoVentaDistribuidorVisitado
+					);
+				}
+				
+				visitaPuntoVentaDistribuidorManaged.setFechaVisita(date);
+				
+				visitaPuntoVentaDistribuidorManaged.setFact(date);
+				visitaPuntoVentaDistribuidorManaged.setTerm(new Long(1));
+				visitaPuntoVentaDistribuidorManaged.setUact(activacionSublote.getUact());
+				
+				entityManager.merge(visitaPuntoVentaDistribuidorManaged);
+			} else {
+				visitaPuntoVentaDistribuidorManaged = new VisitaPuntoVentaDistribuidor();
+				visitaPuntoVentaDistribuidorManaged.setDistribuidor(activacionSubloteManaged.getDistribuidor());
+				visitaPuntoVentaDistribuidorManaged.setEstadoVisitaPuntoVentaDistribuidor(
+					estadoVisitaPuntoVentaDistribuidorVisitado
+				);
+				visitaPuntoVentaDistribuidorManaged.setFechaAsignacion(date);
+				visitaPuntoVentaDistribuidorManaged.setFechaVisita(date);
+				visitaPuntoVentaDistribuidorManaged.setObservaciones(
+					"Visita por entrega de sub-lote: " + activacionSublote.getNumero()
+				);
+				visitaPuntoVentaDistribuidorManaged.setPuntoVenta(puntoVentaManaged);
+				
+				visitaPuntoVentaDistribuidorManaged.setTerm(new Long(1));
+				visitaPuntoVentaDistribuidorManaged.setFact(date);
+				visitaPuntoVentaDistribuidorManaged.setFcre(date);
+				visitaPuntoVentaDistribuidorManaged.setUcre(activacionSublote.getUact());
+				visitaPuntoVentaDistribuidorManaged.setUact(activacionSublote.getUact());
+				
+				entityManager.merge(visitaPuntoVentaDistribuidorManaged);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

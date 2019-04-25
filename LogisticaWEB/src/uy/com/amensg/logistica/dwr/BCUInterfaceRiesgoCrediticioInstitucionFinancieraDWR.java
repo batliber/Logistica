@@ -46,9 +46,7 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinancieraDWR {
 		return result;
 	}
 	
-	public static BCUInterfaceRiesgoCrediticioInstitucionFinancieraTO transform(
-		BCUInterfaceRiesgoCrediticioInstitucionFinanciera bcuInterfaceRiesgoCrediticioInstitucionFinanciera
-	) {
+	public static BCUInterfaceRiesgoCrediticioInstitucionFinancieraTO transform(BCUInterfaceRiesgoCrediticioInstitucionFinanciera bcuInterfaceRiesgoCrediticioInstitucionFinanciera) {
 		BCUInterfaceRiesgoCrediticioInstitucionFinancieraTO result = new BCUInterfaceRiesgoCrediticioInstitucionFinancieraTO();
 		
 		result.setCalificacion(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion());
@@ -61,13 +59,15 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinancieraDWR {
 		result.setVigenteNoAutoliquidable(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getVigenteNoAutoliquidable());
 		
 		if (bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getEmpresa(), false));
 		}
 		
+		result.setFcre(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getFcre());
 		result.setFact(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getFact());
 		result.setId(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getId());
 		result.setTerm(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getTerm());
 		result.setUact(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getUact());
+		result.setUcre(bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getUcre());
 		
 		return result;
 	}

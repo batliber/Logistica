@@ -2,6 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -25,8 +26,8 @@ public class MonedaBean implements IMonedaBean {
 				Moneda.class
 			);
 			
-			for (Moneda Moneda : query.getResultList()) {
-				result.add(Moneda);
+			for (Moneda moneda : query.getResultList()) {
+				result.add(moneda);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -40,6 +41,30 @@ public class MonedaBean implements IMonedaBean {
 		
 		try {
 			result = entityManager.find(Moneda.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Moneda getBySimbolo(String simbolo) {
+		Moneda result = null;
+		
+		try {
+			TypedQuery<Moneda> query = 
+				entityManager.createQuery(
+					"SELECT m"
+					+ " FROM Moneda m"
+					+ " WHERE m.simbolo = :simbolo",
+					Moneda.class
+				);
+			query.setParameter("simbolo", simbolo);
+			
+			List<Moneda> resultList = query.getResultList();
+			if (!resultList.isEmpty()) {
+				result = resultList.get(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

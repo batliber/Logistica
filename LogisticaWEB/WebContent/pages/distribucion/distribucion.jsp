@@ -19,6 +19,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ResultadoEntregaDistribucionDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoRelacionDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>

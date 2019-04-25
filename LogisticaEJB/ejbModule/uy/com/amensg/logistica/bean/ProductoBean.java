@@ -11,7 +11,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Producto;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class ProductoBean implements IProductoBean {
@@ -41,6 +44,30 @@ public class ProductoBean implements IProductoBean {
 		return result;
 	}
 
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<Producto>().list(entityManager, metadataConsulta, new Producto());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<Producto>().count(entityManager, metadataConsulta, new Producto());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Producto getById(Long id) {
 		Producto result = null;
 		
@@ -101,6 +128,9 @@ public class ProductoBean implements IProductoBean {
 	
 	public void save(Producto producto) {
 		try {
+			producto.setFcre(producto.getFact());
+			producto.setUcre(producto.getUact());
+			
 			entityManager.persist(producto);
 		} catch (Exception e) {
 			e.printStackTrace();

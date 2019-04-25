@@ -4,13 +4,13 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -39,17 +39,22 @@ import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
 import uy.com.amensg.logistica.entities.ACMInterfaceListaNegra;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
+import uy.com.amensg.logistica.entities.ACMInterfaceNumeroContrato;
+import uy.com.amensg.logistica.entities.ACMInterfacePersona;
 import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.ContratoRoutingHistory;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Estado;
+import uy.com.amensg.logistica.entities.EstadoRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
+import uy.com.amensg.logistica.entities.RiesgoCrediticio;
 import uy.com.amensg.logistica.entities.Rol;
 import uy.com.amensg.logistica.entities.TipoContrato;
+import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryHelper;
@@ -74,6 +79,15 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 	
 	@EJB
 	private IEstadoBean iEstadoBean;
+	
+	@EJB
+	private IEmpresaBean iEmpresaBean;
+	
+	@EJB
+	private IEstadoRiesgoCrediticioBean iEstadoRiesgoCrediticioBean;
+	
+	@EJB
+	private ITipoControlRiesgoCrediticioBean iTipoControlRiesgoCrediticioBean;
 	
 	private CriteriaQuery<ACMInterfaceContrato> criteriaQuery;
 	
@@ -442,7 +456,10 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
 			
 			Rol rolSupervisorCallCenter = 
-				iRolBean.getById(new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")));
+				iRolBean.getById(
+					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					false
+				);
 			
 			Estado estado = 
 				iEstadoBean.getById(
@@ -475,12 +492,15 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				"INSERT INTO contrato("
 					+ " id,"
 					+ " numero_tramite,"
+					+ " random,"
 					+ " empresa_id,"
 					+ " estado_id,"
 					+ " rol_id,"
+					+ " fcre,"
 					+ " fact,"
 					+ " term,"
 					+ " uact,"
+					+ " ucre,"
 					+ " agente,"
 					+ " codigo_postal,"
 					+ " direccion,"
@@ -499,6 +519,9 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				+ " ) VALUES ("
 					+ " nextval('hibernate_sequence'),"
 					+ " nextval('numero_tramite_sequence'),"
+					+ " CAST(random() * 1000000 AS integer),"
+					+ " ?,"
+					+ " ?,"
 					+ " ?,"
 					+ " ?,"
 					+ " ?,"
@@ -528,12 +551,15 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			insertContrato.setParameter(2, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
 			
 			insertContrato.setParameter(3, currentDate, TimestampType.INSTANCE);
-			insertContrato.setParameter(4, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(4, currentDate, TimestampType.INSTANCE);
 			insertContrato.setParameter(5, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(6, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(7, new Long(1), LongType.INSTANCE);
 			
 			SQLQuery updateContrato = hibernateSession.createSQLQuery(
 				"UPDATE contrato"
-				+ " SET fact = ?,"
+				+ " SET random = CAST(random() * 1000000 AS integer),"
+					+ " fact = ?,"
 					+ " term = ?,"
 					+ " uact = ?,"
 					+ " agente = ?,"
@@ -564,8 +590,10 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					+ " empresa_id,"
 					+ " usuario_id,"
 					+ " rol_id,"
+					+ " ucre,"
 					+ " uact,"
 					+ " fact,"
+					+ " fcre,"
 					+ " term,"
 					+ " contrato_id,"
 					+ " estado_id"
@@ -574,8 +602,10 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					+ " c.empresa_id,"
 					+ " null,"
 					+ " c.rol_id,"
+					+ " c.ucre,"
 					+ " c.uact,"
 					+ " c.fact,"
+					+ " c.fcre,"
 					+ " c.term,"
 					+ " c.id,"
 					+ " c.estado_id"
@@ -588,11 +618,14 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			
 			insertContratoRoutingHistory.setParameter(0, currentDate, TimestampType.INSTANCE);
 			
+			Random random = new Random();
+			
 			for (ACMInterfaceContrato acmInterfaceContrato : subconjunto) {
 				acmInterfaceContrato.setFechaExportacionAnterior(
 					acmInterfaceContrato.getFechaExportacion()
 				);
 				acmInterfaceContrato.setFechaExportacion(currentDate);
+				acmInterfaceContrato.setRandom(new Long(random.nextInt()));
 				
 				acmInterfaceContrato = entityManager.merge(acmInterfaceContrato);
 				
@@ -601,21 +634,27 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				
 				switch (map.get(acmInterfaceContrato.getMid())) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
-						insertContrato.setParameter(6, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null, StringType.INSTANCE);
-						insertContrato.setParameter(7, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null, StringType.INSTANCE);
-						insertContrato.setParameter(8, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null, StringType.INSTANCE);
-						insertContrato.setParameter(9, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null, StringType.INSTANCE);
-						insertContrato.setParameter(10, acmInterfaceContrato.getDocumentoTipo(), LongType.INSTANCE);
-						insertContrato.setParameter(11, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null, StringType.INSTANCE);
-						insertContrato.setParameter(12, acmInterfaceContrato.getFechaFinContrato(), DateType.INSTANCE);
-						insertContrato.setParameter(13, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null, StringType.INSTANCE);
-						insertContrato.setParameter(14, acmInterfaceContrato.getMid(), LongType.INSTANCE);
-						insertContrato.setParameter(15, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null, StringType.INSTANCE);
-						insertContrato.setParameter(16, acmInterfaceContrato.getNumeroCliente(), LongType.INSTANCE);
-						insertContrato.setParameter(17, acmInterfaceContrato.getNumeroContrato(), LongType.INSTANCE);
-						insertContrato.setParameter(18, observaciones != "" ? observaciones : null, StringType.INSTANCE);
-						insertContrato.setParameter(19, acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null, StringType.INSTANCE);
-						insertContrato.setParameter(20, acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null, StringType.INSTANCE);
+						insertContrato.setParameter(8, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null, StringType.INSTANCE);
+						insertContrato.setParameter(9, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null, StringType.INSTANCE);
+						
+						// 04/11/2018 - No se importan los datos personales.
+//						insertContrato.setParameter(10, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null, StringType.INSTANCE);
+						insertContrato.setParameter(10, null, StringType.INSTANCE);
+//						insertContrato.setParameter(11, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null, StringType.INSTANCE);
+						insertContrato.setParameter(11, null, StringType.INSTANCE);
+						insertContrato.setParameter(12, acmInterfaceContrato.getDocumentoTipo(), LongType.INSTANCE);
+						insertContrato.setParameter(13, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null, StringType.INSTANCE);
+						insertContrato.setParameter(14, acmInterfaceContrato.getFechaFinContrato(), DateType.INSTANCE);
+//						insertContrato.setParameter(15, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null, StringType.INSTANCE);
+						insertContrato.setParameter(15, null, StringType.INSTANCE);
+						insertContrato.setParameter(16, acmInterfaceContrato.getMid(), LongType.INSTANCE);
+//						insertContrato.setParameter(17, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null, StringType.INSTANCE);
+						insertContrato.setParameter(17, null, StringType.INSTANCE);
+						insertContrato.setParameter(18, acmInterfaceContrato.getNumeroCliente(), LongType.INSTANCE);
+						insertContrato.setParameter(19, acmInterfaceContrato.getNumeroContrato(), LongType.INSTANCE);
+						insertContrato.setParameter(20, observaciones != "" ? observaciones : null, StringType.INSTANCE);
+						insertContrato.setParameter(21, acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null, StringType.INSTANCE);
+						insertContrato.setParameter(22, acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null, StringType.INSTANCE);
 						
 						insertContrato.executeUpdate();
 						
@@ -629,15 +668,20 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 						
 						Long contratoId = (Long) selectContratoExisteEmpresa.list().get(0);
 						
+						// 04/11/2018 - No se importan los datos personales.
 						updateContrato.setParameter(3, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null, StringType.INSTANCE);
 						updateContrato.setParameter(4, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null, StringType.INSTANCE);
-						updateContrato.setParameter(5, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null, StringType.INSTANCE);
-						updateContrato.setParameter(6, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null, StringType.INSTANCE);
+//						updateContrato.setParameter(5, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null, StringType.INSTANCE);
+						updateContrato.setParameter(5, null, StringType.INSTANCE);
+//						updateContrato.setParameter(6, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null, StringType.INSTANCE);
+						updateContrato.setParameter(6, null, StringType.INSTANCE);
 						updateContrato.setParameter(7, acmInterfaceContrato.getDocumentoTipo(), LongType.INSTANCE);
 						updateContrato.setParameter(8, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null, StringType.INSTANCE);
 						updateContrato.setParameter(9, acmInterfaceContrato.getFechaFinContrato(), DateType.INSTANCE);
-						updateContrato.setParameter(10, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null, StringType.INSTANCE);
-						updateContrato.setParameter(11, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null, StringType.INSTANCE);
+//						updateContrato.setParameter(10, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null, StringType.INSTANCE);
+						updateContrato.setParameter(10, null, StringType.INSTANCE);
+//						updateContrato.setParameter(11, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null, StringType.INSTANCE);
+						updateContrato.setParameter(11, null, StringType.INSTANCE);
 						updateContrato.setParameter(12, acmInterfaceContrato.getNumeroCliente(), LongType.INSTANCE);
 						updateContrato.setParameter(13, acmInterfaceContrato.getNumeroContrato(), LongType.INSTANCE);
 						updateContrato.setParameter(14, observaciones != "" ? observaciones : null, StringType.INSTANCE);
@@ -716,7 +760,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		}
 	}
 	
-	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones) {
+	public void reprocesarPorMID(MetadataConsulta metadataConsulta, String observaciones) {
 		try {
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
@@ -731,7 +775,12 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
 			
 			ACMInterfaceEstado estado = 
-				entityManager.find(ACMInterfaceEstado.class, new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")));
+				entityManager.find(
+					ACMInterfaceEstado.class, 
+					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+				);
+			
+			Random random = new Random();
 			
 			for (ACMInterfaceContrato acmInterfaceContrato : this.listSubconjunto(metadataConsulta)) {
 				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
@@ -739,12 +788,53 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
 				
 				acmInterfaceMid.setEstado(estado);
+				acmInterfaceMid.setRandom(new Long(random.nextInt()));
 				
 				acmInterfaceMid.setUact(new Long(1));
 				acmInterfaceMid.setFact(hoy);
 				acmInterfaceMid.setTerm(new Long(1));
 				
 				entityManager.merge(acmInterfaceMid);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void reprocesarPorNumeroContrato(MetadataConsulta metadataConsulta, String observaciones) {
+		try {
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
+			acmInterfaceProceso.setFechaInicio(hoy);
+			acmInterfaceProceso.setObservaciones(observaciones);
+			
+			acmInterfaceProceso.setUact(new Long(1));
+			acmInterfaceProceso.setFact(hoy);
+			acmInterfaceProceso.setTerm(new Long(1));
+			
+			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
+			
+			ACMInterfaceEstado estado = 
+				entityManager.find(
+					ACMInterfaceEstado.class, 
+					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+				);
+			
+			for (ACMInterfaceContrato acmInterfaceContrato : this.listSubconjunto(metadataConsulta)) {
+				ACMInterfaceNumeroContrato acmInterfaceNumeroContrato = new ACMInterfaceNumeroContrato();
+				acmInterfaceNumeroContrato.setNumeroContrato(acmInterfaceContrato.getNumeroContrato());
+				acmInterfaceNumeroContrato.setProcesoId(acmInterfaceProceso.getId());
+				
+				acmInterfaceNumeroContrato.setEstado(estado);
+				
+				acmInterfaceNumeroContrato.setUact(new Long(1));
+				acmInterfaceNumeroContrato.setUcre(new Long(1));
+				acmInterfaceNumeroContrato.setFact(hoy);
+				acmInterfaceNumeroContrato.setFcre(hoy);
+				acmInterfaceNumeroContrato.setTerm(new Long(1));
+				
+				entityManager.merge(acmInterfaceNumeroContrato);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -802,6 +892,52 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				entityManager.persist(acmInterfaceListaNegra);
 				
 				entityManager.remove(acmInterfaceContrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void controlarRiesgoCrediticio(
+		Empresa empresa,
+		TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio,
+		MetadataConsulta metadataConsulta
+	) {
+		try {
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticio =
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesar"))
+				);
+			
+			for (ACMInterfaceContrato acmInterfaceContrato : this.listSubconjunto(metadataConsulta)) {
+				ACMInterfacePersona acmInterfacePersona = acmInterfaceContrato.getAcmInterfacePersona();
+				if (acmInterfacePersona != null) {
+					RiesgoCrediticio riesgoCrediticio = new RiesgoCrediticio();
+					riesgoCrediticio.setDocumento(acmInterfacePersona.getDocumento());
+					riesgoCrediticio.setFechaImportacion(hoy);
+					
+					riesgoCrediticio.setEmpresa(empresa);
+					riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticio);
+					riesgoCrediticio.setTipoControlRiesgoCrediticio(tipoControlRiesgoCrediticio);
+					
+					riesgoCrediticio.setFact(hoy);
+					riesgoCrediticio.setFcre(hoy);
+					riesgoCrediticio.setTerm(new Long(1));
+					riesgoCrediticio.setUact(new Long(1));
+					riesgoCrediticio.setUcre(new Long(1));
+					
+					entityManager.persist(riesgoCrediticio);
+					
+					acmInterfacePersona.setRiesgoCrediticio(riesgoCrediticio);
+					
+					acmInterfacePersona.setFact(hoy);
+					acmInterfacePersona.setTerm(new Long(1));
+					acmInterfacePersona.setUact(riesgoCrediticio.getUact());
+					
+					entityManager.merge(acmInterfacePersona);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -914,7 +1050,23 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 			if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
 				for (String valor : metadataCondicion.getValores()) {
-					Path<?> campo = root.get(metadataCondicion.getCampo());
+					String[] campos = metadataCondicion.getCampo().split("\\.");
+					
+					Path<?> campo = root;
+					Join<?, ?> join = null;
+					for (int j=0; j<campos.length - 1; j++) {
+						if (join != null) {
+							join = join.join(campos[j], JoinType.LEFT);
+						} else {
+							join = root.join(campos[j], JoinType.LEFT);
+						}
+					}
+					
+					if (join != null) {
+						campo = join.get(campos[campos.length - 1]);
+					} else {
+						campo = root.get(campos[campos.length - 1]);
+					}
 					
 					try {
 						if (campo.getJavaType().equals(Date.class)) {
@@ -955,29 +1107,27 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 	}
 
 	private Collection<ACMInterfaceContrato> listSubconjunto(MetadataConsulta metadataConsulta) {
-		Collection<ACMInterfaceContrato> resultList = new LinkedList<ACMInterfaceContrato>();
+		Collection<ACMInterfaceContrato> result = new LinkedList<ACMInterfaceContrato>();
+		
+		Collection<MetadataOrdenacion> metadataOrdenaciones = new LinkedList<MetadataOrdenacion>();
+		
+		MetadataOrdenacion metadataOrdenacion = new MetadataOrdenacion();
+		metadataOrdenacion.setAscendente(true);
+		metadataOrdenacion.setCampo("random");
+		
+		metadataOrdenaciones.add(metadataOrdenacion);
+		
+		metadataConsulta.setMetadataOrdenaciones(metadataOrdenaciones);
 		
 		TypedQuery<ACMInterfaceContrato> query = this.construirQuery(metadataConsulta);
 		
 		if (metadataConsulta.getTamanoSubconjunto() != null) {
-			List<ACMInterfaceContrato> toOrder = query.getResultList();
-			
-			Collections.shuffle(toOrder);
-			
-			int i = 0;
-			for (ACMInterfaceContrato acmInterfaceContrato : toOrder) {
-				resultList.add(acmInterfaceContrato);
-				
-				i++;
-				if (i == metadataConsulta.getTamanoSubconjunto()) {
-					break;
-				}
-			}
-		} else {
-			resultList = query.getResultList();
+			query.setMaxResults(metadataConsulta.getTamanoSubconjunto().intValue());
 		}
 		
-		return resultList;
+		result = query.getResultList();
+		
+		return result;
 	}
 
 	private String buildCSVLine(ACMInterfaceContrato acmInterfaceContrato, String observaciones) {

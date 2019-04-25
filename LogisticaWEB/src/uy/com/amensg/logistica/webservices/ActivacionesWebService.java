@@ -25,7 +25,8 @@ public class ActivacionesWebService {
 			IActivacionConexionBean iActivacionConexionBean = lookupActivacionConexionBean();
 			
 			Activacion activacion = iActivacionBean.getSiguienteMidParaActivar();
-			ActivacionConexion activacionConexion = iActivacionConexionBean.getRandomByEmpresaId(activacion.getEmpresa().getId());
+			ActivacionConexion activacionConexion = 
+				iActivacionConexionBean.getRandomByEmpresaId(activacion.getEmpresa().getId());
 			
 			if (activacion != null) {
 				result = 

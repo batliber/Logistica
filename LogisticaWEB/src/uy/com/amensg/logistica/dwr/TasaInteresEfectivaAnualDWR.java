@@ -17,6 +17,7 @@ import uy.com.amensg.logistica.bean.ITasaInteresEfectivaAnualBean;
 import uy.com.amensg.logistica.bean.TasaInteresEfectivaAnualBean;
 import uy.com.amensg.logistica.entities.TasaInteresEfectivaAnual;
 import uy.com.amensg.logistica.entities.TasaInteresEfectivaAnualTO;
+import uy.com.amensg.logistica.entities.TipoTasaInteresEfectivaAnual;
 
 @RemoteProxy
 public class TasaInteresEfectivaAnualDWR {
@@ -109,10 +110,18 @@ public class TasaInteresEfectivaAnualDWR {
 		result.setMontoHasta(tasaInteresEfectivaAnual.getMontoHasta());
 		result.setValor(tasaInteresEfectivaAnual.getValor());
 		
+		if (tasaInteresEfectivaAnual.getTipoTasaInteresEfectivaAnual() != null) {
+			result.setTipoTasaInteresEfectivaAnual(
+				TipoTasaInteresEfectivaAnualDWR.transform(tasaInteresEfectivaAnual.getTipoTasaInteresEfectivaAnual())
+			);
+		}
+		
+		result.setFcre(tasaInteresEfectivaAnual.getFcre());
 		result.setFact(tasaInteresEfectivaAnual.getFact());
 		result.setId(tasaInteresEfectivaAnual.getId());
 		result.setTerm(tasaInteresEfectivaAnual.getTerm());
 		result.setUact(tasaInteresEfectivaAnual.getUact());
+		result.setUcre(tasaInteresEfectivaAnual.getUcre());
 		
 		return result;
 	}
@@ -127,8 +136,16 @@ public class TasaInteresEfectivaAnualDWR {
 		result.setMontoHasta(tasaInteresEfectivaAnualTO.getMontoHasta());
 		result.setValor(tasaInteresEfectivaAnualTO.getValor());
 		
+		if (tasaInteresEfectivaAnualTO.getTipoTasaInteresEfectivaAnual() != null) {
+			TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual = new TipoTasaInteresEfectivaAnual();
+			tipoTasaInteresEfectivaAnual.setId(tasaInteresEfectivaAnualTO.getTipoTasaInteresEfectivaAnual().getId());
+			
+			result.setTipoTasaInteresEfectivaAnual(tipoTasaInteresEfectivaAnual);
+		}
+		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(tasaInteresEfectivaAnualTO.getFcre());
 		result.setFact(date);
 		result.setId(tasaInteresEfectivaAnualTO.getId());
 		result.setTerm(new Long(1));
@@ -137,6 +154,7 @@ public class TasaInteresEfectivaAnualDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(tasaInteresEfectivaAnualTO.getUcre());
 		
 		return result;
 	}

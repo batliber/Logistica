@@ -1,0 +1,9 @@
+#divObservaciones {
+	float: left;
+	width: 60%;
+	height: 70px;
+}
+
+#textareaObservaciones {
+	width: 100%;
+}

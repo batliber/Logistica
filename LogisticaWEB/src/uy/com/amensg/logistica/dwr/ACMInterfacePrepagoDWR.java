@@ -15,10 +15,12 @@ import uy.com.amensg.logistica.bean.ACMInterfacePrepagoBean;
 import uy.com.amensg.logistica.bean.IACMInterfacePrepagoBean;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepagoTO;
+import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EmpresaTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
+import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
 
 @RemoteProxy
 public class ACMInterfacePrepagoDWR {
@@ -216,6 +218,32 @@ public class ACMInterfacePrepagoDWR {
 			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
 			
 			iACMInterfacePrepagoBean.agregarAListaNegra(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void controlarRiesgoCrediticio(
+		MetadataConsultaTO metadataConsultaTO,
+		Long empresaId,
+		Long tipoControlRiesgoCrediticioId
+	) {
+		try {
+			IACMInterfacePrepagoBean iACMInterfacePrepagoBean = lookupBean();
+			
+			Empresa empresa = new Empresa();
+			empresa.setId(empresaId);
+			
+			TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio = new TipoControlRiesgoCrediticio();
+			tipoControlRiesgoCrediticio.setId(tipoControlRiesgoCrediticioId);
+			
+			iACMInterfacePrepagoBean.controlarRiesgoCrediticio(
+				empresa,
+				tipoControlRiesgoCrediticio,
 				MetadataConsultaDWR.transform(
 					metadataConsultaTO
 				)

@@ -45,6 +45,12 @@ public class Control extends BaseEntity {
 	@Column(name = "fecha_conexion")
 	private Date fechaConexion;
 	
+	@Column(name = "fecha_asignacion_distribuidor")
+	private Date fechaAsignacionDistribuidor;
+	
+	@Column(name = "fecha_asignacion_punto_venta")
+	private Date fechaAsignacionPuntoVenta;
+	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "empresa_id", nullable = true)
 	private Empresa empresa;
@@ -57,6 +63,14 @@ public class Control extends BaseEntity {
 	@JoinColumn(name = "estado_control_id", nullable = true)
 	private EstadoControl estadoControl;
 
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "distribuidor_id", nullable = true)
+	private Usuario distribuidor;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "punto_venta_id", nullable = true)
+	private PuntoVenta puntoVenta;
+	
 	public Long getMid() {
 		return mid;
 	}
@@ -135,6 +149,38 @@ public class Control extends BaseEntity {
 
 	public void setFechaConexion(Date fechaConexion) {
 		this.fechaConexion = fechaConexion;
+	}
+
+	public Date getFechaAsignacionDistribuidor() {
+		return fechaAsignacionDistribuidor;
+	}
+
+	public void setFechaAsignacionDistribuidor(Date fechaAsignacionDistribuidor) {
+		this.fechaAsignacionDistribuidor = fechaAsignacionDistribuidor;
+	}
+
+	public Date getFechaAsignacionPuntoVenta() {
+		return fechaAsignacionPuntoVenta;
+	}
+
+	public void setFechaAsignacionPuntoVenta(Date fechaAsignacionPuntoVenta) {
+		this.fechaAsignacionPuntoVenta = fechaAsignacionPuntoVenta;
+	}
+
+	public Usuario getDistribuidor() {
+		return distribuidor;
+	}
+
+	public void setDistribuidor(Usuario distribuidor) {
+		this.distribuidor = distribuidor;
+	}
+
+	public PuntoVenta getPuntoVenta() {
+		return puntoVenta;
+	}
+
+	public void setPuntoVenta(PuntoVenta puntoVenta) {
+		this.puntoVenta = puntoVenta;
 	}
 
 	public Empresa getEmpresa() {

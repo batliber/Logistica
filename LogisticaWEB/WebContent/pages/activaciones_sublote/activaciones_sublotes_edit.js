@@ -1,5 +1,6 @@
 var __ROL_ADMINISTRADOR = 1;
-var __ROL_SUPERVISOR_DISTRIBUCION = 7;
+var __ROL_ENCARGADO_ACTIVACIONES = 12;
+var __ROL_SUPERVISOR_DISTRIBUCION_CHIPS = 12456792;
 
 var chips = {
 	cantidadRegistros: 0,
@@ -13,7 +14,7 @@ $(document).ready(init);
 function init() {
 	refinarForm();
 	
-	UsuarioRolEmpresaDWR.listDistribuidoresByContext(
+	UsuarioRolEmpresaDWR.listDistribuidoresByContextMinimal(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -47,7 +48,7 @@ function init() {
 		}
 	);
 	
-	BarrioDWR.list(
+	BarrioDWR.listMinimal(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -64,7 +65,7 @@ function init() {
 		}
 	);
 	
-	PuntoVentaDWR.list(
+	PuntoVentaDWR.listMinimal(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -94,7 +95,7 @@ function init() {
 		reloadGrid,
 		trActivacionOnClick,
 		null,
-		17
+		13
 	);
 	
 	grid.rebuild();
@@ -105,6 +106,7 @@ function init() {
 			{
 				callback: function(data) {
 					$("#divNumero").text(data.numero);
+					$("#inputDescripcion").val(data.descripcion);
 
 					if (data.fechaAsignacionDistribuidor != null) {
 						$("#divFechaAsignacionDistribuidor").text(formatLongDate(data.fechaAsignacionDistribuidor));
@@ -159,19 +161,55 @@ function refinarForm() {
 		
 	}
 	
-	$("#divButtonImprimir").show();
-	
-	$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-}
-
-function listEmpresas() {
-	EmpresaDWR.list(
+	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
-				return data;
+				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES) {
+						hideField("puntoVentaDepartamento");
+						hideField("puntoVentaBarrio");
+						hideField("puntoVenta");
+						hideField("fechaAsignacionPuntoVenta");
+						
+						break;
+					}
+				}
 			}, async: false
 		}
 	);
+	
+	$("#divButtonImprimir").show();
+	$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+}
+
+function hideField(elementId) {
+	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, elementId.length);
+	
+	$("#divLabel" + elementSuffix).hide();
+	$("#div" + elementSuffix).hide();
+}
+
+function showField(elementId) {
+	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, elementId.length);
+	
+	$("#divLabel" + elementSuffix).show();
+	$("#div" + elementSuffix).show();
+}
+
+function listEmpresas() {
+	var result = [];
+	
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
 }
 
 function listEstadoActivaciones() {
@@ -199,7 +237,7 @@ function selectPuntoVentaDepartamentoOnChange(event, element) {
 	$("#selectPuntoVenta > option:gt(0)").remove();
 	
 	if ($("#selectPuntoVentaDepartamento").val() != "0") {
-		BarrioDWR.listByDepartamentoId(
+		BarrioDWR.listMinimalByDepartamentoId(
 			$("#selectPuntoVentaDepartamento").val(),
 			{
 				callback: function(data) {
@@ -224,7 +262,7 @@ function selectPuntoVentaBarrioOnChange(event, element) {
 	$("#selectPuntoVenta > option:gt(0)").remove();
 	
 	if ($("#selectPuntoVentaBarrio").val() != "0") {
-		PuntoVentaDWR.listByBarrioId(
+		PuntoVentaDWR.listMinimalByBarrioId(
 			$("#selectPuntoVentaBarrio > option:selected").val(),
 			{
 				callback: function(data) {
@@ -239,7 +277,7 @@ function selectPuntoVentaBarrioOnChange(event, element) {
 			}
 		);
 	} else if ($("#selectPuntoVentaDepartamento").val() != "0") {
-		PuntoVentaDWR.listByDepartamentoId(
+		PuntoVentaDWR.listMinimalByDepartamentoId(
 			$("#selectPuntoVentaDepartamento > option:selected").val(),
 			{
 				callback: function(data) {
@@ -254,7 +292,7 @@ function selectPuntoVentaBarrioOnChange(event, element) {
 			}
 		);
 	} else {
-		PuntoVentaDWR.list(
+		PuntoVentaDWR.listMinimal(
 			{
 				callback: function(data) {
 					var html = "";
@@ -313,14 +351,7 @@ function reloadGrid() {
 		registrosMuestra: []
 	};
 	for (var i=0; i<ordered.length; i++) {
-		registros.registrosMuestra[registros.registrosMuestra.length] = {
-			id: ordered[i].id,
-			mid: ordered[i].mid,
-			chip: ordered[i].chip,
-			empresa: ordered[i].empresa,
-			estadoActivacion: ordered[i].estadoActivacion,
-			tipoActivacion: ordered[i].tipoActivacion
-		};
+		registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
 	}
 	
 	grid.reload(registros);
@@ -403,6 +434,7 @@ function inputGuardarOnClick(event) {
 	}
 	
 	var activacionSublote = {
+		descripcion: $("#inputDescripcion").val(),
 		empresa: {
 			id: empresaId
 		}

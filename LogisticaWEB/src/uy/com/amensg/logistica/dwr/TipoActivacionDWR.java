@@ -46,15 +46,17 @@ public class TipoActivacionDWR {
 	}
 	
 	public static TipoActivacionTO transform(TipoActivacion tipoActivacion) {
-		TipoActivacionTO tipoActivacionTO = new TipoActivacionTO();
+		TipoActivacionTO result = new TipoActivacionTO();
 		
-		tipoActivacionTO.setDescripcion(tipoActivacion.getDescripcion());
+		result.setDescripcion(tipoActivacion.getDescripcion());
 		
-		tipoActivacionTO.setFact(tipoActivacion.getFact());
-		tipoActivacionTO.setId(tipoActivacion.getId());
-		tipoActivacionTO.setTerm(tipoActivacion.getTerm());
-		tipoActivacionTO.setUact(tipoActivacion.getUact());
+		result.setFcre(tipoActivacion.getFcre());
+		result.setFact(tipoActivacion.getFact());
+		result.setId(tipoActivacion.getId());
+		result.setTerm(tipoActivacion.getTerm());
+		result.setUact(tipoActivacion.getUact());
+		result.setUcre(tipoActivacion.getUcre());
 		
-		return tipoActivacionTO;
+		return result;
 	}
 }

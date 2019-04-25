@@ -17,6 +17,9 @@ import uy.com.amensg.logistica.bean.IMarcaBean;
 import uy.com.amensg.logistica.bean.MarcaBean;
 import uy.com.amensg.logistica.entities.Marca;
 import uy.com.amensg.logistica.entities.MarcaTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 
 @RemoteProxy
 public class MarcaDWR {
@@ -42,6 +45,67 @@ public class MarcaDWR {
 			
 			for (Marca marca : iMarcaBean.list()) {
 				result.add(transform(marca));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IMarcaBean iMarcaBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iMarcaBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object marca : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(MarcaDWR.transform((Marca) marca));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IMarcaBean iMarcaBean = lookupBean();
+				
+				result = 
+					iMarcaBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,10 +164,12 @@ public class MarcaDWR {
 		result.setNombre(marca.getNombre());
 		result.setFechaBaja(marca.getFechaBaja());
 		
+		result.setFcre(marca.getFcre());
 		result.setFact(marca.getFact());
 		result.setId(marca.getId());
 		result.setTerm(marca.getTerm());
 		result.setUact(marca.getUact());
+		result.setUcre(marca.getUcre());
 		
 		return result;
 	}
@@ -116,6 +182,7 @@ public class MarcaDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(marcaTO.getFcre());
 		result.setFact(date);
 		result.setId(marcaTO.getId());
 		result.setTerm(new Long(1));
@@ -124,6 +191,7 @@ public class MarcaDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(marcaTO.getUcre());
 		
 		return result;
 	}

@@ -20,6 +20,7 @@ function init() {
 			tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 80 },
 			tdActivador: { campo: "activador.nombre", clave: "activador.id", descripcion: "Activador", abreviacion: "Activador", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listActivadores, clave: "id", valor: "nombre" }, ancho: 90 },
 			tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
+			tdFechaRechazo: { campo: "fechaRechazo", descripcion: "Fecha de rechazo", abreviacion: "Rechazado", tipo: __TIPO_CAMPO_FECHA },
 			tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 90 },
 			tdEstado: { campo: "estado.nombre", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "nombre" }, ancho: 90 },
 		}, 
@@ -39,7 +40,7 @@ function init() {
 function listEmpresas() {
 	var result = [];
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -222,7 +223,7 @@ function inputSubirArchivoOnClick() {
 	
 	$("#selectEmpresa").append("<option value='0'>Seleccione...</option>");
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var html = "";
@@ -290,4 +291,16 @@ function inputAceptarOnClick(event, element) {
 function inputAgregarMidOnClick(event, element) {
 	document.getElementById("iFrameContrato").src = "/LogisticaWEB/pages/contrato/contrato.jsp?m=" + __FORM_MODE_NEW;
 	showPopUp(document.getElementById("divIFrameContrato"));
+}
+
+function inputExportarAExcelOnClick(event, element) {
+	ContratoDWR.exportarAExcel(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+				document.getElementById("formExportarAExcel").submit();
+			}, async: false
+		}
+	);
 }

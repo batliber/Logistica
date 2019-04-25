@@ -1,0 +1,19 @@
+#divIFrameVisitaPuntoVentaDistribuidor {
+	position: relative;
+	top: 100px;
+	left: 100px;
+	width: 550px;
+	height: 310px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameVisitaPuntoVentaDistribuidor {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 289px;
+}

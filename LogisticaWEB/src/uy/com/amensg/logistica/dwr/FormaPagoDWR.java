@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.FormaPagoBean;
@@ -35,9 +39,23 @@ public class FormaPagoDWR {
 		try {
 			IFormaPagoBean iFormaPagoBean = lookupBean();
 			
-			for (FormaPago FormaPago : iFormaPagoBean.list()) {
-				result.add(transform(FormaPago));
+			for (FormaPago formaPago : iFormaPagoBean.list()) {
+				result.add(transform(formaPago));
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public FormaPagoTO getById(Long id) {
+		FormaPagoTO result = null;
+		
+		try {
+			IFormaPagoBean iFormaPagoBean = lookupBean();
+			
+			result = transform(iFormaPagoBean.getById(id));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,10 +69,12 @@ public class FormaPagoDWR {
 		result.setDescripcion(formaPago.getDescripcion());
 		result.setOrden(formaPago.getOrden());
 		
+		result.setFcre(formaPago.getFcre());
 		result.setFact(formaPago.getFact());
 		result.setId(formaPago.getId());
 		result.setTerm(formaPago.getTerm());
 		result.setUact(formaPago.getUact());
+		result.setUcre(formaPago.getUcre());
 		
 		return result;
 	}
@@ -65,10 +85,18 @@ public class FormaPagoDWR {
 		result.setDescripcion(formaPagoTO.getDescripcion());
 		result.setOrden(formaPagoTO.getOrden());
 		
-		result.setFact(formaPagoTO.getFact());
+		Date date = GregorianCalendar.getInstance().getTime();
+		
+		result.setFcre(formaPagoTO.getFcre());
+		result.setFact(date);
 		result.setId(formaPagoTO.getId());
 		result.setTerm(formaPagoTO.getTerm());
-		result.setUact(formaPagoTO.getUact());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(formaPagoTO.getUcre());
 		
 		return result;
 	}

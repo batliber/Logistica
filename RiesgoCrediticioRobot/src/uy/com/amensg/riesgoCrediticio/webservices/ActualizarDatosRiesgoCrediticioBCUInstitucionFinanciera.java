@@ -13,7 +13,8 @@ import javax.xml.bind.annotation.XmlType;
     "arg4",
     "arg5",
     "arg6",
-    "arg7"
+    "arg7",
+    "arg8"
 })
 public class ActualizarDatosRiesgoCrediticioBCUInstitucionFinanciera {
 
@@ -25,6 +26,7 @@ public class ActualizarDatosRiesgoCrediticioBCUInstitucionFinanciera {
     protected String arg5;
     protected String arg6;
     protected String arg7;
+    protected String arg8;
 
     public String getArg0() {
         return arg0;
@@ -88,5 +90,13 @@ public class ActualizarDatosRiesgoCrediticioBCUInstitucionFinanciera {
 
 	public void setArg7(String arg7) {
 		this.arg7 = arg7;
+	}
+
+	public String getArg8() {
+		return arg8;
+	}
+
+	public void setArg8(String arg8) {
+		this.arg8 = arg8;
 	}
 }

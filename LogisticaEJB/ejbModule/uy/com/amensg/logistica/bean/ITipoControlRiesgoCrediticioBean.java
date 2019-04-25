@@ -10,4 +10,6 @@ import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
 public interface ITipoControlRiesgoCrediticioBean {
 
 	public Collection<TipoControlRiesgoCrediticio> list();
+	
+	public TipoControlRiesgoCrediticio getById(Long id);
 }

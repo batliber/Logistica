@@ -1,101 +1,53 @@
-#divUsuarioLogin {
-	float: left;
-	width: 70%;
-}
-
-#inputUsuarioLogin {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divUsuarioNombre {
-	float: left;
-	width: 70%;
-}
-
 #inputUsuarioNombre {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divUsuarioDocumento {
-	float: left;
-	width: 70%;
-}
-
-#inputUsuarioDocumento {
-	margin-left: 2px;
-}
-
-#divUsuarioContrasena {
-	float: left;
-	width: 70%;
-}
-
-#inputUsuarioContrasena {
-	margin-left: 2px;
-	width: 91%;
-}
-
-#divEmpresa {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
-}
-
-#selectEmpresa {
 	width: 60%;
 }
 
-.divEmpresasRoles {
+#inputUsuarioContrasena {
+	width: 60%;
+}
+
+#divEmpresa {
+	width: 30%;
+	margin-right: 0;
+}
+
+#selectEmpresa {
+	width: 80%;
 	float: left;
-	width: 71%;
-	margin-top: 2px;
-	margin-left: 2px;
 }
 
-#divEmpresas {
+#inputAgregarEmpresa {
+	margin-left: 5px;
+	background-image: url('/LogisticaWEB/images/add.png');
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+#divRol {
+	width: 30%;
+	margin-right: 0;
+}
+
+#inputAgregarRol {
+	margin-left: 5px;
+	background-image: url('/LogisticaWEB/images/add.png');
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+#selectRol {
 	float: left;
-	width: 49%;
-	margin-top: 2px;
+	width: 80%;
 }
 
-#tableEmpresas {
-	
-}
-
-#tableEmpresas thead tr .tdEmpresaNombre {
-	width: 150px;
-}
-
-#tableEmpresas thead tr .tdEmpresaCheck {
-	width: 20px;
-}
-
-#tableEmpresas tbody tr td .divEmpresaNombre {
-	margin-left: 2px;
-}
-
-#divRoles {
+#divTableEmpresas {
 	float: left;
-	width: 49%;
-	margin-top: 2px;
-	margin-left: 2px;
+	margin-left: 4px;
+	margin-top: 6px;
 }
 
-#tableRoles {
-	
-}
-
-#tableRoles thead tr .tdRolNombre {
-	width: 150px;
-}
-
-#tableRoles thead tr .tdCheck {
-	width: 20px;
-}
-
-#tableRoles tbody tr td .divRolNombre {
-	margin-left: 2px;
+#divTableRoles {
+	float: left;
+	margin-left: 4px;
+	margin-top: 6px;
 }

@@ -25,10 +25,10 @@ public class ACMInterfaceRiesgoCrediticio extends BaseEntity {
 	private Date fechaCelular;
 	
 	@Column(name = "deuda_celular")
-	private Boolean deudaCelular;
+	private String deudaCelular;
 	
 	@Column(name = "riesgo_crediticio_celular")
-	private Boolean riesgoCrediticioCelular;
+	private String riesgoCrediticioCelular;
 			
 	@Column(name = "contratos_celular")
 	private Long contratosCelular;
@@ -74,19 +74,19 @@ public class ACMInterfaceRiesgoCrediticio extends BaseEntity {
 		this.fechaCelular = fechaCelular;
 	}
 
-	public Boolean getDeudaCelular() {
+	public String getDeudaCelular() {
 		return deudaCelular;
 	}
 
-	public void setDeudaCelular(Boolean deudaCelular) {
+	public void setDeudaCelular(String deudaCelular) {
 		this.deudaCelular = deudaCelular;
 	}
 
-	public Boolean getRiesgoCrediticioCelular() {
+	public String getRiesgoCrediticioCelular() {
 		return riesgoCrediticioCelular;
 	}
 
-	public void setRiesgoCrediticioCelular(Boolean riesgoCrediticioCelular) {
+	public void setRiesgoCrediticioCelular(String riesgoCrediticioCelular) {
 		this.riesgoCrediticioCelular = riesgoCrediticioCelular;
 	}
 

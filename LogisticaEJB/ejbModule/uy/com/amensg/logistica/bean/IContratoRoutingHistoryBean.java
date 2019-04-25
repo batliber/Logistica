@@ -14,4 +14,6 @@ public interface IContratoRoutingHistoryBean {
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 
 	public Collection<ContratoRoutingHistory> listByContratoId(Long contratoId);
+	
+	public Collection<ContratoRoutingHistory> listByNumeroTramite(Long numeroTramite);
 }

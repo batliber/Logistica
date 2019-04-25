@@ -19,6 +19,9 @@ import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EmpresaTO;
 import uy.com.amensg.logistica.entities.Marca;
 import uy.com.amensg.logistica.entities.MarcaTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.ModeloTO;
 import uy.com.amensg.logistica.entities.Moneda;
@@ -75,6 +78,67 @@ public class PrecioDWR {
 		return result;
 	}
 	
+	public MetadataConsultaResultadoTO listPreciosActualesContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IPrecioBean iPrecioBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iPrecioBean.listPreciosActuales(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object precio : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(PrecioDWR.transform((Precio) precio));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countPreciosActualesContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IPrecioBean iPrecioBean = lookupBean();
+				
+				result = 
+					iPrecioBean.countPreciosActuales(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public PrecioTO getById(Long id) {
 		PrecioTO result = null;
 		
@@ -89,41 +153,13 @@ public class PrecioDWR {
 		return result;
 	}
 	
-	public PrecioTO getActualByEmpresaMarcaModeloMoneda(
-		EmpresaTO empresa, 
-		MarcaTO marca, 
-		ModeloTO modelo, 
-		MonedaTO moneda
-	) {
-		PrecioTO result = null;
-		
-		try {
-			IPrecioBean iPrecioBean = lookupBean();
-			
-			Precio precio =
-				iPrecioBean.getActualByEmpresaMarcaModeloMoneda(
-					EmpresaDWR.transform(empresa),
-					MarcaDWR.transform(marca),
-					ModeloDWR.transform(modelo),
-					MonedaDWR.transform(moneda)
-				);
-			
-			if (precio != null) {
-				result = transform(precio);
-			} 	
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-	
-	public PrecioTO getActualByEmpresaTipoProductoMarcaModeloMoneda(
+	public PrecioTO getActualByEmpresaTipoProductoMarcaModeloMonedaCuotas(
 		EmpresaTO empresa, 
 		TipoProductoTO tipoProducto, 
 		MarcaTO marca, 
 		ModeloTO modelo, 
-		MonedaTO moneda
+		MonedaTO moneda,
+		Long cuotas
 	) {
 		PrecioTO result = null;
 		
@@ -131,12 +167,13 @@ public class PrecioDWR {
 			IPrecioBean iPrecioBean = lookupBean();
 			
 			Precio precio =
-				iPrecioBean.getActualByEmpresaTipoProductoMarcaModeloMoneda(
+				iPrecioBean.getActualByEmpresaTipoProductoMarcaModeloMonedaCuotas(
 					EmpresaDWR.transform(empresa),
 					TipoProductoDWR.transform(tipoProducto),
 					MarcaDWR.transform(marca),
 					ModeloDWR.transform(modelo),
-					MonedaDWR.transform(moneda)
+					MonedaDWR.transform(moneda),
+					cuotas
 				);
 			
 			if (precio != null) {
@@ -172,11 +209,12 @@ public class PrecioDWR {
 	public static PrecioTO transform(Precio precio) {
 		PrecioTO result = new PrecioTO();
 		
+		result.setCuotas(precio.getCuotas());
 		result.setFechaHasta(precio.getFechaHasta());
 		result.setPrecio(precio.getPrecio());
 		
 		if (precio.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(precio.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(precio.getEmpresa(), false));
 		}
 		
 		if (precio.getMarca() != null) {
@@ -195,10 +233,12 @@ public class PrecioDWR {
 			result.setTipoProducto(TipoProductoDWR.transform(precio.getTipoProducto()));
 		}
 		
+		result.setFcre(precio.getFcre());
 		result.setFact(precio.getFact());
 		result.setId(precio.getId());
 		result.setTerm(precio.getTerm());
 		result.setUact(precio.getUact());
+		result.setUcre(precio.getUcre());
 		
 		return result;
 	}
@@ -206,6 +246,7 @@ public class PrecioDWR {
 	public static Precio transform(PrecioTO precioTO) {
 		Precio result = new Precio();
 		
+		result.setCuotas(precioTO.getCuotas());
 		result.setFechaHasta(precioTO.getFechaHasta());
 		result.setPrecio(precioTO.getPrecio());
 		
@@ -246,6 +287,7 @@ public class PrecioDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(precioTO.getFcre());
 		result.setFact(date);
 		result.setId(precioTO.getId());
 		result.setTerm(new Long(1));
@@ -254,6 +296,7 @@ public class PrecioDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(precioTO.getUcre());
 		
 		return result;
 	}

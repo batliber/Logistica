@@ -4,6 +4,8 @@ public interface IConnectionStrategy {
 
 	public String getSiguienteMidSinProcesar();
 	
+	public String getSiguienteNumeroContratoSinProcesar();
+	
 	public void actualizarDatosMidContrato(
 		String direccion,
 		String documentoTipo,
@@ -18,7 +20,8 @@ public interface IConnectionStrategy {
 		String agente,
 		String equipo,
 		String numeroCliente,
-		String numeroContrato
+		String numeroContrato,
+		String estadoContrato
 	);
 	
 	public void actualizarDatosMidPrepago(
@@ -33,6 +36,10 @@ public interface IConnectionStrategy {
 
 	public void actualizarDatosMidListaVacia(
 		String mid
+	);
+	
+	public void actualizarDatosNumeroContratoListaVacia(
+		String numeroContrato
 	);
 
 	public void actualizarDatosPersona(

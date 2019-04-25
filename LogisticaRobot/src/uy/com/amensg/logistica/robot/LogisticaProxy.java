@@ -2,10 +2,14 @@ package uy.com.amensg.logistica.robot;
 
 public class LogisticaProxy {
 
-	private IConnectionStrategy iConnectionStrategy = new ConnectionStrategyDirect();
+	private IConnectionStrategy iConnectionStrategy = new ConnectionStrategyWebService();
 	
 	public void getSiguienteMidSinProcesar() {
 		System.out.println(iConnectionStrategy.getSiguienteMidSinProcesar());
+	}
+	
+	public void getSiguienteNumeroContratoSinProcesar() {
+		System.out.println(iConnectionStrategy.getSiguienteNumeroContratoSinProcesar());
 	}
 	
 	public void actualizarDatosMidContrato(
@@ -22,7 +26,8 @@ public class LogisticaProxy {
 		String agente,
 		String equipo,
 		String numeroCliente,
-		String numeroContrato
+		String numeroContrato,
+		String estadoContrato
 	) {
 		iConnectionStrategy.actualizarDatosMidContrato(
 			direccion, 
@@ -38,7 +43,8 @@ public class LogisticaProxy {
 			agente,
 			equipo,
 			numeroCliente,
-			numeroContrato
+			numeroContrato,
+			estadoContrato
 		);
 	}
 	
@@ -65,6 +71,12 @@ public class LogisticaProxy {
 	public void actualizarDatosMidListaVacia(String mid) {
 		iConnectionStrategy.actualizarDatosMidListaVacia(
 			mid
+		);
+	}
+	
+	public void actualizarDatosNumeroContratoListaVacia(String numeroContrato) {
+		iConnectionStrategy.actualizarDatosNumeroContratoListaVacia(
+			numeroContrato
 		);
 	}
 	
@@ -134,6 +146,8 @@ public class LogisticaProxy {
 	public static void main(String[] args) {
 		if (args[0].equals("getSiguienteMidSinProcesar")) {
 			new LogisticaProxy().getSiguienteMidSinProcesar();
+		} else if (args[0].equals("getSiguienteNumeroContratoSinProcesar")) {
+			new LogisticaProxy().getSiguienteNumeroContratoSinProcesar();
 		} else if (args[0].equals("actualizarDatosMid")) {
 			if (args[1].equals("contrato")) {
 				new LogisticaProxy().actualizarDatosMidContrato(
@@ -150,7 +164,8 @@ public class LogisticaProxy {
 					args[12],
 					args[13],
 					args[14],
-					args[15]
+					args[15],
+					args[16]
 				);
 			} else if (args[1].equals("prepago")) {
 				new LogisticaProxy().actualizarDatosMidPrepago(
@@ -164,6 +179,12 @@ public class LogisticaProxy {
 				);
 			} else if (args[1].equals("listaVacia")) {
 				new LogisticaProxy().actualizarDatosMidListaVacia(
+					args[2]
+				);
+			}
+		} else if (args[0].equals("actualizarDatosNumeroContrato")) {
+			if (args[1].equals("listaVacia")) {
+				new LogisticaProxy().actualizarDatosNumeroContratoListaVacia(
 					args[2]
 				);
 			}

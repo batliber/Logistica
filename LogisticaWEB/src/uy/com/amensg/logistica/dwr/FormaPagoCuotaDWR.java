@@ -13,10 +13,12 @@ public class FormaPagoCuotaDWR {
 		
 		result.setDescripcion(formaPagoCuota.getDescripcion());
 		
+		result.setFcre(formaPagoCuota.getFcre());
 		result.setFact(formaPagoCuota.getFact());
 		result.setId(formaPagoCuota.getId());
 		result.setTerm(formaPagoCuota.getTerm());
 		result.setUact(formaPagoCuota.getUact());
+		result.setUcre(formaPagoCuota.getUcre());
 		
 		return result;
 	}

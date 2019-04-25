@@ -95,19 +95,21 @@ public class MenuDWR {
 	}
 	
 	public static MenuTO transform(Menu menu) {
-		MenuTO menuTO = new MenuTO();
+		MenuTO result = new MenuTO();
 		
-		menuTO.setOrden(menu.getOrden());
-		menuTO.setPadre(menu.getPadre());
-		menuTO.setTitulo(menu.getTitulo());
-		menuTO.setUrl(menu.getUrl());
+		result.setOrden(menu.getOrden());
+		result.setPadre(menu.getPadre());
+		result.setTitulo(menu.getTitulo());
+		result.setUrl(menu.getUrl());
 		
-		menuTO.setFact(menu.getFact());
-		menuTO.setId(menu.getId());
-		menuTO.setTerm(menu.getTerm());
-		menuTO.setUact(menu.getUact());
+		result.setFcre(menu.getFcre());
+		result.setFact(menu.getFact());
+		result.setId(menu.getId());
+		result.setTerm(menu.getTerm());
+		result.setUact(menu.getUact());
+		result.setUcre(menu.getUcre());
 		
-		return menuTO;
+		return result;
 	}
 
 	public static Menu transform(MenuTO menuTO) {
@@ -120,6 +122,7 @@ public class MenuDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(menuTO.getFcre());
 		result.setFact(date);
 		result.setId(menuTO.getId());
 		result.setTerm(new Long(1));
@@ -128,6 +131,7 @@ public class MenuDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(menuTO.getUcre());
 		
 		return result;
 	}

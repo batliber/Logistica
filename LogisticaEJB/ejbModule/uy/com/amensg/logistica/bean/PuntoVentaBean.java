@@ -15,6 +15,7 @@ import uy.com.amensg.logistica.entities.Departamento;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.PuntoVenta;
+import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
@@ -38,6 +39,156 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 			
 			for (PuntoVenta puntoVenta : query.getResultList()) {
 				result.add(puntoVenta);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<PuntoVenta> list(Long usuarioId) {
+		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
+		
+		try {
+			Long estadoVisitaPuntoVentaDistribuidorPendienteId = 
+				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"));
+			
+			Long estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId = 
+				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.VisitaPermanente"));
+			
+			TypedQuery<PuntoVenta> query = 
+				entityManager.createQuery(
+					"SELECT pv"
+					+ " FROM PuntoVenta pv"
+					+ " WHERE pv.fechaBaja IS NULL"
+					+ " AND ("
+						+ " pv.ucre = :usuarioId"
+						+ " OR EXISTS ("
+							+ "	SELECT v.puntoVenta"
+							+ " FROM VisitaPuntoVentaDistribuidor v"
+							+ " WHERE v.puntoVenta = pv"
+							+ " AND v.distribuidor.id = :usuarioId"
+							+ " AND ("
+								+ " v.estadoVisitaPuntoVentaDistribuidor.id = :estadoVisitaPuntoVentaDistribuidorPendienteId"
+								+ " OR v.estadoVisitaPuntoVentaDistribuidor.id = :estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId"
+							+ ")"
+						+ " )"
+					+ " )"
+					+ " ORDER BY pv.nombre ASC", 
+					PuntoVenta.class
+				);
+			query.setParameter("usuarioId", usuarioId);
+			query.setParameter("estadoVisitaPuntoVentaDistribuidorPendienteId", estadoVisitaPuntoVentaDistribuidorPendienteId);
+			query.setParameter("estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId", estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId);
+			
+			for (PuntoVenta puntoVenta : query.getResultList()) {
+				result.add(puntoVenta);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<PuntoVenta> listMinimal() {
+		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT pv.id, pv.nombre"
+					+ " FROM PuntoVenta pv"
+					+ " WHERE pv.fechaBaja IS NULL"
+					+ " ORDER BY pv.nombre ASC", 
+					Object[].class
+				);
+			
+			for (Object[] puntoVenta : query.getResultList()) {
+				PuntoVenta puntoVentaMinimal = new PuntoVenta();
+				puntoVentaMinimal.setId((Long)puntoVenta[0]);
+				puntoVentaMinimal.setNombre((String)puntoVenta[1]);
+				
+				result.add(puntoVentaMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<PuntoVenta> listMinimalCreatedByUsuarioId(Long usuarioId) {
+		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT pv.id, pv.nombre"
+					+ " FROM PuntoVenta pv"
+					+ " WHERE pv.fechaBaja IS NULL"
+					+ " AND pv.ucre = :usuarioId"
+					+ " ORDER BY pv.nombre ASC", 
+					Object[].class
+				);
+			query.setParameter("usuarioId", usuarioId);
+			
+			for (Object[] puntoVenta : query.getResultList()) {
+				PuntoVenta puntoVentaMinimal = new PuntoVenta();
+				puntoVentaMinimal.setId((Long)puntoVenta[0]);
+				puntoVentaMinimal.setNombre((String)puntoVenta[1]);
+				
+				result.add(puntoVentaMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<PuntoVenta> listMinimalCreatedORAssignedByUsuarioId(Long usuarioId) {
+		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
+		
+		try {
+			Long estadoVisitaPuntoVentaDistribuidorPendienteId = 
+				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"));
+			
+			Long estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId = 
+				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.VisitaPermanente"));
+			
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT pv.id, pv.nombre"
+					+ " FROM PuntoVenta pv"
+					+ " WHERE pv.fechaBaja IS NULL"
+					+ " AND ("
+						+ "	pv.ucre = :usuarioId"
+						+ " OR EXISTS ("
+							+ "	SELECT v.puntoVenta"
+							+ " FROM VisitaPuntoVentaDistribuidor v"
+							+ " WHERE v.puntoVenta = pv"
+							+ " AND v.distribuidor = pv.distribuidor"
+							+ " AND ("
+								+ " v.estadoVisitaPuntoVentaDistribuidor.id = :estadoVisitaPuntoVentaDistribuidorPendienteId"
+								+ " OR v.estadoVisitaPuntoVentaDistribuidor.id = :estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId"
+							+ "	)"
+						+ " )"
+					+ " )"
+					+ " ORDER BY pv.nombre ASC", 
+					Object[].class
+				);
+			query.setParameter("usuarioId", usuarioId);
+			query.setParameter("estadoVisitaPuntoVentaDistribuidorPendienteId", estadoVisitaPuntoVentaDistribuidorPendienteId);
+			query.setParameter("estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId", estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId);
+			
+			for (Object[] puntoVenta : query.getResultList()) {
+				PuntoVenta puntoVentaMinimal = new PuntoVenta();
+				puntoVentaMinimal.setId((Long)puntoVenta[0]);
+				puntoVentaMinimal.setNombre((String)puntoVenta[1]);
+				
+				result.add(puntoVentaMinimal);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,6 +246,82 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 		return result;
 	}
 	
+	public Collection<PuntoVenta> listByDepartamento(Departamento departamento, Long usuarioId) {
+		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
+		
+		try {
+			Long estadoVisitaPuntoVentaDistribuidorPendienteId = 
+				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"));
+			
+			Long estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId = 
+				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.VisitaPermanente"));
+			
+			TypedQuery<PuntoVenta> query = 
+				entityManager.createQuery(
+					"SELECT pv"
+					+ " FROM PuntoVenta pv"
+					+ " WHERE pv.fechaBaja IS NULL"
+					+ " AND pv.departamento.id = :departamentoId"
+					+ " AND ("
+						+ " pv.ucre = :usuarioId"
+						+ " OR EXISTS ("
+							+ "	SELECT v.puntoVenta"
+							+ " FROM VisitaPuntoVentaDistribuidor v"
+							+ " WHERE v.puntoVenta = pv"
+							+ " AND v.distribuidor.id = :usuarioId"
+							+ " AND ("
+								+ " v.estadoVisitaPuntoVentaDistribuidor.id = :estadoVisitaPuntoVentaDistribuidorPendienteId"
+								+ " OR v.estadoVisitaPuntoVentaDistribuidor.id = :estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId"
+							+ " )"
+						+ " )"
+					+ " )"
+					+ " ORDER BY pv.nombre ASC", 
+					PuntoVenta.class
+				);
+			query.setParameter("departamentoId", departamento.getId());
+			query.setParameter("usuarioId", usuarioId);
+			query.setParameter("estadoVisitaPuntoVentaDistribuidorPendienteId", estadoVisitaPuntoVentaDistribuidorPendienteId);
+			query.setParameter("estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId", estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId);
+			
+			for (PuntoVenta puntoVenta : query.getResultList()) {
+				result.add(puntoVenta);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<PuntoVenta> listMinimalByDepartamento(Departamento departamento) {
+		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT pv.id, pv.nombre"
+					+ " FROM PuntoVenta pv"
+					+ " WHERE pv.fechaBaja IS NULL"
+					+ " AND pv.departamento.id = :departamentoId"
+					+ " ORDER BY pv.nombre ASC", 
+					Object[].class
+				);
+			query.setParameter("departamentoId", departamento.getId());
+			
+			for (Object[] puntoVenta : query.getResultList()) {
+				PuntoVenta puntoVentaMinimal = new PuntoVenta();
+				puntoVentaMinimal.setId((Long)puntoVenta[0]);
+				puntoVentaMinimal.setNombre((String)puntoVenta[1]);
+				
+				result.add(puntoVentaMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<PuntoVenta> listByBarrio(Barrio barrio) {
 		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
 		
@@ -120,6 +347,81 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 		return result;
 	}
 	
+	public Collection<PuntoVenta> listByBarrio(Barrio barrio, Long usuarioId) {
+		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
+		
+		try {
+			Long estadoVisitaPuntoVentaDistribuidorPendienteId = 
+				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"));
+			Long estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId = 
+				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.VisitaPermanente"));
+			
+			TypedQuery<PuntoVenta> query = 
+				entityManager.createQuery(
+					"SELECT pv"
+					+ " FROM PuntoVenta pv"
+					+ " WHERE pv.fechaBaja IS NULL"
+					+ " AND pv.barrio.id = :barrioId"
+					+ " AND ("
+						+ " pv.ucre = :usuarioId"
+						+ " OR EXISTS ("
+							+ "	SELECT v.puntoVenta"
+							+ " FROM VisitaPuntoVentaDistribuidor v"
+							+ " WHERE v.puntoVenta = pv"
+							+ " AND v.distribuidor.id = :usuarioId"
+							+ " AND ("
+								+ " v.estadoVisitaPuntoVentaDistribuidor.id = :estadoVisitaPuntoVentaDistribuidorPendienteId"
+								+ " OR v.estadoVisitaPuntoVentaDistribuidor.id = :estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId"
+							+ " )"
+						+ " )"
+					+ " )"
+					+ " ORDER BY pv.nombre ASC", 
+					PuntoVenta.class
+				);
+			query.setParameter("barrioId", barrio.getId());
+			query.setParameter("usuarioId", usuarioId);
+			query.setParameter("estadoVisitaPuntoVentaDistribuidorPendienteId", estadoVisitaPuntoVentaDistribuidorPendienteId);
+			query.setParameter("estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId", estadoVisitaPuntoVentaDistribuidorVisitaPermanenteId);
+			
+			for (PuntoVenta puntoVenta : query.getResultList()) {
+				result.add(puntoVenta);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<PuntoVenta> listMinimalByBarrio(Barrio barrio) {
+		Collection<PuntoVenta> result = new LinkedList<PuntoVenta>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT pv"
+					+ " FROM PuntoVenta pv"
+					+ " WHERE pv.fechaBaja IS NULL"
+					+ " AND pv.barrio.id = :barrioId"
+					+ " ORDER BY pv.nombre ASC", 
+					Object[].class
+				);
+			query.setParameter("barrioId", barrio.getId());
+			
+			for (Object[] puntoVenta : query.getResultList()) {
+				PuntoVenta puntoVentaMinimal = new PuntoVenta();
+				puntoVentaMinimal.setId((Long)puntoVenta[0]);
+				puntoVentaMinimal.setNombre((String)puntoVenta[1]);
+				
+				result.add(puntoVentaMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public PuntoVenta getById(Long id) {
 		PuntoVenta result = null;
 		
@@ -134,6 +436,9 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 
 	public void save(PuntoVenta puntoVenta) {
 		try {
+			puntoVenta.setFcre(puntoVenta.getFact());
+			puntoVenta.setUcre(puntoVenta.getUact());
+			
 			entityManager.persist(puntoVenta);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -165,6 +470,9 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 			puntoVentaManaged.setContacto(puntoVenta.getContacto());
 			puntoVentaManaged.setDireccion(puntoVenta.getDireccion());
 			puntoVentaManaged.setDocumento(puntoVenta.getDocumento());
+			puntoVentaManaged.setFechaAsignacionDistribuidor(puntoVenta.getFechaAsignacionDistribuidor());
+			puntoVentaManaged.setFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor(puntoVenta.getFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor());
+			puntoVentaManaged.setFechaVisitaDistribuidor(puntoVenta.getFechaVisitaDistribuidor());
 			puntoVentaManaged.setLatitud(puntoVenta.getLatitud());
 			puntoVentaManaged.setLongitud(puntoVenta.getLongitud());
 			puntoVentaManaged.setNombre(puntoVenta.getNombre());
@@ -183,12 +491,18 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 				puntoVentaManaged.setEstadoPuntoVenta(puntoVenta.getEstadoPuntoVenta());
 			}
 			
+			if (puntoVenta.getEstadoVisitaPuntoVentaDistribuidor() != null) {
+				puntoVentaManaged.setEstadoVisitaPuntoVentaDistribuidor(puntoVenta.getEstadoVisitaPuntoVentaDistribuidor());
+			}
+			
+			if (puntoVenta.getDistribuidor() != null) {
+				puntoVentaManaged.setDistribuidor(puntoVenta.getDistribuidor());
+			}
+			
 			puntoVentaManaged.setFact(puntoVenta.getFact());
 			puntoVentaManaged.setFechaBaja(puntoVenta.getFechaBaja());
 			puntoVentaManaged.setTerm(puntoVenta.getTerm());
 			puntoVentaManaged.setUact(puntoVenta.getUact());
-			
-			entityManager.merge(puntoVentaManaged);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

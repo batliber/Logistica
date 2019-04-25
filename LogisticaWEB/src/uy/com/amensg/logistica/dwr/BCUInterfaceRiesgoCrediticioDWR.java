@@ -136,7 +136,7 @@ public class BCUInterfaceRiesgoCrediticioDWR {
 		result.setOtorgantesGarantias(bcuInterfaceRiesgoCrediticio.getOtorgantesGarantias());
 		
 		if (bcuInterfaceRiesgoCrediticio.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(bcuInterfaceRiesgoCrediticio.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(bcuInterfaceRiesgoCrediticio.getEmpresa(), false));
 		}
 		
 		Collection<BCUInterfaceRiesgoCrediticioInstitucionFinancieraTO> bcuInterfaceRiesgoCrediticioInstitucionFinancieras = 
@@ -151,10 +151,12 @@ public class BCUInterfaceRiesgoCrediticioDWR {
 		}
 		result.setBcuInterfaceRiesgoCrediticioInstitucionFinancieras(bcuInterfaceRiesgoCrediticioInstitucionFinancieras);
 		
+		result.setFcre(bcuInterfaceRiesgoCrediticio.getFcre());
 		result.setFact(bcuInterfaceRiesgoCrediticio.getFact());
 		result.setId(bcuInterfaceRiesgoCrediticio.getId());
 		result.setTerm(bcuInterfaceRiesgoCrediticio.getTerm());
 		result.setUact(bcuInterfaceRiesgoCrediticio.getUact());
+		result.setUcre(bcuInterfaceRiesgoCrediticio.getUcre());
 		
 		return result;
 	}

@@ -13,6 +13,7 @@ public class TasaInteresEfectivaAnualTO extends BaseTO {
 	private Double montoHasta;
 	private Date fechaVigenciaHasta;
 	private Double valor;
+	private TipoTasaInteresEfectivaAnualTO tipoTasaInteresEfectivaAnual;
 
 	public Long getCuotasDesde() {
 		return cuotasDesde;
@@ -60,5 +61,13 @@ public class TasaInteresEfectivaAnualTO extends BaseTO {
 
 	public void setValor(Double valor) {
 		this.valor = valor;
+	}
+
+	public TipoTasaInteresEfectivaAnualTO getTipoTasaInteresEfectivaAnual() {
+		return tipoTasaInteresEfectivaAnual;
+	}
+
+	public void setTipoTasaInteresEfectivaAnual(TipoTasaInteresEfectivaAnualTO tipoTasaInteresEfectivaAnual) {
+		this.tipoTasaInteresEfectivaAnual = tipoTasaInteresEfectivaAnual;
 	}
 }

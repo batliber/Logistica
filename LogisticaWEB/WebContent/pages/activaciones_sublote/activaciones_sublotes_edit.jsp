@@ -46,18 +46,17 @@
 		<div class="divButtonTitleBarSeparator">&nbsp;</div>
 	</div>
 	<div class="divPopupWindow">
-		<div class="divFormLabelExtended">N&uacute;mero:</div><div id="divNumero" class="divFormValue">&nbsp;</div>
-		<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><!-- <select id="selectEmpresa"></select> -->&nbsp;</div>
-		<div class="divFormLabelExtended">Fecha asign. Distr.:</div><div id="divFechaAsignacionDistribuidor" class="divFormValue">&nbsp;</div>
-		<div class="divFormLabelExtended">Fecha asign. Pto. Vta.:</div><div id="divFechaAsignacionPuntoVenta" class="divFormValue">&nbsp;</div>
-		<div class="divFormLabelExtended">Distribuidor:</div><div id="divDistribuidor" class="divFormValue"><select id="selectDistribuidor"></select></div>
-		<div class="divFormLabelExtended">&nbsp;</div><div class="divFormValue">&nbsp;</div>
-		<div class="divFormLabelExtended">Departamento:</div><div id="divPuntoVentaDepartamento" class="divFormValue"><select id="selectPuntoVentaDepartamento" onchange="javascript:selectPuntoVentaDepartamentoOnChange(event, this)"></select></div>
-		<div class="divFormLabelExtended">&nbsp;</div><div class="divFormValue">&nbsp;</div>
-		<div class="divFormLabelExtended">Barrio:</div><div id="divPuntoVentaBarrio" class="divFormValue"><select id="selectPuntoVentaBarrio" onchange="javascript:selectPuntoVentaBarrioOnChange(event, this)"></select></div>
-		<div class="divFormLabelExtended">Punto de venta:</div><div id="divPuntoVenta" class="divFormValue"><select id="selectPuntoVenta"></select></div>
-		<div class="divFormLabelExtended">&nbsp;</div><div class="divFormValue">&nbsp;</div>
-		<div class="divFormLabelExtended">Chip:</div><div id="divChip" class="divFormValue"><input type="text" id="inputChip" onchange="javascript:inputChipOnChange(event, this)"/></div>
+		<div class="divFormLabelExtended" id="divLabelNumero">N&uacute;mero:</div><div id="divNumero" class="divFormValue">&nbsp;</div>
+		<div class="divFormLabelExtended" id="divLabelEmpresa">Empresa:</div><div id="divEmpresa" class="divFormValue"><!-- <select id="selectEmpresa"></select> -->&nbsp;</div>
+		<div class="divFormLabelExtended" id="divLabelNumero">Descripci&oacute;n:</div><div id="divDescripcion" class="divFormValue"><input type="text" id="inputDescripcion"/></div>
+		<div class="divFormLabelExtended" id="divLabelFechaAsignacionDistribuidor">Fecha asign. Distr.:</div><div id="divFechaAsignacionDistribuidor" class="divFormValue">&nbsp;</div>
+		<div class="divFormLabelExtended" id="divLabelFechaAsignacionPuntoVenta">Fecha asign. Pto. Vta.:</div><div id="divFechaAsignacionPuntoVenta" class="divFormValue">&nbsp;</div>
+		<div class="divFormLabelExtended" id="divLabelDistribuidor">Distribuidor:</div><div id="divDistribuidor" class="divFormValue"><select id="selectDistribuidor"></select></div>
+		<div class="divFormLabelExtended" id="divLabelPuntoVentaDepartamento">Departamento:</div><div id="divPuntoVentaDepartamento" class="divFormValue"><select id="selectPuntoVentaDepartamento" onchange="javascript:selectPuntoVentaDepartamentoOnChange(event, this)"></select></div>
+		<div class="divFormLabelExtended" id="divLabelPuntoVentaBarrio">Barrio:</div><div id="divPuntoVentaBarrio" class="divFormValue"><select id="selectPuntoVentaBarrio" onchange="javascript:selectPuntoVentaBarrioOnChange(event, this)"></select></div>
+		<div class="divFormLabelExtended" id="divLabelPuntoVenta">Punto de venta:</div><div id="divPuntoVenta" class="divFormValue"><select id="selectPuntoVenta"></select></div>
+		<!-- <div class="divFormLabelExtended" id="divLabelPuntoVenta">Punto de venta:</div><div id="divPuntoVenta" class="divFormValue"><input type="text" id="inputPuntoVenta" keyPress=""/></div>  -->
+		<div class="divFormLabelExtended" id="divLabelChip">Chip:</div><div id="divChip" class="divFormValue"><input type="text" id="inputChip" onchange="javascript:inputChipOnChange(event, this)"/></div>
 		<div class="divFormLabelExtended">&nbsp;</div><div class="divFormValue">&nbsp;</div>
 		<div id="divTableActivaciones">&nbsp;</div>
 	</div>

@@ -15,6 +15,9 @@ import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IPlanBean;
 import uy.com.amensg.logistica.bean.PlanBean;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.Plan;
 import uy.com.amensg.logistica.entities.PlanTO;
 import uy.com.amensg.logistica.entities.TipoPlan;
@@ -58,6 +61,67 @@ public class PlanDWR {
 			
 			for (Plan plan : iPlanBean.listVigentes()) {
 				result.add(transform(plan));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IPlanBean iPlanBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iPlanBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object plan : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(PlanDWR.transform((Plan) plan));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IPlanBean iPlanBean = lookupBean();
+				
+				result = 
+					iPlanBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -111,87 +175,97 @@ public class PlanDWR {
 	}
 
 	public static PlanTO transform(Plan plan) {
-		PlanTO planTO = new PlanTO();
+		PlanTO result = new PlanTO();
 		
-		planTO.setAbreviacion(plan.getAbreviacion());
-		planTO.setCantidadCelularesAntelMinutosGratis(plan.getCantidadCelularesAntelMinutosGratis());
-		planTO.setCantidadCelularesAntelSmsGratis(plan.getCantidadCelularesAntelSmsGratis());
-		planTO.setCantidadFijosAntelMinutosGratis(plan.getCantidadFijosAntelMinutosGratis());
-		planTO.setConsumoMinimo(plan.getConsumoMinimo());
-		planTO.setDescripcion(plan.getDescripcion());
-		planTO.setDestinosGratis(plan.getDestinosGratis());
-		planTO.setDuracion(plan.getDuracion());
-		planTO.setFechaBaja(plan.getFechaBaja());
-		planTO.setMinutosGratisMesCelularesAntel(plan.getMinutosGratisMesCelularesAntel());
-		planTO.setMinutosGratisMesFijosAntel(plan.getMinutosGratisMesFijosAntel());
-		planTO.setMontoNavegacionCelular(plan.getMontoNavegacionCelular());
-		planTO.setPrecioConsumoFueraBono(plan.getPrecioConsumoFueraBono());
-		planTO.setPrecioMinutoDestinosAntelHorarioNormal(plan.getPrecioMinutoDestinosAntelHorarioNormal());
-		planTO.setPrecioMinutoDestinosAntelHorarioReducido(plan.getPrecioMinutoDestinosAntelHorarioReducido());
-		planTO.setPrecioMinutoOtrasOperadoras(plan.getPrecioMinutoOtrasOperadoras());
-		planTO.setPrecioSms(plan.getPrecioSms());
-		planTO.setRendimientoMinutosMensualDestinosAntelHorarioNormal(plan.getRendimientoMinutosMensualDestinosAntelHorarioNormal());
-		planTO.setRendimientoMinutosMensualDestinosAntelHorarioReducido(plan.getRendimientoMinutosMensualDestinosAntelHorarioReducido());
-		planTO.setRendimientoMinutosMensualOtrasOperadoras(plan.getRendimientoMinutosMensualOtrasOperadoras());
-		planTO.setSmsGratisMesCelularesAntel(plan.getSmsGratisMesCelularesAntel());
-		planTO.setTopeFacturacionMensualTraficoDatos(plan.getTopeFacturacionMensualTraficoDatos());
+		result.setAbreviacion(plan.getAbreviacion());
+		result.setBeneficioIncluidoEnLlamadas(plan.getBeneficioIncluidoEnLlamadas());
+		result.setCantidadCelularesAntelMinutosGratis(plan.getCantidadCelularesAntelMinutosGratis());
+		result.setCantidadCelularesAntelSmsGratis(plan.getCantidadCelularesAntelSmsGratis());
+		result.setCantidadFijosAntelMinutosGratis(plan.getCantidadFijosAntelMinutosGratis());
+		result.setConsumoMinimo(plan.getConsumoMinimo());
+		result.setDescripcion(plan.getDescripcion());
+		result.setDestinosGratis(plan.getDestinosGratis());
+		result.setDuracion(plan.getDuracion());
+		result.setFechaBaja(plan.getFechaBaja());
+		result.setMinutosGratisMesCelularesAntel(plan.getMinutosGratisMesCelularesAntel());
+		result.setMinutosGratisMesFijosAntel(plan.getMinutosGratisMesFijosAntel());
+		result.setMontoNavegacionCelular(plan.getMontoNavegacionCelular());
+		result.setPiePagina(plan.getPiePagina());
+		result.setPrecioConsumoFueraBono(plan.getPrecioConsumoFueraBono());
+		result.setPrecioMinutoDestinosAntelHorarioNormal(plan.getPrecioMinutoDestinosAntelHorarioNormal());
+		result.setPrecioMinutoDestinosAntelHorarioReducido(plan.getPrecioMinutoDestinosAntelHorarioReducido());
+		result.setPrecioMinutoNumerosAmigos(plan.getPrecioMinutoNumerosAmigos());
+		result.setPrecioMinutoOtrasOperadoras(plan.getPrecioMinutoOtrasOperadoras());
+		result.setPrecioSms(plan.getPrecioSms());
+		result.setRendimientoMinutosMensualDestinosAntelHorarioNormal(plan.getRendimientoMinutosMensualDestinosAntelHorarioNormal());
+		result.setRendimientoMinutosMensualDestinosAntelHorarioReducido(plan.getRendimientoMinutosMensualDestinosAntelHorarioReducido());
+		result.setRendimientoMinutosMensualOtrasOperadoras(plan.getRendimientoMinutosMensualOtrasOperadoras());
+		result.setSmsGratisMesCelularesAntel(plan.getSmsGratisMesCelularesAntel());
+		result.setTopeFacturacionMensualTraficoDatos(plan.getTopeFacturacionMensualTraficoDatos());
 		
 		if (plan.getTipoPlan() != null) {
-			planTO.setTipoPlan(TipoPlanDWR.transform(plan.getTipoPlan()));
+			result.setTipoPlan(TipoPlanDWR.transform(plan.getTipoPlan()));
 		}
 		
-		planTO.setFact(plan.getFact());
-		planTO.setId(plan.getId());
-		planTO.setTerm(plan.getTerm());
-		planTO.setUact(plan.getUact());
+		result.setFcre(plan.getFcre());
+		result.setFact(plan.getFact());
+		result.setId(plan.getId());
+		result.setTerm(plan.getTerm());
+		result.setUact(plan.getUact());
+		result.setUcre(plan.getUcre());
 		
-		return planTO;
+		return result;
 	}
 	
 	public static Plan transform(PlanTO planTO) {
-		Plan plan = new Plan();
+		Plan result = new Plan();
 		
-		plan.setAbreviacion(planTO.getAbreviacion());
-		plan.setCantidadCelularesAntelMinutosGratis(planTO.getCantidadCelularesAntelMinutosGratis());
-		plan.setCantidadCelularesAntelSmsGratis(planTO.getCantidadCelularesAntelSmsGratis());
-		plan.setCantidadFijosAntelMinutosGratis(planTO.getCantidadFijosAntelMinutosGratis());
-		plan.setConsumoMinimo(planTO.getConsumoMinimo());
-		plan.setDescripcion(planTO.getDescripcion());
-		plan.setDestinosGratis(planTO.getDestinosGratis());
-		plan.setDuracion(planTO.getDuracion());
-		plan.setFechaBaja(planTO.getFechaBaja());
-		plan.setMinutosGratisMesCelularesAntel(planTO.getMinutosGratisMesCelularesAntel());
-		plan.setMinutosGratisMesFijosAntel(planTO.getMinutosGratisMesFijosAntel());
-		plan.setMontoNavegacionCelular(planTO.getMontoNavegacionCelular());
-		plan.setPrecioConsumoFueraBono(planTO.getPrecioConsumoFueraBono());
-		plan.setPrecioMinutoDestinosAntelHorarioNormal(planTO.getPrecioMinutoDestinosAntelHorarioNormal());
-		plan.setPrecioMinutoDestinosAntelHorarioReducido(planTO.getPrecioMinutoDestinosAntelHorarioReducido());
-		plan.setPrecioMinutoOtrasOperadoras(planTO.getPrecioMinutoOtrasOperadoras());
-		plan.setPrecioSms(planTO.getPrecioSms());
-		plan.setRendimientoMinutosMensualDestinosAntelHorarioNormal(planTO.getRendimientoMinutosMensualDestinosAntelHorarioNormal());
-		plan.setRendimientoMinutosMensualDestinosAntelHorarioReducido(planTO.getRendimientoMinutosMensualDestinosAntelHorarioReducido());
-		plan.setRendimientoMinutosMensualOtrasOperadoras(planTO.getRendimientoMinutosMensualOtrasOperadoras());
-		plan.setSmsGratisMesCelularesAntel(planTO.getSmsGratisMesCelularesAntel());
-		plan.setTopeFacturacionMensualTraficoDatos(planTO.getTopeFacturacionMensualTraficoDatos());
+		result.setAbreviacion(planTO.getAbreviacion());
+		result.setBeneficioIncluidoEnLlamadas(planTO.getBeneficioIncluidoEnLlamadas());
+		result.setCantidadCelularesAntelMinutosGratis(planTO.getCantidadCelularesAntelMinutosGratis());
+		result.setCantidadCelularesAntelSmsGratis(planTO.getCantidadCelularesAntelSmsGratis());
+		result.setCantidadFijosAntelMinutosGratis(planTO.getCantidadFijosAntelMinutosGratis());
+		result.setConsumoMinimo(planTO.getConsumoMinimo());
+		result.setDescripcion(planTO.getDescripcion());
+		result.setDestinosGratis(planTO.getDestinosGratis());
+		result.setDuracion(planTO.getDuracion());
+		result.setFechaBaja(planTO.getFechaBaja());
+		result.setMinutosGratisMesCelularesAntel(planTO.getMinutosGratisMesCelularesAntel());
+		result.setMinutosGratisMesFijosAntel(planTO.getMinutosGratisMesFijosAntel());
+		result.setMontoNavegacionCelular(planTO.getMontoNavegacionCelular());
+		result.setPiePagina(planTO.getPiePagina());
+		result.setPrecioConsumoFueraBono(planTO.getPrecioConsumoFueraBono());
+		result.setPrecioMinutoDestinosAntelHorarioNormal(planTO.getPrecioMinutoDestinosAntelHorarioNormal());
+		result.setPrecioMinutoDestinosAntelHorarioReducido(planTO.getPrecioMinutoDestinosAntelHorarioReducido());
+		result.setPrecioMinutoNumerosAmigos(planTO.getPrecioMinutoNumerosAmigos());
+		result.setPrecioMinutoOtrasOperadoras(planTO.getPrecioMinutoOtrasOperadoras());
+		result.setPrecioSms(planTO.getPrecioSms());
+		result.setRendimientoMinutosMensualDestinosAntelHorarioNormal(planTO.getRendimientoMinutosMensualDestinosAntelHorarioNormal());
+		result.setRendimientoMinutosMensualDestinosAntelHorarioReducido(planTO.getRendimientoMinutosMensualDestinosAntelHorarioReducido());
+		result.setRendimientoMinutosMensualOtrasOperadoras(planTO.getRendimientoMinutosMensualOtrasOperadoras());
+		result.setSmsGratisMesCelularesAntel(planTO.getSmsGratisMesCelularesAntel());
+		result.setTopeFacturacionMensualTraficoDatos(planTO.getTopeFacturacionMensualTraficoDatos());
 		
 		if (planTO.getTipoPlan() != null) {
 			TipoPlan tipoPlan = new TipoPlan();
 			tipoPlan.setId(planTO.getTipoPlan().getId());
 			
-			plan.setTipoPlan(tipoPlan);
+			result.setTipoPlan(tipoPlan);
 		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
-		plan.setFact(date);
-		plan.setId(planTO.getId());
-		plan.setTerm(new Long(1));
+		result.setFcre(planTO.getFcre());
+		result.setFact(date);
+		result.setId(planTO.getId());
+		result.setTerm(new Long(1));
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
-		plan.setUact(usuarioId);
+		result.setUact(usuarioId);
+		result.setUcre(planTO.getUcre());
 		
-		return plan;
+		return result;
 	}
 }

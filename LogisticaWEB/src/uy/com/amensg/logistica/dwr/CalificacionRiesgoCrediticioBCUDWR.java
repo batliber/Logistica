@@ -51,10 +51,12 @@ public class CalificacionRiesgoCrediticioBCUDWR {
 		result.setDescripcion(calificacionRiesgoCrediticioBCU.getDescripcion());
 		result.setOrden(calificacionRiesgoCrediticioBCU.getOrden());
 		
+		result.setFcre(calificacionRiesgoCrediticioBCU.getFcre());
 		result.setFact(calificacionRiesgoCrediticioBCU.getFact());
 		result.setId(calificacionRiesgoCrediticioBCU.getId());
 		result.setTerm(calificacionRiesgoCrediticioBCU.getTerm());
 		result.setUact(calificacionRiesgoCrediticioBCU.getUact());
+		result.setUcre(calificacionRiesgoCrediticioBCU.getUcre());
 		
 		return result;
 	}

@@ -57,6 +57,11 @@ body {
 	overflow: hidden;
 }
 
+.divDireccionEntregaObservaciones {
+	height: 220px;
+	overflow: hidden;
+}
+
 .divFormaPago {
 	height: 161px;
 }

@@ -10,13 +10,20 @@ public class ControlTO extends BaseTO {
 	private Long mid;
 	private Long cargaInicial;
 	private Long montoCargar;
+	private Long montoTotal;
 	private Date fechaControl;
 	private Date mesControl;
 	private Date fechaActivacion;
 	private Date fechaImportacion;
+	private Date fechaVencimiento;
+	private Date fechaConexion;
+	private Date fechaAsignacionDistribuidor;
+	private Date fechaAsignacionPuntoVenta;
 	private EmpresaTO empresa;
 	private TipoControlTO tipoControl;
 	private EstadoControlTO estadoControl;
+	private UsuarioTO distribuidor;
+	private PuntoVentaTO puntoVenta;
 
 	public Long getMid() {
 		return mid;
@@ -40,6 +47,30 @@ public class ControlTO extends BaseTO {
 
 	public void setMontoCargar(Long montoCargar) {
 		this.montoCargar = montoCargar;
+	}
+
+	public Long getMontoTotal() {
+		return montoTotal;
+	}
+
+	public void setMontoTotal(Long montoTotal) {
+		this.montoTotal = montoTotal;
+	}
+
+	public Date getFechaVencimiento() {
+		return fechaVencimiento;
+	}
+
+	public void setFechaVencimiento(Date fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
+	}
+
+	public Date getFechaConexion() {
+		return fechaConexion;
+	}
+
+	public void setFechaConexion(Date fechaConexion) {
+		this.fechaConexion = fechaConexion;
 	}
 
 	public Date getFechaControl() {
@@ -72,6 +103,38 @@ public class ControlTO extends BaseTO {
 
 	public void setFechaImportacion(Date fechaImportacion) {
 		this.fechaImportacion = fechaImportacion;
+	}
+
+	public Date getFechaAsignacionDistribuidor() {
+		return fechaAsignacionDistribuidor;
+	}
+
+	public void setFechaAsignacionDistribuidor(Date fechaAsignacionDistribuidor) {
+		this.fechaAsignacionDistribuidor = fechaAsignacionDistribuidor;
+	}
+
+	public Date getFechaAsignacionPuntoVenta() {
+		return fechaAsignacionPuntoVenta;
+	}
+
+	public void setFechaAsignacionPuntoVenta(Date fechaAsignacionPuntoVenta) {
+		this.fechaAsignacionPuntoVenta = fechaAsignacionPuntoVenta;
+	}
+
+	public UsuarioTO getDistribuidor() {
+		return distribuidor;
+	}
+
+	public void setDistribuidor(UsuarioTO distribuidor) {
+		this.distribuidor = distribuidor;
+	}
+
+	public PuntoVentaTO getPuntoVenta() {
+		return puntoVenta;
+	}
+
+	public void setPuntoVenta(PuntoVentaTO puntoVenta) {
+		this.puntoVenta = puntoVenta;
 	}
 
 	public EmpresaTO getEmpresa() {

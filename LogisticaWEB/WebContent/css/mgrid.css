@@ -37,6 +37,7 @@
 
 .divTableHeaderCellText {
 	float: left;
+	width: 33px;
 	white-space: nowrap;
 	margin-left: 2px;
 }
@@ -58,8 +59,10 @@
 	font-family: Segoe UI;
 	font-size: 12pt;
 	
-	text-align: center;
 	background-color: #F3F4F6;
+	
+	background-repeat: no-repeat;
+	background-position: right;
 	
 	border-bottom: solid 1px #D5D5D5;
 	border-right: solid 1px #D5D5D5;
@@ -68,504 +71,153 @@
 }
 
 .divTableHeaderCell1NOO {
-	float: left;
 	width: 55px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell2NOO {
-	float: left;
 	width: 110px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell3NOO {
-	float: left;
 	width: 65px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell4NOO {
-	float: left;
 	width: 85px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell5NOO {
-	float: left;
 	width: 65px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell6NOO {
-	float: left;
 	width: 110px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell7NOO {
-	float: left;
 	width: 110px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell8NOO {
-	float: left;
 	width: 55px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell9NOO {
-	float: left;
 	width: 55px;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell10NOO {
-	float: left;
 	width: 15px;
 	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
 	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
+}
+
+.divTableHeaderCell11NOO {
+	width: 55px;
 }
 
 .divTableHeaderCell1ASC {
-	float: left;
 	width: 55px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
 	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell2ASC {
-	float: left;
 	width: 110px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell3ASC {
-	float: left;
 	width: 65px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell4ASC {
-	float: left;
 	width: 85px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell5ASC {
-	float: left;
 	width: 65px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell6ASC {
-	float: left;
 	width: 110px;
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell7ASC {
-	float: left;
 	width: 110px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell8ASC {
-	float: left;
 	width: 55px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell9ASC {
-	float: left;
 	width: 55px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
-	background-repeat: no-repeat;
-	background-position: right;
+}
+
+.divTableHeaderCell11ASC {
+	width: 55px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_up.png');
 	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell1DES {
-	float: left;
 	width: 55px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell2DES {
-	float: left;
 	width: 110px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 	background-repeat: no-repeat;
 	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell3DES {
-	float: left;
 	width: 65px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell4DES {
-	float: left;
 	width: 85px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell5DES {
-	float: left;
 	width: 65px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell6DES {
-	float: left;
 	width: 110px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	text-align: center;
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell7DES {
-	float: left;
 	width: 110px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell8DES {
-	float: left;
 	width: 55px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
 }
 
 .divTableHeaderCell9DES {
-	float: left;
 	width: 55px;
-	
 	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
-	background-repeat: no-repeat;
-	background-position: right;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
-	
-	background-color: #F3F4F6;
-	
-	border-bottom: solid 1px #D5D5D5;
-	border-right: solid 1px #D5D5D5;
-	
-	cursor: pointer;
+}
+
+.divTableHeaderCell11DES {
+	width: 55px;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
 }
 
 .divTableBody {
@@ -726,6 +378,17 @@
 	background-image: url('/LogisticaWEB/images/toggle-small.png')
 }
 
+.divTableBodyCell11 {
+	float: left;
+	text-align: right;
+	padding-right: 2px;
+	width: 53px;
+	overflow: hidden;
+	white-space: nowrap;
+	
+	border-right: solid 1px #EBF4FE;
+}
+
 .divTableFooter {
 	float: left;
 	overflow: auto;
@@ -748,17 +411,12 @@
 	border-right: solid 1px #D5D5D5;
 }
 
-#divCantidadRegistrosLabel {
+.divCantidadRegistrosLabel {
 	width: 120px;
 	text-align: left;
-	overflow: hidden;
-	white-space: nowrap;
-	
-	font-family: Segoe UI;
-	font-size: 12pt;
 }
 
-#divCantidadRegistrosValue {
+.divCantidadRegistrosValue {
 	text-align: left;
 	margin-left: 2px;
 	

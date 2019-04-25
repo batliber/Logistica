@@ -46,15 +46,17 @@ public class ACMInterfaceEstadoDWR {
 	}
 	
 	public static ACMInterfaceEstadoTO transform(ACMInterfaceEstado aCMInterfaceEstado) {
-		ACMInterfaceEstadoTO aCMInterfaceEstadoTO = new ACMInterfaceEstadoTO();
+		ACMInterfaceEstadoTO result = new ACMInterfaceEstadoTO();
 		
-		aCMInterfaceEstadoTO.setDescripcion(aCMInterfaceEstado.getDescripcion());
+		result.setDescripcion(aCMInterfaceEstado.getDescripcion());
 		
-		aCMInterfaceEstadoTO.setFact(aCMInterfaceEstado.getFact());
-		aCMInterfaceEstadoTO.setId(aCMInterfaceEstado.getId());
-		aCMInterfaceEstadoTO.setTerm(aCMInterfaceEstado.getTerm());
-		aCMInterfaceEstadoTO.setUact(aCMInterfaceEstado.getUact());
+		result.setFcre(aCMInterfaceEstado.getFcre());
+		result.setFact(aCMInterfaceEstado.getFact());
+		result.setId(aCMInterfaceEstado.getId());
+		result.setTerm(aCMInterfaceEstado.getTerm());
+		result.setUact(aCMInterfaceEstado.getUact());
+		result.setUcre(aCMInterfaceEstado.getUcre());
 		
-		return aCMInterfaceEstadoTO;
+		return result;
 	}
 }

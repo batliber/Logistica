@@ -92,6 +92,9 @@ public class UnidadIndexadaBean implements IUnidadIndexadaBean {
 				entityManager.merge(unidadIndexadaVigente);
 			}
 			
+			unidadIndexada.setFcre(unidadIndexada.getFact());
+			unidadIndexada.setUcre(unidadIndexada.getUact());
+			
 			entityManager.persist(unidadIndexada);
 		} catch (Exception e) {
 			e.printStackTrace();

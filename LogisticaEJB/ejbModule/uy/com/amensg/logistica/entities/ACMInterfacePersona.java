@@ -1,7 +1,12 @@
 package uy.com.amensg.logistica.entities;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -38,7 +43,7 @@ public class ACMInterfacePersona extends BaseEntity {
 	private String actividad;
 	
 	@Column(name = "fecha_nacimiento")
-	private String fechaNacimiento;
+	private Date fechaNacimiento;
 	
 	@Column(name = "sexo")
 	private String sexo;
@@ -84,6 +89,10 @@ public class ACMInterfacePersona extends BaseEntity {
 	
 	@Column(name = "email")
 	private String email;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "riesgo_crediticio_id", nullable = true)
+	private RiesgoCrediticio riesgoCrediticio;
 	
 	public String getIdCliente() {
 		return idCliente;
@@ -157,11 +166,11 @@ public class ACMInterfacePersona extends BaseEntity {
 		this.actividad = actividad;
 	}
 
-	public String getFechaNacimiento() {
+	public Date getFechaNacimiento() {
 		return fechaNacimiento;
 	}
 
-	public void setFechaNacimiento(String fechaNacimiento) {
+	public void setFechaNacimiento(Date fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 
@@ -283,5 +292,13 @@ public class ACMInterfacePersona extends BaseEntity {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public RiesgoCrediticio getRiesgoCrediticio() {
+		return riesgoCrediticio;
+	}
+
+	public void setRiesgoCrediticio(RiesgoCrediticio riesgoCrediticio) {
+		this.riesgoCrediticio = riesgoCrediticio;
 	}
 }

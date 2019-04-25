@@ -95,86 +95,90 @@ public class ContratoRoutingHistoryDWR {
 	}
 	
 	public static ContratoRoutingHistoryTO transform(ContratoRoutingHistory contratoRoutingHistory) {
-		ContratoRoutingHistoryTO contratoRoutingHistoryTO = new ContratoRoutingHistoryTO();
+		ContratoRoutingHistoryTO result = new ContratoRoutingHistoryTO();
 		
-		contratoRoutingHistoryTO.setFecha(contratoRoutingHistory.getFecha());
+		result.setFecha(contratoRoutingHistory.getFecha());
 		
-		contratoRoutingHistoryTO.setContrato(ContratoDWR.transform(contratoRoutingHistory.getContrato()));
+		result.setContrato(ContratoDWR.transform(contratoRoutingHistory.getContrato(), false));
 		
 		if (contratoRoutingHistory.getEmpresa() != null) {
-			contratoRoutingHistoryTO.setEmpresa(EmpresaDWR.transform(contratoRoutingHistory.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(contratoRoutingHistory.getEmpresa(), false));
 		}
 		
 		if (contratoRoutingHistory.getRol() != null) {
-			contratoRoutingHistoryTO.setRol(RolDWR.transform(contratoRoutingHistory.getRol()));
+			result.setRol(RolDWR.transform(contratoRoutingHistory.getRol(), false));
 		}
 		
 		if (contratoRoutingHistory.getUsuario() != null) {
-			contratoRoutingHistoryTO.setUsuario(UsuarioDWR.transform(contratoRoutingHistory.getUsuario(), false));
+			result.setUsuario(UsuarioDWR.transform(contratoRoutingHistory.getUsuario(), false));
 		}
 		
 		if (contratoRoutingHistory.getEstado() != null) {
-			contratoRoutingHistoryTO.setEstado(EstadoDWR.transform(contratoRoutingHistory.getEstado()));
+			result.setEstado(EstadoDWR.transform(contratoRoutingHistory.getEstado()));
 		}
 		
 		if (contratoRoutingHistory.getUsuarioAct() != null) {
-			contratoRoutingHistoryTO.setUsuarioAct(UsuarioDWR.transform(contratoRoutingHistory.getUsuarioAct(), false));
+			result.setUsuarioAct(UsuarioDWR.transform(contratoRoutingHistory.getUsuarioAct(), false));
 		}
 		
-		contratoRoutingHistoryTO.setFact(contratoRoutingHistory.getFact());
-		contratoRoutingHistoryTO.setId(contratoRoutingHistory.getId());
-		contratoRoutingHistoryTO.setTerm(contratoRoutingHistory.getTerm());
-		contratoRoutingHistoryTO.setUact(contratoRoutingHistory.getUact());
+		result.setFcre(contratoRoutingHistory.getFcre());
+		result.setFact(contratoRoutingHistory.getFact());
+		result.setId(contratoRoutingHistory.getId());
+		result.setTerm(contratoRoutingHistory.getTerm());
+		result.setUact(contratoRoutingHistory.getUact());
+		result.setUcre(contratoRoutingHistory.getUcre());
 		
-		return contratoRoutingHistoryTO;
+		return result;
 	}
 
 	public static ContratoRoutingHistory transform(ContratoRoutingHistoryTO contratoRoutingHistoryTO) {
-		ContratoRoutingHistory contratoRoutingHistory = new ContratoRoutingHistory();
+		ContratoRoutingHistory result = new ContratoRoutingHistory();
 		
-		contratoRoutingHistory.setFecha(contratoRoutingHistoryTO.getFecha());
+		result.setFecha(contratoRoutingHistoryTO.getFecha());
 		
-		contratoRoutingHistory.setContrato(ContratoDWR.transform(contratoRoutingHistoryTO.getContrato()));
+		result.setContrato(ContratoDWR.transform(contratoRoutingHistoryTO.getContrato()));
 		
 		if (contratoRoutingHistoryTO.getEmpresa() != null) {
 			Empresa empresa = new Empresa();
 			empresa.setId(contratoRoutingHistoryTO.getEmpresa().getId());
 			
-			contratoRoutingHistory.setEmpresa(empresa);
+			result.setEmpresa(empresa);
 		}
 		
 		if (contratoRoutingHistoryTO.getRol() != null) {
 			Rol rol = new Rol();
 			rol.setId(contratoRoutingHistoryTO.getRol().getId());
 			
-			contratoRoutingHistory.setRol(rol);
+			result.setRol(rol);
 		}
 		
 		if (contratoRoutingHistoryTO.getUsuario() != null) {
 			Usuario usuario = new Usuario();
 			usuario.setId(contratoRoutingHistoryTO.getUsuario().getId());
 			
-			contratoRoutingHistory.setUsuario(usuario);
+			result.setUsuario(usuario);
 		}
 		
 		if (contratoRoutingHistoryTO.getEstado() != null) {
 			Estado estado = new Estado();
 			estado.setId(contratoRoutingHistoryTO.getEstado().getId());
 			
-			contratoRoutingHistory.setEstado(estado);
+			result.setEstado(estado);
 		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
-		contratoRoutingHistory.setFact(date);
-		contratoRoutingHistory.setId(contratoRoutingHistoryTO.getId());
-		contratoRoutingHistory.setTerm(contratoRoutingHistoryTO.getTerm());
+		result.setFcre(contratoRoutingHistoryTO.getFcre());
+		result.setFact(date);
+		result.setId(contratoRoutingHistoryTO.getId());
+		result.setTerm(contratoRoutingHistoryTO.getTerm());
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
-		contratoRoutingHistory.setUact(usuarioId);
+		result.setUact(usuarioId);
+		result.setUcre(contratoRoutingHistoryTO.getUcre());
 		
-		return contratoRoutingHistory;
+		return result;
 	}
 }

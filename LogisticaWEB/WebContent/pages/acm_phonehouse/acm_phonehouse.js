@@ -1,3 +1,5 @@
+var __ROL_ADMINISTRADOR = 1;
+
 var accionesHabilitadas = false;
 
 var grid = null;
@@ -15,15 +17,32 @@ var estados = [
 $(document).ready(init);
 
 function init() {
-//	$("#inputExportarAExcel").prop("disabled", true);
-//	$("#inputExportarSubconjunto").prop("disabled", true);
+	$("#divButtonAsignar").hide();
+	$("#divButtonAsignarSubconjunto").hide();
+	$("#divButtonDeshacerAsignacion").hide();
+	
+	$("#inputExportarAExcel").prop("disabled", true);
 	$("#inputAsignar").prop("disabled", true);
 	$("#inputAsignarSubconjunto").prop("disabled", true);
 	$("#inputDeshacerAsignacion").prop("disabled", true);
-//	$("#inputReprocesar").prop("disabled", true);
-//	$("#inputReprocesarSubconjunto").prop("disabled", true);
-//	$("#inputListaNegra").prop("disabled", true);
-	
+
+	SeguridadDWR.getActiveUserData(
+		{
+			callback: function(data) {
+				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+						$("#divButtonAsignar").show();
+						$("#divButtonAsignarSubconjunto").show();
+						$("#divButtonDeshacerAsignacion").show();
+						
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleFourfoldSize");
+						break;
+					}
+				}
+			}, async: false
+		}
+	);
+			
 	selectTipoRegistroOnChange();
 }
 
@@ -38,7 +57,7 @@ function inputHabilitarAccionesOnClick(event, element) {
 function habilitarAcciones(habilitar, force) {
 	if (!force) {
 		if (accionesHabilitadas) {
-//			$("#inputExportarAExcel").prop("disabled", true);
+			$("#inputExportarAExcel").prop("disabled", true);
 //			$("#inputExportarSubconjunto").prop("disabled", true);
 			$("#inputAsignar").prop("disabled", true);
 			$("#inputAsignarSubconjunto").prop("disabled", true);
@@ -49,7 +68,7 @@ function habilitarAcciones(habilitar, force) {
 			
 			$("#inputHabilitarAcciones").val("Habilitar acciones");
 		} else {
-//			$("#inputExportarAExcel").prop("disabled", false);
+			$("#inputExportarAExcel").prop("disabled", false);
 //			$("#inputExportarSubconjunto").prop("disabled", false);
 			$("#inputAsignar").prop("disabled", false);
 			$("#inputAsignarSubconjunto").prop("disabled", false);
@@ -148,8 +167,6 @@ function selectTipoRegistroOnChange() {
 	}
 	
 	grid.rebuild();
-	
-	$(".divButtonBar").css("width", "875");
 	
 	reloadData();
 }
@@ -262,12 +279,64 @@ function reloadData() {
 	}
 }
 
+function inputExportarAExcelOnClick(event, element) {
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	
+	var empresa = {
+		id: $("#selectEmpresa").val()
+	};
+	
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		if ($("#inputTamanoSubconjuntoAsignacion").val() != 0) {
+			metadataConsulta.tamanoSubconjunto = 
+				Math.min(
+					$("#inputTamanoSubconjuntoAsignacion").val(),
+					grid.getCount()
+				);
+		} else {
+			metadataConsulta.tamanoSubconjunto = grid.getCount();
+		}
+		
+		ACMInterfaceContratoPHDWR.exportarAExcel(
+			metadataConsulta,
+			{
+				callback: function(data) {
+					document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+					document.getElementById("formExportarAExcel").submit();	
+				}, async: false
+			}
+		);
+	} else if ($("#selectTipoRegistro").val() == "prepago") {
+		if ($("#inputTamanoSubconjuntoAsignacion").val() != 0) {
+			metadataConsulta.tamanoSubconjunto = 
+				Math.min(
+					$("#inputTamanoSubconjuntoAsignacion").val(),
+					grid.getCount()
+				);
+		} else {
+			metadataConsulta.tamanoSubconjunto = grid.getCount();
+		}
+		
+		ACMInterfacePrepagoPHDWR.exportarAExcel(
+			metadataConsulta,
+			{
+				callback: function(data) {
+					document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+					document.getElementById("formExportarAExcel").submit();
+				}, async: false
+			}
+		);
+	} else {
+		alert("Funcionalidad no habilitada para el tipo de registro.");
+	}
+}
+
 function inputAsignarOnClick(event) {
 	$("#selectEmpresa > option").remove();
 	
 	$("#selectEmpresa").append("<option value='0'>Seleccione...</option>");
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var html = "";
@@ -293,7 +362,7 @@ function inputAsignarSubconjuntoOnClick(event) {
 	
 	$("#selectEmpresa").append("<option value='0'>Seleccione...</option>");
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var html = "";

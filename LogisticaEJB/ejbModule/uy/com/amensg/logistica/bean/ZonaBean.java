@@ -8,7 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Zona;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class ZonaBean implements IZonaBean {
@@ -61,6 +64,30 @@ public class ZonaBean implements IZonaBean {
 		return result;
 	}
 
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<Zona>().list(entityManager, metadataConsulta, new Zona());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<Zona>().count(entityManager, metadataConsulta, new Zona());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Zona getById(Long id) {
 		Zona result = null;
 		
@@ -73,12 +100,21 @@ public class ZonaBean implements IZonaBean {
 		return result;
 	}
 
-	public void save(Zona zona) {
+	public Zona save(Zona zona) {
+		Zona result = null;
+		
 		try {
+			zona.setFcre(zona.getFact());
+			zona.setUcre(zona.getUact());
+			
 			entityManager.persist(zona);
+			
+			result = zona;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Zona zona) {

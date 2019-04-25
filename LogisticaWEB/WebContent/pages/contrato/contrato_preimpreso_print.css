@@ -50,7 +50,7 @@ textarea {
 .divPageHeading {
 	margin: auto;
 	width: 80%;
-	height: 50mm;
+	height: 35mm;
 }
 
 .divPageContent {
@@ -59,16 +59,20 @@ textarea {
 }
 
 .divTexto {
+	float: left;
 	height: 95px;
+	width: 100%;
+	font-size: 7.5pt;
 }
 
 .divTitulo {
 	float: left;
 	width: 100%;
-	height: 34px;
+	height: 21px;
 	font-weight: bold;
 	overflow: hidden;
 	/* white-space: nowrap; */
+	margin-top: 8px;
 }
 
 .divTabla {
@@ -187,6 +191,17 @@ textarea {
 	text-align: center;
 }
 
+.divColumnaNumeroSerieDigit {
+	width: 16px;
+	border-right: solid 1px black;
+	text-align: center;
+}
+
+.divColumnaNumeroSerieDigitFiller {
+	width: 18px;
+	text-align: center;
+}
+
 .inputDepartamento {
 	width: 120px;
 }
@@ -252,7 +267,7 @@ textarea {
 }
 
 .inputMarca {
-	width: 248px;
+	width: 100px;
 }
 
 .inputNumeroSerie {
@@ -351,15 +366,24 @@ textarea {
 	width: 153px;
 }
 
+.inputCuentaANTELFacturacionFaltaPago {
+	width: 60px;
+}
+
 .inputMotivosCambioPlan {
 	width: 100%;
-	text-align: center
+	text-align: center;
+}
+
+.inputGarantiaFechaConexion {
+	width: 60px;
+	text-align: center;
 }
 
 .textareaObservaciones {
 	font-size: 7pt;
 	width: 577px;
-	height: 74px;
+	height: 48px;
 }
 
 .inputAgenteVentaNombre {
@@ -390,15 +414,36 @@ textarea {
 	width: 58px;
 }
 
+.divA4SheetContentEspecificaciones {
+	font-size: 7.25pt;
+}	
+
 .divEspecificacionesTitulo {
+	float: left;
 	font-weight: bold;
 	text-decoration: underline;
 	width: 100%;
-	text-align: center;
+	text-align: left;
 }
 
 .inputEspecificacionesNumeroContrato {
 	width: 60px;
+}
+
+.inputEspecificacionesMid {
+	width: 60px;
+}
+
+.inputEspecificacionesTitular {
+	width: 250px;
+}
+
+.inputEspecificacionesTipoDocumento {
+	width: 100px;
+}
+
+.inputEspecificacionesDocumento {
+	width: 75px;
 }
 
 .divEspecificacionesTituloInformacion {
@@ -406,7 +451,7 @@ textarea {
 }
 
 .inputEspecificacionesPlanComercial {
-	width: 570px;
+	width: 540px;
 }
 
 .inputEspecificacionesConsumoMinimo {
@@ -426,14 +471,18 @@ textarea {
 }
 
 .inputEspecificacionesRendimientoMinutosAntelHorarioNormal {
-	width: 20px;
+	width: 40px;
 }
 
 .inputEspecificacionesRendimientoMinutosAntelHorarioReducido {
-	width: 20px;
+	width: 40px;
 }
 
 .inputEspecificacionesPrecioMinutoOtrasOperadoras {
+	width: 20px;
+}
+
+.inputEspecificacionesPrecioMinutoNumerosAmigos {
 	width: 20px;
 }
 
@@ -454,7 +503,7 @@ textarea {
 }
 
 .inputEspecificacionesConsumoFueraBono {
-	width: 20px;
+	width: 25px;
 }
 
 .inputEspecificacionesTopeFacturacionMensual {
@@ -626,4 +675,9 @@ textarea {
 
 .inputCambioPlanBackofficeNombre {
 	width: 190px;
+}
+
+.inputEspecificacionesPiePagina {
+	width: 100%;
+	text-align: center
 }

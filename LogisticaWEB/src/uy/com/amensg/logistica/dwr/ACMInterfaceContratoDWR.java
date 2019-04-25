@@ -15,12 +15,14 @@ import uy.com.amensg.logistica.bean.ACMInterfaceContratoBean;
 import uy.com.amensg.logistica.bean.IACMInterfaceContratoBean;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceContratoTO;
+import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EmpresaTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.entities.TipoContratoTO;
+import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
 
 @RemoteProxy
 public class ACMInterfaceContratoDWR {
@@ -198,11 +200,26 @@ public class ACMInterfaceContratoDWR {
 		}
 	}
 	
-	public void reprocesar(MetadataConsultaTO metadataConsultaTO, String observaciones) {
+	public void reprocesarPorMID(MetadataConsultaTO metadataConsultaTO, String observaciones) {
 		try {
 			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
 			
-			iACMInterfaceContratoBean.reprocesar(
+			iACMInterfaceContratoBean.reprocesarPorMID(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				),
+				observaciones
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void reprocesarPorNumeroContrato(MetadataConsultaTO metadataConsultaTO, String observaciones) {
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			iACMInterfaceContratoBean.reprocesarPorNumeroContrato(
 				MetadataConsultaDWR.transform(
 					metadataConsultaTO
 				),
@@ -218,6 +235,32 @@ public class ACMInterfaceContratoDWR {
 			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
 			
 			iACMInterfaceContratoBean.agregarAListaNegra(
+				MetadataConsultaDWR.transform(
+					metadataConsultaTO
+				)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void controlarRiesgoCrediticio(
+		MetadataConsultaTO metadataConsultaTO,
+		Long empresaId,
+		Long tipoControlRiesgoCrediticioId
+	) {
+		try {
+			IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupBean();
+			
+			Empresa empresa = new Empresa();
+			empresa.setId(empresaId);
+			
+			TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio = new TipoControlRiesgoCrediticio();
+			tipoControlRiesgoCrediticio.setId(tipoControlRiesgoCrediticioId);
+			
+			iACMInterfaceContratoBean.controlarRiesgoCrediticio(
+				empresa,
+				tipoControlRiesgoCrediticio,
 				MetadataConsultaDWR.transform(
 					metadataConsultaTO
 				)
@@ -258,6 +301,7 @@ public class ACMInterfaceContratoDWR {
 		acmInterfaceContratoTO.setDocumentoTipo(acmInterfaceContrato.getDocumentoTipo());
 		acmInterfaceContratoTO.setDocumento(acmInterfaceContrato.getDocumento());
 		acmInterfaceContratoTO.setEquipo(acmInterfaceContrato.getEquipo());
+		acmInterfaceContratoTO.setEstadoContrato(acmInterfaceContrato.getEstadoContrato());
 		acmInterfaceContratoTO.setFechaFinContrato(acmInterfaceContrato.getFechaFinContrato());
 		acmInterfaceContratoTO.setLocalidad(acmInterfaceContrato.getLocalidad());
 		acmInterfaceContratoTO.setMid(acmInterfaceContrato.getMid());

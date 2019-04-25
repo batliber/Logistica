@@ -50,10 +50,12 @@ public class EstadoPuntoVentaDWR {
 		
 		result.setNombre(estadoPuntoVenta.getNombre());
 		
+		result.setFcre(estadoPuntoVenta.getFcre());
 		result.setFact(estadoPuntoVenta.getFact());
 		result.setId(estadoPuntoVenta.getId());
 		result.setTerm(estadoPuntoVenta.getTerm());
 		result.setUact(estadoPuntoVenta.getUact());
+		result.setUcre(estadoPuntoVenta.getUcre());
 		
 		return result;
 	}

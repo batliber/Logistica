@@ -35,7 +35,7 @@
 				</div>
 			</div>
 			<div class="divVersionBar">
-				<div class="divVersionBarText">Versi&oacute;n 0.95.0 - 14/06/2017</div>
+				<div class="divVersionBarText">Versi&oacute;n 0.97.0 - 08/05/2018</div>
 			</div>
 		</div>
 	</div>

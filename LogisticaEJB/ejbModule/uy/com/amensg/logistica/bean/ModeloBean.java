@@ -10,7 +10,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Modelo;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class ModeloBean implements IModeloBean {
@@ -108,6 +111,30 @@ public class ModeloBean implements IModeloBean {
 		return result;
 	}
 
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<Modelo>().list(entityManager, metadataConsulta, new Modelo());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<Modelo>().count(entityManager, metadataConsulta, new Modelo());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Modelo getById(Long id) {
 		Modelo result = null;
 		
@@ -122,6 +149,9 @@ public class ModeloBean implements IModeloBean {
 	
 	public void save(Modelo modelo) {
 		try {
+			modelo.setFcre(modelo.getFact());
+			modelo.setUcre(modelo.getUact());
+			
 			entityManager.persist(modelo);
 		} catch (Exception e) {
 			e.printStackTrace();

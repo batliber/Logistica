@@ -60,6 +60,7 @@ public class UsuarioBean implements IUsuarioBean {
 				
 				for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
 					usuarioRolEmpresa.getRol().getMenus().size();
+					usuarioRolEmpresa.getRol().getSubordinados().size();
 				}
 			}
 		} catch (Exception e) {
@@ -81,23 +82,30 @@ public class UsuarioBean implements IUsuarioBean {
 		return result;
 	}
 	
-	public Usuario getById(Long id) {
+	public Usuario getById(Long id, boolean initializeCollections) {
 		Usuario result = null;
 		
 		try {
 			TypedQuery<Usuario> query = 
 				entityManager.createQuery(
-					"SELECT u FROM Usuario u WHERE u.id = :usuarioId AND u.fechaBaja IS NULL",
+					"SELECT u"
+					+ " FROM Usuario u"
+					+ " WHERE u.id = :usuarioId"
+					+ " AND u.fechaBaja IS NULL",
 					Usuario.class
 				);
 			query.setParameter("usuarioId", id);
 			
 			List<Usuario> resultList = query.getResultList();
+			
 			if (!resultList.isEmpty()) {
 				result = resultList.get(0);
 				
-				for (UsuarioRolEmpresa usuarioRolEmpresa : result.getUsuarioRolEmpresas()) {
-					usuarioRolEmpresa.getRol().getMenus().size();
+				if (initializeCollections) {
+					for (UsuarioRolEmpresa usuarioRolEmpresa : result.getUsuarioRolEmpresas()) {
+						usuarioRolEmpresa.getRol().getMenus().size();
+						usuarioRolEmpresa.getRol().getSubordinados().size();
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -106,20 +114,31 @@ public class UsuarioBean implements IUsuarioBean {
 		
 		return result;
 	}
-	
-	public Usuario getByLogin(String login) {
+
+	public Usuario getByLogin(String login, boolean initializeCollections) {
 		Usuario result = null;
 		
 		try {
 			TypedQuery<Usuario> query = 
-				entityManager.createQuery("SELECT u FROM Usuario u WHERE login = :login", Usuario.class);
+				entityManager.createQuery(
+					"SELECT u"
+					+ " FROM Usuario u"
+					+ " WHERE u.login = :login"
+					+ " AND u.fechaBaja IS NULL",
+					Usuario.class
+				);
 			query.setParameter("login", login);
 			
 			List<Usuario> resultList = query.getResultList();
+
 			if (!resultList.isEmpty()) {
 				result = resultList.get(0);
-				for (UsuarioRolEmpresa usuarioRolEmprsa : result.getUsuarioRolEmpresas()) {
-					usuarioRolEmprsa.getRol().getMenus().size();
+				
+				if (initializeCollections) {
+					for (UsuarioRolEmpresa usuarioRolEmpresa : result.getUsuarioRolEmpresas()) {
+						usuarioRolEmpresa.getRol().getMenus().size();
+						usuarioRolEmpresa.getRol().getSubordinados().size();
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -133,10 +152,16 @@ public class UsuarioBean implements IUsuarioBean {
 		try {
 			Collection<UsuarioRolEmpresa> usuarioRolEmpresas = usuario.getUsuarioRolEmpresas();
 			
+			usuario.setFcre(usuario.getFact());
+			usuario.setUcre(usuario.getUact());
+			
 			entityManager.persist(usuario);
 			
 			for (UsuarioRolEmpresa usuarioRolEmpresa : usuarioRolEmpresas) {
 				usuarioRolEmpresa.setUsuario(usuario);
+				
+				usuarioRolEmpresa.setFcre(usuario.getFact());
+				usuarioRolEmpresa.setUcre(usuario.getUact());
 				
 				entityManager.persist(usuarioRolEmpresa);
 			}
@@ -175,7 +200,10 @@ public class UsuarioBean implements IUsuarioBean {
 				managedUsuario.setContrasena(usuario.getContrasena());
 			}
 			
+			managedUsuario.setBloqueado(usuario.getBloqueado());
+			managedUsuario.setCambioContrasenaProximoLogin(usuario.getCambioContrasenaProximoLogin());
 			managedUsuario.setDocumento(usuario.getDocumento());
+			managedUsuario.setIntentosFallidosLogin(usuario.getIntentosFallidosLogin());
 			managedUsuario.setLogin(usuario.getLogin());
 			managedUsuario.setNombre(usuario.getNombre());
 			

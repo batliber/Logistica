@@ -1,4 +1,5 @@
 var __ROL_ADMINISTRADOR = 1;
+var __ROL_PLANES = 22;
 
 var grid = null;
 
@@ -7,29 +8,39 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	grid = new Grid(
-		document.getElementById("divTablePlanes"),
-		{
-			tdPlanTipoPlan: { campo: "tipoPlan.descripcion", clave: "tipoPlan.id", descripcion: "Tipo de plan", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoPlanes, clave: "id", valor: "descripcion" }},
-			tdPlanDescripcion: { campo: "descripcion", descripcion: "Descripción", abreviacion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 250 }
-		}, 
-		false,
-		reloadData,
-		trPlanOnClick
-	);
-	
-	grid.rebuild();
-	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_PLANES) {
 						mode = __FORM_MODE_ADMIN;
 						
 						$("#divButtonNew").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						
+						grid = new Grid(
+							document.getElementById("divTablePlanes"),
+							{
+								tdPlanTipoPlan: { campo: "tipoPlan.descripcion", clave: "tipoPlan.id", descripcion: "Tipo de plan", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoPlanes, clave: "id", valor: "descripcion" }, ancho: 250 },
+								tdPlanDescripcion: { campo: "descripcion", descripcion: "Descripción", abreviacion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 350 },
+								tdPlanFechaBaja: { campo: "fechaBaja", descripcion: "Eliminado", abreviacion: "Eliminado", tipo: __TIPO_CAMPO_FECHA_HORA },
+							}, 
+							true,
+							reloadData,
+							trPlanOnClick
+						);
+						
+						grid.rebuild();
+						
+						grid.filtroDinamico.agregarFiltroManual(
+							{
+								campo: "fechaBaja",
+								operador: "nl",
+								valores: []
+							}
+						);
+						
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						break;
 					}
 				}
@@ -59,61 +70,23 @@ function listTipoPlanes() {
 }
 
 function reloadData() {
-	PlanDWR.list(
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	PlanDWR.listContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
 		{
 			callback: function(data) {
-				var registros = {
-					registrosMuestra: []
-				};
-				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
-						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
-						
-						return result;
-					});
-				}
-				
-				for (var i=0; i<ordered.length; i++) {
-					if ($("#inputMostrarFechaBaja").prop("checked")
-						|| ordered[i].fechaBaja == null) {
-						registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
-					}
-				}
-				
-				registros.cantidadRegistros = registros.registrosMuestra.length;
-				
-				grid.reload(registros);
+				grid.reload(data);
 			}, async: false
+		}
+	);
+	
+	PlanDWR.countContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.setCount(data);
+			}
 		}
 	);
 }

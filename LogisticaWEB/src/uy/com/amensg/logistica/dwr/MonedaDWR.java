@@ -50,36 +50,41 @@ public class MonedaDWR {
 	}
 	
 	public static MonedaTO transform(Moneda moneda) {
-		MonedaTO monedaTO = new MonedaTO();
+		MonedaTO result = new MonedaTO();
 		
-		monedaTO.setNombre(moneda.getNombre());
-		monedaTO.setSimbolo(moneda.getSimbolo());
+		result.setCodigoISO(moneda.getCodigoISO());
+		result.setNombre(moneda.getNombre());
+		result.setSimbolo(moneda.getSimbolo());
 		
-		monedaTO.setFact(moneda.getFact());
-		monedaTO.setId(moneda.getId());
-		monedaTO.setTerm(moneda.getTerm());
-		monedaTO.setUact(moneda.getUact());
+		result.setFcre(moneda.getFcre());
+		result.setFact(moneda.getFact());
+		result.setId(moneda.getId());
+		result.setTerm(moneda.getTerm());
+		result.setUact(moneda.getUact());
 		
-		return monedaTO;
+		return result;
 	}
 
 	public static Moneda transform(MonedaTO monedaTO) {
-		Moneda moneda = new Moneda();
+		Moneda result = new Moneda();
 		
-		moneda.setNombre(monedaTO.getNombre());
-		moneda.setSimbolo(monedaTO.getSimbolo());
+		result.setCodigoISO(monedaTO.getCodigoISO());
+		result.setNombre(monedaTO.getNombre());
+		result.setSimbolo(monedaTO.getSimbolo());
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
-		moneda.setFact(date);
-		moneda.setId(monedaTO.getId());
-		moneda.setTerm(new Long(1));
+		result.setFcre(monedaTO.getFcre());
+		result.setFact(date);
+		result.setId(monedaTO.getId());
+		result.setTerm(new Long(1));
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
-		moneda.setUact(usuarioId);
+		result.setUact(usuarioId);
+		result.setUcre(monedaTO.getUcre());
 		
-		return moneda;
+		return result;
 	}
 }

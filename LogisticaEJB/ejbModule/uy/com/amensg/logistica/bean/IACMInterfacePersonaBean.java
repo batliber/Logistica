@@ -8,4 +8,8 @@ import uy.com.amensg.logistica.entities.ACMInterfacePersona;
 public interface IACMInterfacePersonaBean {
 
 	public ACMInterfacePersona getById(Long id);
+	
+	public ACMInterfacePersona getByDocumento(String documento);
+	
+	public ACMInterfacePersona getByIdCliente(String idCliente);
 }

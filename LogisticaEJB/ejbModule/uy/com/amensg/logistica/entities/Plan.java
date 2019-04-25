@@ -42,6 +42,9 @@ public class Plan extends BaseEntity {
 	@Column(name = "precio_minuto_otras_operadoras")
 	private Double precioMinutoOtrasOperadoras;
 	
+	@Column(name = "precio_minuto_numeros_amigos")
+	private Double precioMinutoNumerosAmigos;
+	
 	@Column(name = "rendimiento_minutos_mensual_otras_operadoras")
 	private Long rendimientoMinutosMensualOtrasOperadoras;
 
@@ -80,6 +83,12 @@ public class Plan extends BaseEntity {
 
 	@Column(name = "fecha_baja")
 	private Date fechaBaja;
+
+	@Column(name = "pie_pagina")
+	private String piePagina;
+	
+	@Column(name = "beneficio_incluido_en_llamadas")
+	private Boolean beneficioIncluidoEnLlamadas;
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "tipo_plan_id", nullable = true)
@@ -159,6 +168,14 @@ public class Plan extends BaseEntity {
 
 	public void setPrecioMinutoOtrasOperadoras(Double precioMinutoOtrasOperadoras) {
 		this.precioMinutoOtrasOperadoras = precioMinutoOtrasOperadoras;
+	}
+
+	public Double getPrecioMinutoNumerosAmigos() {
+		return precioMinutoNumerosAmigos;
+	}
+
+	public void setPrecioMinutoNumerosAmigos(Double precioMinutoNumerosAmigos) {
+		this.precioMinutoNumerosAmigos = precioMinutoNumerosAmigos;
 	}
 
 	public Long getRendimientoMinutosMensualOtrasOperadoras() {
@@ -268,6 +285,22 @@ public class Plan extends BaseEntity {
 
 	public void setFechaBaja(Date fechaBaja) {
 		this.fechaBaja = fechaBaja;
+	}
+
+	public String getPiePagina() {
+		return piePagina;
+	}
+
+	public void setPiePagina(String piePagina) {
+		this.piePagina = piePagina;
+	}
+
+	public Boolean getBeneficioIncluidoEnLlamadas() {
+		return beneficioIncluidoEnLlamadas;
+	}
+
+	public void setBeneficioIncluidoEnLlamadas(Boolean beneficioIncluidoEnLlamadas) {
+		this.beneficioIncluidoEnLlamadas = beneficioIncluidoEnLlamadas;
 	}
 
 	public TipoPlan getTipoPlan() {

@@ -27,7 +27,7 @@ function init() {
 function listPuntoVentas() {
 	var result = [];
 	
-	PuntoVentaDWR.list(
+	PuntoVentaDWR.listMinimalContextAware(
 		{
 			callback: function(data) {
 				if (data != null) {

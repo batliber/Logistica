@@ -150,6 +150,9 @@ public class Contrato extends BaseEntity {
 	@Column(name = "fecha_coordinacion")
 	private Date fechaCoordinacion;
 	
+	@Column(name = "fecha_envio_a_nucleo")
+	private Date fechaEnvioANucleo;
+	
 	@Column(name = "numero_chip")
 	private String numeroChip;
 	
@@ -240,6 +243,27 @@ public class Contrato extends BaseEntity {
 	@Column(name = "valor_tasa_interes_efectiva_anual")
 	private Double valorTasaInteresEfectivaAnual;
 	
+	@Column(name = "antel_nro_trn")
+	private String antelNroTrn;
+	
+	@Column(name = "antel_forma_pago")
+	private String antelFormaPago;
+	
+	@Column(name = "antel_nro_servicio_cuenta")
+	private String antelNroServicioCuenta;
+	
+	@Column(name = "antel_importe")
+	private Double antelImporte;
+	
+	@Column(name = "incluir_chip")
+	private Boolean incluirChip;
+	
+	@Column(name = "costo_envio")
+	private Double costoEnvio;
+	
+	@Column(name="random")
+	private Long random;
+	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "direccion_entrega_departamento_id", nullable = true)
 	private Departamento direccionEntregaDepartamento;
@@ -301,6 +325,10 @@ public class Contrato extends BaseEntity {
 	private FormaPago formaPago;
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "tipo_tasa_interes_efectiva_anual_id", nullable = true)
+	private TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "tarjeta_credito_id", nullable = true)
 	private TarjetaCredito tarjetaCredito;
 	
@@ -311,6 +339,10 @@ public class Contrato extends BaseEntity {
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "resultado_entrega_distribucion_id", nullable = true)
 	private ResultadoEntregaDistribucion resultadoEntregaDistribucion;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "modalidad_venta_id", nullable = true)
+	private ModalidadVenta modalidadVenta;
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "empresa_id", nullable = true)
@@ -344,7 +376,7 @@ public class Contrato extends BaseEntity {
 	@JoinColumn(name = "coordinador_id", nullable = true)
 	private Usuario coordinador;
 
-	@OneToMany(mappedBy = "contrato", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL)
 	private Set<ContratoArchivoAdjunto> archivosAdjuntos;
 	
 	public Long getMid() {
@@ -609,6 +641,14 @@ public class Contrato extends BaseEntity {
 
 	public void setFormaPago(FormaPago formaPago) {
 		this.formaPago = formaPago;
+	}
+
+	public TipoTasaInteresEfectivaAnual getTipoTasaInteresEfectivaAnual() {
+		return tipoTasaInteresEfectivaAnual;
+	}
+
+	public void setTipoTasaInteresEfectivaAnual(TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual) {
+		this.tipoTasaInteresEfectivaAnual = tipoTasaInteresEfectivaAnual;
 	}
 
 	public TarjetaCredito getTarjetaCredito() {
@@ -929,6 +969,62 @@ public class Contrato extends BaseEntity {
 		this.valorTasaInteresEfectivaAnual = valorTasaInteresEfectivaAnual;
 	}
 
+	public String getAntelNroTrn() {
+		return antelNroTrn;
+	}
+
+	public void setAntelNroTrn(String antelNroTrn) {
+		this.antelNroTrn = antelNroTrn;
+	}
+
+	public String getAntelFormaPago() {
+		return antelFormaPago;
+	}
+
+	public void setAntelFormaPago(String antelFormaPago) {
+		this.antelFormaPago = antelFormaPago;
+	}
+
+	public String getAntelNroServicioCuenta() {
+		return antelNroServicioCuenta;
+	}
+
+	public void setAntelNroServicioCuenta(String antelNroServicioCuenta) {
+		this.antelNroServicioCuenta = antelNroServicioCuenta;
+	}
+
+	public Double getAntelImporte() {
+		return antelImporte;
+	}
+
+	public void setAntelImporte(Double antelImporte) {
+		this.antelImporte = antelImporte;
+	}
+
+	public Boolean getIncluirChip() {
+		return incluirChip;
+	}
+
+	public void setIncluirChip(Boolean incluirChip) {
+		this.incluirChip = incluirChip;
+	}
+
+	public Double getCostoEnvio() {
+		return costoEnvio;
+	}
+
+	public void setCostoEnvio(Double costoEnvio) {
+		this.costoEnvio = costoEnvio;
+	}
+
+	public Long getRandom() {
+		return random;
+	}
+
+	public void setRandom(Long random) {
+		this.random = random;
+	}
+
 	public Departamento getDireccionEntregaDepartamento() {
 		return direccionEntregaDepartamento;
 	}
@@ -1019,6 +1115,14 @@ public class Contrato extends BaseEntity {
 
 	public ResultadoEntregaDistribucion getResultadoEntregaDistribucion() {
 		return resultadoEntregaDistribucion;
+	}
+
+	public ModalidadVenta getModalidadVenta() {
+		return modalidadVenta;
+	}
+
+	public void setModalidadVenta(ModalidadVenta modalidadVenta) {
+		this.modalidadVenta = modalidadVenta;
 	}
 
 	public void setResultadoEntregaDistribucion(
@@ -1112,6 +1216,14 @@ public class Contrato extends BaseEntity {
 
 	public void setFechaCoordinacion(Date fechaCoordinacion) {
 		this.fechaCoordinacion = fechaCoordinacion;
+	}
+
+	public Date getFechaEnvioANucleo() {
+		return fechaEnvioANucleo;
+	}
+
+	public void setFechaEnvioANucleo(Date fechaEnvioANucleo) {
+		this.fechaEnvioANucleo = fechaEnvioANucleo;
 	}
 
 	public Usuario getVendedor() {

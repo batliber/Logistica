@@ -17,9 +17,9 @@ public interface IUsuarioBean {
 
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
 	
-	public Usuario getById(Long id);
+	public Usuario getById(Long id, boolean initializeCollections);
 	
-	public Usuario getByLogin(String login);
+	public Usuario getByLogin(String login, boolean initializeCollections);
 	
 	public void save(Usuario usuario);
 	

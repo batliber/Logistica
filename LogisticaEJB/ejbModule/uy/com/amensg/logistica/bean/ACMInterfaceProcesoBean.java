@@ -1,11 +1,9 @@
 package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -16,7 +14,10 @@ import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
 import uy.com.amensg.logistica.entities.ACMInterfaceProcesoEstadistica;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
@@ -24,67 +25,22 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
 	private EntityManager entityManager;
 
-	public Collection<ACMInterfaceProcesoEstadistica> listEstadisticas() {
-		Collection<ACMInterfaceProcesoEstadistica> result = new LinkedList<ACMInterfaceProcesoEstadistica>();
-		
-		try {
-			TypedQuery<ACMInterfaceProceso> queryProceso = entityManager.createQuery(
-				"SELECT p FROM ACMInterfaceProceso p",
-				ACMInterfaceProceso.class
+	public MetadataConsultaResultado listEstadisticas(MetadataConsulta metadataConsulta) {
+		return new QueryBuilder<ACMInterfaceProcesoEstadistica>()
+			.list(
+				entityManager, 
+				metadataConsulta, 
+				new ACMInterfaceProcesoEstadistica()
 			);
-			
-			Map<Long, ACMInterfaceProcesoEstadistica> estadisticas = new HashMap<Long, ACMInterfaceProcesoEstadistica>();
-			for (ACMInterfaceProceso acmInterfaceProceso : queryProceso.getResultList()) {
-				ACMInterfaceProcesoEstadistica acmInterfaceProcesoEstadistica = new ACMInterfaceProcesoEstadistica();
-				acmInterfaceProcesoEstadistica.setFechaFin(acmInterfaceProceso.getFechaFin());
-				acmInterfaceProcesoEstadistica.setFechaInicio(acmInterfaceProceso.getFechaInicio());
-				acmInterfaceProcesoEstadistica.setId(acmInterfaceProceso.getId());
-				acmInterfaceProcesoEstadistica.setObservaciones(acmInterfaceProceso.getObservaciones());
-				
-				estadisticas.put(acmInterfaceProceso.getId(), acmInterfaceProcesoEstadistica);
-			}
-			
-			Query queryMid = entityManager.createQuery(
-				"SELECT m.procesoId, m.estado.id, count(m)"
-				+ " FROM ACMInterfaceMid m"
-				+ " GROUP BY m.procesoId, m.estado"
+	}
+	
+	public Long countEstadisticas(MetadataConsulta metadataConsulta) {
+		return new QueryBuilder<ACMInterfaceProcesoEstadistica>()
+			.count(
+				entityManager, 
+				metadataConsulta, 
+				new ACMInterfaceProcesoEstadistica()
 			);
-			
-			for (Object object : queryMid.getResultList()) {
-				Object[] queryResult = (Object[]) object;
-				
-				if (queryResult[0] != null) {
-					ACMInterfaceProcesoEstadistica acmInterfaceProcesoEstadistica = estadisticas.get((Long)queryResult[0]);
-					
-					Long estado = (Long) queryResult[1];
-					
-					if (estado.equals(new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesar")))) {
-						acmInterfaceProcesoEstadistica.setCantidadRegistrosParaProcesar((Long) queryResult[2]);
-					} else if (estado.equals(new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")))) {
-						acmInterfaceProcesoEstadistica.setCantidadRegistrosParaProcesarPrioritario((Long) queryResult[2]);
-					} else if (estado.equals(new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado")))) {
-						acmInterfaceProcesoEstadistica.setCantidadRegistrosProcesado((Long) queryResult[2]);
-					} else if (estado.equals(new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso")))) {
-						acmInterfaceProcesoEstadistica.setCantidadRegistrosEnProceso((Long) queryResult[2]);
-					} else if (estado.equals(new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia")))) {
-						acmInterfaceProcesoEstadistica.setCantidadRegistrosListaVacia((Long) queryResult[2]);
-					}
-				}
-			}
-			
-			List<ACMInterfaceProcesoEstadistica> toOrder = new LinkedList<ACMInterfaceProcesoEstadistica>();
-			for (ACMInterfaceProcesoEstadistica acmInterfaceProcesoEstadistica : estadisticas.values()) {
-				toOrder.add(acmInterfaceProcesoEstadistica);
-			}
-			
-			Collections.sort(toOrder);
-			
-			result = toOrder;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
 	}
 	
 	public ACMInterfaceProceso save(ACMInterfaceProceso acmInterfaceProceso) {
@@ -101,7 +57,7 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 
 	public void finalizarProcesos() {
 		try {
-			Query querySinFinalizar = entityManager.createQuery(
+			Query queryMidsEnProceso = entityManager.createQuery(
 				"SELECT DISTINCT m.procesoId"
 				+ " FROM ACMInterfaceMid m"
 				+ " WHERE m.procesoId IS NOT NULL"
@@ -109,25 +65,25 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 					+ " :estadoIdProcesado, :estadoIdListaVacia, :estadoIdListaNegra"
 				+ " )"
 			);
-			querySinFinalizar.setParameter(
+			queryMidsEnProceso.setParameter(
 				"estadoIdProcesado", 
 				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
 			);
-			querySinFinalizar.setParameter(
+			queryMidsEnProceso.setParameter(
 				"estadoIdListaVacia", 
 				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
 			);
-			querySinFinalizar.setParameter(
+			queryMidsEnProceso.setParameter(
 				"estadoIdListaNegra", 
 				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
 			);
 			
-			Collection<Long> sinFinalizar = new LinkedList<Long>();
-			for (Object object : querySinFinalizar.getResultList()) {
-				sinFinalizar.add((Long) object);
+			Collection<Long> procesosConMidsSinTerminar = new LinkedList<Long>();
+			for (Object object : queryMidsEnProceso.getResultList()) {
+				procesosConMidsSinTerminar.add((Long) object);
 			}
 			
-			Query queryMid = entityManager.createQuery(
+			Query queryUltimaFactProcesadaXProceso = entityManager.createQuery(
 				"SELECT m.procesoId, max(m.fact)"
 				+ " FROM ACMInterfaceMid m"
 				+ " WHERE m.procesoId IS NOT NULL"
@@ -136,29 +92,42 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 				+ " )"
 				+ " GROUP BY m.procesoId"
 			);
-			queryMid.setParameter(
+			queryUltimaFactProcesadaXProceso.setParameter(
 				"estadoIdProcesado", 
 				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
 			);
-			queryMid.setParameter(
+			queryUltimaFactProcesadaXProceso.setParameter(
 				"estadoIdListaVacia", 
 				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
 			);
 			
-			for (Object object : queryMid.getResultList()) {
+			Map<Long, Date> ultimaFactXProceso = new HashMap<Long, Date>();
+			
+			for (Object object : queryUltimaFactProcesadaXProceso.getResultList()) {
 				Object[] queryResult = (Object[]) object;
 				
 				Long procesoId = (Long) queryResult[0];
+				Date fact = (Date) queryResult[1];
 				
-				if (!sinFinalizar.contains(procesoId)) {
-					ACMInterfaceProceso acmInterfaceProceso = 
-						entityManager.find(ACMInterfaceProceso.class, procesoId);
-					
-					if (acmInterfaceProceso.getFechaFin() == null) {
-						acmInterfaceProceso.setFechaFin((Date)queryResult[1]);
-					
-						entityManager.merge(acmInterfaceProceso);
-					}
+				ultimaFactXProceso.put(procesoId, fact);
+			}
+			
+			TypedQuery<ACMInterfaceProceso> queryProcesos =
+				entityManager.createQuery(
+					"SELECT p"
+					+ " FROM ACMInterfaceProceso p"
+					+ " WHERE p.id IN :procesosARevisar"
+					+ " AND p.id NOT IN :procesosConMidsSinTerminar", 
+					ACMInterfaceProceso.class
+				);
+			queryProcesos.setParameter("procesosARevisar", ultimaFactXProceso.keySet());
+			queryProcesos.setParameter("procesosConMidsSinTerminar", procesosConMidsSinTerminar);
+			
+			for (ACMInterfaceProceso acmInterfaceProceso : queryProcesos.getResultList()) {
+				if (acmInterfaceProceso.getFechaFin() == null) {
+					acmInterfaceProceso.setFechaFin(ultimaFactXProceso.get(acmInterfaceProceso.getId()));
+				
+					entityManager.merge(acmInterfaceProceso);
 				}
 			}
 		} catch (Exception e) {

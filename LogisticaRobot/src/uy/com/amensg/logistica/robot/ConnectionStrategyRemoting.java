@@ -13,6 +13,7 @@ import uy.com.amensg.logistica.bean.IACMInterfaceBean;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
+import uy.com.amensg.logistica.entities.ACMInterfaceNumeroContrato;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
 import uy.com.amensg.logistica.robot.util.Configuration;
 
@@ -42,9 +43,29 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
 			
-			ACMInterfaceMid acmInterfaceMid = iACMInterfaceBean.getNextMidSinProcesar();
+			String mid = iACMInterfaceBean.getSiguienteMidSinProcesar();
 			
-			result = acmInterfaceMid.getMid().toString();
+			if (mid != null) {
+				result = mid;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String getSiguienteNumeroContratoSinProcesar() {
+		String result = null;
+		
+		try {
+			IACMInterfaceBean iACMInterfaceBean = lookupBean();
+			
+			String numeroContrato = iACMInterfaceBean.getSiguienteNumeroContratoSinProcesar();
+			
+			if (numeroContrato != null) {
+				result = numeroContrato;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -66,7 +87,8 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 		String agente,
 		String equipo,
 		String numeroCliente,
-		String numeroContrato
+		String numeroContrato,
+		String estadoContrato
 	) {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupBean();
@@ -77,6 +99,7 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			acmInterfaceContrato.setDireccion(direccion);
 			acmInterfaceContrato.setDocumentoTipo(new Long(documentoTipo));
 			acmInterfaceContrato.setDocumento(documento);
+			acmInterfaceContrato.setEstadoContrato(estadoContrato);
 			acmInterfaceContrato.setFechaFinContrato(format.parse(fechaFinContrato));
 			acmInterfaceContrato.setLocalidad(localidad);
 			acmInterfaceContrato.setCodigoPostal(codigoPostal);
@@ -162,6 +185,25 @@ public class ConnectionStrategyRemoting implements IConnectionStrategy {
 			acmInterfaceMid.setMid(new Long(mid));
 						
 			iACMInterfaceBean.update(acmInterfaceMid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void actualizarDatosNumeroContratoListaVacia(
+		String numeroContrato
+	) {
+		try {
+			IACMInterfaceBean iACMInterfaceBean = lookupBean();
+			
+			ACMInterfaceEstado estado = new ACMInterfaceEstado();
+			estado.setId(new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia")));
+			
+			ACMInterfaceNumeroContrato acmInterfaceNumeroContrato = new ACMInterfaceNumeroContrato();
+			acmInterfaceNumeroContrato.setEstado(estado);
+			acmInterfaceNumeroContrato.setNumeroContrato(new Long(numeroContrato));
+						
+			iACMInterfaceBean.update(acmInterfaceNumeroContrato);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

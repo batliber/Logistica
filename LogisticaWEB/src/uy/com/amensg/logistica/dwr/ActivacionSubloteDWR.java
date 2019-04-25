@@ -186,7 +186,7 @@ public class ActivacionSubloteDWR {
 		try {
 			IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
 			
-			ActivacionSublote activacionSublote = iActivacionSubloteBean.getById(id);
+			ActivacionSublote activacionSublote = iActivacionSubloteBean.getById(id, true);
 			if (activacionSublote != null) {
 				result = transform(activacionSublote, true);
 			}
@@ -203,9 +203,32 @@ public class ActivacionSubloteDWR {
 		try {
 			IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
 			
-			ActivacionSublote activacionSublote = iActivacionSubloteBean.getByNumero(numero);
+			ActivacionSublote activacionSublote = iActivacionSubloteBean.getByNumero(numero, false);
 			if (activacionSublote != null) {
-				result = transform(activacionSublote, true);
+				result = transform(activacionSublote, false);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public ActivacionSubloteTO getByNumeroContextAware(Long numero) {
+		ActivacionSubloteTO result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
+			
+				ActivacionSublote activacionSublote = iActivacionSubloteBean.getByNumeroUsuario(numero, usuarioId, false);
+				if (activacionSublote != null) {
+					result = transform(activacionSublote, false);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -258,13 +281,14 @@ public class ActivacionSubloteDWR {
 		result.setFechaAsignacionDistribuidor(activacionSublote.getFechaAsignacionDistribuidor());
 		result.setFechaAsignacionPuntoVenta(activacionSublote.getFechaAsignacionPuntoVenta());
 		result.setNumero(activacionSublote.getNumero());
+		result.setPorcentajeActivacion(activacionSublote.getPorcentajeActivacion());
 		
 		if (activacionSublote.getDistribuidor() != null) {
 			result.setDistribuidor(UsuarioDWR.transform(activacionSublote.getDistribuidor(), false));
 		}
 		
 		if (activacionSublote.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(activacionSublote.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(activacionSublote.getEmpresa(), false));
 		}
 		
 		if (activacionSublote.getPuntoVenta() != null) {
@@ -281,10 +305,11 @@ public class ActivacionSubloteDWR {
 			result.setActivaciones(activaciones);
 		}
 		
+		result.setFcre(activacionSublote.getFcre());
 		result.setFact(activacionSublote.getFact());
 		result.setId(activacionSublote.getId());
 		result.setTerm(activacionSublote.getTerm());
-		result.setUact(activacionSublote.getUact());
+		result.setUcre(activacionSublote.getUcre());
 		
 		return result;
 	}
@@ -296,6 +321,7 @@ public class ActivacionSubloteDWR {
 		result.setFechaAsignacionDistribuidor(activacionSubloteTO.getFechaAsignacionDistribuidor());
 		result.setFechaAsignacionPuntoVenta(activacionSubloteTO.getFechaAsignacionPuntoVenta());
 		result.setNumero(activacionSubloteTO.getNumero());
+		result.setPorcentajeActivacion(activacionSubloteTO.getPorcentajeActivacion());
 		
 		if (activacionSubloteTO.getDistribuidor() != null) {
 			Usuario distribuidor = new Usuario();
@@ -335,6 +361,7 @@ public class ActivacionSubloteDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(activacionSubloteTO.getFcre());
 		result.setFact(date);
 		result.setId(activacionSubloteTO.getId());
 		result.setTerm(new Long(1));
@@ -343,6 +370,7 @@ public class ActivacionSubloteDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(activacionSubloteTO.getUcre());
 		
 		return result;
 	}

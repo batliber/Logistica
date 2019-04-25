@@ -15,7 +15,9 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/FormaPagoDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ZonaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PlanDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ResultadoEntregaDistribucionDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MotivoCambioPlanDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
@@ -40,6 +42,7 @@
 				<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonAsignar"><input type="submit" id="inputAsignar" value="Asignar" onclick="javascript:inputAsignarOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonSubirArchivo"><input type="submit" id="inputSubirArchivo" value="Subir archivo" onclick="javascript:inputSubirArchivoOnClick(event, this)"/></div>
+				<div class="divButton" id="divButtonSubirArchivoANTEL"><input type="submit" id="inputSubirArchivoANTEL" value="Subir ANTEL" onclick="javascript:inputSubirArchivoANTELOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonAgregarMid"><input type="submit" id="inputAgregarMid" value="Agregar MID" onclick="javascript:inputAgregarMidOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonExportarAExcel">
 					<form method="post" id="formExportarAExcel" action="#"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></form>
@@ -108,6 +111,30 @@
 					<input type="hidden" name="caller" value="/LogisticaWEB/pages/ventas/ventas.jsp"/>
 					<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa" name="selectEmpresa"></select></div>
 					<div class="divFormLabelExtended">Archivo:</div><div id="divArchivo" class="divFormValue"><input type="file" id="inputArchivo" name="inputArchivo"/></div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="divIFrameImportacionArchivoANTEL" style="display: none;">
+		<div class="divTitleBar">
+			<div class="divTitleBarText" style="float:left;">Importaci&oacute;n archivo ANTEL</div>
+			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
+		</div>
+		<div id="divImportacionArchivoANTEL">
+			<div class="divButtonBar">
+				<div class="divButton"><input type="submit" value="Aceptar" onclick="javascript:inputAceptarSubirArchivoANTELOnClick(event)"/></div>
+				<div class="divButton"><input type="submit" value="Cancelar" onclick="javascript:inputCancelarOnClick(event)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divPopupWindow">
+				<form id="formSubirArchivoANTEL" method="POST" action="/LogisticaWEB/Upload" enctype="multipart/form-data">
+					<input type="hidden" name="caller" value="/LogisticaWEB/pages/ventas/ventas.jsp?id=ANTEL"/>
+					<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresaANTEL" class="divFormValue"><select id="selectEmpresaANTEL" name="selectEmpresa"></select></div>
+					<div class="divFormLabelExtended">Archivo:</div><div id="divArchivoANTEL" class="divFormValue"><input type="file" id="inputArchivoANTEL" name="inputArchivo"/></div>
 				</form>
 			</div>
 		</div>

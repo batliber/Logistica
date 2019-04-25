@@ -1,16 +1,17 @@
 package uy.com.amensg.logistica.bean;
 
-import java.util.Collection;
-
 import javax.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
-import uy.com.amensg.logistica.entities.ACMInterfaceProcesoEstadistica;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 
 @Remote
 public interface IACMInterfaceProcesoBean {
 
-	public Collection<ACMInterfaceProcesoEstadistica> listEstadisticas();
+	public MetadataConsultaResultado listEstadisticas(MetadataConsulta metadataConsulta);
+	
+	public Long countEstadisticas(MetadataConsulta metadataConsulta);
 	
 	public ACMInterfaceProceso save(ACMInterfaceProceso acmInterfaceProceso);
 	

@@ -11,6 +11,8 @@ public interface IACMInterfacePrepagoPHBean {
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
 	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);

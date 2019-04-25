@@ -4,7 +4,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -20,14 +19,14 @@ public class Rol extends BaseEntity {
 	@Column(name = "nombre")
 	private String nombre;
 
-	@ManyToMany( fetch=FetchType.EAGER )
+	@ManyToMany
 	@JoinTable(name = "seguridad_menu_rol", 
 		joinColumns=@JoinColumn(name = "seguridad_rol_id"),
 		inverseJoinColumns=@JoinColumn(name = "seguridad_menu_id")
 	)
 	private Set<Menu> menus;
 	
-	@OneToMany( fetch=FetchType.EAGER )
+	@OneToMany
 	@JoinTable(name = "seguridad_rol_jerarquia", 
 		joinColumns=@JoinColumn(name = "rol_id"),
 		inverseJoinColumns=@JoinColumn(name = "rol_subordinado_id")

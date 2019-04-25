@@ -1,22 +1,27 @@
 package uy.com.amensg.logistica.util;
 
-import java.io.IOException;
-import java.util.Properties;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import uy.com.amensg.logistica.bean.ConfiguracionBean;
+import uy.com.amensg.logistica.bean.IConfiguracionBean;
 
 public class Configuration {
 
 	private static Configuration instance = null;
 	
-	private Properties properties = null;
+//	private Properties properties = null;
 	
 	private Configuration() {
-		try {
-			properties = new Properties();
-			
-			properties.load(getClass().getClassLoader().getResourceAsStream("logisticaEJB.properties"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			properties = new Properties();
+//			
+//			properties.load(getClass().getClassLoader().getResourceAsStream("logisticaEJB.properties"));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
 	}
 	
 	public static Configuration getInstance() {
@@ -27,6 +32,30 @@ public class Configuration {
 	}
 	
 	public String getProperty(String name) {
-		return properties.getProperty(name);
+//		return properties.getProperty(name);
+		
+		String result = null;
+		
+		try {
+			IConfiguracionBean iConfiguracionBean = lookupBean();
+			
+			result = iConfiguracionBean.getProperty(name);
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	private IConfiguracionBean lookupBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
+		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
+		String remoteInterfaceName = IConfiguracionBean.class.getName();
+		String beanName = ConfiguracionBean.class.getSimpleName();
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
+		Context context = new InitialContext();
+		
+		return (IConfiguracionBean) context.lookup(lookupName);
 	}
 }

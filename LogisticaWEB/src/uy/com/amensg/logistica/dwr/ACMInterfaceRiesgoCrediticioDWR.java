@@ -133,13 +133,15 @@ public class ACMInterfaceRiesgoCrediticioDWR {
 		result.setNumeroClienteMovil(acmInterfaceRiesgoCrediticio.getNumeroClienteMovil());
 		
 		if (acmInterfaceRiesgoCrediticio.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(acmInterfaceRiesgoCrediticio.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(acmInterfaceRiesgoCrediticio.getEmpresa(), false));
 		}
 		
+		result.setFcre(acmInterfaceRiesgoCrediticio.getFcre());
 		result.setFact(acmInterfaceRiesgoCrediticio.getFact());
 		result.setId(acmInterfaceRiesgoCrediticio.getId());
 		result.setTerm(acmInterfaceRiesgoCrediticio.getTerm());
 		result.setUact(acmInterfaceRiesgoCrediticio.getUact());
+		result.setUcre(acmInterfaceRiesgoCrediticio.getUcre());
 		
 		return result;
 	}

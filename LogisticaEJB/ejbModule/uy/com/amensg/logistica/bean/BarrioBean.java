@@ -9,6 +9,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Barrio;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class BarrioBean implements IBarrioBean {
@@ -30,6 +33,32 @@ public class BarrioBean implements IBarrioBean {
 			
 			for (Barrio barrio : query.getResultList()) {
 				result.add(barrio);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<Barrio> listMinimal() {
+		Collection<Barrio> result = new LinkedList<Barrio>();
+		
+		try {
+			TypedQuery<Object[]> query =
+				entityManager.createQuery(
+					"SELECT b.id, b.nombre"
+					+ " FROM Barrio b"
+					+ " ORDER BY b.nombre", 
+					Object[].class
+				);
+			
+			for (Object[] barrio : query.getResultList()) {
+				Barrio barrioMinimal = new Barrio();
+				barrioMinimal.setId((Long)barrio[0]);
+				barrioMinimal.setNombre((String)barrio[1]);
+				
+				result.add(barrioMinimal);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,7 +89,59 @@ public class BarrioBean implements IBarrioBean {
 		
 		return result;
 	}
+	
+	public Collection<Barrio> listMinimalByDepartamentoId(Long departamentoId) {
+		Collection<Barrio> result = new LinkedList<Barrio>();
+		
+		try {
+			TypedQuery<Object[]> query =
+				entityManager.createQuery(
+					"SELECT b.id, b.nombre"
+					+ " FROM Barrio b"
+					+ " WHERE b.departamento.id = :departamentoId"
+					+ " ORDER BY b.nombre", 
+					Object[].class
+				);
+			query.setParameter("departamentoId", departamentoId);
+			
+			for (Object[] barrio : query.getResultList()) {
+				Barrio barrioMinimal = new Barrio();
+				barrioMinimal.setId((Long)barrio[0]);
+				barrioMinimal.setNombre((String)barrio[1]);
+				
+				result.add(barrioMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<Barrio>().list(entityManager, metadataConsulta, new Barrio());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<Barrio>().count(entityManager, metadataConsulta, new Barrio());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Barrio getById(Long id) {
 		Barrio result = null;
 		
@@ -75,6 +156,9 @@ public class BarrioBean implements IBarrioBean {
 
 	public void save(Barrio barrio) {
 		try {
+			barrio.setFcre(barrio.getFact());
+			barrio.setUcre(barrio.getUact());
+			
 			entityManager.persist(barrio);
 		} catch (Exception e) {
 			e.printStackTrace();

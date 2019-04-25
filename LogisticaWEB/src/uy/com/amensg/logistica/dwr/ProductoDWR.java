@@ -13,10 +13,14 @@ import javax.servlet.http.HttpSession;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
+import uy.com.amensg.logistica.bean.IMarcaBean;
 import uy.com.amensg.logistica.bean.IProductoBean;
 import uy.com.amensg.logistica.bean.ProductoBean;
 import uy.com.amensg.logistica.entities.EmpresaService;
 import uy.com.amensg.logistica.entities.Marca;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Producto;
 import uy.com.amensg.logistica.entities.ProductoTO;
@@ -44,6 +48,67 @@ public class ProductoDWR {
 			
 			for (Producto producto : iProductoBean.list()) {
 				result.add(transform(producto));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IProductoBean iProductoBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iProductoBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object producto : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(ProductoDWR.transform((Producto) producto));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IProductoBean iProductoBean = lookupBean();
+				
+				result = 
+					iProductoBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,85 +193,89 @@ public class ProductoDWR {
 	}
 
 	public static ProductoTO transform(Producto producto) {
-		ProductoTO productoTO = new ProductoTO();
+		ProductoTO result = new ProductoTO();
 		
-		productoTO.setDescripcion(producto.getDescripcion());
-		productoTO.setFechaBaja(producto.getFechaBaja());
-		productoTO.setImei(producto.getImei());
+		result.setDescripcion(producto.getDescripcion());
+		result.setFechaBaja(producto.getFechaBaja());
+		result.setImei(producto.getImei());
 		
 		if (producto.getEmpresaService() != null) {
-			productoTO.setEmpresaService(EmpresaServiceDWR.transform(producto.getEmpresaService()));
+			result.setEmpresaService(EmpresaServiceDWR.transform(producto.getEmpresaService()));
 		}
 		
 		if (producto.getMarca() != null) {
-			productoTO.setMarca(MarcaDWR.transform(producto.getMarca()));
+			result.setMarca(MarcaDWR.transform(producto.getMarca()));
 		}
 		
 		if (producto.getModelo() != null) {
-			productoTO.setModelo(ModeloDWR.transform(producto.getModelo()));
+			result.setModelo(ModeloDWR.transform(producto.getModelo()));
 		}
 		
-		productoTO.setFact(producto.getFact());
-		productoTO.setId(producto.getId());
-		productoTO.setTerm(producto.getTerm());
-		productoTO.setUact(producto.getUact());
+		result.setFcre(producto.getFcre());
+		result.setFact(producto.getFact());
+		result.setId(producto.getId());
+		result.setTerm(producto.getTerm());
+		result.setUact(producto.getUact());
+		result.setUcre(producto.getUcre());
 		
-		return productoTO;
+		return result;
 	}
 	
 	public static Producto transform(ProductoTO productoTO) {
-		Producto producto = new Producto();
+		Producto result = new Producto();
 		
-		producto.setDescripcion(productoTO.getDescripcion());
-		producto.setFechaBaja(productoTO.getFechaBaja());
-		producto.setImei(productoTO.getImei());
+		result.setDescripcion(productoTO.getDescripcion());
+		result.setFechaBaja(productoTO.getFechaBaja());
+		result.setImei(productoTO.getImei());
 		
 		if (productoTO.getEmpresaService() != null) {
 			EmpresaService empresaService = new EmpresaService();
 			empresaService.setId(productoTO.getEmpresaService().getId());
 			
-			producto.setEmpresaService(empresaService);
+			result.setEmpresaService(empresaService);
 		}
 		
 		if (productoTO.getMarca() != null) {
 			Marca marca = new Marca();
 			marca.setId(productoTO.getMarca().getId());
 			
-			producto.setMarca(marca);
+			result.setMarca(marca);
 		}
 		
 		if (productoTO.getModelo() != null) {
 			Modelo modelo = new Modelo();
 			modelo.setId(productoTO.getModelo().getId());
 			
-			producto.setModelo(modelo);
+			result.setModelo(modelo);
 		}
 		
 		if (productoTO.getEmpresaService() != null) {
 			EmpresaService empresaService = new EmpresaService();
 			empresaService.setId(productoTO.getEmpresaService().getId());
 			
-			producto.setEmpresaService(empresaService);
+			result.setEmpresaService(empresaService);
 		}
 		
 		if (productoTO.getMarca() != null) {
 			Marca marca = new Marca();
 			marca.setId(productoTO.getMarca().getId());
 			
-			producto.setMarca(marca);
+			result.setMarca(marca);
 		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
-		producto.setFact(date);
-		producto.setId(productoTO.getId());
-		producto.setTerm(new Long(1));
+		result.setFcre(productoTO.getFcre());
+		result.setFact(date);
+		result.setId(productoTO.getId());
+		result.setTerm(new Long(1));
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
-		producto.setUact(usuarioId);
+		result.setUact(usuarioId);
+		result.setUcre(productoTO.getUcre());
 		
-		return producto;
+		return result;
 	}
 }

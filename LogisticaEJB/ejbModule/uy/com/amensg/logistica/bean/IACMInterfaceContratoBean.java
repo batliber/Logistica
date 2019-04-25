@@ -9,6 +9,7 @@ import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.TipoContrato;
+import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
 
 @Remote
 public interface IACMInterfaceContratoBean {
@@ -19,11 +20,17 @@ public interface IACMInterfaceContratoBean {
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
 	
-	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
+	public void reprocesarPorMID(MetadataConsulta metadataConsulta, String observaciones);
+	
+	public void reprocesarPorNumeroContrato(MetadataConsulta metadataConsulta, String observaciones);
 	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
 	
 	public void agregarAListaNegra(MetadataConsulta metadataConsulta);
+	
+	public void controlarRiesgoCrediticio(
+		Empresa empresa, TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio, MetadataConsulta metadataConsulta
+	);
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	

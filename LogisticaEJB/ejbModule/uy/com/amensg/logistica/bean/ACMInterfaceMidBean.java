@@ -4,10 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.ejb.EJB;
@@ -107,7 +105,7 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		try {
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
-			// Generación de proceso
+			// GeneraciÃ³n de proceso
 			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
 			acmInterfaceProceso.setFechaInicio(hoy);
 			acmInterfaceProceso.setObservaciones(observaciones);
@@ -118,51 +116,19 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 			
 			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
 			
-			// Obtener la cantidad de registros.
-			Long cantidadRegistros = this.count(metadataConsulta);
-			
-			Long cantidadFinal =
-				metadataConsulta.getTamanoSubconjunto() != null ? 
-					Math.min(cantidadRegistros, metadataConsulta.getTamanoSubconjunto())
-					: cantidadRegistros;
-			
-			Long cantidadRegistrosPagina = new Long(Configuration.getInstance().getProperty("acmInterfaceMid.cantidadRegistrosPagina"));
-			Long cantidadPaginas = cantidadRegistros / cantidadRegistrosPagina;
-			
-			// Query para generar los criterios
-			TypedQuery<ACMInterfaceMid> query = this.construirQuery(metadataConsulta);
-						
-			query.setMaxResults(cantidadRegistrosPagina.intValue());
-			
-			Map<Long, ACMInterfaceMid> resultMap = new HashMap<Long, ACMInterfaceMid>();
-			
-			Random random = new Random();
-			
-			int i = 0;
-			while (resultMap.size() < cantidadFinal) {
-				query.setFirstResult(cantidadRegistrosPagina.intValue() * i);
-				
-				for (ACMInterfaceMid acmInterfaceMid : query.getResultList()) {
-					if (!resultMap.containsKey(acmInterfaceMid.getMid()) 
-						&& resultMap.size() < cantidadFinal
-						&& random.nextBoolean()) {
-						resultMap.put(acmInterfaceMid.getMid(), acmInterfaceMid);
-					}
-				}
-				
-				i = (i + random.nextInt(cantidadPaginas.intValue())) % cantidadPaginas.intValue();
-			}
-			
 			ACMInterfaceEstado estado = 
 				entityManager.find(
 					ACMInterfaceEstado.class, 
 					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
 				);
 			
-			for (ACMInterfaceMid acmInterfaceMid : resultMap.values()) {
+			Random random = new Random();
+			
+			for (ACMInterfaceMid acmInterfaceMid : this.listSubconjunto(metadataConsulta)) {
 				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
 				
 				acmInterfaceMid.setEstado(estado);
+				acmInterfaceMid.setRandom(new Long(random.nextInt()));
 				
 				acmInterfaceMid.setUact(new Long(1));
 				acmInterfaceMid.setFact(hoy);
@@ -330,12 +296,36 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		return query;
 	}
 
+	private Collection<ACMInterfaceMid> listSubconjunto(MetadataConsulta metadataConsulta) {
+		Collection<ACMInterfaceMid> result = new LinkedList<ACMInterfaceMid>();
+		
+		Collection<MetadataOrdenacion> metadataOrdenaciones = new LinkedList<MetadataOrdenacion>();
+		
+		MetadataOrdenacion metadataOrdenacion = new MetadataOrdenacion();
+		metadataOrdenacion.setAscendente(true);
+		metadataOrdenacion.setCampo("random");
+		
+		metadataOrdenaciones.add(metadataOrdenacion);
+		
+		metadataConsulta.setMetadataOrdenaciones(metadataOrdenaciones);
+		
+		TypedQuery<ACMInterfaceMid> query = this.construirQuery(metadataConsulta);
+		
+		if (metadataConsulta.getTamanoSubconjunto() != null) {
+			query.setMaxResults(metadataConsulta.getTamanoSubconjunto().intValue());
+		}
+		
+		result = query.getResultList();
+		
+		return result;
+	}
+	
 	private void setQueryParameters(CriteriaQuery<?> criteriaQuery, TypedQuery<?> query, MetadataConsulta metadataConsulta) {
 		Root<?> root = criteriaQuery.getRoots().iterator().next();
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
-		// Setear los parámetros según las condiciones del filtro
+		// Setear los parÃ¡metros segÃºn las condiciones del filtro
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 			if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {

@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import javax.ejb.Remote;
 
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Modelo;
 
 @Remote
@@ -16,6 +18,10 @@ public interface IModeloBean {
 	public Collection<Modelo> listByMarcaId(Long marcaId);
 	
 	public Collection<Modelo> listVigentesByMarcaId(Long marcaId);
+	
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Modelo getById(Long id);
 	

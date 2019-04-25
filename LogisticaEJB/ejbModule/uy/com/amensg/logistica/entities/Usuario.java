@@ -29,6 +29,15 @@ public class Usuario extends BaseEntity {
 	@Column(name = "fecha_baja")
 	private Date fechaBaja;
 
+	@Column(name = "intentos_fallidos_login")
+	private Long intentosFallidosLogin;
+	
+	@Column(name = "bloqueado")
+	private Boolean bloqueado;
+	
+	@Column(name = "cambio_contrasena_proximo_login")
+	private Boolean cambioContrasenaProximoLogin;
+	
 	@OneToMany(mappedBy = "usuario")
 	private Collection<UsuarioRolEmpresa> usuarioRolEmpresas;
 	
@@ -70,6 +79,30 @@ public class Usuario extends BaseEntity {
 
 	public void setFechaBaja(Date fechaBaja) {
 		this.fechaBaja = fechaBaja;
+	}
+
+	public Long getIntentosFallidosLogin() {
+		return intentosFallidosLogin;
+	}
+
+	public void setIntentosFallidosLogin(Long intentosFallidosLogin) {
+		this.intentosFallidosLogin = intentosFallidosLogin;
+	}
+
+	public Boolean getBloqueado() {
+		return bloqueado;
+	}
+
+	public void setBloqueado(Boolean bloqueado) {
+		this.bloqueado = bloqueado;
+	}
+
+	public Boolean getCambioContrasenaProximoLogin() {
+		return cambioContrasenaProximoLogin;
+	}
+
+	public void setCambioContrasenaProximoLogin(Boolean cambioContrasenaProximoLogin) {
+		this.cambioContrasenaProximoLogin = cambioContrasenaProximoLogin;
 	}
 
 	public Collection<UsuarioRolEmpresa> getUsuarioRolEmpresas() {

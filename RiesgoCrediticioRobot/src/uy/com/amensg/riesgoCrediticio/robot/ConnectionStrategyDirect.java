@@ -12,8 +12,17 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		
 		return result;
 	}
+	
+	public String getSiguienteDocumentoParaControlarRiesgoOnLine() {
+		String result = "";
+		
+		// TODO Implementar.
+		
+		return result;
+	}
 
 	public void actualizarDatosRiesgoCrediticioACM(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String fechaCelular,
@@ -53,6 +62,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String periodo,
@@ -97,6 +107,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String institucionFinanciera,

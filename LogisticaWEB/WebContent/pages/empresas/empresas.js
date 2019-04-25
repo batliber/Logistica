@@ -4,20 +4,10 @@ var mode = __FORM_MODE_USER;
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNew").hide();
-	
-	grid = new Grid(
-		document.getElementById("divTableEmpresas"),
-		{
-			tdEmpresaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 } 
-		}, 
-		false,
-		reloadData,
-		trEmpresaOnClick
-	);
-	
-	grid.rebuild();
 	
 	SeguridadDWR.getActiveUserData(
 		{
@@ -27,8 +17,20 @@ $(document).ready(function() {
 						mode = __FORM_MODE_ADMIN;
 						
 						$("#divButtonNew").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						
+						grid = new Grid(
+							document.getElementById("divTableEmpresas"),
+							{
+								tdEmpresaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 } 
+							}, 
+							false,
+							reloadData,
+							trEmpresaOnClick
+						);
+						
+						grid.rebuild();
+							
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						break;
 					}
 				}
@@ -39,10 +41,10 @@ $(document).ready(function() {
 	reloadData();
 	
 	$("#divIFrameEmpresa").draggable();
-});
+}
 
 function reloadData() {
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var registros = {
@@ -88,13 +90,7 @@ function reloadData() {
 				}
 				
 				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						nombre: ordered[i].nombre,
-						uact: ordered[i].uact,
-						fact: ordered[i].fact,
-						term: ordered[i].term
-					};
+					registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
 				}
 				
 				grid.reload(registros);

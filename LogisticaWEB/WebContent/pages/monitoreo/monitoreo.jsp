@@ -48,10 +48,13 @@
 				<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 				<div class="divButton"><input type="submit" id="inputAgregarMid" value="Agregar MID" onclick="javascript:inputAgregarMidOnClick(event, this)"/></div>
 				<div class="divButton"><input type="submit" id="inputSubirArchivo" value="Subir archivo" onclick="javascript:inputSubirArchivoOnClick(event, this)"/></div>
+				<div class="divButton" id="divButtonExportarAExcel">
+					<form method="post" id="formExportarAExcel" action="#"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></form>
+				</div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divButtonTitleBar">
-				<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div id="divButtonTitleFourfoldSize" class="divButtonTitleBarTitle">Acciones</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divMainWindow">

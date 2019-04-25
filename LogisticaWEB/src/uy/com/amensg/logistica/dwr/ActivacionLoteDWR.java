@@ -15,10 +15,12 @@ public class ActivacionLoteDWR {
 		result.setNombreArchivo(activacionLote.getNombreArchivo());
 		result.setNumero(activacionLote.getNumero());
 		
+		result.setFcre(activacionLote.getFcre());
 		result.setFact(activacionLote.getFact());
 		result.setId(activacionLote.getId());
 		result.setTerm(activacionLote.getTerm());
 		result.setUact(activacionLote.getUact());
+		result.setUcre(activacionLote.getUcre());
 		
 		return result;
 	}

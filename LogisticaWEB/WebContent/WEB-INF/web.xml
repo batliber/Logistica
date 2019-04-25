@@ -5,6 +5,15 @@
     <welcome-file>main.jsp</welcome-file>
   </welcome-file-list>
   
+  <filter>
+		<filter-name>SeguridadFilter</filter-name>
+		<filter-class>uy.com.amensg.logistica.filters.SeguridadFilter</filter-class>
+  </filter>
+  <filter-mapping>
+		<filter-name>SeguridadFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
   <servlet>
 	<servlet-name>QuartzInitializer</servlet-name>
 	<servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
@@ -58,15 +67,6 @@
   	<url-pattern>/Stream</url-pattern>
   </servlet-mapping>
    
-  <filter>
-		<filter-name>SeguridadFilter</filter-name>
-		<filter-class>uy.com.amensg.logistica.filters.SeguridadFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>SeguridadFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
   <servlet>
   	<servlet-name>UploadServlet</servlet-name>
   	<servlet-class>uy.com.amensg.logistica.servlets.UploadServlet</servlet-class>  	
@@ -94,28 +94,32 @@
     <init-param>
       <param-name>classes</param-name>
       <param-value>
+      	uy.com.amensg.logistica.dwr.ActivacionDWR,
+      	uy.com.amensg.logistica.dwr.ActivacionLoteDWR,
+      	uy.com.amensg.logistica.dwr.ActivacionSubloteDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceContratoDWR,
+      	uy.com.amensg.logistica.dwr.ACMInterfaceContratoTipoDocumentoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceContratoPHDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceEstadoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceListaNegraDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceMidDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceMidPHDWR,
+      	uy.com.amensg.logistica.dwr.ACMInterfaceNumeroContratoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfacePersonaDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfacePrepagoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfacePrepagoPHDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceProcesoDWR,
       	uy.com.amensg.logistica.dwr.ACMInterfaceRiesgoCrediticioDWR,
-      	uy.com.amensg.logistica.dwr.ActivacionDWR,
-      	uy.com.amensg.logistica.dwr.ActivacionLoteDWR,
-      	uy.com.amensg.logistica.dwr.ActivacionSubloteDWR,
       	uy.com.amensg.logistica.dwr.BarrioDWR,
       	uy.com.amensg.logistica.dwr.BCUInterfaceRiesgoCrediticioDWR,
       	uy.com.amensg.logistica.dwr.BCUInterfaceRiesgoCrediticioInstitucionFinancieraDWR,
+      	uy.com.amensg.logistica.dwr.CalculoPorcentajeActivacionPuntoVentaDWR,
       	uy.com.amensg.logistica.dwr.CalificacionRiesgoCrediticioAntelDWR,
       	uy.com.amensg.logistica.dwr.CalificacionRiesgoCrediticioBCUDWR,
       	uy.com.amensg.logistica.dwr.ConfigurationDWR,
       	uy.com.amensg.logistica.dwr.ContratoDWR,
       	uy.com.amensg.logistica.dwr.ContratoArchivoAdjuntoDWR,
+      	uy.com.amensg.logistica.dwr.ContratoRelacionDWR,
       	uy.com.amensg.logistica.dwr.ContratoRoutingHistoryDWR,
       	uy.com.amensg.logistica.dwr.ControlDWR,
       	uy.com.amensg.logistica.dwr.DepartamentoDWR,
@@ -125,20 +129,26 @@
       	uy.com.amensg.logistica.dwr.EstadoDWR,
       	uy.com.amensg.logistica.dwr.EstadoActivacionDWR,
       	uy.com.amensg.logistica.dwr.EstadoControlDWR,
+      	uy.com.amensg.logistica.dwr.EstadoProcesoImportacionDWR,
       	uy.com.amensg.logistica.dwr.EstadoPuntoVentaDWR,
       	uy.com.amensg.logistica.dwr.EstadoRiesgoCrediticioDWR,
+      	uy.com.amensg.logistica.dwr.EstadoVisitaPuntoVentaDistribuidorDWR,
       	uy.com.amensg.logistica.dwr.FileManagerDWR,
       	uy.com.amensg.logistica.dwr.FinanciacionDWR,
       	uy.com.amensg.logistica.dwr.FormaPagoDWR,
       	uy.com.amensg.logistica.dwr.FormaPagoCuotaDWR,
+      	uy.com.amensg.logistica.dwr.ImportacionArchivoDWR,
+      	uy.com.amensg.logistica.dwr.LiquidacionDWR,
       	uy.com.amensg.logistica.dwr.MarcaDWR,
       	uy.com.amensg.logistica.dwr.MenuDWR,
       	uy.com.amensg.logistica.dwr.MetadataConsultaDWR,
+      	uy.com.amensg.logistica.dwr.ModalidadVentaDWR,
       	uy.com.amensg.logistica.dwr.ModeloDWR,
       	uy.com.amensg.logistica.dwr.MonedaDWR,
       	uy.com.amensg.logistica.dwr.MotivoCambioPlanDWR,
       	uy.com.amensg.logistica.dwr.PlanDWR,
       	uy.com.amensg.logistica.dwr.PrecioDWR,
+      	uy.com.amensg.logistica.dwr.ProcesoImportacionDWR,
       	uy.com.amensg.logistica.dwr.ProductoDWR,
       	uy.com.amensg.logistica.dwr.PuntoVentaDWR,
       	uy.com.amensg.logistica.dwr.ResultadoEntregaDistribucionDWR,
@@ -153,15 +163,19 @@
       	uy.com.amensg.logistica.dwr.TarjetaCreditoDWR,
       	uy.com.amensg.logistica.dwr.TasaInteresEfectivaAnualDWR,
       	uy.com.amensg.logistica.dwr.TipoActivacionDWR,
+      	uy.com.amensg.logistica.dwr.TipoArchivoAdjuntoDWR,
       	uy.com.amensg.logistica.dwr.TipoControlDWR,
       	uy.com.amensg.logistica.dwr.TipoControlRiesgoCrediticioDWR,
       	uy.com.amensg.logistica.dwr.TipoDocumentoDWR,
       	uy.com.amensg.logistica.dwr.TipoPlanDWR,
+      	uy.com.amensg.logistica.dwr.TipoProcesoImportacionDWR,
       	uy.com.amensg.logistica.dwr.TipoProductoDWR,
+      	uy.com.amensg.logistica.dwr.TipoTasaInteresEfectivaAnualDWR,
       	uy.com.amensg.logistica.dwr.TurnoDWR,
       	uy.com.amensg.logistica.dwr.UnidadIndexadaDWR,
       	uy.com.amensg.logistica.dwr.UsuarioDWR,
       	uy.com.amensg.logistica.dwr.UsuarioRolEmpresaDWR,
+      	uy.com.amensg.logistica.dwr.VisitaPuntoVentaDistribuidorDWR,
       	uy.com.amensg.logistica.dwr.ZonaDWR,
       	 
       	uy.com.amensg.logistica.entities.ActivacionTO,
@@ -169,9 +183,11 @@
       	uy.com.amensg.logistica.entities.ActivacionSubloteTO,
       	uy.com.amensg.logistica.entities.ArchivoTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceContratoTO,
+      	uy.com.amensg.logistica.entities.ACMInterfaceContratoTipoDocumentoTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceEstadoTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceListaNegraTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceMidTO,
+      	uy.com.amensg.logistica.entities.ACMInterfaceNumeroContratoTO,
       	uy.com.amensg.logistica.entities.ACMInterfacePersonaTO,
       	uy.com.amensg.logistica.entities.ACMInterfacePrepagoTO,
       	uy.com.amensg.logistica.entities.ACMInterfaceProcesoEstadisticaTO,
@@ -179,10 +195,12 @@
       	uy.com.amensg.logistica.entities.BarrioTO,
       	uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticioTO,
       	uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticioInstitucionFinancieraTO,
+      	uy.com.amensg.logistica.entities.CalculoPorcentajeActivacionPuntoVentaTO,
       	uy.com.amensg.logistica.entities.CalificacionRiesgoCrediticioAntelTO,
       	uy.com.amensg.logistica.entities.CalificacionRiesgoCrediticioBCUTO,
       	uy.com.amensg.logistica.entities.ContratoTO,
       	uy.com.amensg.logistica.entities.ContratoArchivoAdjuntoTO,
+      	uy.com.amensg.logistica.entities.ContratoRelacionTO,
       	uy.com.amensg.logistica.entities.ContratoRoutingHistoryTO,
       	uy.com.amensg.logistica.entities.ControlTO,
       	uy.com.amensg.logistica.entities.DatosElegibilidadFinanciacionTO,
@@ -195,20 +213,26 @@
       	uy.com.amensg.logistica.entities.EstadoActivacionTO,
       	uy.com.amensg.logistica.entities.EstadoControlTO,
       	uy.com.amensg.logistica.entities.EstadoPuntoVentaTO,
+      	uy.com.amensg.logistica.entities.EstadoProcesoImportacionTO,
       	uy.com.amensg.logistica.entities.EstadoRiesgoCrediticioTO,
+      	uy.com.amensg.logistica.entities.EstadoVisitaPuntoVentaDistribuidorTO,
       	uy.com.amensg.logistica.entities.FormaPagoTO,
       	uy.com.amensg.logistica.entities.FormaPagoCuotaTO,
+      	uy.com.amensg.logistica.entities.LiquidacionTO,
       	uy.com.amensg.logistica.entities.MarcaTO,
       	uy.com.amensg.logistica.entities.MenuTO,
       	uy.com.amensg.logistica.entities.MetadataCondicionTO,
       	uy.com.amensg.logistica.entities.MetadataConsultaTO,
       	uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO,
       	uy.com.amensg.logistica.entities.MetadataOrdenacionTO,
+      	uy.com.amensg.logistica.entities.MinimalTO,
+      	uy.com.amensg.logistica.entities.ModalidadVentaTO,
       	uy.com.amensg.logistica.entities.ModeloTO,
       	uy.com.amensg.logistica.entities.MonedaTO,
       	uy.com.amensg.logistica.entities.MotivoCambioPlanTO,
       	uy.com.amensg.logistica.entities.PlanTO,
       	uy.com.amensg.logistica.entities.PrecioTO,
+      	uy.com.amensg.logistica.entities.ProcesoImportacionTO,
       	uy.com.amensg.logistica.entities.ProductoTO,
       	uy.com.amensg.logistica.entities.PuntoVentaTO,
       	uy.com.amensg.logistica.entities.ResultadoEntregaDistribucionTO,
@@ -223,16 +247,20 @@
       	uy.com.amensg.logistica.entities.TarjetaCreditoTO,
       	uy.com.amensg.logistica.entities.TasaInteresEfectivaAnualTO,
       	uy.com.amensg.logistica.entities.TipoActivacionTO,
+      	uy.com.amensg.logistica.entities.TipoArchivoAdjuntoTO,
       	uy.com.amensg.logistica.entities.TipoContratoTO,
       	uy.com.amensg.logistica.entities.TipoControlTO,
       	uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticioTO,
       	uy.com.amensg.logistica.entities.TipoDocumentoTO,
       	uy.com.amensg.logistica.entities.TipoPlanTO,
+      	uy.com.amensg.logistica.entities.TipoProcesoImportacionTO,
       	uy.com.amensg.logistica.entities.TipoProductoTO,
+      	uy.com.amensg.logistica.entities.TipoTasaInteresEfectivaAnualTO,
       	uy.com.amensg.logistica.entities.TurnoTO,
       	uy.com.amensg.logistica.entities.UnidadIndexadaTO,
       	uy.com.amensg.logistica.entities.UsuarioTO,
       	uy.com.amensg.logistica.entities.UsuarioRolEmpresaTO,
+      	uy.com.amensg.logistica.entities.VisitaPuntoVentaDistribuidorTO,
       	uy.com.amensg.logistica.entities.ZonaTO
       </param-value>
     </init-param>

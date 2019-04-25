@@ -13,6 +13,9 @@ public class UsuarioTO extends BaseTO {
 	private String nombre;
 	private String documento;
 	private Date fechaBaja;
+	private Long intentosFallidosLogin;
+	private Boolean bloqueado;
+	private Boolean cambioContrasenaProximoLogin;
 	private Collection<UsuarioRolEmpresaTO> usuarioRolEmpresas;
 	private Collection<MenuTO> menus;
 
@@ -54,6 +57,30 @@ public class UsuarioTO extends BaseTO {
 
 	public void setFechaBaja(Date fechaBaja) {
 		this.fechaBaja = fechaBaja;
+	}
+
+	public Long getIntentosFallidosLogin() {
+		return intentosFallidosLogin;
+	}
+
+	public void setIntentosFallidosLogin(Long intentosFallidosLogin) {
+		this.intentosFallidosLogin = intentosFallidosLogin;
+	}
+
+	public Boolean getBloqueado() {
+		return bloqueado;
+	}
+
+	public void setBloqueado(Boolean bloqueado) {
+		this.bloqueado = bloqueado;
+	}
+
+	public Boolean getCambioContrasenaProximoLogin() {
+		return cambioContrasenaProximoLogin;
+	}
+
+	public void setCambioContrasenaProximoLogin(Boolean cambioContrasenaProximoLogin) {
+		this.cambioContrasenaProximoLogin = cambioContrasenaProximoLogin;
 	}
 
 	public Collection<UsuarioRolEmpresaTO> getUsuarioRolEmpresas() {

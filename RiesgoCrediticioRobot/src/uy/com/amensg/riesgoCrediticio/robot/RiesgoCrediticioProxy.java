@@ -8,7 +8,12 @@ public class RiesgoCrediticioProxy {
 		System.out.println(iConnectionStrategy.getSiguienteDocumentoParaControlar());
 	}
 	
+	public void getSiguienteDocumentoParaControlarRiesgoOnLine() {
+		System.out.println(iConnectionStrategy.getSiguienteDocumentoParaControlarRiesgoOnLine());
+	}
+	
 	public void actualizarDatosRiesgoCrediticioACM(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String fechaCelular,
@@ -23,6 +28,7 @@ public class RiesgoCrediticioProxy {
 		String estadoDeudaClienteFijo,
 		String numeroClienteMovil) {
 		iConnectionStrategy.actualizarDatosRiesgoCrediticioACM(
+			riesgoCrediticioId,
 			empresaId,
 			documento,
 			fechaCelular,
@@ -40,6 +46,7 @@ public class RiesgoCrediticioProxy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String periodo,
@@ -57,6 +64,7 @@ public class RiesgoCrediticioProxy {
 		String sinDatos
 	) {
 		iConnectionStrategy.actualizarDatosRiesgoCrediticioBCU(
+			riesgoCrediticioId,
 			empresaId,
 			documento,
 			periodo,
@@ -76,6 +84,7 @@ public class RiesgoCrediticioProxy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
 		String institucionFinanciera,
@@ -86,6 +95,7 @@ public class RiesgoCrediticioProxy {
 		String contingencias
 	) {
 		iConnectionStrategy.actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+			riesgoCrediticioId,
 			empresaId,
 			documento,
 			institucionFinanciera,
@@ -100,6 +110,8 @@ public class RiesgoCrediticioProxy {
 	public static void main(String[] args) {
 		if (args[0].equals("getSiguienteDocumentoParaControlar")) {
 			new RiesgoCrediticioProxy().getSiguienteDocumentoParaControlar();
+		} else if (args[0].equals("getSiguienteDocumentoParaControlarRiesgoOnLine")) {
+			new RiesgoCrediticioProxy().getSiguienteDocumentoParaControlarRiesgoOnLine();
 		} else if (args[0].equals("actualizarDatosRiesgoCrediticioACM")) {
 			new RiesgoCrediticioProxy().actualizarDatosRiesgoCrediticioACM(
 				args[1],
@@ -114,7 +126,8 @@ public class RiesgoCrediticioProxy {
 				args[10],
 				args[11],
 				args[12],
-				args[13]
+				args[13],
+				args[14]
 			);
 		} else if (args[0].equals("actualizarDatosRiesgoCrediticioBCU")) {
 			new RiesgoCrediticioProxy().actualizarDatosRiesgoCrediticioBCU(
@@ -132,7 +145,8 @@ public class RiesgoCrediticioProxy {
 				args[12],
 				args[13],
 				args[14],
-				args[15]
+				args[15],
+				args[16]
 			);
 		} else if (args[0].equals("actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera")) {
 			new RiesgoCrediticioProxy().actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
@@ -143,7 +157,8 @@ public class RiesgoCrediticioProxy {
 				args[5],
 				args[6],
 				args[7],
-				args[8]
+				args[8],
+				args[9]
 			);
 		}
 	}

@@ -18,6 +18,7 @@ public class ActivacionTO extends BaseTO {
 	private EstadoActivacionTO estadoActivacion;
 	private ActivacionLoteTO activacionLote;
 	private ActivacionSubloteTO activacionSublote;
+	private LiquidacionTO liquidacion;
 
 	public Long getMid() {
 		return mid;
@@ -105,5 +106,13 @@ public class ActivacionTO extends BaseTO {
 
 	public void setActivacionSublote(ActivacionSubloteTO activacionSublote) {
 		this.activacionSublote = activacionSublote;
+	}
+
+	public LiquidacionTO getLiquidacion() {
+		return liquidacion;
+	}
+
+	public void setLiquidacion(LiquidacionTO liquidacion) {
+		this.liquidacion = liquidacion;
 	}
 }

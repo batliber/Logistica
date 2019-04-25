@@ -46,9 +46,11 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinancieraBean implements IB
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
+			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setFcre(date);
 			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setFact(date);
 			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setTerm(new Long(1));
 			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setUact(new Long(1));
+			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setUcre(new Long(1));
 			
 			entityManager.persist(bcuInterfaceRiesgoCrediticioInstitucionFinanciera);
 		} catch (Exception e) {

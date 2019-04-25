@@ -16,6 +16,8 @@ import uy.com.amensg.logistica.entities.EmpresaTO;
 import uy.com.amensg.logistica.entities.FormaPagoTO;
 import uy.com.amensg.logistica.entities.Moneda;
 import uy.com.amensg.logistica.entities.MonedaTO;
+import uy.com.amensg.logistica.entities.TipoTasaInteresEfectivaAnual;
+import uy.com.amensg.logistica.entities.TipoTasaInteresEfectivaAnualTO;
 import uy.com.amensg.logistica.util.Configuration;
 
 @RemoteProxy
@@ -55,7 +57,12 @@ public class FinanciacionDWR {
 		return result;
 	}
 	
-	public DatosFinanciacionTO calcularFinanciacion(MonedaTO monedaTO, Double monto, Long cuotas) {
+	public DatosFinanciacionTO calcularFinanciacion(
+		MonedaTO monedaTO, 
+		TipoTasaInteresEfectivaAnualTO tipoTasaInteresEfectivaAnualTO, 
+		Double monto, 
+		Long cuotas
+	) {
 		DatosFinanciacionTO result = null;
 		
 		try {
@@ -64,10 +71,14 @@ public class FinanciacionDWR {
 			Moneda moneda = new Moneda();
 			moneda.setId(monedaTO.getId());
 			
+			TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual = new TipoTasaInteresEfectivaAnual();
+			tipoTasaInteresEfectivaAnual.setId(tipoTasaInteresEfectivaAnualTO.getId());
+			
 			result = 
 				transform(
 					iFinanciacionBean.calcularFinanciacion(
 						moneda,
+						tipoTasaInteresEfectivaAnual,
 						monto,
 						cuotas
 					)

@@ -30,7 +30,15 @@ public interface IActivacionBean {
 	
 	public Activacion getLastByChip(String chip);
 	
+	public Activacion getLastByEmpresaIdMid(Long empresaId, Long mid);
+	
 	public void update(Activacion activacion);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public String exportarAExcelSupervisorDistribucionChips(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public String exportarAExcelEncargadoActivaciones(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public String exportarAExcelEncargadoActivacionesSinDistribucion(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 }

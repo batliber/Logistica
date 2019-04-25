@@ -10,7 +10,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Plan;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class PlanBean implements IPlanBean {
@@ -59,6 +62,30 @@ public class PlanBean implements IPlanBean {
 		return result;
 	}
 
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<Plan>().list(entityManager, metadataConsulta, new Plan());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<Plan>().count(entityManager, metadataConsulta, new Plan());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Plan getById(Long id) {
 		Plan result = null;
 		
@@ -73,6 +100,9 @@ public class PlanBean implements IPlanBean {
 	
 	public void save(Plan plan) {
 		try {
+			plan.setFcre(plan.getFact());
+			plan.setUcre(plan.getUact());
+			
 			entityManager.persist(plan);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -102,6 +132,7 @@ public class PlanBean implements IPlanBean {
 			Plan planManaged = entityManager.find(Plan.class, plan.getId());
 			
 			planManaged.setAbreviacion(plan.getAbreviacion());
+			planManaged.setBeneficioIncluidoEnLlamadas(plan.getBeneficioIncluidoEnLlamadas());
 			planManaged.setCantidadCelularesAntelMinutosGratis(plan.getCantidadCelularesAntelMinutosGratis());
 			planManaged.setCantidadCelularesAntelSmsGratis(plan.getCantidadCelularesAntelSmsGratis());
 			planManaged.setCantidadFijosAntelMinutosGratis(plan.getCantidadFijosAntelMinutosGratis());
@@ -112,9 +143,11 @@ public class PlanBean implements IPlanBean {
 			planManaged.setMinutosGratisMesCelularesAntel(plan.getMinutosGratisMesCelularesAntel());
 			planManaged.setMinutosGratisMesFijosAntel(plan.getMinutosGratisMesFijosAntel());
 			planManaged.setMontoNavegacionCelular(plan.getMontoNavegacionCelular());
+			planManaged.setPiePagina(plan.getPiePagina());
 			planManaged.setPrecioConsumoFueraBono(plan.getPrecioConsumoFueraBono());
 			planManaged.setPrecioMinutoDestinosAntelHorarioNormal(plan.getPrecioMinutoDestinosAntelHorarioNormal());
 			planManaged.setPrecioMinutoDestinosAntelHorarioReducido(plan.getPrecioMinutoDestinosAntelHorarioReducido());
+			planManaged.setPrecioMinutoNumerosAmigos(plan.getPrecioMinutoNumerosAmigos());
 			planManaged.setPrecioMinutoOtrasOperadoras(plan.getPrecioMinutoOtrasOperadoras());
 			planManaged.setPrecioSms(plan.getPrecioSms());
 			planManaged.setRendimientoMinutosMensualDestinosAntelHorarioNormal(plan.getRendimientoMinutosMensualDestinosAntelHorarioNormal());

@@ -12,4 +12,6 @@ public interface IMonedaBean {
 	public Collection<Moneda> list();
 	
 	public Moneda getById(Long id);
+	
+	public Moneda getBySimbolo(String simbolo);
 }

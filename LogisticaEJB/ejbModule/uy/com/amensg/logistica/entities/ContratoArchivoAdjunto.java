@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -23,6 +24,10 @@ public class ContratoArchivoAdjunto extends BaseEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "contrato_id", nullable = false)
 	private Contrato contrato;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "tipo_archivo_adjunto_id")
+	private TipoArchivoAdjunto tipoArchivoAdjunto;
 
 	public String getUrl() {
 		return url;
@@ -46,5 +51,13 @@ public class ContratoArchivoAdjunto extends BaseEntity {
 
 	public void setContrato(Contrato contrato) {
 		this.contrato = contrato;
+	}
+
+	public TipoArchivoAdjunto getTipoArchivoAdjunto() {
+		return tipoArchivoAdjunto;
+	}
+
+	public void setTipoArchivoAdjunto(TipoArchivoAdjunto tipoArchivoAdjunto) {
+		this.tipoArchivoAdjunto = tipoArchivoAdjunto;
 	}
 }

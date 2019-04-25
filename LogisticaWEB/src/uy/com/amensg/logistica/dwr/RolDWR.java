@@ -19,6 +19,9 @@ import uy.com.amensg.logistica.bean.IRolBean;
 import uy.com.amensg.logistica.bean.RolBean;
 import uy.com.amensg.logistica.entities.Menu;
 import uy.com.amensg.logistica.entities.MenuTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.Rol;
 import uy.com.amensg.logistica.entities.RolTO;
 
@@ -44,7 +47,68 @@ public class RolDWR {
 			IRolBean iRolBean = lookupBean();
 			
 			for (Rol rol : iRolBean.list()) {
-				result.add(transform(rol, true));
+				result.add(transform(rol, false));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IRolBean iRolBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iRolBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object rol : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(RolDWR.transform((Rol) rol, false));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IRolBean iRolBean = lookupBean();
+				
+				result = 
+					iRolBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,7 +123,24 @@ public class RolDWR {
 		try {
 			IRolBean iRolBean = lookupBean();
 			
-			result = transform(iRolBean.getById(id), true);
+			result = transform(iRolBean.getById(id, true), true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public RolTO getByNombre(String nombre) {
+		RolTO result = null;
+		
+		try {
+			IRolBean iRolBean = lookupBean();
+			
+			Rol rol = iRolBean.getByNombre(nombre, true);
+			if (rol != null) {
+				result = transform(rol, true);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -99,40 +180,11 @@ public class RolDWR {
 			e.printStackTrace();
 		}
 	}
-	
-	public static RolTO transform(Rol rol) {
-		RolTO rolTO = new RolTO();
 		
-		rolTO.setNombre(rol.getNombre());
-		
-		Collection<MenuTO> menus = new LinkedList<MenuTO>();
-		if (rol.getMenus() != null) {
-			for (Menu menu : rol.getMenus()) {
-				menus.add(MenuDWR.transform(menu));
-			}
-		}
-		rolTO.setMenus(menus);
-	
-		Collection<RolTO> subordinados = new LinkedList<RolTO>();
-		if (rol.getSubordinados() != null) {
-			for (Rol subordinado : rol.getSubordinados()) {
-				subordinados.add(transform(subordinado, false));
-			}
-		}
-		rolTO.setSubordinados(subordinados);
-		
-		rolTO.setFact(rol.getFact());
-		rolTO.setId(rol.getId());
-		rolTO.setTerm(rol.getTerm());
-		rolTO.setUact(rol.getUact());
-		
-		return rolTO;
-	}
-	
 	public static RolTO transform(Rol rol, boolean transformCollections) {
-		RolTO rolTO = new RolTO();
+		RolTO result = new RolTO();
 		
-		rolTO.setNombre(rol.getNombre());
+		result.setNombre(rol.getNombre());
 		
 		if (transformCollections) {
 			Collection<MenuTO> menus = new LinkedList<MenuTO>();
@@ -141,7 +193,7 @@ public class RolDWR {
 					menus.add(MenuDWR.transform(menu));
 				}
 			}
-			rolTO.setMenus(menus);
+			result.setMenus(menus);
 		
 			Collection<RolTO> subordinados = new LinkedList<RolTO>();
 			if (rol.getSubordinados() != null) {
@@ -149,15 +201,17 @@ public class RolDWR {
 					subordinados.add(transform(subordinado, false));
 				}
 			}
-			rolTO.setSubordinados(subordinados);
+			result.setSubordinados(subordinados);
 		}
 		
-		rolTO.setFact(rol.getFact());
-		rolTO.setId(rol.getId());
-		rolTO.setTerm(rol.getTerm());
-		rolTO.setUact(rol.getUact());
+		result.setFcre(rol.getFcre());
+		result.setFact(rol.getFact());
+		result.setId(rol.getId());
+		result.setTerm(rol.getTerm());
+		result.setUact(rol.getUact());
+		result.setUcre(rol.getUcre());
 		
-		return rolTO;
+		return result;
 	}
 	
 	public static Rol transform(RolTO rolTO) {
@@ -185,6 +239,7 @@ public class RolDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(rolTO.getFcre());
 		result.setFact(date);
 		result.setId(rolTO.getId());
 		result.setTerm(new Long(1));
@@ -193,6 +248,7 @@ public class RolDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(rolTO.getUcre());
 		
 		return result;
 	}

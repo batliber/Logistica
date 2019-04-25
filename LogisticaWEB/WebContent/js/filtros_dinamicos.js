@@ -12,27 +12,45 @@ function FiltroDinamico(grid, campos, reloadListener) {
 	/**
 	 * Construye el espacio para filtros dinámicos asociados a la tabla grid.
 	 */
-	this.rebuild = function() {
+	this.rebuild = function(width) {
 		html = 
-			"<div class='divFiltros'>"
-				+ "<div class='divFormLabelExtended'>Tama&ntilde;o de muestra:</div>"
+			"<div class='divFiltrosHandle'>"
+				+ "<div class='divFiltrosHandleLeft' style='width: " + ((width - 100) / 2) + "px;'>"
+					+ "<div class='divFiltrosHandleLeftTop'>&nbsp;</div>"
+					+ "<div class='divFiltrosHandleLeftBottom'>&nbsp;</div>"
+				+ "</div>"
+				+ "<div class='divFiltrosHandleCenter'>"
+					+ "<div class='divFiltrosHandleCenterTop'>"
+						+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
+						+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
+						+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
+					+ "</div>"
+					+ "<div class='divFiltrosHandleCenterBottom'>&nbsp;</div>"
+				+ "</div>"
+				+ "<div class='divFiltrosHandleRight' style='width: " + ((width - 100) / 2) + "px;'>"
+					+ "<div class='divFiltrosHandleRightTop'>&nbsp;</div>"
+					+ "<div class='divFiltrosHandleRightBottom'>&nbsp;</div>"
+				+ "</div>"
+			+ "</div>"
+			+ "<div class='divFiltros'>"
+				+ "<div class='divLabelTamanoMuestra'>Muestra:</div>"
 				+ "<div class='divTamanoMuestra'>"
 					+ "<input type='text' class='inputTamanoMuestra' value='" + this.tamanoMuestra + "'/>"
 				+ "</div>"
-				+ "<div class='divFormLabelExtended'>Tama&ntilde;o subconjunto:</div>"
+				+ "<div class='divLabelTamanoSubconjunto'>Subconj.:</div>"
 				+ "<div class='divTamanoSubconjunto'>"
 					+ "<input type='text' class='inputTamanoSubconjunto' value='" + this.tamanoSubconjunto + "'/>"
 				+ "</div>"
 				+ "<div class='divAgregarFiltroContainer'>"
-					+ "<div class='divFormLabelExtended'>Agregar filtro:</div>"
+					+ "<div class='divLabelFiltros'>Filtros:</div>"
 					+ "<div class='divAgregarFiltro'>"
 						+ "<input type='submit' value='' class='inputAgregarFiltro'/>"
 					+ "</div>"
-					+ "<div class='divFormLabelExtended'>Limpiar filtros:</div>"
+//					+ "<div class='divFormLabelExtended'>Limpiar filtros:</div>"
 					+ "<div class='divLimpiarFiltros'>"
 						+ "<input type='submit' value='' class='inputLimpiarFiltros'/>"
 					+ "</div>"
-					+ "<div class='divFormLabelExtended'>Seleccionar columnas:</div>"
+//					+ "<div class='divFormLabelExtended'>Seleccionar columnas:</div>"
 					+ "<div class='divSeleccionarColumnas'>"
 						+ "<input type='submit' value='' class='inputSeleccionarColumnas'/>"
 						+ "<div class='divIFrameSeleccionColumnas'>"
@@ -52,10 +70,13 @@ function FiltroDinamico(grid, campos, reloadListener) {
 					+ "</div>"
 				+ "</div>"
 			+ "</div>";
-		
+			
 		$(this.grid.element).html(html);
 		
 		var divFiltros = $(this.grid.element).children(".divFiltros");
+		var divFiltrosHandle = $(this.grid.element).children(".divFiltrosHandle");
+		
+		divFiltros.css("width", width - 6);
 		
 		divFiltros.find(".inputTamanoMuestra").change(this.tamanoMuestraOnChange.bind(this));
 		divFiltros.find(".inputTamanoSubconjunto").change(this.tamanoSubconjuntoOnChange.bind(this));
@@ -63,6 +84,9 @@ function FiltroDinamico(grid, campos, reloadListener) {
 		divFiltros.find(".inputSeleccionColumnasAceptar").click(this.actualizarColumnas.bind(this));
 		divFiltros.find(".inputAgregarFiltro").click(this.agregarFiltro.bind(this));
 		divFiltros.find(".inputLimpiarFiltros").click(this.limpiarFiltros.bind(this));
+		divFiltrosHandle.find(".divFiltrosHandleCenterTop").click(this.mostrarOcultarFiltros.bind(this));
+		divFiltrosHandle.find(".divFiltrosHandleCenterTopLine").click(this.mostrarOcultarFiltros.bind(this));
+		divFiltrosHandle.find(".divFiltrosHandleCenterBottom").click(this.mostrarOcultarFiltros.bind(this));
 	},
 	
 	/**
@@ -119,7 +143,14 @@ function FiltroDinamico(grid, campos, reloadListener) {
 			this.campos[$(checkboxes[i]).attr("cid")].oculto = !$(checkboxes[i]).prop("checked");
 		}
 		
+		var condiciones = this.calcularCondiciones();
+		
 		this.grid.rebuild();
+		
+		for (var i=0; i<condiciones.length; i++) {
+			this.agregarFiltroManual(condiciones[i], condiciones[i].fijo);
+		}
+		
 		this.reloadListener();
 		
 		closePopUp(event, element.parentNode.parentNode.parentNode.parentNode);
@@ -129,15 +160,24 @@ function FiltroDinamico(grid, campos, reloadListener) {
 	 * Listener del evento "click" del input que elimina los filtros definidos.
 	 */
 	this.limpiarFiltros = function(event, element) {
-		$(this.grid.element).children(".divFiltros").find(".divFiltro").remove();
+		var divFiltros = $(this.grid.element).children(".divFiltros").find(".divFiltro");
+		
+		for (var i=0; i<divFiltros.length; i++) {
+			var divFiltro = $(divFiltros[i]);
+			var selectCampo = divFiltro.find(".selectCampo");
+			
+			if (!selectCampo.prop("disabled")) {
+				divFiltro.remove();
+			}
+		}
 		
 		this.reloadListener();
 	},
 	
-	this.agregarFiltroManual = function(filtro) {
+	this.agregarFiltroManual = function(filtro, fijo) {
 		var divFiltros = $(this.grid.element).children(".divFiltros");
 		
-		this.agregarFiltro(null);
+		this.agregarFiltro(null, fijo);
 		
 		var divFiltro = divFiltros.children(".divFiltro:last");
 		
@@ -148,6 +188,9 @@ function FiltroDinamico(grid, campos, reloadListener) {
 		
 		var selectCondicion = divFiltro.find(".selectCondicion");
 		selectCondicion.val(filtro.operador);
+		if (fijo != null && fijo) {
+			selectCondicion.prop("disabled", "disabled");
+		}
 		
 		selectCondicion.trigger("change");
 		
@@ -155,17 +198,21 @@ function FiltroDinamico(grid, campos, reloadListener) {
 			var selectValor = divFiltro.find(".selectValor");
 			selectValor.val(filtro.valores[0]);
 			
+			if (fijo != null && fijo) {
+				selectValor.prop("disabled", "disabled");
+			}
+			
 			selectValor.trigger("change");
 		}
 	}
 	
-	this.agregarFiltrosManuales = function(filtros) {
+	this.agregarFiltrosManuales = function(filtros, fijo) {
 		for (var i=0; i<filtros.length; i++) {
 			var filtro = filtros[i];
 			
 			var divFiltros = $(this.grid.element).children(".divFiltros");
 			
-			this.agregarFiltro(null);
+			this.agregarFiltro(null, fijo);
 			
 			var divFiltro = divFiltros.children(".divFiltro:last");
 			
@@ -176,12 +223,19 @@ function FiltroDinamico(grid, campos, reloadListener) {
 			
 			var selectCondicion = divFiltro.find(".selectCondicion");
 			selectCondicion.val(filtro.operador);
+			if (fijo != null && fijo) {
+				selectCondicion.prop("disabled", "disabled");
+			}
 			
 			selectCondicion.trigger("change");
 			
 			if (filtro.valores.length > 0) {
 				var selectValor = divFiltro.find(".selectValor");
 				selectValor.val(filtro.valores[0]);
+				
+				if (fijo != null && fijo) {
+					selectValor.prop("disabled", "disabled");
+				}
 			}
 		}
 		
@@ -191,18 +245,33 @@ function FiltroDinamico(grid, campos, reloadListener) {
 	/**
 	 * Listener del evento "click" del input que agrega un filtro sobre los datos de la tabla grid.
 	 */
-	this.agregarFiltro = function(eventObject) {
+	this.agregarFiltro = function(eventObject, fijo) {
 		this.filtros++;
 		
 		var html = 
 			"<div id='divFiltro" + this.filtros + "' class='divFiltro'>"
 				+ "<div class='divQuitarFiltro'>"
-					+ "<input type='submit' value='' class='inputQuitarFiltro'/>"
+					+ "<input type='submit' value='' ";
+		
+		if (fijo != null && fijo) {
+				html += "class='inputQuitarFiltroDisabled' disabled='disabled'";
+		} else {
+				html += "class='inputQuitarFiltro'";
+		}
+		html +=  
+						"/>"
 				+ "</div>"
 				+ "<div class='divLabelCampo'>Campo:</div>"
 				+ "<div class='divCampo'>"
-					+ "<select class='selectCampo'>"
-						+ "<option value=''>Seleccione...</option>";
+					+ "<select class='selectCampo'";
+		if (fijo != null && fijo) {
+			html += " disabled='disabled'>";
+		} else {
+			html += ">";
+		}
+		
+		html += 
+						"<option value=''>Seleccione...</option>";
 		
 		for (var campo in this.campos) {
 			if (!this.campos[campo].oculto && this.campos[campo].tipo != __TIPO_CAMPO_DETAIL) {
@@ -217,7 +286,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 		html += 
 					"</select>"
 				+ "</div>"
-				+ "<div class='divFormLabel'>Condici&oacute;n:</div>"
+				+ "<div class='divLabelCondicion'>Condici&oacute;n:</div>"
 				+ "<div class='divCondicion'>&nbsp;</div>"
 			+ "</div>";
 		
@@ -277,6 +346,14 @@ function FiltroDinamico(grid, campos, reloadListener) {
 				+ "<option value='nl'>Vac&iacute;o</option>"
 				+ "<option value='nnl'>No vac&iacute;o</option>";
 		} else if (tipoCampo == __TIPO_CAMPO_DECIMAL) {
+			html += 
+				"<option value='eq'>Es igual a</option>"
+				+ "<option value='btw'>Entre</option>"
+				+ "<option value='gt'>Mayor que</option>"
+				+ "<option value='lt'>Menor que</option>"
+				+ "<option value='nl'>Vac&iacute;o</option>"
+				+ "<option value='nnl'>No vac&iacute;o</option>";
+		} else if (tipoCampo == __TIPO_CAMPO_PORCENTAJE) {
 			html += 
 				"<option value='eq'>Es igual a</option>"
 				+ "<option value='btw'>Entre</option>"
@@ -374,16 +451,16 @@ function FiltroDinamico(grid, campos, reloadListener) {
 		
 		var html = "<div class='divCondicionValores'>";
 		
-		divFiltro.css("height", "22px");
+//		divFiltro.css("height", "22px");
 		
 		switch (selectCondicion.val()) {
 			case "btw":
 				html +=
-					"<div class='divFormLabel'>Valor:</div>"
+					"<div class='divLabelCondicionValor'>Valor:</div>"
 					+ "<div class='divValorMin'>"
 						+ "<input type='text' class='inputValorMin'/>"
 					+ "</div>"
-					+ "<div class='divFormLabel' style='width: 50px;'>y:</div>"
+					+ "<div class='divLabelCondicionValor'>y:</div>"
 					+ "<div class='divValorMax'>"
 						+ "<input type='text' class='inputValorMax'/>"
 					+ "</div>";
@@ -404,7 +481,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 				}
 				
 				html += 
-						"<div class='divFormLabel'>Valor:</div>"
+						"<div class='divLabelCondicionValor'>Valor:</div>"
 							+ "<div class='divValor'>"
 								+ "<select class='selectValoresMultiples'>"
 									+ "<option value=''>Seleccione...</option>"
@@ -466,7 +543,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 				}
 				
 				html += 
-					"<div class='divFormLabel'>Valor:</div>"
+					"<div class='divLabelCondicionValor'>Valor:</div>"
 					+ "<div class='divValor'>"
 						+ "<select class='selectValor'>"
 							+ "<option value=''>Seleccione...</option>";
@@ -510,7 +587,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 			
 				if (selectedFieldValue == "documentoTipo") {
 					html += 
-						"<div class='divFormLabel'>Valor:</div>"
+						"<div class='divLabelCondicionValor'>Valor:</div>"
 						+ "<div class='divValor'>"
 							+ "<select class='selectValor'>"
 								+ "<option value=''>Seleccione...</option>"
@@ -522,7 +599,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 						+ "</div>";
 				} else if (this.campos[campo].tipo == __TIPO_CAMPO_BOOLEAN) {
 					html += 
-						"<div class='divFormLabel'>Valor:</div>"
+						"<div class='divLabelCondicionValor'>Valor:</div>"
 						+ "<div class='divValor'>"
 							+ "<select class='selectValor'>"
 								+ "<option value=''>Seleccione...</option>"
@@ -532,7 +609,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 						+ "</div>";
 				} else {
 					html += 
-						"<div class='divFormLabel'>Valor:</div>"
+						"<div class='divLabelCondicionValor'>Valor:</div>"
 						+ "<div class='divValor'>"
 							+ "<input type='text' class='inputValor'/>"
 						+ "</div>";
@@ -619,10 +696,12 @@ function FiltroDinamico(grid, campos, reloadListener) {
 			var valCampo = selectCampo.val();
 			var selectCondicion = divFiltro.find(".selectCondicion");
 			var valCondicion = selectCondicion.val();
+			var fijo = divFiltro.find(".selectCampo").prop("disabled");
 			
 			if (valCampo != "" && valCondicion != "") {
 				var metadataCondicion = {
-					operador: valCondicion
+					operador: valCondicion,
+					fijo: fijo
 				};
 				
 				var filtroValido = false;
@@ -679,8 +758,15 @@ function FiltroDinamico(grid, campos, reloadListener) {
 					default:
 						metadataCondicion.campo = valCampo;
 					
-						metadataCondicion.valores = [divFiltro.find(".inputValor").val()];
-
+						var elementValor = divFiltro.find(".inputValor");
+						if (elementValor.length > 0) {
+							metadataCondicion.valores = [elementValor.val()];
+						} else {
+							elementValor = divFiltro.find(".selectValor");
+							
+							metadataCondicion.valores = [elementValor.val()];
+						}
+						
 						filtroValido = metadataCondicion.valores[0] != "";
 					
 						break;
@@ -709,6 +795,10 @@ function FiltroDinamico(grid, campos, reloadListener) {
 	/**
 	 * Listener del evento "click" de los encabezados de las columnas de la tabla grid.
 	 * Generan ordenaciones de los datos en función de la columna seleccionada.
+	 * 
+	 * Nota: los elementos de los encabezados tienen el formato: "divTableHeaderCell divTableHeaderCellXXX"
+	 * donde XXX denota el tipo de ordenación (NOO, ASC, DES).
+	 * Siempre se mantiene el prefijo divTableHeaderCell.
 	 */
 	this.agregarOrden = function(eventObject) {
 		var element = $(eventObject.target).closest(".divTableHeaderCell");
@@ -771,5 +861,27 @@ function FiltroDinamico(grid, campos, reloadListener) {
 		var divMenu = $(".divTableHeaderMenu");
 		divMenu.show();
 		divMenu.offset({ top: divMenu.offset().top, left: $(element).position().left });
+	},
+	
+	/**
+	 * Listener del evento "click" del div que muestra/oculta los filtros.
+	 */
+	this.mostrarOcultarFiltros = function(eventObject) {
+		var target = $(eventObject.target);
+		
+		if (target.hasClass("divFiltrosHandleCenterTopLine")) {
+			target = target.parent();
+		}
+		
+		var divFiltros = $(target.parent().parent().siblings(".divFiltros")[0]);
+		var divFiltrosHandle = target.parent().parent();
+		
+		if (divFiltros.is(":visible")) {
+			divFiltros.hide();
+		} else {
+			divFiltros.show();
+		}
+		
+		return false;
 	}
 }

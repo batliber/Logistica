@@ -12,6 +12,7 @@ function Grid(element, campos, showFilters, reloadListener, trOnClickListener, t
 	this.__ANCHO_CAMPO_MULTIPLE = 110 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_BOOLEAN = 55 + this.__ANCHO_BORDE;
 	this.__ANCHO_CAMPO_DETAIL = 15 + this.__ANCHO_BORDE;
+	this.__ANCHO_CAMPO_PORCENTAJE = 55 + this.__ANCHO_BORDE;
 
 	this.__ANCHO_ETIQUETA_CANTIDAD_REGISTROS = 120;
 	
@@ -48,10 +49,6 @@ Grid.prototype.rebuild = function() {
 	var pesosElement = $(this.element);
 	pesosElement.empty();
 	
-	if (this.showFilters) {
-		this.filtroDinamico.rebuild();
-	}
-	
 	var html =
 		"<div id='table' class='divTable'>"
 			+ "<div class='divTableHeader'>"
@@ -68,6 +65,10 @@ Grid.prototype.rebuild = function() {
 					break;
 				case __TIPO_CAMPO_DECIMAL:
 					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_DECIMAL;
+					
+					break;
+				case __TIPO_CAMPO_PORCENTAJE:
+					width += this.filtroDinamico.campos[campo].oculto ? 0 : this.__ANCHO_CAMPO_PORCENTAJE;
 					
 					break;
 				case __TIPO_CAMPO_STRING:
@@ -194,6 +195,10 @@ Grid.prototype.rebuild = function() {
 		// Cantidad de filas 
 		(this.rowHeight != null ? this.rowHeight : this.__FILAS);
 
+	if (this.showFilters) {
+		this.filtroDinamico.rebuild(width);
+	}
+	
 	pesosElement.append(html);
 	
 	pesosElement.css("width", width + 1);
@@ -294,6 +299,15 @@ Grid.prototype.reload = function(data) {
 					} 
 					
 					formattedValue = value != null && value !== "" ? formatDecimal(value, decimales) : "&nbsp;";
+					
+					break;
+				case __TIPO_CAMPO_PORCENTAJE:
+					var decimales = 2;
+					if (this.filtroDinamico.campos[campo].decimales != null) {
+						decimales = this.filtroDinamico.campos[campo].decimales;
+					} 
+					
+					formattedValue = value != null && value !== "" ? formatDecimal(value * 100, decimales) : "&nbsp;";
 					
 					break;
 				case __TIPO_CAMPO_STRING:
@@ -450,6 +464,10 @@ Grid.prototype.openDetail = function(eventObject) {
 						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_DECIMAL;
 						
 						break;
+					case __TIPO_CAMPO_PORCENTAJE:
+						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_PORCENTAJE;
+						
+						break;
 					case __TIPO_CAMPO_STRING:
 						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_STRING;
 						
@@ -477,7 +495,7 @@ Grid.prototype.openDetail = function(eventObject) {
 			
 			html +=
 						"<div id='" + campoHeader + "'"
-							+ " class='divTableHeaderCell" + camposDetail[campoHeader].tipo + "NOO'";
+							+ " class='divTableHeaderCell divTableHeaderCell" + camposDetail[campoHeader].tipo + "NOO'";
 			
 			if (camposDetail[campoHeader].oculto) {
 				html += 
@@ -527,6 +545,10 @@ Grid.prototype.openDetail = function(eventObject) {
 						break;
 					case __TIPO_CAMPO_DECIMAL:
 						formattedValue = value != null && value !== "" ? formatDecimal(value, 2) : "&nbsp;";
+						
+						break;
+					case __TIPO_CAMPO_PORCENTAJE:
+						formattedValue = value != null && value !== "" ? formatDecimal(value * 100, 2) : "&nbsp;";
 						
 						break;
 					case __TIPO_CAMPO_STRING:

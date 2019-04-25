@@ -50,10 +50,12 @@ public class TipoControlRiesgoCrediticioDWR {
 		
 		result.setDescripcion(tipoControlRiesgoCrediticio.getDescripcion());
 		
+		result.setFcre(tipoControlRiesgoCrediticio.getFcre());
 		result.setFact(tipoControlRiesgoCrediticio.getFact());
 		result.setId(tipoControlRiesgoCrediticio.getId());
 		result.setTerm(tipoControlRiesgoCrediticio.getTerm());
 		result.setUact(tipoControlRiesgoCrediticio.getUact());
+		result.setUcre(tipoControlRiesgoCrediticio.getUcre());
 		
 		return result;
 	}

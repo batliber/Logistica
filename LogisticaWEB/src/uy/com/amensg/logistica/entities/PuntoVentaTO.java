@@ -16,9 +16,14 @@ public class PuntoVentaTO extends BaseTO {
 	private String telefono;
 	private String documento;
 	private String contacto;
+	private Date fechaAsignacionDistribuidor;
+	private Date fechaVisitaDistribuidor;
+	private Date fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
 	private DepartamentoTO departamento;
 	private BarrioTO barrio;
 	private EstadoPuntoVentaTO estadoPuntoVenta;
+	private EstadoVisitaPuntoVentaDistribuidorTO estadoVisitaPuntoVentaDistribuidor;
+	private UsuarioTO distribuidor;
 
 	public String getNombre() {
 		return nombre;
@@ -92,6 +97,39 @@ public class PuntoVentaTO extends BaseTO {
 		this.contacto = contacto;
 	}
 
+	public Date getFechaAsignacionDistribuidor() {
+		return fechaAsignacionDistribuidor;
+	}
+
+	public void setFechaAsignacionDistribuidor(Date fechaAsignacionDistribuidor) {
+		this.fechaAsignacionDistribuidor = fechaAsignacionDistribuidor;
+	}
+
+	public Date getFechaVisitaDistribuidor() {
+		return fechaVisitaDistribuidor;
+	}
+
+	public void setFechaVisitaDistribuidor(Date fechaVisitaDistribuidor) {
+		this.fechaVisitaDistribuidor = fechaVisitaDistribuidor;
+	}
+
+	public Date getFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor() {
+		return fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
+	}
+
+	public void setFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor(
+			Date fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor) {
+		this.fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor = fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
+	}
+
+	public UsuarioTO getDistribuidor() {
+		return distribuidor;
+	}
+
+	public void setDistribuidor(UsuarioTO distribuidor) {
+		this.distribuidor = distribuidor;
+	}
+
 	public DepartamentoTO getDepartamento() {
 		return departamento;
 	}
@@ -114,5 +152,14 @@ public class PuntoVentaTO extends BaseTO {
 
 	public void setEstadoPuntoVenta(EstadoPuntoVentaTO estadoPuntoVenta) {
 		this.estadoPuntoVenta = estadoPuntoVenta;
+	}
+
+	public EstadoVisitaPuntoVentaDistribuidorTO getEstadoVisitaPuntoVentaDistribuidor() {
+		return estadoVisitaPuntoVentaDistribuidor;
+	}
+
+	public void setEstadoVisitaPuntoVentaDistribuidor(
+			EstadoVisitaPuntoVentaDistribuidorTO estadoVisitaPuntoVentaDistribuidor) {
+		this.estadoVisitaPuntoVentaDistribuidor = estadoVisitaPuntoVentaDistribuidor;
 	}
 }

@@ -50,6 +50,9 @@ public class MenuBean implements IMenuBean {
 	
 	public void save(Menu menu) {
 		try {
+			menu.setFcre(menu.getFact());
+			menu.setUcre(menu.getUact());
+			
 			entityManager.persist(menu);
 		} catch (Exception e) {
 			e.printStackTrace();

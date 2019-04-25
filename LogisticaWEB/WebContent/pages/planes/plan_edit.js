@@ -39,6 +39,7 @@ function init() {
 					$("#inputPlanPrecioMinutoDestinosAntelHorarioReducido").val(data.precioMinutoDestinosAntelHorarioReducido);
 					$("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").val(data.rendimientoMinutosMensualDestinosAntelHorarioNormal);
 					$("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").val(data.rendimientoMinutosMensualDestinosAntelHorarioReducido);
+					$("#inputPlanPrecioMinutoNumerosAmigos").val(data.precioMinutoNumerosAmigos);
 					$("#inputPlanPrecioMinutoOtrasOperadoras").val(data.precioMinutoOtrasOperadoras);
 					$("#inputPlanRendimientoMinutosMensualOtrasOperadoras").val(data.rendimientoMinutosMensualOtrasOperadoras);
 					$("#inputPlanPrecioSms").val(data.precioSms);
@@ -52,6 +53,8 @@ function init() {
 					$("#inputPlanCantidadCelularesAntelSmsGratis").val(data.cantidadCelularesAntelSmsGratis);
 					$("#inputPlanMinutosGratisMesFijosAntel").val(data.minutosGratisMesFijosAntel);
 					$("#inputPlanCantidadFijosAntelMinutosGratis").val(data.cantidadFijosAntelMinutosGratis);
+					$("#inputPlanPiePagina").val(data.piePagina);
+					$("#inputPlanBeneficioIncluidoEnLlamadas").prop("checked", data.beneficioIncluidoEnLlamadas);
 					
 					if (mode == __FORM_MODE_ADMIN) {
 						$("#divEliminarPlan").show();
@@ -64,6 +67,10 @@ function init() {
 }
 
 function refinarForm() {
+	hideField("planPrecioMinutoDestinosAntelHorarioReducido");
+	hideField("planRendimientoMinutosMensualDestinosAntelHorarioReducido");
+	hideField("planPiePagina");
+	
 	if (mode == __FORM_MODE_ADMIN) {
 		
 	} else if (mode == __FORM_MODE_USER) {
@@ -78,6 +85,7 @@ function refinarForm() {
 //	$("#divLabelPlanPrecioMinutoDestinosAntelHorarioReducido").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").addClass("requiredFormLabelExtraExtended");
+//	$("#divLabelPlanPrecioMinutoNumerosAmigos").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanPrecioMinutoOtrasOperadoras").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanRendimientoMinutosMensualOtrasOperadoras").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanPrecioSms").addClass("requiredFormLabelExtraExtended");
@@ -91,6 +99,13 @@ function refinarForm() {
 //	$("#divLabelPlanCantidadCelularesAntelSmsGratis").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanMinutosGratisMesFijosAntel").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanCantidadFijosAntelMinutosGratis").addClass("requiredFormLabelExtraExtended");
+}
+
+function hideField(elementId) {
+	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, elementId.length);
+	
+	$("#divLabel" + elementSuffix).hide();
+	$("#div" + elementSuffix).hide();
 }
 
 function checkRequiredFields() {
@@ -142,6 +157,7 @@ function inputGuardarOnClick(event) {
 		precioMinutoDestinosAntelHorarioReducido: $("#inputPlanPrecioMinutoDestinosAntelHorarioReducido").val(),
 		rendimientoMinutosMensualDestinosAntelHorarioNormal: $("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").val(),
 		rendimientoMinutosMensualDestinosAntelHorarioReducido: $("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").val(),
+		precioMinutoNumerosAmigos: $("#inputPlanPrecioMinutoNumerosAmigos").val(),
 		precioMinutoOtrasOperadoras: $("#inputPlanPrecioMinutoOtrasOperadoras").val(),
 		rendimientoMinutosMensualOtrasOperadoras: $("#inputPlanRendimientoMinutosMensualOtrasOperadoras").val(),
 		precioSms: $("#inputPlanPrecioSms").val(),
@@ -154,7 +170,9 @@ function inputGuardarOnClick(event) {
 		smsGratisMesCelularesAntel: $("#inputPlanSmsGratisMesCelularesAntel").val(),
 		cantidadCelularesAntelSmsGratis: $("#inputPlanCantidadCelularesAntelSmsGratis").val(),
 		minutosGratisMesFijosAntel: $("#inputPlanMinutosGratisMesFijosAntel").val(),
-		cantidadFijosAntelMinutosGratis: $("#inputPlanCantidadFijosAntelMinutosGratis").val()
+		cantidadFijosAntelMinutosGratis: $("#inputPlanCantidadFijosAntelMinutosGratis").val(),
+		piePagina: $("#inputPlanPiePagina").val(),
+		beneficioIncluidoEnLlamadas: $("#inputPlanBeneficioIncluidoEnLlamadas").prop("checked")
 	};
 	
 	if ($("#selectPlanTipoPlan").val() != 0) {

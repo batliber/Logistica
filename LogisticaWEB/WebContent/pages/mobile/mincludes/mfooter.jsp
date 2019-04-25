@@ -37,7 +37,11 @@
 			
 			IUsuarioBean iUsuarioBean = (IUsuarioBean) context.lookup(lookupName);
 			
-			usuarioTO = UsuarioDWR.transform(iUsuarioBean.getById(usuarioId), true);
+			usuarioTO = 
+				UsuarioDWR.transform(
+					iUsuarioBean.getById(usuarioId, true), 
+					true
+				);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

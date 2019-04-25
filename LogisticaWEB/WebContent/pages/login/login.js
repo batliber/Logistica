@@ -7,6 +7,8 @@ $(document).ready(function() {
 });
 
 function inputAccederOnClick(event, element) {
+	$("#divError").text("");
+	
 	SeguridadDWR.login(
 		$("#inputUsuario").val(),
 		$("#inputContrasena").val(),

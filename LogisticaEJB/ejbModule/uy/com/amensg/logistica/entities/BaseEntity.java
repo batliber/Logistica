@@ -18,6 +18,12 @@ public class BaseEntity implements Serializable {
 	@GeneratedValue
 	private Long id;
 	
+	@Column(name = "ucre")
+	private Long ucre;
+	
+	@Column(name = "fcre")
+	private Date fcre;
+	
 	@Column(name = "uact")
 	private Long uact;
 	
@@ -33,6 +39,22 @@ public class BaseEntity implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getUcre() {
+		return ucre;
+	}
+
+	public void setUcre(Long ucre) {
+		this.ucre = ucre;
+	}
+
+	public Date getFcre() {
+		return fcre;
+	}
+
+	public void setFcre(Date fcre) {
+		this.fcre = fcre;
 	}
 
 	public Long getUact() {

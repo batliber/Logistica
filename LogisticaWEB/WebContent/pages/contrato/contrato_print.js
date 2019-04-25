@@ -22,12 +22,12 @@ function init() {
 				$("#divFechaVenta").html(
 					data.fechaVenta != null ? formatShortDate(data.fechaVenta) : "&nbsp;"
 				);
-				$("#divLocalidad").html(
-					data.localidad != null ? data.localidad : "&nbsp;"
-				);
-				$("#divCodigoPostal").html(
-					data.codigoPostal != null ? data.codigoPostal : "&nbsp;"
-				);
+//				$("#divLocalidad").html(
+//					data.localidad != null ? data.localidad : "&nbsp;"
+//				);
+//				$("#divCodigoPostal").html(
+//					data.codigoPostal != null ? data.codigoPostal : "&nbsp;"
+//				);
 				$("#divFechaVencimiento").html(
 					data.fechaFinContrato != null ? formatShortDate(data.fechaFinContrato) : "&nbsp;"
 				);
@@ -93,7 +93,7 @@ function init() {
 				if (data.direccionFacturaSolar != null && data.direccionFacturaSolar != "") {
 					direccionFactura += " Solar " + data.direccionFacturaSolar;
 				}
-				if (data.direccionFacturaManzana != null && data.direccionFacturaManzana != "") {
+				if (data.direccionFacturaManzana != null) {
 					direccionFactura += " Manzana " + data.direccionFacturaManzana;
 				}
 				
@@ -118,14 +118,23 @@ function init() {
 				if (data.direccionEntregaSolar != null && data.direccionEntregaSolar != "") {
 					direccionEntrega += " Solar " + data.direccionEntregaSolar;
 				}
-				if (data.direccionEntregaManzana != null && data.direccionEntregaManzana != "") {
+				if (data.direccionEntregaManzana != null) {
 					direccionEntrega += " Manzana " + data.direccionEntregaManzana;
 				}
 				
 				$("#divDireccionEntrega").html(direccionEntrega != "" ? direccionEntrega : "&nbsp;");
+				$("#divDireccionEntregaNumero").html(data.direccionEntregaNumero != null && data.direccionEntregaNumero != "" ? data.direccionEntregaNumero : "&nbsp;");
+				$("#divDireccionEntregaApto").html(data.direccionEntregaApto != null && data.direccionEntregaApto != "" ? data.direccionEntregaApto : "&nbsp;");
+				$("#divDireccionEntregaManzana").html(data.direccionEntregaManzana != null ? data.direccionEntregaManzana : "&nbsp;");
+				$("#divDireccionEntregaSolar").html(data.direccionEntregaSolar != null && data.direccionEntregaSolar != "" ? data.direccionEntregaSolar : "&nbsp;");
+				$("#divDireccionEntregaCodigoPostal").html(data.direccionEntregaCodigoPostal != null ? data.direccionEntregaCodigoPostal : "&nbsp;");
+				$("#divDireccionEntregaObservaciones").html(data.direccionEntregaObservaciones != null && data.direccionEntregaObservaciones != "" ? data.direccionEntregaObservaciones : "&nbsp;");
 				
 				$("#divTelefonoContacto").html(
 					data.telefonoContacto != null ? data.telefonoContacto : "&nbsp;"
+				);
+				$("#divCostoEnvio").html(
+					data.costoEnvio != null ? data.costoEnvio : "&nbsp;"
 				);
 				$("#divEmail").html(
 					data.email != null ? data.email : "&nbsp;"
@@ -161,11 +170,15 @@ function init() {
 					data.observaciones != null ? data.observaciones : "&nbsp;"
 				);
 				
+				$("#divIncluirChip").html(
+					(data.incluirChip != null && data.incluirChip) ? "Si" : "&nbsp;"
+				);
+				
+				/*
 				$("#divVendedor").html(
 					data.vendedor != null ? data.vendedor.nombre : "&nbsp;"
 				);
 				
-				/*
 				$("#divEmpresa").html(
 					data.empresa != null ? data.empresa.nombre : "&nbsp;"
 				);

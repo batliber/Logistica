@@ -18,6 +18,8 @@ public interface IACMInterfaceContratoPHBean {
 	
 	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta);
 	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
 	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);

@@ -7,23 +7,6 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	grid = new Grid(
-		document.getElementById("divTableTasasInteresEfectivaAnual"),
-		{
-			tdCuotasDesde: { campo: "cuotasDesde", descripcion: "Cuotas desde", abreviacion: "Cuotas desde", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-			tdCuotasHasta: { campo: "cuotasHasta", descripcion: "Cuotas hasta", abreviacion: "Cuotas hasta", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-			tdMontoDesde: { campo: "montoDesde", descripcion: "UIs desde", abreviacion: "UIs desde", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-			tdMontoHasta: { campo: "montoHasta", descripcion: "UIs hasta", abreviacion: "UIs hasta", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
-			tdValor: { campo: "valor", descripcion: "Valor", abreviacion: "Valor", tipo: __TIPO_CAMPO_DECIMAL, decimales: 2, ancho: 100 },
-			tdFechaVigenciaHasta: { campo: "fechaVigenciaHasta", descripcion: "Vigente hasta", abreviacion: "Vigente hasta", tipo: __TIPO_CAMPO_FECHA_HORA, ancho: 100 }
-		}, 
-		false,
-		reloadData,
-		trTasaInteresEfectivaAnualOnClick
-	);
-	
-	grid.rebuild();
-	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
@@ -32,8 +15,26 @@ function init() {
 						mode = __FORM_MODE_ADMIN;
 						
 						$("#divButtonNew").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						
+						grid = new Grid(
+							document.getElementById("divTableTasasInteresEfectivaAnual"),
+							{
+								tdTipoTasaInteresEfectivaAnual: { campo: "tipoTasaInteresEfectivaAnual.descripcion", clave: "tipoTasaInteresEfectivaAnual.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoTasaInteresEfectivaAnuales, clave: "id", valor: "descripcion" } },
+								tdCuotasDesde: { campo: "cuotasDesde", descripcion: "Cuotas desde", abreviacion: "Cuotas desde", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+								tdCuotasHasta: { campo: "cuotasHasta", descripcion: "Cuotas hasta", abreviacion: "Cuotas hasta", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+								tdMontoDesde: { campo: "montoDesde", descripcion: "UIs desde", abreviacion: "UIs desde", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+								tdMontoHasta: { campo: "montoHasta", descripcion: "UIs hasta", abreviacion: "UIs hasta", tipo: __TIPO_CAMPO_NUMERICO, ancho: 100 },
+								tdValor: { campo: "valor", descripcion: "Valor", abreviacion: "Valor", tipo: __TIPO_CAMPO_DECIMAL, decimales: 2, ancho: 100 },
+								tdFechaVigenciaHasta: { campo: "fechaVigenciaHasta", descripcion: "Vigente hasta", abreviacion: "Vigente hasta", tipo: __TIPO_CAMPO_FECHA_HORA, ancho: 100 }
+							}, 
+							false,
+							reloadData,
+							trTasaInteresEfectivaAnualOnClick
+						);
+						
+						grid.rebuild();
+						
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 						break;
 					}
 				}
@@ -44,6 +45,22 @@ function init() {
 	reloadData();
 	
 	$("#divIFrameTasaInteresEfectivaAnual").draggable();
+}
+
+function listTipoTasaInteresEfectivaAnuales() {
+	var result = [];
+	
+	TipoTasaInteresEfectivaAnualDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
 }
 
 function reloadData() {

@@ -47,15 +47,18 @@ public class TipoDocumentoDWR {
 	}
 	
 	public static TipoDocumentoTO transform(TipoDocumento tipoDocumento) {
-		TipoDocumentoTO tipoDocumentoTO = new TipoDocumentoTO();
+		TipoDocumentoTO result = new TipoDocumentoTO();
 		
-		tipoDocumentoTO.setDescripcion(tipoDocumento.getDescripcion());
+		result.setAbreviacion(tipoDocumento.getAbreviacion());
+		result.setDescripcion(tipoDocumento.getDescripcion());
 		
-		tipoDocumentoTO.setFact(tipoDocumento.getFact());
-		tipoDocumentoTO.setId(tipoDocumento.getId());
-		tipoDocumentoTO.setTerm(tipoDocumento.getTerm());
-		tipoDocumentoTO.setUact(tipoDocumento.getUact());
+		result.setFcre(tipoDocumento.getFcre());
+		result.setFact(tipoDocumento.getFact());
+		result.setId(tipoDocumento.getId());
+		result.setTerm(tipoDocumento.getTerm());
+		result.setUact(tipoDocumento.getUact());
+		result.setUcre(tipoDocumento.getUcre());
 		
-		return tipoDocumentoTO;
+		return result;
 	}
 }

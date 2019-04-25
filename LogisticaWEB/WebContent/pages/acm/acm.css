@@ -1,5 +1,6 @@
 #divTipoRegistro {
 	float: left;
+	width: 1100px;
 }
 
 #divIFrameSeleccionEmpresa {
@@ -26,8 +27,92 @@
 #divObservaciones {
 	float: left;
 	width: 60%;
+	height: 60px;
 }
 
 #textareaObservaciones {
 	width: 100%;
+}
+
+#divIFrameSeleccionRangoNumerosContratos {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionRangoNumerosContratos {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
+}
+
+#divRangoNumeroContratoObservaciones {
+	float: left;
+	width: 60%;
+	height: 60px;
+}
+
+#textareaNumeroContratoObservaciones {
+	width: 100%;
+}
+
+#divIFrameSeleccionTipoProcesamiento {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionTipoProcesamiento {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionTipoProcesamientoObservaciones {
+	float: left;
+	width: 60%;
+	height: 60px;
+}
+
+#textareaSeleccionTipoProcesamientoObservaciones {
+	width: 100%;
+}
+
+#divIFrameSeleccionTipoControlRiesgoCrediticio {
+	position: relative;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionTipoControlRiesgoCrediticio {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
 }

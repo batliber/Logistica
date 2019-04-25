@@ -1,7 +1,9 @@
-#inputFechaDesde {
-	width: 80px;
+#divFechaDesde {
+	width: 90px;
+	margin-right: 0;
 }
 
-#inputFechaHasta {
-	width: 80px;
+#divFechaHasta {
+	width: 90px;
+	margin-right: 0;
 }

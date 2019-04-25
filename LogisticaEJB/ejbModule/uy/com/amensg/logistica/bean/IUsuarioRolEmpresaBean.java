@@ -18,5 +18,11 @@ public interface IUsuarioRolEmpresaBean {
 	
 	public Collection<UsuarioRolEmpresa> listDistribuidoresByUsuario(Usuario usuario);
 	
+	public Collection<UsuarioRolEmpresa> listDistribuidoresByUsuarioMinimal(Usuario usuario);
+	
 	public Collection<UsuarioRolEmpresa> listActivadoresByUsuario(Usuario usuario);
+	
+	public Collection<UsuarioRolEmpresa> listDistribuidoresChipsByUsuario(Usuario usuario);
+
+	public void save(UsuarioRolEmpresa usuarioRolEmpresa);
 }

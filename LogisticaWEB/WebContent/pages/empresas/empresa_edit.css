@@ -1,84 +1,62 @@
-#divEmpresaCodigoPromotor {
-	float: left;
-	width: 70%;
-}
-
-#inputEmpresaCodigoPromotor {
-	margin-left: 2px;
-}
-
-#divEmpresaNombre {
-	float: left;
-	width: 70%;
-}
-
 #inputEmpresaNombre {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divEmpresaNombreContrato {
-	float: left;
-	width: 70%;
-}
-
-#inputEmpresaNombreContrato {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divEmpresaNombreSucursal {
-	float: left;
-	width: 70%;
+	width: 60%;
 }
 
 #inputEmpresaNombreSucursal {
-	margin-left: 2px;
-	width: 100%;
+	width: 60%;
 }
 
 #inputEmpresaDireccion {
-	margin-left: 2px;
-	width: 100%;
+	width: 60%;
 }
 
-#divEmpresaDireccion {
+#divFormaPago {
+	width: 30%;
+	margin-right: 0;
+}
+
+#selectFormaPago {
+	width: 80%;
 	float: left;
-	width: 70%;
 }
 
-.divEmpresasRoles {
+#inputAgregarFormaPago {
+	margin-left: 5px;
+	background-image: url('/LogisticaWEB/images/add.png');
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+#divUsuario {
+	width: 30%;
+	margin-right: 0;
+}
+
+#selectUsuario {
+	width: 80%;
 	float: left;
-	width: 71%;
-	margin-top: 2px;
-	margin-left: 2px;
 }
 
-#divFormasPago {
+#inputAgregarUsuario {
+	margin-left: 5px;
+	background-image: url('/LogisticaWEB/images/add.png');
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+#divTableFormaPagos {
 	float: left;
-	width: 49%;
-	margin-top: 2px;
+	margin-left: 4px;
+	margin-top: 6px;
 }
 
-#tableFormasPago {
-	
-}
-
-#tableFormasPago thead tr .tdFormaPagoDescripcion {
-	width: 150px;
-}
-
-#tableFormasPago thead tr .tdFormaPagoCheck {
-	width: 20px;
-}
-
-#tableFormasPago tbody tr td .divFormaPagoDescripcion {
-	margin-left: 2px;
+#divTableEmpresaUsuarioContratos {
+	float: left;
+	margin-left: 4px;
+	margin-top: 6px;
 }
 
 #divEmpresaLogo {
-	float: left;
-	width: 70%;
 	height: 150px;
 }
 

@@ -112,7 +112,10 @@ public class RiesgoCrediticioDWR {
 			HttpSession httpSession = WebContextFactory.get().getSession(false);
 			Long usuarioId = (Long) httpSession.getAttribute("sesion");
 			
-			result = iRiesgoCrediticioBean.procesarArchivoEmpresa(fileName, empresaId, tipoControlRiesgoCrediticioId, usuarioId);
+			result = 
+				iRiesgoCrediticioBean.procesarArchivoEmpresa(
+					fileName, empresaId, tipoControlRiesgoCrediticioId, usuarioId
+				);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -286,7 +289,7 @@ public class RiesgoCrediticioDWR {
 		}
 		
 		if (riesgoCrediticio.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(riesgoCrediticio.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(riesgoCrediticio.getEmpresa(), false));
 		}
 		
 		if (riesgoCrediticio.getEstadoRiesgoCrediticio() != null) {
@@ -297,10 +300,12 @@ public class RiesgoCrediticioDWR {
 			result.setTipoControlRiesgoCrediticio(TipoControlRiesgoCrediticioDWR.transform(riesgoCrediticio.getTipoControlRiesgoCrediticio()));
 		}
 		
+		result.setFcre(riesgoCrediticio.getFcre());
 		result.setFact(riesgoCrediticio.getFact());
 		result.setId(riesgoCrediticio.getId());
 		result.setTerm(riesgoCrediticio.getTerm());
 		result.setUact(riesgoCrediticio.getUact());
+		result.setUcre(riesgoCrediticio.getUcre());
 		
 		return result;
 	}

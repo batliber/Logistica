@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.EstadoControlBean;
@@ -46,28 +50,38 @@ public class EstadoControlDWR {
 	}
 	
 	public static EstadoControlTO transform(EstadoControl estadoControl) {
-		EstadoControlTO estadoControlTO = new EstadoControlTO();
+		EstadoControlTO result = new EstadoControlTO();
 		
-		estadoControlTO.setNombre(estadoControl.getNombre());
+		result.setNombre(estadoControl.getNombre());
 		
-		estadoControlTO.setFact(estadoControl.getFact());
-		estadoControlTO.setId(estadoControl.getId());
-		estadoControlTO.setTerm(estadoControl.getTerm());
-		estadoControlTO.setUact(estadoControl.getUact());
+		result.setFcre(estadoControl.getFcre());
+		result.setFact(estadoControl.getFact());
+		result.setId(estadoControl.getId());
+		result.setTerm(estadoControl.getTerm());
+		result.setUact(estadoControl.getUact());
+		result.setUact(estadoControl.getUcre());
 		
-		return estadoControlTO;
+		return result;
 	}
 	
 	public static EstadoControl transform(EstadoControlTO estadoControlTO) {
-		EstadoControl estadoControl = new EstadoControl();
+		EstadoControl result = new EstadoControl();
 		
-		estadoControl.setNombre(estadoControlTO.getNombre());
+		result.setNombre(estadoControlTO.getNombre());
 		
-		estadoControl.setFact(estadoControlTO.getFact());
-		estadoControl.setId(estadoControlTO.getId());
-		estadoControl.setTerm(estadoControlTO.getTerm());
-		estadoControl.setUact(estadoControlTO.getUact());
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		return estadoControl;
+		result.setFcre(estadoControlTO.getFcre());
+		result.setFact(date);
+		result.setId(estadoControlTO.getId());
+		result.setTerm(estadoControlTO.getTerm());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(estadoControlTO.getUcre());
+		
+		return result;
 	}
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,19 +22,19 @@ import uy.com.amensg.logistica.bean.ActivacionBean;
 import uy.com.amensg.logistica.bean.ContratoBean;
 import uy.com.amensg.logistica.bean.ControlBean;
 import uy.com.amensg.logistica.bean.EmpresaBean;
-import uy.com.amensg.logistica.bean.FormaPagoBean;
 import uy.com.amensg.logistica.bean.IActivacionBean;
 import uy.com.amensg.logistica.bean.IContratoBean;
 import uy.com.amensg.logistica.bean.IControlBean;
 import uy.com.amensg.logistica.bean.IEmpresaBean;
-import uy.com.amensg.logistica.bean.IFormaPagoBean;
+import uy.com.amensg.logistica.bean.ILiquidacionBean;
 import uy.com.amensg.logistica.bean.IRiesgoCrediticioBean;
+import uy.com.amensg.logistica.bean.LiquidacionBean;
 import uy.com.amensg.logistica.bean.RiesgoCrediticioBean;
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.ContratoArchivoAdjunto;
 import uy.com.amensg.logistica.entities.Empresa;
-import uy.com.amensg.logistica.entities.FormaPago;
 import uy.com.amensg.logistica.entities.ResultadoEntregaDistribucion;
+import uy.com.amensg.logistica.entities.TipoArchivoAdjunto;
 import uy.com.amensg.logistica.util.Configuration;
 
 @MultipartConfig(
@@ -57,6 +56,8 @@ public class UploadServlet extends HttpServlet {
 		try {
 			if (caller.contains("mobile")) {
 				processMobileRequest(request, response);
+			} else if (caller.contains("ANTEL")) {
+				processVentasANTELUploadRequest(request, response);
 			} else if (caller.contains("ventas")
 				|| caller.contains("monitoreo")) {
 				processContratoUploadRequest(request, response);
@@ -70,6 +71,8 @@ public class UploadServlet extends HttpServlet {
 				processControlRiesgoCrediticioRequest(request, response);
 			} else if (caller.contains("contrato_archivo_adjunto")) {
 				processContratoArchivoAdjuntoRequest(request, response);
+			} else if (caller.contains("liquidaciones")) {
+				processLiquidacionesRequest(request, response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,7 +131,7 @@ public class UploadServlet extends HttpServlet {
 		
 		IContratoBean iContratoBean = lookupContratoBean();
 		
-		Contrato contrato = iContratoBean.getByNumeroTramite(numeroTramite);
+		Contrato contrato = iContratoBean.getByNumeroTramite(numeroTramite, true);
 
 		Set<ContratoArchivoAdjunto> archivosAdjuntos = new LinkedHashSet<ContratoArchivoAdjunto>();
 		archivosAdjuntos.addAll(contrato.getArchivosAdjuntos());
@@ -151,9 +154,11 @@ public class UploadServlet extends HttpServlet {
 	        		contratoArchivoAdjunto.setFechaSubida(date);
 	        		contratoArchivoAdjunto.setUrl(stringDate + "_" + contrato.getMid() + "_" + fileName);
 	        		
+	        		contratoArchivoAdjunto.setFcre(date);
 	        		contratoArchivoAdjunto.setFact(date);
 	        		contratoArchivoAdjunto.setTerm(new Long(1));
 	        		contratoArchivoAdjunto.setUact(loggedUsuarioId);
+	        		contratoArchivoAdjunto.setUcre(loggedUsuarioId);
 	        		
 	        		archivosAdjuntos.add(contratoArchivoAdjunto);
 	        		
@@ -271,6 +276,64 @@ public class UploadServlet extends HttpServlet {
 		response.getWriter().write(json);
 		response.getWriter().close();
 	}
+	
+	/**
+	 * Procesamiento de archivos de importación de ventas de ANTEL para empresas.
+	 * Requiere un archivo .csv con los datos a importar.
+	 * 
+	 * @param request HttpServletRequest con el contexto de la invocación.
+	 * @param response HttpServletResponse con el contexto de retorno.
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws NamingException
+	 */
+	private void processVentasANTELUploadRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException {
+		Long empresaId = new Long(request.getParameter("selectEmpresa").toString());
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
+		String stringNow = format.format(GregorianCalendar.getInstance().getTime());
+		
+		String fileName = null;
+		for (Part part : request.getParts()) {
+			String contentDisposition = part.getHeader("content-disposition");
+			
+			String[] tokens = contentDisposition.split(";");
+	        for (String token : tokens) {
+	        	if (token.trim().startsWith("filename")) {
+            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+            		break;
+            	}
+	        }
+	        
+	        if (fileName != null) {
+	        	fileName = stringNow + "_" + fileName;
+	        	
+	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+	        	break;
+	        }
+		}
+		
+		IContratoBean iContratoBean = lookupContratoBean();
+		
+		String result = iContratoBean.preprocesarArchivoVentasANTELEmpresa(
+			fileName,
+			empresaId
+		);
+		
+		request.setAttribute("message", result);
+		request.setAttribute("fileName", fileName);
+		request.setAttribute("empresaId", empresaId);
+		
+		String json = "{"
+			+ "\"message\": \"" + result + "\","
+			+ "\"fileName\": \"" + fileName + "\","
+			+ "\"empresaId\": \"" + empresaId + "\""
+			+ "}";
+		
+		response.addHeader("Content-Type", "application/json");
+		response.getWriter().write(json);
+		response.getWriter().close();
+	}
 
 	/**
 	 * Procesamiento de alta y modificación de Empresas.
@@ -285,23 +348,6 @@ public class UploadServlet extends HttpServlet {
 	private void processEmpresasRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException {
 		Long empresaId = !request.getParameter("inputEmpresaId").toString().equals("") ? 
 			new Long(request.getParameter("inputEmpresaId").toString()) : null;
-		String empresaNombre = request.getParameter("inputEmpresaNombre").toString();
-		Long empresaCodigoPromotor = !request.getParameter("inputEmpresaCodigoPromotor").toString().equals("") ? 
-			new Long(request.getParameter("inputEmpresaCodigoPromotor").toString()) : null;
-		String empresaNombreContrato = request.getParameter("inputEmpresaNombreContrato").toString();
-		String empresaNombreSucursal = request.getParameter("inputEmpresaNombreSucursal").toString();
-		String empresaDireccion = request.getParameter("inputEmpresaDireccion").toString();
-		
-		IFormaPagoBean iFormaPagoBean = lookupFormaPagoBean();
-		
-		Set<FormaPago> formaPagos = new HashSet<FormaPago>();
-		for (FormaPago formaPago : iFormaPagoBean.list()) {
-			String inputFormaPagoValue = request.getParameter("inputFormaPago" + formaPago.getId());
-			
-			if (inputFormaPagoValue != null && !inputFormaPagoValue.equals("")) {
-				formaPagos.add(formaPago);
-			}
-		}
 		
 		String fileName = null;
 		for (Part part : request.getParts()) {
@@ -326,34 +372,21 @@ public class UploadServlet extends HttpServlet {
 		
 		IEmpresaBean iEmpresaBean = lookupEmpresaBean();
 		
-		Empresa empresa = null;
-		if (empresaId != null) {
-			empresa = iEmpresaBean.getById(empresaId);
-		} else {
-			empresa = new Empresa();
-		}
+		Empresa empresa = iEmpresaBean.getById(empresaId, false);
 		
 		if (fileName != null && !fileName.equals("")) {
 			empresa.setLogoURL(fileName);
 		}
 		
-		empresa.setNombre(empresaNombre);
-		empresa.setCodigoPromotor(empresaCodigoPromotor);
-		empresa.setNombreContrato(empresaNombreContrato);
-		empresa.setNombreSucursal(empresaNombreSucursal);
-		empresa.setDireccion(empresaDireccion);
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		empresa.setFormaPagos(formaPagos);
-		
-		empresa.setFact(GregorianCalendar.getInstance().getTime());
+		empresa.setFcre(date);
+		empresa.setFact(date);
 		empresa.setTerm(new Long(1));
 		empresa.setUact(loggedUsuarioId);
+		empresa.setUcre(loggedUsuarioId);
 		
-		if (empresa.getId() != null) {
-			iEmpresaBean.update(empresa);
-		} else {
-			iEmpresaBean.save(empresa);
-		}
+		iEmpresaBean.update(empresa);
 		
 		String json = "{"
 			+ "\"message\": \"Operación exitosa.\","
@@ -442,52 +475,60 @@ public class UploadServlet extends HttpServlet {
 		Long empresaId = new Long(request.getParameter("selectEmpresa").toString());
 		Long tipoControlId = new Long(request.getParameter("selectTipoControl").toString());
 		
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
-		
-		Date date = GregorianCalendar.getInstance().getTime();
-		
-		String fileName = null;
-		for (Part part : request.getParts()) {
-			String contentDisposition = part.getHeader("content-disposition");
+		HttpSession httpSession = request.getSession(false);
+		if (httpSession != null) {
+			Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
 			
-			String[] tokens = contentDisposition.split(";");
-	        for (String token : tokens) {
-	        	if (token.trim().startsWith("filename")) {
-            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-            		break;
-            	}
-	        }
-	        
-	        if (fileName != null) {
-	        	fileName = format.format(date) + "_" + fileName;
-	        	
-	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
-	        	break;
-	        }
+			if (loggedUsuarioId != null) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
+				
+				Date date = GregorianCalendar.getInstance().getTime();
+				
+				String fileName = null;
+				for (Part part : request.getParts()) {
+					String contentDisposition = part.getHeader("content-disposition");
+					
+					String[] tokens = contentDisposition.split(";");
+			        for (String token : tokens) {
+			        	if (token.trim().startsWith("filename")) {
+		            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+		            		break;
+		            	}
+			        }
+			        
+			        if (fileName != null) {
+			        	fileName = format.format(date) + "_" + fileName;
+			        	
+			        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+			        	break;
+			        }
+				}
+				
+				IControlBean iControlBean = lookupControlBean();
+				
+				String result = iControlBean.preprocesarArchivoEmpresa(
+					fileName,
+					empresaId,
+					loggedUsuarioId
+				);
+				
+				request.setAttribute("message", result);
+				request.setAttribute("fileName", fileName);
+				request.setAttribute("empresaId", empresaId);
+				request.setAttribute("tipoControlId", tipoControlId);
+				
+				String json = "{"
+					+ "\"message\": \"" + result + "\","
+					+ "\"fileName\": \"" + fileName + "\","
+					+ "\"empresaId\": \"" + empresaId + "\","
+					+ "\"tipoControlId\": \"" + tipoControlId + "\""
+					+ "}";
+				
+				response.addHeader("Content-Type", "application/json");
+				response.getWriter().write(json);
+				response.getWriter().close();
+			}
 		}
-		
-		IControlBean iControlBean = lookupControlBean();
-		
-		String result = iControlBean.preprocesarArchivoEmpresa(
-			fileName,
-			empresaId
-		);
-		
-		request.setAttribute("message", result);
-		request.setAttribute("fileName", fileName);
-		request.setAttribute("empresaId", empresaId);
-		request.setAttribute("tipoControlId", tipoControlId);
-		
-		String json = "{"
-			+ "\"message\": \"" + result + "\","
-			+ "\"fileName\": \"" + fileName + "\","
-			+ "\"empresaId\": \"" + empresaId + "\","
-			+ "\"tipoControlId\": \"" + tipoControlId + "\""
-			+ "}";
-		
-		response.addHeader("Content-Type", "application/json");
-		response.getWriter().write(json);
-		response.getWriter().close();
 	}
 	
 	/**
@@ -562,7 +603,8 @@ public class UploadServlet extends HttpServlet {
 	 * @throws NamingException
 	 */
 	private void processContratoArchivoAdjuntoRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException {
-		Long id = new Long(request.getParameter("inputId").toString());
+		Long id = new Long(request.getParameter("inputId"));
+		Long tipoArchivoAdjuntoId = new Long(request.getParameter("tipoArchivoAdjuntoId"));
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
@@ -574,7 +616,9 @@ public class UploadServlet extends HttpServlet {
 		
 		IContratoBean iContratoBean = lookupContratoBean();
 		
-		Contrato contrato = iContratoBean.getById(id);
+		Contrato contrato = iContratoBean.getById(id, true);
+		TipoArchivoAdjunto tipoArchivoAdjunto = new TipoArchivoAdjunto();
+		tipoArchivoAdjunto.setId(tipoArchivoAdjuntoId);
 
 		Set<ContratoArchivoAdjunto> archivosAdjuntos = new LinkedHashSet<ContratoArchivoAdjunto>();
 		archivosAdjuntos.addAll(contrato.getArchivosAdjuntos());
@@ -588,17 +632,26 @@ public class UploadServlet extends HttpServlet {
 	        		String fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
 	        		
 	        		part.write(
-						Configuration.getInstance().getProperty("importacion.carpeta") + stringDate + "_" + contrato.getMid() + "_" + fileName
+						Configuration.getInstance().getProperty("importacion.carpeta") + 
+							stringDate 
+							+ (contrato.getMid() != null ? "_" + contrato.getMid() : "") 
+							+ "_" + fileName
 					);
 	        		
 	        		ContratoArchivoAdjunto contratoArchivoAdjunto = new ContratoArchivoAdjunto();
 	        		contratoArchivoAdjunto.setContrato(contrato);
 	        		contratoArchivoAdjunto.setFechaSubida(date);
-	        		contratoArchivoAdjunto.setUrl(stringDate + "_" + contrato.getMid() + "_" + fileName);
+	        		contratoArchivoAdjunto.setTipoArchivoAdjunto(tipoArchivoAdjunto);
+	        		contratoArchivoAdjunto.setUrl(
+	        			stringDate 
+	        			+ (contrato.getMid() != null ? "_" + contrato.getMid() : "")
+	        			+ "_" + fileName);
 	        		
+	        		contratoArchivoAdjunto.setFcre(date);
 	        		contratoArchivoAdjunto.setFact(date);
 	        		contratoArchivoAdjunto.setTerm(new Long(1));
 	        		contratoArchivoAdjunto.setUact(loggedUsuarioId);
+	        		contratoArchivoAdjunto.setUcre(loggedUsuarioId);
 	        		
 	        		archivosAdjuntos.add(contratoArchivoAdjunto);
 	        		
@@ -617,6 +670,59 @@ public class UploadServlet extends HttpServlet {
 		
 		String json = "{"
 			+ "\"message\": \"Formulario enviado correctamente.\""
+			+ "}";
+		
+		response.addHeader("Content-Type", "application/json");
+		response.getWriter().write(json);
+		response.getWriter().close();
+	}
+	
+	/**
+	 * Procesamiento de archivos de liquidaciones de comisiones.
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws NamingException
+	 */
+	private void processLiquidacionesRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
+		
+		Date date = GregorianCalendar.getInstance().getTime();
+		
+		String fileName = null;
+		for (Part part : request.getParts()) {
+			String contentDisposition = part.getHeader("content-disposition");
+			
+			String[] tokens = contentDisposition.split(";");
+	        for (String token : tokens) {
+	        	if (token.trim().startsWith("filename")) {
+            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+            		break;
+            	}
+	        }
+	        
+	        if (fileName != null) {
+	        	fileName = format.format(date) + "_" + fileName;
+	        	
+	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+	        	break;
+	        }
+		}
+		
+		ILiquidacionBean iLiquidacionBean = lookupLiquidacionBean();
+		
+		String result = iLiquidacionBean.preprocesarArchivo(
+			fileName
+		);
+		
+		request.setAttribute("message", result);
+		request.setAttribute("fileName", fileName);
+		
+		String json = "{"
+			+ "\"message\": \"" + result + "\","
+			+ "\"fileName\": \"" + fileName + "\""
 			+ "}";
 		
 		response.addHeader("Content-Type", "application/json");
@@ -683,16 +789,16 @@ public class UploadServlet extends HttpServlet {
 		
 		return (IRiesgoCrediticioBean) context.lookup(lookupName);
 	}
-
-	private IFormaPagoBean lookupFormaPagoBean() throws NamingException {
+	
+	private ILiquidacionBean lookupLiquidacionBean() throws NamingException {
 		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
 		String appName = "LogisticaEJB";
-		String beanName = FormaPagoBean.class.getSimpleName();
-		String remoteInterfaceName = IFormaPagoBean.class.getName();
+		String beanName = LiquidacionBean.class.getSimpleName();
+		String remoteInterfaceName = ILiquidacionBean.class.getName();
 		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
 		Context context = new InitialContext();
 		
-		return (IFormaPagoBean) context.lookup(lookupName);
+		return (ILiquidacionBean) context.lookup(lookupName);
 	}
 }

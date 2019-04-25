@@ -10,8 +10,8 @@ public class ACMInterfaceRiesgoCrediticioTO extends BaseTO {
 	private Date fechaAnalisis;
 	private String documento;
 	private Date fechaCelular;
-	private Boolean deudaCelular;
-	private Boolean riesgoCrediticioCelular;
+	private String deudaCelular;
+	private String riesgoCrediticioCelular;
 	private Long contratosCelular;
 	private Long contratosSolaFirmaCelular;
 	private Long contratosGarantiaCelular;
@@ -46,19 +46,19 @@ public class ACMInterfaceRiesgoCrediticioTO extends BaseTO {
 		this.fechaCelular = fechaCelular;
 	}
 
-	public Boolean getDeudaCelular() {
+	public String getDeudaCelular() {
 		return deudaCelular;
 	}
 
-	public void setDeudaCelular(Boolean deudaCelular) {
+	public void setDeudaCelular(String deudaCelular) {
 		this.deudaCelular = deudaCelular;
 	}
 
-	public Boolean getRiesgoCrediticioCelular() {
+	public String getRiesgoCrediticioCelular() {
 		return riesgoCrediticioCelular;
 	}
 
-	public void setRiesgoCrediticioCelular(Boolean riesgoCrediticioCelular) {
+	public void setRiesgoCrediticioCelular(String riesgoCrediticioCelular) {
 		this.riesgoCrediticioCelular = riesgoCrediticioCelular;
 	}
 

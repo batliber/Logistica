@@ -34,7 +34,7 @@
 		</div>
 	</div>
 <%
-	int vias = 3; 
+	int vias = 2; 
 	for (int i = 0; i<vias; i++) {
 %>
 	<div class="divA4Sheet">

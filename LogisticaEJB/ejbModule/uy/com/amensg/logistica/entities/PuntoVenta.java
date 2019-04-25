@@ -20,7 +20,7 @@ public class PuntoVenta extends BaseEntity {
 
 	@Column(name = "direccion")
 	private String direccion;
-
+	
 	@Column(name = "fecha_baja")
 	private Date fechaBaja;
 
@@ -42,6 +42,15 @@ public class PuntoVenta extends BaseEntity {
 	@Column(name = "contacto")
 	private String contacto;
 	
+	@Column(name = "fecha_asignacion_distribuidor")
+	private Date fechaAsignacionDistribuidor;
+	
+	@Column(name = "fecha_visita_distribuidor")
+	private Date fechaVisitaDistribuidor;
+	
+	@Column(name = "fecha_ultimo_cambio_estado_visita_punto_venta_distribuidor")
+	private Date fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
+	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "departamento_id", nullable = true)
 	private Departamento departamento;
@@ -53,6 +62,14 @@ public class PuntoVenta extends BaseEntity {
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "estado_punto_venta_id", nullable = true)
 	private EstadoPuntoVenta estadoPuntoVenta;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "distribuidor_id", nullable = true)
+	private Usuario distribuidor;
+	
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "estado_visita_punto_venta_distribuidor_id", nullable = true)
+	private EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidor;
 	
 	public String getNombre() {
 		return nombre;
@@ -126,6 +143,39 @@ public class PuntoVenta extends BaseEntity {
 		this.contacto = contacto;
 	}
 
+	public Date getFechaAsignacionDistribuidor() {
+		return fechaAsignacionDistribuidor;
+	}
+
+	public void setFechaAsignacionDistribuidor(Date fechaAsignacionDistribuidor) {
+		this.fechaAsignacionDistribuidor = fechaAsignacionDistribuidor;
+	}
+
+	public Date getFechaVisitaDistribuidor() {
+		return fechaVisitaDistribuidor;
+	}
+
+	public void setFechaVisitaDistribuidor(Date fechaVisitaDistribuidor) {
+		this.fechaVisitaDistribuidor = fechaVisitaDistribuidor;
+	}
+
+	public Date getFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor() {
+		return fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
+	}
+
+	public void setFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor(
+			Date fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor) {
+		this.fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor = fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
+	}
+
+	public Usuario getDistribuidor() {
+		return distribuidor;
+	}
+
+	public void setDistribuidor(Usuario distribuidor) {
+		this.distribuidor = distribuidor;
+	}
+
 	public Departamento getDepartamento() {
 		return departamento;
 	}
@@ -148,5 +198,14 @@ public class PuntoVenta extends BaseEntity {
 
 	public void setEstadoPuntoVenta(EstadoPuntoVenta estadoPuntoVenta) {
 		this.estadoPuntoVenta = estadoPuntoVenta;
+	}
+
+	public EstadoVisitaPuntoVentaDistribuidor getEstadoVisitaPuntoVentaDistribuidor() {
+		return estadoVisitaPuntoVentaDistribuidor;
+	}
+
+	public void setEstadoVisitaPuntoVentaDistribuidor(
+			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidor) {
+		this.estadoVisitaPuntoVentaDistribuidor = estadoVisitaPuntoVentaDistribuidor;
 	}
 }

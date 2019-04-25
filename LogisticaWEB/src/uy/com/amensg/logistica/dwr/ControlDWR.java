@@ -1,6 +1,8 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
@@ -15,9 +17,14 @@ import uy.com.amensg.logistica.bean.ControlBean;
 import uy.com.amensg.logistica.bean.IControlBean;
 import uy.com.amensg.logistica.entities.Control;
 import uy.com.amensg.logistica.entities.ControlTO;
+import uy.com.amensg.logistica.entities.Empresa;
+import uy.com.amensg.logistica.entities.EstadoControl;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
+import uy.com.amensg.logistica.entities.PuntoVenta;
+import uy.com.amensg.logistica.entities.TipoControl;
+import uy.com.amensg.logistica.entities.Usuario;
 
 @RemoteProxy
 public class ControlDWR {
@@ -112,34 +119,163 @@ public class ControlDWR {
 		return result;
 	}
 	
-	public static ControlTO transform(Control control) {
-		ControlTO controlTO = new ControlTO();
+	public ControlTO getById(Long id) {
+		ControlTO result = null;
 		
-		controlTO.setCargaInicial(control.getCargaInicial());
-		controlTO.setFechaActivacion(control.getFechaActivacion());
-		controlTO.setFechaControl(control.getFechaControl());
-		controlTO.setFechaImportacion(control.getFechaImportacion());
-		controlTO.setMesControl(control.getMesControl());
-		controlTO.setMid(control.getMid());
-		controlTO.setMontoCargar(control.getMontoCargar());
-		
-		if (control.getEmpresa() != null) {
-			controlTO.setEmpresa(EmpresaDWR.transform(control.getEmpresa()));
+		try {
+			IControlBean iControlBean = lookupBean();
+			
+			Control control = iControlBean.getById(id);
+			if (control != null) {
+				result = transform(control);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		if (control.getTipoControl() != null) {
-			controlTO.setTipoControl(TipoControlDWR.transform(control.getTipoControl()));
+		return result;
+	}
+	
+	public void update(ControlTO controlTO) {
+		try {
+			IControlBean iControlBean = lookupBean();
+			
+			iControlBean.update(transform(controlTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IControlBean iControlBean = lookupBean();
+				
+				result = iControlBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public static ControlTO transform(Control control) {
+		ControlTO result = new ControlTO();
+		
+		result.setCargaInicial(control.getCargaInicial());
+		result.setFechaActivacion(control.getFechaActivacion());
+		result.setFechaAsignacionDistribuidor(control.getFechaAsignacionDistribuidor());
+		result.setFechaAsignacionPuntoVenta(control.getFechaAsignacionPuntoVenta());
+		result.setFechaConexion(control.getFechaConexion());
+		result.setFechaControl(control.getFechaControl());
+		result.setFechaImportacion(control.getFechaImportacion());
+		result.setFechaVencimiento(control.getFechaVencimiento());
+		result.setMesControl(control.getMesControl());
+		result.setMid(control.getMid());
+		result.setMontoCargar(control.getMontoCargar());
+		result.setMontoTotal(control.getMontoTotal());
+		
+		if (control.getDistribuidor() != null) {
+			result.setDistribuidor(UsuarioDWR.transform(control.getDistribuidor(), false));
+		}
+		
+		if (control.getEmpresa() != null) {
+			result.setEmpresa(EmpresaDWR.transform(control.getEmpresa(), false));
 		}
 		
 		if (control.getEstadoControl() != null) {
-			controlTO.setEstadoControl(EstadoControlDWR.transform(control.getEstadoControl()));
+			result.setEstadoControl(EstadoControlDWR.transform(control.getEstadoControl()));
 		}
 		
-		controlTO.setFact(control.getFact());
-		controlTO.setId(control.getId());
-		controlTO.setTerm(control.getTerm());
-		controlTO.setUact(control.getUact());
+		if (control.getPuntoVenta() != null) {
+			result.setPuntoVenta(PuntoVentaDWR.transform(control.getPuntoVenta()));
+		}
 		
-		return controlTO;
+		if (control.getTipoControl() != null) {
+			result.setTipoControl(TipoControlDWR.transform(control.getTipoControl()));
+		}
+		
+		result.setFcre(control.getFcre());
+		result.setFact(control.getFact());
+		result.setId(control.getId());
+		result.setTerm(control.getTerm());
+		result.setUact(control.getUact());
+		result.setUcre(control.getUcre());
+		
+		return result;
+	}
+
+	public static Control transform(ControlTO controlTO) {
+		Control result = new Control();
+		
+		result.setCargaInicial(controlTO.getCargaInicial());
+		result.setFechaActivacion(controlTO.getFechaActivacion());
+		result.setFechaAsignacionDistribuidor(controlTO.getFechaAsignacionDistribuidor());
+		result.setFechaAsignacionPuntoVenta(controlTO.getFechaAsignacionPuntoVenta());
+		result.setFechaConexion(controlTO.getFechaConexion());
+		result.setFechaControl(controlTO.getFechaControl());
+		result.setFechaImportacion(controlTO.getFechaImportacion());
+		result.setFechaVencimiento(controlTO.getFechaVencimiento());
+		result.setMesControl(controlTO.getMesControl());
+		result.setMid(controlTO.getMid());
+		result.setMontoCargar(controlTO.getMontoCargar());
+		result.setMontoTotal(controlTO.getMontoTotal());
+		
+		if (controlTO.getDistribuidor() != null) {
+			Usuario distribuidor = new Usuario();
+			distribuidor.setId(controlTO.getDistribuidor().getId());
+			
+			result.setDistribuidor(distribuidor);
+		}
+		
+		if (controlTO.getEmpresa() != null) {
+			Empresa empresa = new Empresa();
+			empresa.setId(controlTO.getEmpresa().getId());
+			
+			result.setEmpresa(empresa);
+		}
+		
+		if (controlTO.getEstadoControl() != null) {
+			EstadoControl estadoControl = new EstadoControl();
+			estadoControl.setId(controlTO.getEstadoControl().getId());
+			
+			result.setEstadoControl(estadoControl);
+		}
+		
+		if (controlTO.getPuntoVenta() != null) {
+			PuntoVenta puntoVenta = new PuntoVenta();
+			puntoVenta.setId(controlTO.getPuntoVenta().getId());
+			
+			result.setPuntoVenta(puntoVenta);
+		}
+		
+		if (controlTO.getTipoControl() != null) {
+			TipoControl tipoControl = new TipoControl();
+			tipoControl.setId(controlTO.getTipoControl().getId());
+			
+			result.setTipoControl(tipoControl);
+		}
+		
+		Date date = GregorianCalendar.getInstance().getTime();
+		
+		result.setFcre(controlTO.getFcre());
+		result.setFact(date);
+		result.setId(controlTO.getId());
+		result.setTerm(new Long(1));
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(controlTO.getUcre());
+
+		return result;
 	}
 }

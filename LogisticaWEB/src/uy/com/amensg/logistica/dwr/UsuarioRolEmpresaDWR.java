@@ -3,6 +3,8 @@ package uy.com.amensg.logistica.dwr;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -192,6 +194,50 @@ public class UsuarioRolEmpresaDWR {
 		return result;
 	}
 	
+	public Collection<UsuarioTO> listDistribuidoresByContextMinimal() {
+		Collection<UsuarioTO> result = new LinkedList<UsuarioTO>();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				Usuario usuario = new Usuario();
+				usuario.setId(usuarioId);
+				
+				IUsuarioRolEmpresaBean iUsuarioRolEmpresaBean = lookupBean();
+				
+				Map<Long, UsuarioTO> usuarios = new HashMap<Long, UsuarioTO>();
+				for (UsuarioRolEmpresa usuarioRolEmpresa : iUsuarioRolEmpresaBean.listDistribuidoresByUsuario(usuario)) {
+					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
+						usuarios.put(
+							usuarioRolEmpresa.getUsuario().getId(), 
+							UsuarioDWR.transform(usuarioRolEmpresa.getUsuario(), false)
+						);
+					}
+				}
+				
+				List<UsuarioTO> toOrder = new LinkedList<UsuarioTO>();
+				toOrder.addAll(usuarios.values());
+				
+				Collections.sort(toOrder, new ComparatorUsuarioTO());
+				
+				for (UsuarioTO usuarioTO : toOrder) {
+					UsuarioTO usuarioTOMinimal = new UsuarioTO();
+					usuarioTOMinimal.setId(usuarioTO.getId());
+					usuarioTOMinimal.setNombre(usuarioTO.getNombre());
+					
+					result.add(usuarioTOMinimal);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<UsuarioTO> listActivadoresByContext() {
 		Collection<UsuarioTO> result = new LinkedList<UsuarioTO>();
 		
@@ -230,46 +276,96 @@ public class UsuarioRolEmpresaDWR {
 		return result;
 	}
 	
+	public Collection<UsuarioTO> listDistribuidoresChipsByContext() {
+		Collection<UsuarioTO> result = new LinkedList<UsuarioTO>();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				Usuario usuario = new Usuario();
+				usuario.setId(usuarioId);
+				
+				IUsuarioRolEmpresaBean iUsuarioRolEmpresaBean = lookupBean();
+				
+				Map<Long, UsuarioTO> usuarios = new HashMap<Long, UsuarioTO>();
+				for (UsuarioRolEmpresa usuarioRolEmpresa : 
+					iUsuarioRolEmpresaBean.listDistribuidoresChipsByUsuario(usuario)
+				) {
+					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
+						usuarios.put(
+							usuarioRolEmpresa.getUsuario().getId(), 
+							UsuarioDWR.transform(usuarioRolEmpresa.getUsuario(), false)
+						);
+					}
+				}
+				
+				List<UsuarioTO> toOrder = new LinkedList<UsuarioTO>();
+				toOrder.addAll(usuarios.values());
+				
+				Collections.sort(toOrder, new ComparatorUsuarioTO());
+				
+				result.addAll(toOrder);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public static UsuarioRolEmpresaTO transform(UsuarioRolEmpresa usuarioRolEmpresa) {
-		UsuarioRolEmpresaTO usuarioRolEmpresaTO = new UsuarioRolEmpresaTO();
+		UsuarioRolEmpresaTO result = new UsuarioRolEmpresaTO();
 		
-		usuarioRolEmpresaTO.setEmpresa(EmpresaDWR.transform(usuarioRolEmpresa.getEmpresa()));
-		usuarioRolEmpresaTO.setRol(RolDWR.transform(usuarioRolEmpresa.getRol()));
+		result.setEmpresa(EmpresaDWR.transform(usuarioRolEmpresa.getEmpresa(), false));
+		result.setRol(RolDWR.transform(usuarioRolEmpresa.getRol(), true));
 		
-		usuarioRolEmpresaTO.setFact(usuarioRolEmpresa.getFact());
-		usuarioRolEmpresaTO.setId(usuarioRolEmpresa.getId());
-		usuarioRolEmpresaTO.setTerm(usuarioRolEmpresa.getTerm());
-		usuarioRolEmpresaTO.setUact(usuarioRolEmpresa.getUact());
+		result.setFcre(usuarioRolEmpresa.getFcre());
+		result.setFact(usuarioRolEmpresa.getFact());
+		result.setId(usuarioRolEmpresa.getId());
+		result.setTerm(usuarioRolEmpresa.getTerm());
+		result.setUact(usuarioRolEmpresa.getUact());
+		result.setUcre(usuarioRolEmpresa.getUcre());
 		
-		return usuarioRolEmpresaTO;
+		return result;
 	}
 	
 	public static UsuarioRolEmpresa transform(UsuarioRolEmpresaTO usuarioRolEmpresaTO) {
-		UsuarioRolEmpresa usuarioRolEmpresa = new UsuarioRolEmpresa();
+		UsuarioRolEmpresa result = new UsuarioRolEmpresa();
 		
 		Empresa empresa = new Empresa();
 		empresa.setId(usuarioRolEmpresaTO.getEmpresa().getId());
 		
-		usuarioRolEmpresa.setEmpresa(empresa);
+		result.setEmpresa(empresa);
 		
 		Rol rol = new Rol();
 		rol.setId(usuarioRolEmpresaTO.getRol().getId());
 		
-		usuarioRolEmpresa.setRol(rol);
+		result.setRol(rol);
 		
 		if (usuarioRolEmpresaTO.getUsuario() != null) {
 			Usuario usuario = new Usuario();
 			usuario.setId(usuarioRolEmpresaTO.getUsuario().getId());
 			
-			usuarioRolEmpresa.setUsuario(usuario);
+			result.setUsuario(usuario);
 		}
 		
-		usuarioRolEmpresa.setFact(usuarioRolEmpresaTO.getFact());
-		usuarioRolEmpresa.setId(usuarioRolEmpresaTO.getId());
-		usuarioRolEmpresa.setTerm(usuarioRolEmpresaTO.getTerm());
-		usuarioRolEmpresa.setUact(usuarioRolEmpresaTO.getUact());
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		return usuarioRolEmpresa;
+		result.setFcre(usuarioRolEmpresaTO.getFact());
+		result.setFact(date);
+		result.setId(usuarioRolEmpresaTO.getId());
+		result.setTerm(usuarioRolEmpresaTO.getTerm());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(usuarioRolEmpresaTO.getUcre());
+		
+		return result;
 	}
 }
 

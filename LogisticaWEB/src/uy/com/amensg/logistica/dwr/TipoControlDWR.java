@@ -46,15 +46,17 @@ public class TipoControlDWR {
 	}
 	
 	public static TipoControlTO transform(TipoControl tipoControl) {
-		TipoControlTO tipoControlTO = new TipoControlTO();
+		TipoControlTO result = new TipoControlTO();
 		
-		tipoControlTO.setDescripcion(tipoControl.getDescripcion());
+		result.setDescripcion(tipoControl.getDescripcion());
 		
-		tipoControlTO.setFact(tipoControl.getFact());
-		tipoControlTO.setId(tipoControl.getId());
-		tipoControlTO.setTerm(tipoControl.getTerm());
-		tipoControlTO.setUact(tipoControl.getUact());
+		result.setFcre(tipoControl.getFcre());
+		result.setFact(tipoControl.getFact());
+		result.setId(tipoControl.getId());
+		result.setTerm(tipoControl.getTerm());
+		result.setUact(tipoControl.getUact());
+		result.setUcre(tipoControl.getUcre());
 		
-		return tipoControlTO;
+		return result;
 	}
 }

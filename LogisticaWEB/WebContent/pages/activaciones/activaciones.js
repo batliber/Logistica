@@ -1,5 +1,8 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_ENCARGADO_ACTIVACIONES = 12;
+var __ROL_ENCARGADO_ACTIVACIONES_SIN_DISTRIBUCION = 15;
+var __ROL_SUPERVISOR_DISTRIBUCION_CHIPS = 18;
+var __ROL_DEMO = 21;
 
 var grid = null;
 		
@@ -10,17 +13,21 @@ function init() {
 	$("#divButtonSubirArchivo").hide();
 	$("#divButtonAgregarMid").hide();
 	$("#divButtonExportarAExcel").hide();
+	$("#divButtonExportarAExcelSupervisorDistribucionChips").hide();
+	$("#divButtonExportarAExcelEncargadoActivaciones").hide();
+	$("#divButtonExportarAExcelEncargadoActivacionesSinDistribucion").hide();
 	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
 				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES) {
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION_CHIPS
+						|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO) {
 //						$("#divButtonAsignar").show();
 						$("#divButtonSubirArchivo").show();
 						$("#divButtonAgregarMid").show();
-						$("#divButtonExportarAExcel").show();
+						$("#divButtonExportarAExcelSupervisorDistribucionChips").show();
 						
 						grid = new Grid(
 							document.getElementById("divTableActivaciones"),
@@ -31,13 +38,14 @@ function init() {
 								tdFechaActivacion: { campo: "fechaActivacion", abreviacion: "F. Activación", descripcion: "Fecha de activación", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
 								tdFechaImportacion: { campo: "fechaImportacion", abreviacion: "F. Importación", descripcion: "Fecha de importación", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
 								tdEstadoActivacion: { campo: "estadoActivacion.nombre", clave: "estadoActivacion.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoActivaciones, clave: "id", valor: "nombre" }, ancho: 125 },
-								tdTipoActivacion: { campo: "tipoActivacion.descripcion", clave: "tipoActivacion.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoActivaciones, clave: "id", valor: "descripcion" }, ancho: 125 },
 								tdActivacionLote: { campo: "activacionLote.numero", abreviacion: "Lote", descripcion: "Lote", tipo: __TIPO_CAMPO_NUMERICO },
 								tdActivacionSublote: { campo: "activacionSublote.numero", abreviacion: "Sublote", descripcion: "Sublote", tipo: __TIPO_CAMPO_NUMERICO },
 								tdDistribuidor: { campo: "activacionSublote.distribuidor.nombre", clave: "activacionSublote.distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 125 },
 								tdFechaAsignacionDistribuidor: { campo: "activacionSublote.fechaAsignacionDistribuidor", abreviacion: "F. Asign. Distr.", descripcion: "Fecha asign. Distribuidor", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
 								tdPuntoVenta: { campo: "activacionSublote.puntoVenta.nombre", clave: "activacionSublote.puntoVenta.id", descripcion: "Punto de venta", abreviacion: "Punto de venta", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPuntoVentas, clave: "id", valor: "nombre" }, ancho: 125 },
+								tdPuntoVentaDepartamento: { campo: "activacionSublote.puntoVenta.departamento.nombre", clave: "activacionSublote.puntoVenta.departamento.id", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre" } },
 								tdFechaAsignacionPuntoVenta: { campo: "activacionSublote.fechaAsignacionPuntoVenta", abreviacion: "F. Asign. P.V.", descripcion: "Fecha asign. Pto. venta", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
+								tdFechaLiquidacion: { campo: "liquidacion.fechaLiquidacion", abreviacion: "F. Liq.", descripcion: "Fecha de liquidación", tipo: __TIPO_CAMPO_FECHA_HORA },
 							}, 
 							true,
 							reloadData,
@@ -48,6 +56,71 @@ function init() {
 						
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
 						break;
+					}
+				}
+				
+				if (grid == null) {
+					for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+						if (data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES) {
+//							$("#divButtonAsignar").show();
+							$("#divButtonSubirArchivo").show();
+							$("#divButtonAgregarMid").show();
+							$("#divButtonExportarAExcelEncargadoActivaciones").show();
+							
+							grid = new Grid(
+								document.getElementById("divTableActivaciones"),
+								{
+									tdMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+									tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
+									tdChip: { campo: "chip", abreviacion: "Chip", descripcion: "Chip", tipo: __TIPO_CAMPO_STRING, ancho: 120 },
+									tdFechaActivacion: { campo: "fechaActivacion", abreviacion: "F. Activación", descripcion: "Fecha de activación", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
+									tdFechaImportacion: { campo: "fechaImportacion", abreviacion: "F. Importación", descripcion: "Fecha de importación", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
+									tdEstadoActivacion: { campo: "estadoActivacion.nombre", clave: "estadoActivacion.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoActivaciones, clave: "id", valor: "nombre" }, ancho: 125 },
+									tdActivacionLote: { campo: "activacionLote.numero", abreviacion: "Lote", descripcion: "Lote", tipo: __TIPO_CAMPO_NUMERICO },
+									tdActivacionSublote: { campo: "activacionSublote.numero", abreviacion: "Sublote", descripcion: "Sublote", tipo: __TIPO_CAMPO_NUMERICO },
+									tdDistribuidor: { campo: "activacionSublote.distribuidor.nombre", clave: "activacionSublote.distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 125 },
+									tdFechaAsignacionDistribuidor: { campo: "activacionSublote.fechaAsignacionDistribuidor", abreviacion: "F. Asign. Distr.", descripcion: "Fecha asign. Distribuidor", tipo: __TIPO_CAMPO_FECHA, ancho: 90 }
+								}, 
+								true,
+								reloadData,
+								trActivacionOnClick
+							);
+							
+							grid.rebuild();
+							
+							$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
+							break;
+						}
+					}
+				}
+				
+				if (grid == null) {
+					for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+						if (data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES_SIN_DISTRIBUCION) {
+							$("#divButtonSubirArchivo").show();
+							$("#divButtonAgregarMid").show();
+							$("#divButtonExportarAExcelEncargadoActivacionesSinDistribucion").show();
+							
+							grid = new Grid(
+								document.getElementById("divTableActivaciones"),
+								{
+									tdMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+									tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
+									tdChip: { campo: "chip", abreviacion: "Chip", descripcion: "Chip", tipo: __TIPO_CAMPO_STRING, ancho: 120 },
+									tdFechaActivacion: { campo: "fechaActivacion", abreviacion: "F. Activación", descripcion: "Fecha de activación", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
+									tdFechaImportacion: { campo: "fechaImportacion", abreviacion: "F. Importación", descripcion: "Fecha de importación", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
+									tdEstadoActivacion: { campo: "estadoActivacion.nombre", clave: "estadoActivacion.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoActivaciones, clave: "id", valor: "nombre" }, ancho: 125 }
+								}, 
+								true,
+								reloadData,
+								trActivacionOnClick
+							);
+							
+							grid.rebuild();
+							
+							$("#divButtonTitleSingleSize").attr("id", "divButtonTitleTripleSize");
+							break;
+						}
 					}
 				}
 				
@@ -78,7 +151,7 @@ function init() {
 function listEmpresas() {
 	var result = [];
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -95,6 +168,22 @@ function listPuntoVentas() {
 	var result = [];
 	
 	PuntoVentaDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listDepartamentos() {
+	var result = [];
+	
+	DepartamentoDWR.list(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -127,22 +216,6 @@ function listTipoActivaciones() {
 	var result = [];
 	
 	TipoActivacionDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listProductos() {
-	var result = [];
-	
-	ProductoDWR.list(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -220,9 +293,8 @@ function trActivacionOnClick(eventObject) {
 function divCloseOnClick(event, element) {
 	closePopUp(event, element.parentNode.parentNode);
 	
-	$("#selectVendedor").val("0");
 	$("#selectEmpresa").val("0");
-	$("#textareaObservaciones").val("");
+	$("#selectTipoActivacion").val("0");
 	$("#inputArchivo").val("");
 	
 	reloadData();
@@ -270,82 +342,14 @@ function inputSubirArchivoOnClick(event, element) {
 	showPopUp(document.getElementById("divIFrameImportacionArchivo"));
 }
 
-function inputAsignarOnClick() {
-	metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-	metadataConsulta.tamanoSubconjunto = 
-		Math.min(
-			$("#inputTamanoSubconjunto").val(),
-			$("#divCantidadRegistrosValue").text()
-		);
-	
-	ContratoDWR.chequearAsignacion(
-		metadataConsulta,
-		{
-			callback: function(data) {
-				if (data || confirm("Atenci�n: se modificar�n registros que ya se encuentran asignados.")) {
-					$("#selectVendedor > option").remove();
-					
-					$("#selectVendedor").append("<option value='0'>Seleccione...</option>");
-					
-					UsuarioRolEmpresaDWR.listVendedoresByContext(
-						{
-							callback: function(data) {
-								var html = "";
-								
-								for (var i=0; i<data.length; i++) {
-									html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-								}
-								
-								$("#selectVendedor").append(html);
-							}, async: false
-						}
-					);
-					
-					showPopUp(document.getElementById("divIFrameSeleccionVendedor"));
-				}
-			}, async: false
-		}
-	);
-}
-
 function inputCancelarOnClick(event, element) {
-	closePopUp(event, document.getElementById("divIFrameSeleccionVendedor"));
+	closePopUp(event, document.getElementById("divIFrameImportacionArchivo"));
 	
-	$("#selectVendedor").val("0");
-	$("#textareaObservaciones").val("");
+	$("#selectEmpresa").val("0");
+	$("#selectTipoActivacion").val("0");
+	$("#inputArchivo").val("");
 	
 	reloadData();
-}
-
-function inputAceptarOnClick(event, element) {
-	if ($("#selectVendedor").val() != "0") {
-		var vendedor = {
-			id: $("#selectVendedor").val()
-		};
-		
-		metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-		metadataConsulta.tamanoSubconjunto = 
-			Math.min(
-				$("#inputTamanoSubconjunto").val(),
-				$("#divCantidadRegistrosValue").text()
-			);
-		
-		if (confirm("Se asignar�n " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-			ContratoDWR.asignarVentas(
-				vendedor,
-				metadataConsulta,
-				{
-					callback: function(data) {
-						alert("Operaci�n exitosa.");
-						
-						reloadData();
-					}, async: false
-				}
-			);
-		}
-	} else {
-		alert("Debe seleccionar un vendedor.");
-	}
 }
 
 function inputAceptarSubirArchivoOnClick(event, element) {
@@ -390,11 +394,6 @@ function inputAceptarSubirArchivoOnClick(event, element) {
 	}
 }
 
-function inputAgregarMidOnClick(event, element) {
-	document.getElementById("iFrameActivacion").src = "/LogisticaWEB/pages/activaciones/activaciones.jsp?m=" + __FORM_MODE_NEW;
-	showPopUp(document.getElementById("divIFrameActivacion"));
-}
-
 function inputExportarAExcelOnClick(event, element) {
 	ActivacionDWR.exportarAExcel(
 		grid.filtroDinamico.calcularMetadataConsulta(),
@@ -402,6 +401,42 @@ function inputExportarAExcelOnClick(event, element) {
 			callback: function(data) {
 				document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
 				document.getElementById("formExportarAExcel").submit();
+			}, async: false
+		}
+	);
+}
+
+function inputExportarAExcelSupervisorDistribucionChipsOnClick(event, element) {
+	ActivacionDWR.exportarAExcelSupervisorDistribucionChips(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				document.getElementById("formExportarAExcelSupervisorDistribucionChips").action = "/LogisticaWEB/Download?fn=" + data;
+				document.getElementById("formExportarAExcelSupervisorDistribucionChips").submit();
+			}, async: false
+		}
+	);
+}
+
+function inputExportarAExcelEncargadoActivacionesOnClick(event, element) {
+	ActivacionDWR.exportarAExcelEncargadoActivaciones(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				document.getElementById("formExportarAExcelEncargadoActivaciones").action = "/LogisticaWEB/Download?fn=" + data;
+				document.getElementById("formExportarAExcelEncargadoActivaciones").submit();
+			}, async: false
+		}
+	);
+}
+
+function inputExportarAExcelEncargadoActivacionesSinDistribucionOnClick(event, element) {
+	ActivacionDWR.exportarAExcelEncargadoActivacionesSinDistribucion(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				document.getElementById("formExportarAExcelEncargadoActivacionesSinDistribucion").action = "/LogisticaWEB/Download?fn=" + data;
+				document.getElementById("formExportarAExcelEncargadoActivacionesSinDistribucion").submit();
 			}, async: false
 		}
 	);

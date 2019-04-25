@@ -6,6 +6,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 public class TipoDocumentoTO extends BaseTO {
 
 	private String descripcion;
+	private String abreviacion;
 
 	public String getDescripcion() {
 		return descripcion;
@@ -13,5 +14,13 @@ public class TipoDocumentoTO extends BaseTO {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getAbreviacion() {
+		return abreviacion;
+	}
+
+	public void setAbreviacion(String abreviacion) {
+		this.abreviacion = abreviacion;
 	}
 }

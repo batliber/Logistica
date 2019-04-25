@@ -8,7 +8,7 @@ $(document).ready(init);
 function init() {
 	refinarForm();
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				var html =

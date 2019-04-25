@@ -101,7 +101,11 @@ public class DisponibilidadEntregaEmpresaZonaTurnoBean implements IDisponibilida
 
 	public void generarDisponibilidadParaEmpresa(Empresa empresa) {
 		try {
-			Empresa empresaDefault = iEmpresaBean.getById(new Long(Configuration.getInstance().getProperty("empresa.ELARED")));
+			Empresa empresaDefault = 
+				iEmpresaBean.getById(
+					new Long(Configuration.getInstance().getProperty("empresa.ELARED")),
+					false
+				);
 			
 			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurno : this.listByEmpresa(empresaDefault)) {
 				DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurnoNueva = new DisponibilidadEntregaEmpresaZonaTurno();
@@ -111,11 +115,90 @@ public class DisponibilidadEntregaEmpresaZonaTurnoBean implements IDisponibilida
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setTurno(disponibilidadEntregaEmpresaZonaTurno.getTurno());
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setZona(disponibilidadEntregaEmpresaZonaTurno.getZona());
 				
+				disponibilidadEntregaEmpresaZonaTurnoNueva.setFcre(empresa.getFact());
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setFact(empresa.getFact());
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setTerm(new Long(1));
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setUact(empresa.getUact());
+				disponibilidadEntregaEmpresaZonaTurnoNueva.setUcre(empresa.getUcre());
 				
 				entityManager.persist(disponibilidadEntregaEmpresaZonaTurnoNueva);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void updateDisponibilidadByZona(
+		Zona zona,
+		Collection<DisponibilidadEntregaEmpresaZonaTurno> disponibilidadEntregaEmpresaZonaTurnos
+	) {
+		try {
+			TypedQuery<DisponibilidadEntregaEmpresaZonaTurno> query = 
+				entityManager.createQuery(
+					"SELECT d"
+					+ " FROM DisponibilidadEntregaEmpresaZonaTurno d"
+					+ " WHERE d.zona = :zona", 
+					DisponibilidadEntregaEmpresaZonaTurno.class
+				);
+			query.setParameter("zona", zona);
+			
+			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurnoManaged 
+				: query.getResultList()) {
+				entityManager.remove(disponibilidadEntregaEmpresaZonaTurnoManaged);
+			}
+			
+			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurno 
+				: disponibilidadEntregaEmpresaZonaTurnos) {
+				for (Empresa empresa : iEmpresaBean.list()) {
+					DisponibilidadEntregaEmpresaZonaTurno toPersist = new DisponibilidadEntregaEmpresaZonaTurno();
+					toPersist.setCantidad(disponibilidadEntregaEmpresaZonaTurno.getCantidad());
+					toPersist.setDia(disponibilidadEntregaEmpresaZonaTurno.getDia());
+					toPersist.setEmpresa(empresa);
+					toPersist.setTurno(disponibilidadEntregaEmpresaZonaTurno.getTurno());
+					toPersist.setZona(disponibilidadEntregaEmpresaZonaTurno.getZona());
+					
+					toPersist.setFact(disponibilidadEntregaEmpresaZonaTurno.getFact());
+					toPersist.setFcre(disponibilidadEntregaEmpresaZonaTurno.getFact());
+					toPersist.setTerm(disponibilidadEntregaEmpresaZonaTurno.getTerm());
+					toPersist.setUact(disponibilidadEntregaEmpresaZonaTurno.getUact());
+					toPersist.setUcre(disponibilidadEntregaEmpresaZonaTurno.getUact());
+					
+					entityManager.persist(toPersist);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateDisponibilidadByEmpresaZona(
+		Empresa empresa,
+		Zona zona,
+		Collection<DisponibilidadEntregaEmpresaZonaTurno> disponibilidadEntregaEmpresaZonaTurnos
+	) {
+		try {
+			TypedQuery<DisponibilidadEntregaEmpresaZonaTurno> query = 
+				entityManager.createQuery(
+					"SELECT d"
+					+ " FROM DisponibilidadEntregaEmpresaZonaTurno d"
+					+ " WHERE d.empresa = :empresa"
+					+ " AND d.zona = :zona", 
+					DisponibilidadEntregaEmpresaZonaTurno.class
+				);
+			query.setParameter("empresa", empresa);
+			query.setParameter("zona", zona);
+			
+			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurnoManaged 
+				: query.getResultList()) {
+				entityManager.remove(disponibilidadEntregaEmpresaZonaTurnoManaged);
+			}
+			
+			for (DisponibilidadEntregaEmpresaZonaTurno disponibilidadEntregaEmpresaZonaTurno 
+				: disponibilidadEntregaEmpresaZonaTurnos) {
+				disponibilidadEntregaEmpresaZonaTurno.setUcre(disponibilidadEntregaEmpresaZonaTurno.getUact());
+				disponibilidadEntregaEmpresaZonaTurno.setFcre(disponibilidadEntregaEmpresaZonaTurno.getFact());
+				
+				entityManager.persist(disponibilidadEntregaEmpresaZonaTurno);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

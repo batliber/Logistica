@@ -1,39 +1,11 @@
-#divMenuTitulo {
-	float: left;
-	width: 70%;
-}
-
 #inputMenuTitulo {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divMenuURL{
-	float: left;
-	width: 70%;
+	width: 60%;
 }
 
 #inputMenuURL {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divMenuOrden{
-	float: left;
-	width: 70%;
-}
-
-#inputMenuOrden {
-	margin-left: 2px;
-	width: 10%;
-}
-
-#divMenuPadre {
-	float: left;
-	width: 70%;
+	width: 60%;
 }
 
 #selectMenuPadre {
-	margin-left: 2px;
-	width: 40%;
+	width: 30%;
 }

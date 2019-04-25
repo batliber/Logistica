@@ -4,12 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -25,17 +29,22 @@ import org.hibernate.type.DateType;
 import org.hibernate.type.LongType;
 import org.hibernate.type.StringType;
 
+import uy.com.amensg.logistica.entities.ACMInterfacePersona;
 import uy.com.amensg.logistica.entities.ACMInterfaceRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticioInstitucionFinanciera;
 import uy.com.amensg.logistica.entities.CalificacionRiesgoCrediticioAntel;
 import uy.com.amensg.logistica.entities.CalificacionRiesgoCrediticioBCU;
 import uy.com.amensg.logistica.entities.Empresa;
+import uy.com.amensg.logistica.entities.EstadoProcesoImportacion;
 import uy.com.amensg.logistica.entities.EstadoRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.ProcesoImportacion;
 import uy.com.amensg.logistica.entities.RiesgoCrediticio;
+import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
+import uy.com.amensg.logistica.entities.TipoProcesoImportacion;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
 import uy.com.amensg.logistica.util.Configuration;
@@ -72,11 +81,26 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 	@EJB
 	private IEmpresaBean iEmpresaBean;
 	
+	@EJB
+	private IEstadoProcesoImportacionBean iEstadoProcesoImportacionBean;
+	
+	@EJB
+	private ITipoProcesoImportacionBean iTipoProcesoImportacionBean;
+	
+	@EJB
+	private IProcesoImportacionBean iProcesoImportacionBean;
+	
+	@EJB
+	private ITipoControlRiesgoCrediticioBean iTipoControlRiesgoCrediticioBean;
+	
+	@EJB
+	private IACMInterfacePersonaBean iACMInterfacePersonaBean;
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
 		try {
-			Usuario usuario = iUsuarioBean.getById(usuarioId);
+			Usuario usuario = iUsuarioBean.getById(usuarioId, true);
 			
 			Collection<String> empresas = new LinkedList<String>();
 			for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
@@ -104,7 +128,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 		Long result = null;
 		
 		try {
-			Usuario usuario = iUsuarioBean.getById(usuarioId);
+			Usuario usuario = iUsuarioBean.getById(usuarioId, true);
 			
 			Collection<String> empresas = new LinkedList<String>();
 			for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
@@ -133,20 +157,131 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 		
 		try {
 			EstadoRiesgoCrediticio estadoRiesgoCrediticioParaProcesar = 
-				iEstadoRiesgoCrediticioBean.getById(new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesar")));
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesar"))
+				);
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticioParaProcesarPrioritario = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesarPrioritario"))
+				);
 			
 			EstadoRiesgoCrediticio estadoRiesgoCrediticioEnProceso = 
-				iEstadoRiesgoCrediticioBean.getById(new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.EnProceso")));
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.EnProceso"))
+				);
 			
-			Date date = GregorianCalendar.getInstance().getTime();
+			TipoControlRiesgoCrediticio tipoControlRiesgoCrediticioBCU =
+				iTipoControlRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("tipoControlRiesgoCrediticio.BCU"))
+				);
+			
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			Date date = gregorianCalendar.getTime();
+			
+			gregorianCalendar.add(GregorianCalendar.MINUTE, -1);
+			
+			Date fechaMaximaProceso = gregorianCalendar.getTime();
 			
 			TypedQuery<RiesgoCrediticio> query = entityManager.createQuery(
 				"SELECT r"
 				+ " FROM RiesgoCrediticio r"
-				+ " WHERE r.estadoRiesgoCrediticio = :estadoRiesgoCrediticioParaProcesar",
+				+ " WHERE r.estadoRiesgoCrediticio IN ("
+					+ "	:estadoRiesgoCrediticioParaProcesar, :estadoRiesgoCrediticioParaProcesarPrioritario"
+				+ " )"
+				+ " OR ("
+				+ "		r.estadoRiesgoCrediticio = :estadoRiesgoCrediticioEnProceso"
+					+ " AND r.tipoControlRiesgoCrediticio = :tipoControlRiesgoCrediticioBCU"
+					+ " AND r.fact < :fechaMaximaProceso"
+				+ " )"
+				+ " ORDER BY r.estadoRiesgoCrediticio.id DESC",
 				RiesgoCrediticio.class
 			);
 			query.setParameter("estadoRiesgoCrediticioParaProcesar", estadoRiesgoCrediticioParaProcesar);
+			query.setParameter("estadoRiesgoCrediticioParaProcesarPrioritario", estadoRiesgoCrediticioParaProcesarPrioritario);
+			query.setParameter("estadoRiesgoCrediticioEnProceso", estadoRiesgoCrediticioEnProceso);
+			query.setParameter("tipoControlRiesgoCrediticioBCU", tipoControlRiesgoCrediticioBCU);
+			query.setParameter("fechaMaximaProceso", fechaMaximaProceso);
+			query.setMaxResults(1);
+			
+			Collection<RiesgoCrediticio> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				RiesgoCrediticio riesgoCrediticio = resultList.iterator().next();
+				
+				riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticioEnProceso);
+				
+				riesgoCrediticio.setFact(date);
+				riesgoCrediticio.setTerm(new Long(1));
+				riesgoCrediticio.setUact(new Long(1));
+				
+				this.save(riesgoCrediticio);
+				
+				result = riesgoCrediticio;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public RiesgoCrediticio getSiguienteDocumentoParaControlarRiesgoOnLine() {
+		RiesgoCrediticio result = null;
+		
+		try {
+			EstadoRiesgoCrediticio estadoRiesgoCrediticioParaProcesar = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesar"))
+				);
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticioParaProcesarPrioritario = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesarPrioritario"))
+				);
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticioEnProceso = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.EnProceso"))
+				);
+			
+			TipoControlRiesgoCrediticio tipoControlRiesgoCrediticioRIESGOONLINE =
+				iTipoControlRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("tipoControlRiesgoCrediticio.RIESGOONLINE"))
+				);
+			
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			Date date = gregorianCalendar.getTime();
+			
+//			Long maximoTiempoEnProcesoMinutos = 
+//				new Long(Configuration.getInstance().getProperty("riesgoCrediticio.maximoTiempoEnProcesoMinutos"));
+//			gregorianCalendar.add(
+//				GregorianCalendar.MINUTE, -1 * maximoTiempoEnProcesoMinutos.intValue()
+//			);
+//			
+//			Date fechaMaximaProceso = gregorianCalendar.getTime();
+			
+			TypedQuery<RiesgoCrediticio> query = entityManager.createQuery(
+				"SELECT r"
+				+ " FROM RiesgoCrediticio r"
+				+ " WHERE r.tipoControlRiesgoCrediticio = :tipoControlRiesgoCrediticioRIESGOONLINE"
+				+ " AND ("
+					+ "	r.estadoRiesgoCrediticio IN ("
+						+ "	:estadoRiesgoCrediticioParaProcesar, :estadoRiesgoCrediticioParaProcesarPrioritario"
+					+ " )"
+//						OR ("
+//						+ "	r.estadoRiesgoCrediticio = :estadoRiesgoCrediticioEnProceso"
+//						+ " AND r.fact < :fechaMaximaProceso"
+//					+ " )"
+				+ " )"
+				+ " ORDER BY r.estadoRiesgoCrediticio.id DESC",
+				RiesgoCrediticio.class
+			);
+			query.setParameter("tipoControlRiesgoCrediticioRIESGOONLINE", tipoControlRiesgoCrediticioRIESGOONLINE);
+			query.setParameter("estadoRiesgoCrediticioParaProcesar", estadoRiesgoCrediticioParaProcesar);
+			query.setParameter("estadoRiesgoCrediticioParaProcesarPrioritario", estadoRiesgoCrediticioParaProcesarPrioritario);
+//			query.setParameter("estadoRiesgoCrediticioEnProceso", estadoRiesgoCrediticioEnProceso);
+//			query.setParameter("fechaMaximaProceso", fechaMaximaProceso);
+			query.setMaxResults(1);
 			
 			Collection<RiesgoCrediticio> resultList = query.getResultList();
 			if (resultList.size() > 0) {
@@ -205,7 +340,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 					+ " FROM RiesgoCrediticio r"
 					+ " WHERE r.empresa.id = :empresaId"
 					+ " AND r.documento = :documento"
-					+ " ORDER BY r.fechaVigenciaDesde DESC",
+					+ " ORDER BY r.fact DESC",
 					RiesgoCrediticio.class
 				);
 			query.setParameter("empresaId", empresa.getId());
@@ -236,13 +371,19 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 			
 			Collection<String> documentos = new LinkedList<String>();
 			
+			boolean errorFatal = false;
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
 				String[] fields = line.split(";");
 				
-				String documento = fields[0].trim();
-				
-				documentos.add(documento);
+				try {
+					documentos.add(fields[0].trim());
+				} catch (Exception e) {
+					errorFatal = true;
+					
+					e.printStackTrace();
+					break;
+				}
 			}
 			
 			Map<String, Integer> map = this.preprocesarConjunto(documentos, empresaId);
@@ -267,10 +408,14 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				}
 			}
 			
-			result =
-				"Se importarán " + importar + " documentos nuevos.|"
-				+ "Se sobreescribirán " + sobreescribir + " documentos.|"
-				+ "Se omitirán " + omitir + " documentos.";
+			if (!errorFatal) {
+				result =
+					"Se importarán " + importar + " documentos nuevos.|"
+					+ "Se sobreescribirán " + sobreescribir + " documentos.|"
+					+ "Se omitirán " + omitir + " documentos.";
+			} else {
+				result = "Formato incompatible. Operación abortada";
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -291,7 +436,11 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 		
 		try {
 			for (String documento : documentos) {
-				result.put(documento, Constants.__COMPROBACION_IMPORTACION_IMPORTAR);
+				if (!documento.isEmpty()) {
+					result.put(documento, Constants.__COMPROBACION_IMPORTACION_IMPORTAR);
+				} else {
+					result.put(documento, Constants.__COMPROBACION_IMPORTACION_OMITIR);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -300,7 +449,11 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 		return result;
 	}
 
-	public String procesarArchivoEmpresa(String fileName, Long empresaId, Long tipoControlRiesgoCrediticioId, Long loggedUsuarioId) {
+	public String procesarArchivoEmpresa(
+		String fileName, 
+		Long empresaId, 
+		Long tipoControlRiesgoCrediticioId, 
+		Long loggedUsuarioId) {
 		BufferedReader bufferedReader = null;
 		
 		String result = null;
@@ -317,10 +470,40 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				iEstadoRiesgoCrediticioBean.getById(new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesar")));
 			
 			Empresa empresa = 
-				iEmpresaBean.getById(empresaId);
+				iEmpresaBean.getById(empresaId, false);
+			
+			TipoProcesoImportacion tipoProcesoImportacion =
+				iTipoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("tipoProcesoImportacion.RiesgoCrediticio")));
+			
+			EstadoProcesoImportacion estadoProcesoImportacionInicio = 
+				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio")));
+			
+			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoOK = 
+				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
+			
+			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoConErrores = 
+				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
+			
+			Usuario usuario =
+				iUsuarioBean.getById(loggedUsuarioId, false);
+			
+			ProcesoImportacion procesoImportacion = new ProcesoImportacion();
+			procesoImportacion.setEstadoProcesoImportacion(estadoProcesoImportacionInicio);
+			procesoImportacion.setFechaInicio(hoy);
+			procesoImportacion.setNombreArchivo(fileName);
+			procesoImportacion.setTipoProcesoImportacion(tipoProcesoImportacion);
+			procesoImportacion.setUsuario(usuario);
+			
+			procesoImportacion.setFcre(hoy);
+			procesoImportacion.setFact(hoy);
+			procesoImportacion.setTerm(new Long(1));
+			procesoImportacion.setUact(loggedUsuarioId);
+			procesoImportacion.setUcre(loggedUsuarioId);
+			
+			ProcesoImportacion procesoImportacionManaged = iProcesoImportacionBean.save(procesoImportacion);
 			
 			CalificacionRiesgoCrediticioAntel calificacionRiesgoCrediticioAntel = 
-				iCalificacionRiesgoCrediticioAntelBean.getById(new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioAntel.OK")));
+				iCalificacionRiesgoCrediticioAntelBean.getById(new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioAntel.SINDETERMINAR")));
 			
 			CalificacionRiesgoCrediticioBCU calificacionRiesgoCrediticioBCU = 
 				iCalificacionRiesgoCrediticioBCUBean.getById(new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDETERMINAR")));
@@ -332,9 +515,11 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 					+ " id,"
 					+ " fecha_vigencia_desde,"
 					+ " fecha_importacion,"
+					+ " fcre,"
 					+ " fact,"
 					+ " term,"
 					+ " uact,"
+					+ " ucre,"
 					+ " empresa_id,"
 					+ " estado_riesgo_crediticio_id,"
 					+ " tipo_control_riesgo_crediticio_id,"
@@ -353,19 +538,23 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 					+ " ?,"
 					+ " ?,"
 					+ " ?,"
+					+ " ?,"
+					+ " ?,"
 					+ " ?"
 				+ " )"
 			);
 			
 			insertRiesgoCrediticio.setParameter(0, hoy, DateType.INSTANCE);
 			insertRiesgoCrediticio.setParameter(1, hoy, DateType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(2, new Long(1), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(3, loggedUsuarioId, LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(4, empresa.getId(), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(5, estado.getId(), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(6, tipoControlRiesgoCrediticioId, LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(7, calificacionRiesgoCrediticioAntel.getId(), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(8, calificacionRiesgoCrediticioBCU.getId(), LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(2, hoy, DateType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(3, new Long(1), LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(4, loggedUsuarioId, LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(5, loggedUsuarioId, LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(6, empresa.getId(), LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(7, estado.getId(), LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(8, tipoControlRiesgoCrediticioId, LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(9, calificacionRiesgoCrediticioAntel.getId(), LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(10, calificacionRiesgoCrediticioBCU.getId(), LongType.INSTANCE);
 			
 			String line = null;
 			long lineNumber = 0;
@@ -400,7 +589,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 					if (!ok) {
 						errors++;
 					} else {
-						insertRiesgoCrediticio.setParameter(9, documento, StringType.INSTANCE);
+						insertRiesgoCrediticio.setParameter(11, documento, StringType.INSTANCE);
 						
 						insertRiesgoCrediticio.executeUpdate();
 
@@ -412,6 +601,20 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 			result = 
 				"Líneas procesadas con éxito: " + successful + ".|"
 				+ "Líneas con datos incorrectos: " + errors + ".";
+			
+			if (errors > 0) {
+				procesoImportacionManaged.setEstadoProcesoImportacion(estadoProcesoImportacionFinalizadoConErrores);
+			} else {
+				procesoImportacionManaged.setEstadoProcesoImportacion(estadoProcesoImportacionFinalizadoOK);
+			}
+			
+			hoy = GregorianCalendar.getInstance().getTime();
+			
+			procesoImportacionManaged.setFact(hoy);
+			procesoImportacionManaged.setFechaFin(hoy);
+			procesoImportacionManaged.setObservaciones(result);
+			
+			iProcesoImportacionBean.update(procesoImportacionManaged);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -432,20 +635,37 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
 			riesgoCrediticio.setFact(date);
-			riesgoCrediticio.setTerm(riesgoCrediticio.getTerm());
-			riesgoCrediticio.setUact(riesgoCrediticio.getUact());
 			
 			if (riesgoCrediticio.getId() != null) {
-				entityManager.merge(riesgoCrediticio);
+				riesgoCrediticio = entityManager.merge(riesgoCrediticio);
 			} else {
+				riesgoCrediticio.setFcre(date);
+				riesgoCrediticio.setUcre(riesgoCrediticio.getUact());
+				
 				entityManager.persist(riesgoCrediticio);
+			}
+			
+			ACMInterfacePersona acmInterfacePersonaManaged = 
+				iACMInterfacePersonaBean.getByDocumento(riesgoCrediticio.getDocumento());
+			
+			if (acmInterfacePersonaManaged != null) {
+				acmInterfacePersonaManaged.setRiesgoCrediticio(riesgoCrediticio);
+				
+				acmInterfacePersonaManaged.setFact(date);
+				acmInterfacePersonaManaged.setTerm(new Long(1));
+				acmInterfacePersonaManaged.setUact(riesgoCrediticio.getUact());
+				
+				entityManager.merge(acmInterfacePersonaManaged);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void actualizarDatosRiesgoCrediticioACM(ACMInterfaceRiesgoCrediticio acmInterfaceRiesgoCrediticio) {
+	public void actualizarDatosRiesgoCrediticioACM(
+		Long riesgoCrediticioId,
+		ACMInterfaceRiesgoCrediticio acmInterfaceRiesgoCrediticio
+	) {
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
@@ -453,23 +673,20 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				entityManager.createQuery(
 					"SELECT r"
 					+ " FROM RiesgoCrediticio r"
-					+ " WHERE r.empresa.id = :empresaId"
-					+ " AND r.documento = :documento"
-					+ " ORDER BY r.id DESC",
+					+ " WHERE r.id = :id",
 					RiesgoCrediticio.class
 				);
-			query.setParameter("empresaId", acmInterfaceRiesgoCrediticio.getEmpresa().getId());
-			query.setParameter("documento", acmInterfaceRiesgoCrediticio.getDocumento());
-			query.setMaxResults(1);
+			query.setParameter("id", riesgoCrediticioId);
 			
 			Collection<RiesgoCrediticio> resultList = query.getResultList();
 			if (resultList.size() > 0) {
 				RiesgoCrediticio riesgoCrediticio = resultList.iterator().next();
 				
 				CalificacionRiesgoCrediticioAntel calificacionRiesgoCrediticioAntel = null;
-				if (!acmInterfaceRiesgoCrediticio.getDeudaCelular() &&
-					!acmInterfaceRiesgoCrediticio.getRiesgoCrediticioCelular() &&
-					acmInterfaceRiesgoCrediticio.getEstadoDeudaClienteFijo().equals("OK")) {
+				if (!(acmInterfaceRiesgoCrediticio.getDeudaCelular().equals("SI"))
+					&& !(acmInterfaceRiesgoCrediticio.getRiesgoCrediticioCelular().equals("SI"))
+					&& !(acmInterfaceRiesgoCrediticio.getEstadoDeudaClienteFijo().toUpperCase().equals("TIENE DEUDA"))
+				) {
 					calificacionRiesgoCrediticioAntel = 
 						iCalificacionRiesgoCrediticioAntelBean.getById(
 							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioAntel.OK"))
@@ -483,7 +700,9 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				riesgoCrediticio.setCalificacionRiesgoCrediticioAntel(calificacionRiesgoCrediticioAntel);
 				
 				EstadoRiesgoCrediticio estadoRiesgoCrediticioProcesado = 
-					iEstadoRiesgoCrediticioBean.getById(new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.Procesado")));
+					iEstadoRiesgoCrediticioBean.getById(
+						new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.Procesado"))
+					);
 				
 				riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticioProcesado);
 				
@@ -502,7 +721,10 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 		}
 	}
 
-	public void actualizarDatosRiesgoCrediticioBCU(BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio) {
+	public void actualizarDatosRiesgoCrediticioBCU(
+		Long riesgoCrediticioId,
+		BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio
+	) {
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
@@ -510,14 +732,10 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				entityManager.createQuery(
 					"SELECT r"
 					+ " FROM RiesgoCrediticio r"
-					+ " WHERE r.empresa.id = :empresaId"
-					+ " AND r.documento = :documento"
-					+ " ORDER BY r.id DESC",
+					+ " WHERE r.id = :id",
 					RiesgoCrediticio.class
 				);
-			query.setParameter("empresaId", bcuInterfaceRiesgoCrediticio.getEmpresa().getId());
-			query.setParameter("documento", bcuInterfaceRiesgoCrediticio.getDocumento());
-			query.setMaxResults(1);
+			query.setParameter("id", riesgoCrediticioId);
 			
 			Collection<RiesgoCrediticio> resultList = query.getResultList();
 			if (resultList.size() > 0) {
@@ -551,7 +769,10 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 		}
 	}
 	
-	public void actualizarDatosRiesgoCrediticioBCUSinDatos(BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio) {
+	public void actualizarDatosRiesgoCrediticioBCUSinDatos(
+		Long riesgoCrediticioId,
+		BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio
+	) {
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
@@ -559,14 +780,10 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				entityManager.createQuery(
 					"SELECT r"
 					+ " FROM RiesgoCrediticio r"
-					+ " WHERE r.empresa.id = :empresaId"
-					+ " AND r.documento = :documento"
-					+ " ORDER BY r.id DESC",
+					+ " WHERE r.id = :id",
 					RiesgoCrediticio.class
 				);
-			query.setParameter("empresaId", bcuInterfaceRiesgoCrediticio.getEmpresa().getId());
-			query.setParameter("documento", bcuInterfaceRiesgoCrediticio.getDocumento());
-			query.setMaxResults(1);
+			query.setParameter("id", riesgoCrediticioId);
 			
 			Collection<RiesgoCrediticio> resultList = query.getResultList();
 			if (resultList.size() > 0) {
@@ -601,66 +818,100 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 	}
 
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		Long riesgoCrediticioId,
 		BCUInterfaceRiesgoCrediticioInstitucionFinanciera bcuInterfaceRiesgoCrediticioInstitucionFinanciera
 	) {
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
+			Long calificacionRiesgoCrediticioBCUSinDeterminarId =
+				new Long(
+					Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDETERMINAR")
+				);
+			
 			TypedQuery<RiesgoCrediticio> query = 
 				entityManager.createQuery(
 					"SELECT r"
 					+ " FROM RiesgoCrediticio r"
-					+ " WHERE r.empresa.id = :empresaId"
-					+ " AND r.documento = :documento"
-					+ " ORDER BY r.id DESC",
+					+ " WHERE r.id = :id",
 					RiesgoCrediticio.class
 				);
-			query.setParameter("empresaId", bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getEmpresa().getId());
-			query.setParameter("documento", 
-				bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getDocumento()
-			);
-			query.setMaxResults(1);
+			query.setParameter("id", riesgoCrediticioId);
 			
-			Collection<RiesgoCrediticio> resultList = query.getResultList();
+			List<RiesgoCrediticio> resultList = query.getResultList();
 			if (resultList.size() > 0) {
-				RiesgoCrediticio riesgoCrediticio = resultList.iterator().next();
+				RiesgoCrediticio riesgoCrediticio = resultList.get(0);
 				
 				CalificacionRiesgoCrediticioBCU calificacionRiesgoCrediticioBCU = 
 					iCalificacionRiesgoCrediticioBCUBean.getByCalificacion(
 						bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion()
 					);
 				
-				// Si la calificación de riesgo es SIN DETERMINAR o si es mayor que la peor registrada, actualizar.
-				if (riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-					iCalificacionRiesgoCrediticioBCUBean.getById(
-						new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDETERMINAR"))
-					)) ||
-					riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getOrden() < calificacionRiesgoCrediticioBCU.getOrden()
-				) {
-					riesgoCrediticio.setCalificacionRiesgoCrediticioBCU(calificacionRiesgoCrediticioBCU);
+				if (calificacionRiesgoCrediticioBCU == null) {
+					throw new Exception("Se recibió una código de calificación no registrado: " 
+						+ bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion());
+				} else {
+					// Si la calificación de riesgo es null, SIN DETERMINAR o si es mayor que la peor registrada, 
+					// actualizar.
+					if (riesgoCrediticio.getCalificacionRiesgoCrediticioBCU() == null
+						|| riesgoCrediticio.getCalificacionRiesgoCrediticioBCU()
+							.getId().equals(calificacionRiesgoCrediticioBCUSinDeterminarId) 
+						|| riesgoCrediticio.getCalificacionRiesgoCrediticioBCU()
+							.getOrden() < calificacionRiesgoCrediticioBCU.getOrden()
+					) {
+						riesgoCrediticio.setCalificacionRiesgoCrediticioBCU(calificacionRiesgoCrediticioBCU);
+					}
+					
+					EstadoRiesgoCrediticio estadoRiesgoCrediticioProcesado = 
+						iEstadoRiesgoCrediticioBean.getById(
+							new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.Procesado"))
+						);
+					
+					riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticioProcesado);
+					
+					riesgoCrediticio.setFact(date);
+					riesgoCrediticio.setTerm(new Long(1));
+					riesgoCrediticio.setUact(new Long(1));
+					
+					entityManager.merge(riesgoCrediticio);
+					
+					bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setFechaAnalisis(date);
+					
+					BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticioManaged = 
+						iBCUInterfaceRiesgoCrediticioBean.getLastByEmpresaDocumento(
+							riesgoCrediticio.getEmpresa(),
+							riesgoCrediticio.getDocumento()
+						);
+					
+					bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setBcuInterfaceRiesgoCrediticio(
+						bcuInterfaceRiesgoCrediticioManaged
+					);
+					
+					iBCUInterfaceRiesgoCrediticioInstitucionFinancieraBean.save(
+						bcuInterfaceRiesgoCrediticioInstitucionFinanciera
+					);
+					
+					if (bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getInstitucionFinanciera()
+						.equals(
+							Configuration.getInstance().getProperty(
+								"calificacionRiesgoCrediticioBCU.institucionFinanciera.peorCalificacion"
+							)
+						)
+					) {
+						String urlString = 
+							Configuration.getInstance().getProperty("creditoAmigo.URL")
+								+ "?o=" + Configuration.getInstance().getProperty("creditoAmigo.operation.RemoteUpdate")
+								+ "&d=" + riesgoCrediticio.getDocumento() 
+								+ "&c=" + URLEncoder.encode(riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getDescripcion(), "UTF-8");
+						URL url = new URL(urlString);
+						HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+						urlConnection.setRequestMethod("GET");
+						
+						url.getContent();
+						
+						urlConnection.disconnect();
+					}
 				}
-				
-				EstadoRiesgoCrediticio estadoRiesgoCrediticioProcesado = 
-					iEstadoRiesgoCrediticioBean.getById(new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.Procesado")));
-				
-				riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticioProcesado);
-				
-				riesgoCrediticio.setFact(date);
-				riesgoCrediticio.setTerm(new Long(1));
-				riesgoCrediticio.setUact(new Long(1));
-				
-				entityManager.merge(riesgoCrediticio);
-				
-				bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setFechaAnalisis(date);
-				
-				BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticioManaged = iBCUInterfaceRiesgoCrediticioBean.getLastByEmpresaDocumento(
-					riesgoCrediticio.getEmpresa(),
-					riesgoCrediticio.getDocumento()
-				);
-				
-				bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setBcuInterfaceRiesgoCrediticio(bcuInterfaceRiesgoCrediticioManaged);
-				
-				iBCUInterfaceRiesgoCrediticioInstitucionFinancieraBean.save(bcuInterfaceRiesgoCrediticioInstitucionFinanciera);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -748,5 +999,177 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 		}
 		
 		return result;
+	}
+
+	public void controlarRiesgoBCU(String documento) {
+		try {
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticio = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesarPrioritario"))
+				);
+			
+			Empresa empresa = 
+				iEmpresaBean.getById(
+					new Long(Configuration.getInstance().getProperty("empresa.GazalerSA")), 
+					false
+				);
+			
+			TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio =
+				iTipoControlRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("tipoControlRiesgoCrediticio.BCU"))
+				);
+			
+			RiesgoCrediticio riesgoCrediticio = new RiesgoCrediticio();
+			riesgoCrediticio.setDocumento(documento);
+			riesgoCrediticio.setEmpresa(empresa);
+			riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticio);
+			riesgoCrediticio.setTipoControlRiesgoCrediticio(tipoControlRiesgoCrediticio);
+			
+			riesgoCrediticio.setFact(hoy);
+			riesgoCrediticio.setFcre(hoy);
+			riesgoCrediticio.setTerm(new Long(1));
+			riesgoCrediticio.setUact(new Long(1));
+			riesgoCrediticio.setUcre(new Long(1));
+			
+			this.save(riesgoCrediticio);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void controlarRiesgoBCUOnline(String documento) {
+		try {
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticioParaProcesarPrioritario = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(
+						Configuration.getInstance().getProperty("estadoRiesgoCrediticio.ParaProcesarPrioritario")
+					)
+				);
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticioEnProceso = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.EnProceso"))
+				);
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticioProcesado = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.Procesado"))
+				);
+			
+			EstadoRiesgoCrediticio estadoRiesgoCrediticioTiempoEnProcesoAgotado = 
+				iEstadoRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.TiempoEnProcesoAgotado"))
+				);
+			
+			Empresa empresa = 
+				iEmpresaBean.getById(
+					new Long(Configuration.getInstance().getProperty("empresa.GazalerSA")), 
+					false
+				);
+			
+			TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio =
+				iTipoControlRiesgoCrediticioBean.getById(
+					new Long(Configuration.getInstance().getProperty("tipoControlRiesgoCrediticio.RIESGOONLINE"))
+				);
+			
+			TypedQuery<RiesgoCrediticio> query = 
+				entityManager.createQuery(
+					"SELECT r"
+					+ " FROM RiesgoCrediticio r"
+					+ " WHERE r.documento = :documento"
+					+ " AND r.tipoControlRiesgoCrediticio.id = :tipoControlRiesgoCrediticioId"
+					+ " AND r.empresa.id = :empresaId"
+					+ " ORDER BY r.id DESC",
+					RiesgoCrediticio.class
+				);
+			query.setParameter("documento", documento);
+			query.setParameter("tipoControlRiesgoCrediticioId", tipoControlRiesgoCrediticio.getId());
+			query.setParameter("empresaId", empresa.getId());
+			query.setMaxResults(1);
+			
+			boolean insert = true;
+			
+			List<RiesgoCrediticio> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				RiesgoCrediticio riesgoCrediticioManaged = resultList.get(0);
+				
+				Long maximoTiempoEnProcesoMinutos = 
+					new Long(Configuration.getInstance().getProperty(
+						"riesgoCrediticio.maximoTiempoEnProcesoMinutos"
+					));
+				
+				GregorianCalendar gregorianCalendar = new GregorianCalendar();
+				gregorianCalendar.add(
+					GregorianCalendar.MINUTE, -1 * maximoTiempoEnProcesoMinutos.intValue()
+				);
+					
+				Date fechaMaximaEnProceso = gregorianCalendar.getTime();
+				
+				Long maximoTiempoProcesadoDias = 
+					new Long(Configuration.getInstance().getProperty(
+						"riesgoCrediticio.maximoTiempoProcesadoDias"
+					));
+				
+				gregorianCalendar = new GregorianCalendar();
+				gregorianCalendar.add(
+					GregorianCalendar.MINUTE, -1 * maximoTiempoProcesadoDias.intValue()
+				);
+				
+				Date fechaMaximaProcesado = gregorianCalendar.getTime();
+				
+				if (
+						// El documento está en estado ParaProcesarPrioritario
+						riesgoCrediticioManaged.getEstadoRiesgoCrediticio().getId().equals(
+							estadoRiesgoCrediticioParaProcesarPrioritario.getId()
+						)
+					|| (
+						// El documento está en estado EnProceso desde hace menos de n minutos.
+						riesgoCrediticioManaged.getEstadoRiesgoCrediticio().getId().equals(
+							estadoRiesgoCrediticioEnProceso.getId()
+						)
+						&& riesgoCrediticioManaged.getFact().after(fechaMaximaEnProceso)
+					) || (
+						// El documento está en estado Procesado desde hace menos de m días.
+						riesgoCrediticioManaged.getEstadoRiesgoCrediticio().getId().equals(
+							estadoRiesgoCrediticioProcesado.getId()
+						)
+						&& riesgoCrediticioManaged.getFact().after(fechaMaximaProcesado)
+					)
+				) {
+					insert = false;
+				}
+				
+				if (
+					// El documento estuvo EnProceso más de n minutos.
+					riesgoCrediticioManaged.getEstadoRiesgoCrediticio().getId().equals(
+						estadoRiesgoCrediticioEnProceso.getId()
+					)
+					&& riesgoCrediticioManaged.getFact().before(fechaMaximaEnProceso)) {
+					riesgoCrediticioManaged.setEstadoRiesgoCrediticio(estadoRiesgoCrediticioTiempoEnProcesoAgotado);
+				}
+			}
+			
+			if (insert) {
+				RiesgoCrediticio riesgoCrediticio = new RiesgoCrediticio();
+				riesgoCrediticio.setDocumento(documento);
+				riesgoCrediticio.setEmpresa(empresa);
+				riesgoCrediticio.setEstadoRiesgoCrediticio(estadoRiesgoCrediticioParaProcesarPrioritario);
+				riesgoCrediticio.setTipoControlRiesgoCrediticio(tipoControlRiesgoCrediticio);
+				
+				riesgoCrediticio.setFact(hoy);
+				riesgoCrediticio.setFcre(hoy);
+				riesgoCrediticio.setTerm(new Long(1));
+				riesgoCrediticio.setUact(new Long(1));
+				riesgoCrediticio.setUcre(new Long(1));
+				
+				this.save(riesgoCrediticio);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -6,7 +6,9 @@ import java.util.LinkedList;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.ACMInterfacePrepagoPHBean;
@@ -55,6 +57,26 @@ public class ACMInterfacePrepagoPHDWR {
 			result.setRegistrosMuestra(registrosMuestra);
 			
 			result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfacePrepagoPHBean iACMInterfacePrepagoPHBean = lookupBean();
+				
+				result = iACMInterfacePrepagoPHBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

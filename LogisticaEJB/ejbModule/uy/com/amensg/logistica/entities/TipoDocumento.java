@@ -13,11 +13,22 @@ public class TipoDocumento extends BaseEntity {
 	@Column(name = "descripcion")
 	private String descripcion;
 
+	@Column(name = "abreviacion")
+	private String abreviacion;
+	
 	public String getDescripcion() {
 		return descripcion;
 	}
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getAbreviacion() {
+		return abreviacion;
+	}
+
+	public void setAbreviacion(String abreviacion) {
+		this.abreviacion = abreviacion;
 	}
 }

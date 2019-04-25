@@ -27,7 +27,7 @@ function init() {
 								tdTipoControlRiesgoCrediticio: { campo: "tipoControlRiesgoCrediticio.descripcion", clave: "tipoControlRiesgoCrediticio.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoControlRiesgoCrediticios, clave: "id", valor: "descripcion" }, ancho: 100 },
 								tdCalificacionRiesgoCrediticioAntel: { campo: "calificacionRiesgoCrediticioAntel.descripcion", clave: "calificacionRiesgoCrediticioAntel.id", descripcion: "Calificación ANTEL", abreviacion: "Calif. ANTEL", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listCalificacionRiesgoCrediticioAntel, clave: "id", valor: "descripcion" }, ancho: 100 },
 								tdCalificacionRiesgoCrediticioBCU: { campo: "calificacionRiesgoCrediticioBCU.descripcion", clave: "calificacionRiesgoCrediticioBCU.id", descripcion: "Calificación BCU", abreviacion: "Calif. BCU", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listCalificacionRiesgoCrediticioBCU, clave: "id", valor: "descripcion" }, ancho: 100 },
-								tdEstadoRiesgoCrediticio: { campo: "estadoRiesgoCrediticio.nombre", clave: "estadoRiesgoCrediticio.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoRiesgoCrediticios, clave: "id", valor: "nombre" }, ancho: 100 },
+								tdEstadoRiesgoCrediticio: { campo: "estadoRiesgoCrediticio.nombre", clave: "estadoRiesgoCrediticio.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoRiesgoCrediticios, clave: "id", valor: "nombre" }, ancho: 180 },
 								tdFechaVigenciaDesde: { campo: "fechaVigenciaDesde", descripcion: "Vigencia", abreviacion: "Vigencia", tipo: __TIPO_CAMPO_FECHA },
 								tdFact: { campo: "fact", descripcion: "Controlado", abreviacion: "Controlado", tipo: __TIPO_CAMPO_FECHA_HORA },
 							}, 
@@ -68,7 +68,7 @@ function init() {
 function listEmpresas() {
 	var result = [];
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -178,7 +178,7 @@ function divCloseOnClick(event, element) {
 }
 
 function trAnalisisRiesgoOnClick(eventObject) {
-	
+	return false;
 }
 
 function inputSubirArchivoOnClick(event, element) {
@@ -217,6 +217,15 @@ function inputSubirArchivoOnClick(event, element) {
 	);
 	
 	showPopUp(document.getElementById("divIFrameImportacionArchivo"));
+}
+
+function inputCancelarOnClick(event, element) {
+	closePopUp(event, document.getElementById("divIFrameImportacionArchivo"));
+	
+	$("#selectEmpresa").val("0");
+	$("#inputArchivo").val("");
+	
+	reloadData();
 }
 
 function inputAceptarSubirArchivoOnClick(event, element) {

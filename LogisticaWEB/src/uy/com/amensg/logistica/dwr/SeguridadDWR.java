@@ -4,6 +4,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.WebContextFactory;
@@ -16,6 +17,10 @@ import uy.com.amensg.logistica.bean.UsuarioBean;
 import uy.com.amensg.logistica.entities.SeguridadAuditoria;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioTO;
+import uy.com.amensg.logistica.exceptions.UsuarioBloqueadoException;
+import uy.com.amensg.logistica.exceptions.UsuarioContrasenaIncorrectaException;
+import uy.com.amensg.logistica.exceptions.UsuarioDebeCambiarContrasenaException;
+import uy.com.amensg.logistica.exceptions.UsuarioNoExisteException;
 
 @RemoteProxy
 public class SeguridadDWR {
@@ -55,7 +60,7 @@ public class SeguridadDWR {
 			try {
 				IUsuarioBean iUsuarioBean = lookupUsuarioBean();
 				
-				Usuario usuario = iUsuarioBean.getById(usuarioId);
+				Usuario usuario = iUsuarioBean.getById(usuarioId, true);
 				
 				result = UsuarioDWR.transform(usuario, true);
 			} catch (NamingException e) {
@@ -69,31 +74,48 @@ public class SeguridadDWR {
 	public UsuarioTO login(String login, String contrasena) throws Exception {
 		UsuarioTO result = null;
 		
+		SeguridadAuditoria seguridadAuditoria = null;
+		
 		try {
 			ISeguridadBean iSeguridadBean = this.lookupBean();
 			
-			SeguridadAuditoria seguridadAuditoria = iSeguridadBean.login(login, contrasena);
+			seguridadAuditoria = iSeguridadBean.login(login, contrasena);
+		} catch (UsuarioBloqueadoException e1) {
+			e1.printStackTrace();
+			
+			throw new Exception("Usuario bloqueado.");
+		} catch (UsuarioContrasenaIncorrectaException e2) {
+			e2.printStackTrace();
+			
+			throw new Exception("Usuario o contraseña incorrecta.");
+		} catch (UsuarioDebeCambiarContrasenaException e3) {
+			e3.printStackTrace();
+			
+			HttpServletRequest httpRequest = WebContextFactory.get().getHttpServletRequest();
+			HttpServletResponse httpResponse = WebContextFactory.get().getHttpServletResponse();
+			httpRequest.getRequestDispatcher("/pages/cambio_password_forced/cambio_password_forced.jsp")
+				.forward(httpRequest, httpResponse);
+		} catch (UsuarioNoExisteException e4) {
+			e4.printStackTrace();
+			
+			throw new Exception("El usuario no existe.");
+		}
 		
-			if (seguridadAuditoria != null) {
-				HttpServletRequest httpRequest = WebContextFactory.get().getHttpServletRequest();
-				HttpSession httpSession = WebContextFactory.get().getSession(true);
+		if (seguridadAuditoria != null) {
+			HttpServletRequest httpRequest = WebContextFactory.get().getHttpServletRequest();
+			HttpSession httpSession = WebContextFactory.get().getSession(true);
+			
+			String userAgent = httpRequest.getHeader("User-Agent");
+			
+			if (httpSession.getAttribute("sesion") == null) {
+				httpSession.setAttribute("sesion", seguridadAuditoria.getUsuario().getId());
 				
-				String userAgent = httpRequest.getHeader("User-Agent");
-				
-				if (httpSession.getAttribute("sesion") == null) {
-					httpSession.setAttribute("sesion", seguridadAuditoria.getUsuario().getId());
-					
-					if (userAgent.toLowerCase().contains("mobile")) {
-						httpSession.setMaxInactiveInterval(-1);
-					}
-					
-					result = UsuarioDWR.transform(seguridadAuditoria.getUsuario(), true);
+				if (userAgent.toLowerCase().contains("mobile")) {
+					httpSession.setMaxInactiveInterval(-1);
 				}
-			} else {
-				throw new Exception("Usuario o contraseña incorrecta.");
+				
+				result = UsuarioDWR.transform(seguridadAuditoria.getUsuario(), true);
 			}
-		} catch (Exception e) {
-			throw e;
 		}
 		
 		return result;

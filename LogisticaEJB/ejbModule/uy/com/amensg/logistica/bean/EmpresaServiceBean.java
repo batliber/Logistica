@@ -11,6 +11,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.EmpresaService;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class EmpresaServiceBean implements IEmpresaServiceBean {
@@ -39,6 +42,30 @@ public class EmpresaServiceBean implements IEmpresaServiceBean {
 		return result;
 	}
 
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<EmpresaService>().list(entityManager, metadataConsulta, new EmpresaService());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<EmpresaService>().count(entityManager, metadataConsulta, new EmpresaService());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public EmpresaService getById(Long id) {
 		EmpresaService result = null;
 		
@@ -53,6 +80,9 @@ public class EmpresaServiceBean implements IEmpresaServiceBean {
 	
 	public void save(EmpresaService empresaService) {
 		try {
+			empresaService.setFcre(empresaService.getFact());
+			empresaService.setUcre(empresaService.getUact());
+			
 			entityManager.persist(empresaService);
 		} catch (Exception e) {
 			e.printStackTrace();

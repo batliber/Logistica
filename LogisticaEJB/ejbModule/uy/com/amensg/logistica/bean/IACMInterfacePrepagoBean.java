@@ -8,6 +8,7 @@ import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
 
 @Remote
 public interface IACMInterfacePrepagoBean {
@@ -29,4 +30,8 @@ public interface IACMInterfacePrepagoBean {
 	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones);
 	
 	public void agregarAListaNegra(MetadataConsulta metadataConsulta);
+	
+	public void controlarRiesgoCrediticio(
+		Empresa empresa, TipoControlRiesgoCrediticio tipoControlRiesgoCrediticio, MetadataConsulta metadataConsulta
+	);
 }

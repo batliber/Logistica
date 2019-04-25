@@ -19,6 +19,8 @@ public interface IRiesgoCrediticioBean {
 
 	public RiesgoCrediticio getSiguienteDocumentoParaControlar();
 	
+	public RiesgoCrediticio getSiguienteDocumentoParaControlarRiesgoOnLine();
+	
 	public RiesgoCrediticio getLastByDocumento(String documento);
 	
 	public RiesgoCrediticio getLastByEmpresaDocumento(Empresa empresa, String documento);
@@ -29,15 +31,29 @@ public interface IRiesgoCrediticioBean {
 	
 	public void save(RiesgoCrediticio riesgoCrediticio);
 	
-	public void actualizarDatosRiesgoCrediticioACM(ACMInterfaceRiesgoCrediticio acmInterfaceRiesgoCrediticio);
+	public void actualizarDatosRiesgoCrediticioACM(
+		Long riesgoCrediticioId,
+		ACMInterfaceRiesgoCrediticio acmInterfaceRiesgoCrediticio
+	);
 	
-	public void actualizarDatosRiesgoCrediticioBCU(BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio);
+	public void actualizarDatosRiesgoCrediticioBCU(
+		Long riesgoCrediticioId,
+		BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio
+	);
 	
-	public void actualizarDatosRiesgoCrediticioBCUSinDatos(BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio);
+	public void actualizarDatosRiesgoCrediticioBCUSinDatos(
+		Long riesgoCrediticioId,
+		BCUInterfaceRiesgoCrediticio bcuInterfaceRiesgoCrediticio
+	);
 	
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		Long riesgoCrediticioId,
 		BCUInterfaceRiesgoCrediticioInstitucionFinanciera bcuInterfaceRiesgoCrediticioInstitucionFinanciera
 	);
 
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+
+	public void controlarRiesgoBCU(String documento);
+	
+	public void controlarRiesgoBCUOnline(String documento);
 }

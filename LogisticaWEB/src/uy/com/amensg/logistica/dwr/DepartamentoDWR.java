@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.DepartamentoBean;
@@ -46,28 +50,38 @@ public class DepartamentoDWR {
 	}
 	
 	public static DepartamentoTO transform(Departamento departamento) {
-		DepartamentoTO departamentoTO = new DepartamentoTO();
+		DepartamentoTO result = new DepartamentoTO();
 		
-		departamentoTO.setNombre(departamento.getNombre());
+		result.setNombre(departamento.getNombre());
 		
-		departamentoTO.setFact(departamento.getFact());
-		departamentoTO.setId(departamento.getId());
-		departamentoTO.setUact(departamento.getUact());
-		departamentoTO.setTerm(departamento.getTerm());
+		result.setFcre(departamento.getFcre());
+		result.setFact(departamento.getFact());
+		result.setId(departamento.getId());
+		result.setTerm(departamento.getTerm());
+		result.setUact(departamento.getUact());
+		result.setUcre(departamento.getUcre());
 		
-		return departamentoTO;
+		return result;
 	}
 	
 	public static Departamento transform(DepartamentoTO departamentoTO) {
-		Departamento departamento = new Departamento();
+		Departamento result = new Departamento();
 		
-		departamento.setNombre(departamentoTO.getNombre());
+		result.setNombre(departamentoTO.getNombre());
 		
-		departamento.setFact(departamentoTO.getFact());
-		departamento.setId(departamentoTO.getId());
-		departamento.setUact(departamentoTO.getUact());
-		departamento.setTerm(departamentoTO.getTerm());
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		return departamento;
+		result.setFcre(departamentoTO.getFcre());
+		result.setFact(date);
+		result.setId(departamentoTO.getId());
+		result.setTerm(departamentoTO.getTerm());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(departamentoTO.getUcre());
+		
+		return result;
 	}
 }

@@ -1,29 +1,9 @@
-#divBarrioNombre {
-	float: left;
-	width: 70%;
-}
-
 #inputBarrioNombre {
-	margin-left: 2px;
-	width: 100%;
-}
-
-#divDepartamento {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
+	width: 60%;
 }
 
 #selectDepartamento {
 	width: 60%;
-}
-
-#divZona {
-	float: left;
-	margin-top: 2px;
-	margin-left: 2px;
-	width: 70%;
 }
 
 #selectZona {

@@ -111,7 +111,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par�metros seg�n las condiciones del filtro
+			// Setear los parámetros según las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -174,7 +174,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 				}
 			}
 			
-			// Acotar al tama�o de la muestra
+			// Acotar al tamaño de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -234,7 +234,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par�metros seg�n las condiciones del filtro
+			// Setear los parámetros según las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -310,8 +310,10 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 			Date date = GregorianCalendar.getInstance().getTime();
 			
 			acmInterfaceRiesgoCrediticio.setFact(date);
+			acmInterfaceRiesgoCrediticio.setFcre(date);
 			acmInterfaceRiesgoCrediticio.setTerm(new Long(1));
 			acmInterfaceRiesgoCrediticio.setUact(new Long(1));
+			acmInterfaceRiesgoCrediticio.setUcre(new Long(1));
 			
 			entityManager.persist(acmInterfaceRiesgoCrediticio);
 		} catch (Exception e) {
@@ -359,8 +361,6 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 			
 			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
 			
-			String etiquetaSi = "SI";
-			String etiquetaNo = "NO";
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			
 			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
@@ -377,10 +377,10 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 						format.format(acmInterfaceRiesgoCrediticio.getFechaCelular())
 						: "")
 					+ ";" + (acmInterfaceRiesgoCrediticio.getDeudaCelular() != null ?
-						(acmInterfaceRiesgoCrediticio.getDeudaCelular() ? etiquetaSi : etiquetaNo) 
+						acmInterfaceRiesgoCrediticio.getDeudaCelular() 
 						: "")
 					+ ";" + (acmInterfaceRiesgoCrediticio.getRiesgoCrediticioCelular() != null ?
-						(acmInterfaceRiesgoCrediticio.getRiesgoCrediticioCelular() ? etiquetaSi : etiquetaNo)
+						acmInterfaceRiesgoCrediticio.getRiesgoCrediticioCelular()
 						: "")
 					+ ";" + (acmInterfaceRiesgoCrediticio.getEstadoDeudaClienteFijo() != null ?
 						acmInterfaceRiesgoCrediticio.getEstadoDeudaClienteFijo()

@@ -16,6 +16,8 @@ public class ObjectFactory {
     private final static QName _ActualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse_QNAME = new QName("http://webservices.logistica.amensg.com.uy/", "actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse");
     private final static QName _GetSiguienteDocumentoParaControlar_QNAME = new QName("http://webservices.logistica.amensg.com.uy/", "getSiguienteDocumentoParaControlar");
     private final static QName _GetSiguienteDocumentoParaControlarResponse_QNAME = new QName("http://webservices.logistica.amensg.com.uy/", "getSiguienteDocumentoParaControlarResponse");
+    private final static QName _GetSiguienteDocumentoParaControlarRiesgoOnLine_QNAME = new QName("http://webservices.logistica.amensg.com.uy/", "getSiguienteDocumentoParaControlarRiesgoOnLine");
+    private final static QName _GetSiguienteDocumentoParaControlarRiesgoOnLineResponse_QNAME = new QName("http://webservices.logistica.amensg.com.uy/", "getSiguienteDocumentoParaControlarRiesgoOnLineResponse");
 
     public ObjectFactory() {
     	
@@ -48,9 +50,17 @@ public class ObjectFactory {
     public GetSiguienteDocumentoParaControlar createGetSiguienteDocumentoParaControlar() {
         return new GetSiguienteDocumentoParaControlar();
     }
-
+    
     public GetSiguienteDocumentoParaControlarResponse createGetSiguienteDocumentoParaControlarResponse() {
         return new GetSiguienteDocumentoParaControlarResponse();
+    }
+    
+    public GetSiguienteDocumentoParaControlarRiesgoOnLine createGetSiguienteDocumentoParaControlarRiesgoOnLine() {
+        return new GetSiguienteDocumentoParaControlarRiesgoOnLine();
+    }
+
+    public GetSiguienteDocumentoParaControlarRiesgoOnLineResponse createGetSiguienteDocumentoParaControlarRiesgoOnLineResponse() {
+        return new GetSiguienteDocumentoParaControlarRiesgoOnLineResponse();
     }
 
     @XmlElementDecl(namespace = "http://webservices.logistica.amensg.com.uy/", name = "actualizarDatosRiesgoCrediticioACM")
@@ -91,5 +101,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://webservices.logistica.amensg.com.uy/", name = "getSiguienteDocumentoParaControlarResponse")
     public JAXBElement<GetSiguienteDocumentoParaControlarResponse> createGetSiguienteDocumentoParaControlarResponse(GetSiguienteDocumentoParaControlarResponse value) {
         return new JAXBElement<GetSiguienteDocumentoParaControlarResponse>(_GetSiguienteDocumentoParaControlarResponse_QNAME, GetSiguienteDocumentoParaControlarResponse.class, null, value);
+    }
+    
+    @XmlElementDecl(namespace = "http://webservices.logistica.amensg.com.uy/", name = "getSiguienteDocumentoParaControlarRiesgoOnLine")
+    public JAXBElement<GetSiguienteDocumentoParaControlarRiesgoOnLine> createGetSiguienteDocumentoParaControlarRiesgoOnLine(GetSiguienteDocumentoParaControlarRiesgoOnLine value) {
+        return new JAXBElement<GetSiguienteDocumentoParaControlarRiesgoOnLine>(_GetSiguienteDocumentoParaControlarRiesgoOnLine_QNAME, GetSiguienteDocumentoParaControlarRiesgoOnLine.class, null, value);
+    }
+
+    @XmlElementDecl(namespace = "http://webservices.logistica.amensg.com.uy/", name = "getSiguienteDocumentoParaControlarRiesgoOnLineResponse")
+    public JAXBElement<GetSiguienteDocumentoParaControlarRiesgoOnLineResponse> createGetSiguienteDocumentoParaControlarRiesgoOnLineResponse(GetSiguienteDocumentoParaControlarRiesgoOnLineResponse value) {
+        return new JAXBElement<GetSiguienteDocumentoParaControlarRiesgoOnLineResponse>(_GetSiguienteDocumentoParaControlarRiesgoOnLineResponse_QNAME, GetSiguienteDocumentoParaControlarRiesgoOnLineResponse.class, null, value);
     }
 }

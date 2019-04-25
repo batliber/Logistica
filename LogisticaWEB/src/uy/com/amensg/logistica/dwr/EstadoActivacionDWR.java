@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.EstadoActivacionBean;
@@ -46,28 +50,38 @@ public class EstadoActivacionDWR {
 	}
 	
 	public static EstadoActivacionTO transform(EstadoActivacion estadoActivacion) {
-		EstadoActivacionTO estadoActivacionTO = new EstadoActivacionTO();
+		EstadoActivacionTO result = new EstadoActivacionTO();
 		
-		estadoActivacionTO.setNombre(estadoActivacion.getNombre());
+		result.setNombre(estadoActivacion.getNombre());
 		
-		estadoActivacionTO.setFact(estadoActivacion.getFact());
-		estadoActivacionTO.setId(estadoActivacion.getId());
-		estadoActivacionTO.setTerm(estadoActivacion.getTerm());
-		estadoActivacionTO.setUact(estadoActivacion.getUact());
+		result.setFcre(estadoActivacion.getFcre());
+		result.setFact(estadoActivacion.getFact());
+		result.setId(estadoActivacion.getId());
+		result.setTerm(estadoActivacion.getTerm());
+		result.setUact(estadoActivacion.getUact());
+		result.setUact(estadoActivacion.getUcre());
 		
-		return estadoActivacionTO;
+		return result;
 	}
 	
 	public static EstadoActivacion transform(EstadoActivacionTO estadoActivacionTO) {
-		EstadoActivacion estadoActivacion = new EstadoActivacion();
+		EstadoActivacion result = new EstadoActivacion();
 		
-		estadoActivacion.setNombre(estadoActivacionTO.getNombre());
+		result.setNombre(estadoActivacionTO.getNombre());
 		
-		estadoActivacion.setFact(estadoActivacionTO.getFact());
-		estadoActivacion.setId(estadoActivacionTO.getId());
-		estadoActivacion.setTerm(estadoActivacionTO.getTerm());
-		estadoActivacion.setUact(estadoActivacionTO.getUact());
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		return estadoActivacion;
+		result.setFcre(estadoActivacionTO.getFcre());
+		result.setFact(date);
+		result.setId(estadoActivacionTO.getId());
+		result.setTerm(estadoActivacionTO.getTerm());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(estadoActivacionTO.getUcre());
+		
+		return result;
 	}
 }

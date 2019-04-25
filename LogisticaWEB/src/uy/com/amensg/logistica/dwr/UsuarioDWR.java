@@ -61,7 +61,7 @@ public class UsuarioDWR {
 			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
 				Long usuarioId = (Long) httpSession.getAttribute("sesion");
 				
-				Usuario usuarioLogged = iUsuarioBean.getById(usuarioId);
+				Usuario usuarioLogged = iUsuarioBean.getById(usuarioId, true);
 				
 				Collection<Long> adminsEmpresas = new LinkedList<Long>();
 				for (UsuarioRolEmpresa usuarioRolEmpresa : usuarioLogged.getUsuarioRolEmpresas()) {
@@ -73,14 +73,14 @@ public class UsuarioDWR {
 				for (Usuario usuario : iUsuarioBean.list()) {
 					for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
 						if (adminsEmpresas.contains(usuarioRolEmpresa.getEmpresa().getId())) {
-							result.add(transform(usuario, true));
+							result.add(transform(usuario, false));
 							break;
 						}
 					}
 				}
 				
 				if (result.size() == 0) {
-					result.add(transform(usuarioLogged, true));
+					result.add(transform(usuarioLogged, false));
 				}
 			}
 		} catch (Exception e) {
@@ -160,6 +160,7 @@ public class UsuarioDWR {
 					metadataConsultaTO
 				);
 				
+				// Vigentes = fechaBaja IS NULL
 				MetadataCondicion metadataCondicionVigente = new MetadataCondicion();
 				metadataCondicionVigente.setCampo("fechaBaja");
 				metadataCondicionVigente.setOperador(Constants.__METADATA_CONDICION_OPERADOR_NULL);
@@ -167,6 +168,8 @@ public class UsuarioDWR {
 				
 				metadataConsulta.getMetadataCondiciones().add(metadataCondicionVigente);
 				
+				// Si hay alguna condición por el campo empresa, se quita de los filtros y se procesa
+				// a partir de la lista de usuarios que retorna la consulta. 
 				Long empresaId = null;
 				for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 					if (metadataCondicion.getCampo().equals("empresa.id")) {
@@ -282,7 +285,7 @@ public class UsuarioDWR {
 		try {
 			IUsuarioBean iUsuarioBean = lookupBean();
 			
-			result = transform(iUsuarioBean.getById(id), true);
+			result = transform(iUsuarioBean.getById(id, true), true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -296,7 +299,10 @@ public class UsuarioDWR {
 		try {
 			IUsuarioBean iUsuarioBean = lookupBean();
 			
-			result = transform(iUsuarioBean.getByLogin(login), true);
+			Usuario usuario = iUsuarioBean.getByLogin(login, true);
+			if (usuario != null) {
+				result = transform(usuario, true);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -330,16 +336,22 @@ public class UsuarioDWR {
 		try {
 			if (!nueva.equals(confirma)) {
 				result = "Las contraseñas no coinciden";
+			} else if (!nueva.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$")) {
+				result = "La nueva contraseña debe ser de 8 o más caracteres y debe contener mayúsculas, minúsculas y números.";
+			} else if (nueva.equals(actual)) {
+				result = "La nueva contraseña coincide con la actual";
 			} else {
 				HttpSession httpSession = WebContextFactory.get().getSession(false);
 				Long usuarioId = (Long) httpSession.getAttribute("sesion");
 				
 				IUsuarioBean iUsuarioBean = lookupBean();
 				
-				Usuario usuario = iUsuarioBean.getById(usuarioId);
+				Usuario usuario = iUsuarioBean.getById(usuarioId, true);
 				
 				if (usuario.getContrasena().equals(MD5Utils.stringToMD5(actual))) {
 					usuario.setContrasena(MD5Utils.stringToMD5(nueva));
+					
+					usuario.setCambioContrasenaProximoLogin(false);
 					
 					usuario.setFact(GregorianCalendar.getInstance().getTime());
 					usuario.setTerm(new Long(1));
@@ -372,12 +384,15 @@ public class UsuarioDWR {
 	}
 
 	public static UsuarioTO transform(Usuario usuario, boolean transformCollections) {
-		UsuarioTO usuarioTO = new UsuarioTO();
+		UsuarioTO result = new UsuarioTO();
 		
-		usuarioTO.setContrasena(usuario.getContrasena());
-		usuarioTO.setDocumento(usuario.getDocumento());
-		usuarioTO.setLogin(usuario.getLogin());
-		usuarioTO.setNombre(usuario.getNombre());
+		result.setBloqueado(usuario.getBloqueado());
+		result.setCambioContrasenaProximoLogin(usuario.getCambioContrasenaProximoLogin());
+		result.setContrasena(usuario.getContrasena());
+		result.setDocumento(usuario.getDocumento());
+		result.setIntentosFallidosLogin(usuario.getIntentosFallidosLogin());
+		result.setLogin(usuario.getLogin());
+		result.setNombre(usuario.getNombre());
 
 		if (transformCollections) {
 			Map<Long, MenuTO> menus = new HashMap<Long, MenuTO>();
@@ -391,7 +406,7 @@ public class UsuarioDWR {
 					}
 				}
 			}
-			usuarioTO.setUsuarioRolEmpresas(usuarioRolEmpresas);
+			result.setUsuarioRolEmpresas(usuarioRolEmpresas);
 		
 			List<MenuTO> menusToOrder = new LinkedList<MenuTO>();
 			menusToOrder.addAll(menus.values());
@@ -402,47 +417,55 @@ public class UsuarioDWR {
 				}
 			});
 			
-			usuarioTO.setMenus(menusToOrder);
+			result.setMenus(menusToOrder);
 		}
 		
-		usuarioTO.setFact(usuario.getFact());
-		usuarioTO.setId(usuario.getId());
-		usuarioTO.setTerm(usuario.getTerm());
-		usuarioTO.setUact(usuario.getUact());
+		result.setFcre(usuario.getFcre());
+		result.setFact(usuario.getFact());
+		result.setId(usuario.getId());
+		result.setTerm(usuario.getTerm());
+		result.setUact(usuario.getUact());
+		result.setUcre(usuario.getUcre());
 		
-		return usuarioTO;
+		return result;
 	}
 
 	public static Usuario transform(UsuarioTO usuarioTO) {
-		Usuario usuario = new Usuario();
+		Usuario result = new Usuario();
+		
+		result.setBloqueado(usuarioTO.getBloqueado());
+		result.setCambioContrasenaProximoLogin(usuarioTO.getCambioContrasenaProximoLogin());
 		
 		if (usuarioTO.getContrasena() != null) {
-			usuario.setContrasena(MD5Utils.stringToMD5(usuarioTO.getContrasena()));
+			result.setContrasena(MD5Utils.stringToMD5(usuarioTO.getContrasena()));
 		}
 		
-		usuario.setDocumento(usuarioTO.getDocumento());
-		usuario.setLogin(usuarioTO.getLogin());
-		usuario.setNombre(usuarioTO.getNombre());
+		result.setDocumento(usuarioTO.getDocumento());
+		result.setIntentosFallidosLogin(usuarioTO.getIntentosFallidosLogin());
+		result.setLogin(usuarioTO.getLogin());
+		result.setNombre(usuarioTO.getNombre());
 		
 		if (usuarioTO.getUsuarioRolEmpresas() != null) {
 			Collection<UsuarioRolEmpresa> usuarioRolEmpresas = new LinkedList<UsuarioRolEmpresa>();
 			for (UsuarioRolEmpresaTO usuarioRolEmpresaTO : usuarioTO.getUsuarioRolEmpresas()) {
 				usuarioRolEmpresas.add(UsuarioRolEmpresaDWR.transform(usuarioRolEmpresaTO));
 			}
-			usuario.setUsuarioRolEmpresas(usuarioRolEmpresas);
+			result.setUsuarioRolEmpresas(usuarioRolEmpresas);
 		}
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
-		usuario.setFact(date);
-		usuario.setId(usuarioTO.getId());
-		usuario.setTerm(new Long(1));
+		result.setFcre(usuarioTO.getFcre());
+		result.setFact(date);
+		result.setId(usuarioTO.getId());
+		result.setTerm(new Long(1));
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
-		usuario.setUact(usuarioId);
+		result.setUact(usuarioId);
+		result.setUcre(usuarioTO.getUcre());
 		
-		return usuario;
+		return result;
 	}
 }

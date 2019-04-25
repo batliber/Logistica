@@ -89,10 +89,12 @@ public class UnidadIndexadaDWR {
 		result.setValor(unidadIndexada.getValor());
 		result.setFechaVigenciaHasta(unidadIndexada.getFechaVigenciaHasta());
 		
+		result.setFcre(unidadIndexada.getFcre());
 		result.setFact(unidadIndexada.getFact());
 		result.setId(unidadIndexada.getId());
 		result.setTerm(unidadIndexada.getTerm());
 		result.setUact(unidadIndexada.getUact());
+		result.setUcre(unidadIndexada.getUcre());
 		
 		return result;
 	}
@@ -105,6 +107,7 @@ public class UnidadIndexadaDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(unidadIndexadaTO.getFcre());
 		result.setFact(date);
 		result.setId(unidadIndexadaTO.getId());
 		result.setTerm(new Long(1));
@@ -113,6 +116,7 @@ public class UnidadIndexadaDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(unidadIndexadaTO.getUcre());
 		
 		return result;
 	}

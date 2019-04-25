@@ -6,11 +6,14 @@ import java.util.LinkedList;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.ACMInterfaceContratoPHBean;
 import uy.com.amensg.logistica.bean.IACMInterfaceContratoPHBean;
+import uy.com.amensg.logistica.bean.IActivacionBean;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceContratoTO;
 import uy.com.amensg.logistica.entities.EmpresaTO;
@@ -78,6 +81,26 @@ public class ACMInterfaceContratoPHDWR {
 				)) {
 				
 				result.add(transform(tipoContrato));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String exportarAExcel(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IACMInterfaceContratoPHBean iACMInterfaceContratoPHBean = lookupBean();
+				
+				result = iACMInterfaceContratoPHBean.exportarAExcel(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -45,4 +45,75 @@ public class MetadataConsulta implements Serializable {
 	public void setTamanoSubconjunto(Long tamanoSubconjunto) {
 		this.tamanoSubconjunto = tamanoSubconjunto;
 	}
+
+	public String asJSONString() {
+		String result = 
+			"{"
+				+ " tamanoMuestra: " + this.tamanoMuestra + "," 
+				+ " tamanoSubconjunto: " + this.tamanoSubconjunto + ","
+				+ " metadataCondiciones: [";
+		
+		boolean firstCondicion = true;
+		for (MetadataCondicion metadataCondicion : this.metadataCondiciones) {
+			if (firstCondicion) {
+				result += 
+					" {";
+				firstCondicion = false;
+			} else {
+				result +=
+					", {";
+			}
+			
+			result +=
+						" campo: " + metadataCondicion.getCampo() + ","
+						+ " operador: " + metadataCondicion.getOperador() + ","
+						+ " valores: [";
+			
+			boolean firstValor = true;
+			for (String valor : metadataCondicion.getValores()) {
+				if (firstValor) {
+					result +=
+							" ";
+					firstValor = false;
+				} else {
+					result +=
+							", ";
+				}
+				
+				result +=
+							valor;
+			}
+			
+			result +=
+						" ]"
+					+ " }";
+		}
+		
+		result += 
+				" ],"
+				+ " metadataOrdenaciones: [";
+		
+		boolean firstOrdenacion = true;
+		for (MetadataOrdenacion metadataOrdenacion : this.metadataOrdenaciones) {
+			if (firstOrdenacion) {
+				result += 
+					" {";
+				firstOrdenacion = false;
+			} else {
+				result +=
+					", {";
+			}
+			
+			result +=
+						" campo: " + metadataOrdenacion.getCampo() + ","
+						+ " ascendente: " + (metadataOrdenacion.getAscendente() ? "true" : "false")
+					+ " }";
+		}
+		
+		result += 
+				" ]"
+			+ " }";
+		
+		return result;
+	}
 }

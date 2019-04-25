@@ -15,6 +15,9 @@ public class Precio extends BaseEntity {
 
 	private static final long serialVersionUID = -8872252275110799787L;
 
+	@Column(name = "cuotas")
+	private Long cuotas;
+	
 	@Column(name = "precio")
 	private Double precio;
 
@@ -40,6 +43,14 @@ public class Precio extends BaseEntity {
 	@ManyToOne(optional = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "tipo_producto_id", nullable = true)
 	private TipoProducto tipoProducto;
+
+	public Long getCuotas() {
+		return cuotas;
+	}
+
+	public void setCuotas(Long cuotas) {
+		this.cuotas = cuotas;
+	}
 
 	public Double getPrecio() {
 		return precio;

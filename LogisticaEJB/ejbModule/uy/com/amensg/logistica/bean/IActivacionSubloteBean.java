@@ -22,9 +22,11 @@ public interface IActivacionSubloteBean {
 	
 	public Long countMisSublotes(MetadataConsulta metadataConsulta, Long usuarioId);
 	
-	public ActivacionSublote getById(Long id);
+	public ActivacionSublote getById(Long id, boolean initializeCollections);
 	
-	public ActivacionSublote getByNumero(Long numero);
+	public ActivacionSublote getByNumero(Long numero, boolean initializeCollections);
+	
+	public ActivacionSublote getByNumeroUsuario(Long numero, Long usuarioId, boolean initializeCollections);
 	
 	public Long save(ActivacionSublote activacionSublote);
 	

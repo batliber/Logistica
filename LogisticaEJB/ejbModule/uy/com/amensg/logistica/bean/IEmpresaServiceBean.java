@@ -5,11 +5,17 @@ import java.util.Collection;
 import javax.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.EmpresaService;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 
 @Remote
 public interface IEmpresaServiceBean {
 
 	public Collection<EmpresaService> list();
+	
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public EmpresaService getById(Long id);
 	

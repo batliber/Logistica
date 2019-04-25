@@ -40,11 +40,6 @@
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divMainWindow">
-				<div>
-					<div id="divAgregarFiltroContainer">
-						<div style="float: left;">Mostrar planes dados de baja:</div><div style="float: left;"><input type="checkbox" id="inputMostrarFechaBaja" onchange="javascript:inputMostrarFechaBajaOnClick(event, this)"/></div>
-					</div>
-				</div>
 				<div id="divTablePlanes">&nbsp;</div>
 			</div>
 		</div>

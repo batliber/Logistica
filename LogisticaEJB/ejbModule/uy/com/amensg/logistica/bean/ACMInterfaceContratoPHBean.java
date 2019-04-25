@@ -183,6 +183,54 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 		return result;
 	}
 
+	/**
+	 * Exporta los datos que cumplen con los criterios especificados a un archivo .csv 
+	 * de nombre generado según: YYYYMMDDHHmmSS en la carpeta de exportación del sistema.
+	 * 
+	 * @param metadataConsulta Criterios de la consulta.
+	 * @param loggedUsuarioId ID del Usuario que consulta.
+	 */
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		String result = null;
+		
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName = 
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
+			
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
+			
+			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			
+			for (Object object : this.list(metadataConsulta).getRegistrosMuestra()) {
+				ACMInterfaceContrato acmInterfaceContrato = (ACMInterfaceContrato) object;
+				
+				// Agregar línea al archivo.
+				printWriter.println(this.buildCSVLine(acmInterfaceContrato, ""));
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa) {
 		String result = null;
 		
@@ -245,7 +293,10 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
 			
 			Rol rolSupervisorCallCenter = 
-				iRolBean.getById(new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")));
+				iRolBean.getById(
+					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					false
+				);
 			
 			Estado estado = 
 				iEstadoBean.getById(
@@ -278,12 +329,15 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 				"INSERT INTO contrato("
 					+ " id,"
 					+ " numero_tramite,"
+					+ " random,"
 					+ " empresa_id,"
 					+ " estado_id,"
 					+ " rol_id,"
+					+ " fcre,"
 					+ " fact,"
 					+ " term,"
 					+ " uact,"
+					+ " ucre,"
 					+ " agente,"
 					+ " codigo_postal,"
 					+ " direccion,"
@@ -302,6 +356,9 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 				+ " ) VALUES ("
 					+ " nextval('hibernate_sequence'),"
 					+ " nextval('numero_tramite_sequence'),"
+					+ " CAST(random() * 1000000 AS integer),"
+					+ " ?,"
+					+ " ?,"
 					+ " ?,"
 					+ " ?,"
 					+ " ?,"
@@ -331,12 +388,15 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 			insertContrato.setParameter(2, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
 			
 			insertContrato.setParameter(3, currentDate, TimestampType.INSTANCE);
-			insertContrato.setParameter(4, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(4, currentDate, TimestampType.INSTANCE);
 			insertContrato.setParameter(5, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(6, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(7, new Long(1), LongType.INSTANCE);
 			
 			SQLQuery updateContrato = hibernateSession.createSQLQuery(
 				"UPDATE contrato"
-				+ " SET fact = ?,"
+				+ " SET random = CAST(random() * 1000000 AS integer),"
+					+ " fact = ?,"
 					+ " term = ?,"
 					+ " uact = ?,"
 					+ " agente = ?,"
@@ -367,8 +427,10 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 					+ " empresa_id,"
 					+ " usuario_id,"
 					+ " rol_id,"
+					+ " ucre,"
 					+ " uact,"
 					+ " fact,"
+					+ " fcre,"
 					+ " term,"
 					+ " contrato_id,"
 					+ " estado_id"
@@ -377,8 +439,10 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 					+ " c.empresa_id,"
 					+ " null,"
 					+ " c.rol_id,"
+					+ " c.ucre,"
 					+ " c.uact,"
 					+ " c.fact,"
+					+ " c.fcre,"
 					+ " c.term,"
 					+ " c.id,"
 					+ " c.estado_id"
@@ -404,21 +468,21 @@ public class ACMInterfaceContratoPHBean implements IACMInterfaceContratoPHBean {
 				
 				switch (map.get(acmInterfaceContrato.getMid())) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
-						insertContrato.setParameter(6, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null, StringType.INSTANCE);
-						insertContrato.setParameter(7, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null, StringType.INSTANCE);
-						insertContrato.setParameter(8, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null, StringType.INSTANCE);
-						insertContrato.setParameter(9, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null, StringType.INSTANCE);
-						insertContrato.setParameter(10, acmInterfaceContrato.getDocumentoTipo(), LongType.INSTANCE);
-						insertContrato.setParameter(11, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null, StringType.INSTANCE);
-						insertContrato.setParameter(12, acmInterfaceContrato.getFechaFinContrato(), DateType.INSTANCE);
-						insertContrato.setParameter(13, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null, StringType.INSTANCE);
-						insertContrato.setParameter(14, acmInterfaceContrato.getMid(), LongType.INSTANCE);
-						insertContrato.setParameter(15, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null, StringType.INSTANCE);
-						insertContrato.setParameter(16, acmInterfaceContrato.getNumeroCliente(), LongType.INSTANCE);
-						insertContrato.setParameter(17, acmInterfaceContrato.getNumeroContrato(), LongType.INSTANCE);
-						insertContrato.setParameter(18, observaciones != "" ? observaciones : null, StringType.INSTANCE);
-						insertContrato.setParameter(19, acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null, StringType.INSTANCE);
-						insertContrato.setParameter(20, acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null, StringType.INSTANCE);
+						insertContrato.setParameter(8, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null, StringType.INSTANCE);
+						insertContrato.setParameter(9, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null, StringType.INSTANCE);
+						insertContrato.setParameter(10, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null, StringType.INSTANCE);
+						insertContrato.setParameter(11, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null, StringType.INSTANCE);
+						insertContrato.setParameter(12, acmInterfaceContrato.getDocumentoTipo(), LongType.INSTANCE);
+						insertContrato.setParameter(13, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null, StringType.INSTANCE);
+						insertContrato.setParameter(14, acmInterfaceContrato.getFechaFinContrato(), DateType.INSTANCE);
+						insertContrato.setParameter(15, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null, StringType.INSTANCE);
+						insertContrato.setParameter(16, acmInterfaceContrato.getMid(), LongType.INSTANCE);
+						insertContrato.setParameter(17, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null, StringType.INSTANCE);
+						insertContrato.setParameter(18, acmInterfaceContrato.getNumeroCliente(), LongType.INSTANCE);
+						insertContrato.setParameter(19, acmInterfaceContrato.getNumeroContrato(), LongType.INSTANCE);
+						insertContrato.setParameter(20, observaciones != "" ? observaciones : null, StringType.INSTANCE);
+						insertContrato.setParameter(21, acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null, StringType.INSTANCE);
+						insertContrato.setParameter(22, acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null, StringType.INSTANCE);
 						
 						insertContrato.executeUpdate();
 						

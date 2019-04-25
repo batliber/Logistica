@@ -50,10 +50,12 @@ public class EstadoRiesgoCrediticioDWR {
 		
 		result.setNombre(estadoRiesgoCrediticio.getNombre());
 		
+		result.setFcre(estadoRiesgoCrediticio.getFcre());
 		result.setFact(estadoRiesgoCrediticio.getFact());
 		result.setId(estadoRiesgoCrediticio.getId());
 		result.setTerm(estadoRiesgoCrediticio.getTerm());
 		result.setUact(estadoRiesgoCrediticio.getUact());
+		result.setUcre(estadoRiesgoCrediticio.getUcre());
 		
 		return result;
 	}

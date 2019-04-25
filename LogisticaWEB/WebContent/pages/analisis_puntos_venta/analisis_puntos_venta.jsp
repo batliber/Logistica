@@ -1,0 +1,82 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>An&aacute;lisis Puntos de Venta</title>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/BarrioDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoPuntoVentaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PuntoVentaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/CalculoPorcentajeActivacionPuntoVentaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/LiquidacionDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/VisitaPuntoVentaDistribuidorDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoVisitaPuntoVentaDistribuidorDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/pages/analisis_puntos_venta/analisis_puntos_venta.js"></script>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/analisis_puntos_venta/analisis_puntos_venta.css"/>
+</head>
+<body>
+	<div class="divMenuBarContainer">
+<%@ include file="/includes/menu.jsp" %>
+	</div>
+	<div class="divBodyContainer">
+		<div class="divBody">
+			<div class="divButtonBar">
+				<div class="divButton" id="divButtonActualizar"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
+				<div class="divButton" id="divButtonRecalcularPorcentajes"><input type="submit" value="Recalcular porcentajes" onclick="javascript:inputRecalcularPorcentajesOnClick(event)"/></div>
+				<div class="divButton" id="divButtonAsignarVisitas"><input type="submit" value="Asignar visitas" onclick="javascript:inputAsignarVisitasOnClick(event)"/></div>
+				<div class="divButton" id="divButtonVisitasPermanentes"><input type="submit" value="Visitas permanentes" onclick="javascript:inputVisitasPermanentesOnClick(event)"/></div>
+				<div class="divButton" id="divButtonExportarAExcel">
+					<form method="post" id="formExportarAExcel" action="#"><input type="submit" id="inputExportarAExcel" value="Exporta a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></form>
+				</div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divMainWindow">
+				<div id="divTablePuntosVenta">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div id="divIFrameSeleccionDistribuidor" style="display: none;">
+		<div class="divTitleBar">
+			<div class="divTitleBarText" style="float:left;">Asignar visitas</div>
+			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
+		</div>
+		<div id="divSeleccionDistribuidor">
+			<div class="divButtonBar">
+				<div class="divButton"><input type="submit" value="Aceptar" onclick="javascript:inputAceptarOnClick(event)"/></div>
+				<div class="divButton"><input type="submit" value="Cancelar" onclick="javascript:inputCancelarOnClick(event)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divPopupWindow">
+				<div class="divFormLabelExtended" style="display: none;">Visitas permanentes:</div><div id="divVisitasPermanentes" class="divFormValue" style="display: none;"><input type="checkbox" id="inputVisitasPermanentes"/></div>
+				<div class="divFormLabelExtended">Distribuidor:</div><div id="divDistribuidor" class="divFormValue"><select id="selectDistribuidor"></select></div>
+				<div class="divFormLabelExtended">Observaciones:</div><div id="divObservaciones" class="divFormValue"><textarea id="textareaObservaciones"></textarea></div>
+			</div>
+		</div>
+	</div>
+	<div id="divModalBackground">&nbsp;</div>
+<%@ include file="/includes/footer.jsp" %>

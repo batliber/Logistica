@@ -7,6 +7,7 @@ public class MonedaTO extends BaseTO {
 
 	private String nombre;
 	private String simbolo;
+	private String codigoISO;
 
 	public String getNombre() {
 		return nombre;
@@ -22,5 +23,13 @@ public class MonedaTO extends BaseTO {
 
 	public void setSimbolo(String simbolo) {
 		this.simbolo = simbolo;
+	}
+
+	public String getCodigoISO() {
+		return codigoISO;
+	}
+
+	public void setCodigoISO(String codigoISO) {
+		this.codigoISO = codigoISO;
 	}
 }

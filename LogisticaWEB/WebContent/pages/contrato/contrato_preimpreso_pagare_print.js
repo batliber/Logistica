@@ -76,6 +76,7 @@ function init() {
 				$(".inputPorcentajeMora").val(formatDecimal(((data.valorTasaInteresEfectivaAnual / 1.55) * 1.8 * 100), 2));
 				
 				$(".inputDomicilioAcreedor").val(data.empresa.direccion);
+//				$(".inputDomicilioAcreedor").val("Av. Luis Alberto de Herrera 1248 - Torre B - Piso 18");
 				
 				$(".inputTasaEfectivaAnual").val(formatDecimal(data.valorTasaInteresEfectivaAnual * 100, 2));
 				

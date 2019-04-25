@@ -47,15 +47,17 @@ public class MotivoCambioPlanDWR {
 	}
 	
 	public static MotivoCambioPlanTO transform(MotivoCambioPlan motivoCambioPlan) {
-		MotivoCambioPlanTO motivoCambioPlanTO = new MotivoCambioPlanTO();
+		MotivoCambioPlanTO result = new MotivoCambioPlanTO();
 		
-		motivoCambioPlanTO.setDescripcion(motivoCambioPlan.getDescripcion());
+		result.setDescripcion(motivoCambioPlan.getDescripcion());
 		
-		motivoCambioPlanTO.setFact(motivoCambioPlan.getFact());
-		motivoCambioPlanTO.setId(motivoCambioPlan.getId());
-		motivoCambioPlanTO.setTerm(motivoCambioPlan.getTerm());
-		motivoCambioPlanTO.setUact(motivoCambioPlan.getUact());
+		result.setFcre(motivoCambioPlan.getFcre());
+		result.setFact(motivoCambioPlan.getFact());
+		result.setId(motivoCambioPlan.getId());
+		result.setTerm(motivoCambioPlan.getTerm());
+		result.setUact(motivoCambioPlan.getUact());
+		result.setUcre(motivoCambioPlan.getUcre());
 		
-		return motivoCambioPlanTO;
+		return result;
 	}
 }

@@ -3,18 +3,43 @@ package uy.com.amensg.logistica.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-public class ACMInterfaceProcesoEstadistica implements Serializable, Comparable<ACMInterfaceProcesoEstadistica> {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "vs_acm_interface_proceso_estadistica")
+public class ACMInterfaceProcesoEstadistica implements Serializable {
 
 	private static final long serialVersionUID = 2201062222502297785L;
 
+	@Id
+	@Column(name = "id")
 	private Long id;
+	
+	@Column(name = "fecha_inicio")
 	private Date fechaInicio;
+	
+	@Column(name = "fecha_fin")
 	private Date fechaFin;
+	
+	@Column(name = "observaciones")
 	private String observaciones;
+	
+	@Column(name = "cantidad_registros_para_procesar")
 	private Long cantidadRegistrosParaProcesar;
+	
+	@Column(name = "cantidad_registros_para_procesar_prioritario")
 	private Long cantidadRegistrosParaProcesarPrioritario;
+	
+	@Column(name = "cantidad_registros_procesado")
 	private Long cantidadRegistrosProcesado;
+	
+	@Column(name = "cantidad_registros_en_proceso")
 	private Long cantidadRegistrosEnProceso;
+	
+	@Column(name = "cantidad_registros_lista_vacia")
 	private Long cantidadRegistrosListaVacia;
 
 	public Long getId() {
@@ -89,9 +114,5 @@ public class ACMInterfaceProcesoEstadistica implements Serializable, Comparable<
 
 	public void setCantidadRegistrosListaVacia(Long cantidadRegistrosListaVacia) {
 		this.cantidadRegistrosListaVacia = cantidadRegistrosListaVacia;
-	}
-
-	public int compareTo(ACMInterfaceProcesoEstadistica o) {
-		return -this.getFechaInicio().compareTo(o.fechaInicio);
 	}
 }

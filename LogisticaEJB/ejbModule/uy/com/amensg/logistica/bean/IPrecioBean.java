@@ -6,6 +6,8 @@ import javax.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Marca;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Moneda;
 import uy.com.amensg.logistica.entities.Precio;
@@ -18,16 +20,19 @@ public interface IPrecioBean {
 	
 	public Collection<Precio> listPreciosActualesByEmpresaId(Long empresaId);
 
+	public MetadataConsultaResultado listPreciosActuales(MetadataConsulta metadataConsulta, Long usuarioId);
+	
+	public Long countPreciosActuales(MetadataConsulta metadataConsulta, Long usuarioId);
+	
 	public Precio getById(Long id);
 	
-	public Precio getActualByEmpresaMarcaModeloMoneda(Empresa empresa, Marca marca, Modelo modelo, Moneda moneda);
-	
-	public Precio getActualByEmpresaTipoProductoMarcaModeloMoneda(
+	public Precio getActualByEmpresaTipoProductoMarcaModeloMonedaCuotas(
 		Empresa empresa, 
 		TipoProducto tipoProducto, 
 		Marca marca, 
 		Modelo modelo, 
-		Moneda moneda
+		Moneda moneda,
+		Long cuotas
 	);
 	
 	public void save(Precio precio);

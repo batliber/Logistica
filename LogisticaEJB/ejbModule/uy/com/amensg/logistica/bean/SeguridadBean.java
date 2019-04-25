@@ -11,6 +11,10 @@ import javax.persistence.PersistenceContext;
 import uy.com.amensg.logistica.entities.SeguridadAuditoria;
 import uy.com.amensg.logistica.entities.SeguridadTipoEvento;
 import uy.com.amensg.logistica.entities.Usuario;
+import uy.com.amensg.logistica.exceptions.UsuarioBloqueadoException;
+import uy.com.amensg.logistica.exceptions.UsuarioContrasenaIncorrectaException;
+import uy.com.amensg.logistica.exceptions.UsuarioDebeCambiarContrasenaException;
+import uy.com.amensg.logistica.exceptions.UsuarioNoExisteException;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.MD5Utils;
 
@@ -26,47 +30,81 @@ public class SeguridadBean implements ISeguridadBean {
 	@EJB
 	private ISeguridadAuditoriaBean iSeguridadAuditoriaBean;
 	
-	public SeguridadAuditoria login(String login, String contrasena) {
-		SeguridadAuditoria result = null;
+	public SeguridadAuditoria login(String login, String contrasena) 
+		throws UsuarioNoExisteException, UsuarioDebeCambiarContrasenaException, 
+			UsuarioContrasenaIncorrectaException, UsuarioBloqueadoException {
+		Usuario usuario = null;
 		
 		try {
-			Usuario usuario = iUsuarioBean.getByLogin(login);
-			
-			if ((usuario != null) && (usuario.getContrasena().equals(MD5Utils.stringToMD5(contrasena)))) {
-				Date date = GregorianCalendar.getInstance().getTime();
-				
-				SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
-				seguridadAuditoria.setFecha(date);
-				
-				SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
-				seguridadTipoEvento.setId(
-					new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.Login"))
-				);
-				
-				seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
-				
-				seguridadAuditoria.setUsuario(usuario);
-				
-				seguridadAuditoria.setFact(date);
-				seguridadAuditoria.setTerm(new Long(1));
-				seguridadAuditoria.setUact(usuario.getId());
-				
-				entityManager.persist(seguridadAuditoria);
-				
-				result = seguridadAuditoria;
-			}
+			usuario = iUsuarioBean.getByLogin(login, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return result;
+		Date date = GregorianCalendar.getInstance().getTime();
+		
+		if (usuario == null) {
+			throw new UsuarioNoExisteException();
+		} else if (usuario.getBloqueado() != null && usuario.getBloqueado()) {
+			throw new UsuarioBloqueadoException();
+		} else if (usuario.getContrasena().equals(MD5Utils.stringToMD5(contrasena))) {
+			usuario.setIntentosFallidosLogin(new Long(0));
+			
+			usuario.setFact(date);
+			usuario.setUact(new Long(1));
+			usuario.setTerm(new Long(1));
+			
+			iUsuarioBean.update(usuario);
+			
+			SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
+			seguridadAuditoria.setFecha(date);
+			
+			SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
+			seguridadTipoEvento.setId(
+				new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.Login"))
+			);
+			
+			seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
+			
+			seguridadAuditoria.setUsuario(usuario);
+			
+			seguridadAuditoria.setFcre(date);
+			seguridadAuditoria.setFact(date);
+			seguridadAuditoria.setTerm(new Long(1));
+			seguridadAuditoria.setUact(usuario.getId());
+			seguridadAuditoria.setUcre(usuario.getId());
+			
+			entityManager.persist(seguridadAuditoria);
+			
+			return seguridadAuditoria;
+		} else {
+			if (usuario.getIntentosFallidosLogin() != null) {
+				usuario.setIntentosFallidosLogin(usuario.getIntentosFallidosLogin() + 1);
+			} else {
+				usuario.setIntentosFallidosLogin(new Long(1));
+			}
+			
+			if (usuario.getIntentosFallidosLogin().equals(
+				new Long(Configuration.getInstance().getProperty("seguridad.maximaCantidadIntentosFallidosLogin"))
+			)) {
+				usuario.setBloqueado(true);
+				
+				iUsuarioBean.update(usuario);
+				
+				throw new UsuarioBloqueadoException();
+			} else {
+				iUsuarioBean.update(usuario);
+				
+				throw new UsuarioContrasenaIncorrectaException();
+			}
+		}
 	}
 	
 	public void logout(Long usuarioId) {
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
-			Usuario usuario = iUsuarioBean.getById(usuarioId);
+			Usuario usuario = iUsuarioBean.getById(usuarioId, false);
 			
 			SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
 			seguridadAuditoria.setFecha(date);
@@ -80,9 +118,11 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			seguridadAuditoria.setUsuario(usuario);
 			
+			seguridadAuditoria.setFcre(date);
 			seguridadAuditoria.setFact(date);
 			seguridadAuditoria.setTerm(new Long(1));
 			seguridadAuditoria.setUact(usuario.getId());
+			seguridadAuditoria.setUcre(usuario.getId());
 			
 			entityManager.persist(seguridadAuditoria);
 		} catch (Exception e) {
@@ -94,7 +134,7 @@ public class SeguridadBean implements ISeguridadBean {
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
-			Usuario usuario = iUsuarioBean.getById(usuarioId);
+			Usuario usuario = iUsuarioBean.getById(usuarioId, false);
 			
 			SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
 			seguridadAuditoria.setFecha(date);
@@ -108,9 +148,11 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			seguridadAuditoria.setUsuario(usuario);
 			
+			seguridadAuditoria.setFcre(date);
 			seguridadAuditoria.setFact(date);
 			seguridadAuditoria.setTerm(new Long(1));
 			seguridadAuditoria.setUact(usuario.getId());
+			seguridadAuditoria.setUcre(usuario.getId());
 			
 			entityManager.persist(seguridadAuditoria);
 		} catch (Exception e) {

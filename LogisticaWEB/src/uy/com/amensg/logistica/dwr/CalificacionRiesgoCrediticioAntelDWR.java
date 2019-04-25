@@ -50,10 +50,12 @@ public class CalificacionRiesgoCrediticioAntelDWR {
 		
 		result.setDescripcion(calificacionRiesgoCrediticioAntel.getDescripcion());
 		
+		result.setFcre(calificacionRiesgoCrediticioAntel.getFcre());
 		result.setFact(calificacionRiesgoCrediticioAntel.getFact());
 		result.setId(calificacionRiesgoCrediticioAntel.getId());
 		result.setTerm(calificacionRiesgoCrediticioAntel.getTerm());
 		result.setUact(calificacionRiesgoCrediticioAntel.getUact());
+		result.setUcre(calificacionRiesgoCrediticioAntel.getUcre());
 		
 		return result;
 	}

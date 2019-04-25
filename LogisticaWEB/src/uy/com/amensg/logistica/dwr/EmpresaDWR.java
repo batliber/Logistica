@@ -21,6 +21,8 @@ import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EmpresaTO;
 import uy.com.amensg.logistica.entities.FormaPago;
 import uy.com.amensg.logistica.entities.FormaPagoTO;
+import uy.com.amensg.logistica.entities.Usuario;
+import uy.com.amensg.logistica.entities.UsuarioTO;
 
 @RemoteProxy
 public class EmpresaDWR {
@@ -44,7 +46,7 @@ public class EmpresaDWR {
 			IEmpresaBean iEmpresaBean = lookupBean();
 			
 			for (Empresa empresa : iEmpresaBean.list()) {
-				result.add(transform(empresa));
+				result.add(transform(empresa, false));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,7 +61,7 @@ public class EmpresaDWR {
 		try {
 			IEmpresaBean iEmpresaBean = lookupBean();
 			
-			result = transform(iEmpresaBean.getById(id));
+			result = transform(iEmpresaBean.getById(id, true), true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -83,14 +85,34 @@ public class EmpresaDWR {
 		return result;
 	}
 	
-	public void add(EmpresaTO empresaTO) {
+	public Collection<UsuarioTO> listEmpresaUsuarioContratosById(Long id) {
+		Collection<UsuarioTO> result = new LinkedList<UsuarioTO>();
+		
 		try {
 			IEmpresaBean iEmpresaBean = lookupBean();
 			
-			iEmpresaBean.save(transform(empresaTO));
+			for (Usuario usuario : iEmpresaBean.listEmpresaUsuarioContratosById(id)) {
+				result.add(UsuarioDWR.transform(usuario, false));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
+	}
+	
+	public EmpresaTO add(EmpresaTO empresaTO) {
+		EmpresaTO result = null;
+		
+		try {
+			IEmpresaBean iEmpresaBean = lookupBean();
+			
+			result = transform(iEmpresaBean.save(transform(empresaTO)), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 
 	public void remove(EmpresaTO empresaTO) {
@@ -113,32 +135,46 @@ public class EmpresaDWR {
 		}
 	}
 	
-	public static EmpresaTO transform(Empresa empresa) {
-		EmpresaTO empresaTO = new EmpresaTO();
+	public static EmpresaTO transform(Empresa empresa, boolean transformCollections) {
+		EmpresaTO result = new EmpresaTO();
 		
-		empresaTO.setCodigoPromotor(empresa.getCodigoPromotor());
-		empresaTO.setDireccion(empresa.getDireccion());
-		empresaTO.setLogoURL(empresa.getLogoURL());
-		empresaTO.setNombre(empresa.getNombre());
-		empresaTO.setNombreContrato(empresa.getNombreContrato());
-		empresaTO.setNombreSucursal(empresa.getNombreSucursal());
+		result.setCodigoPromotor(empresa.getCodigoPromotor());
+		result.setDireccion(empresa.getDireccion());
+		result.setLogoURL(empresa.getLogoURL());
+		result.setNombre(empresa.getNombre());
+		result.setNombreContrato(empresa.getNombreContrato());
+		result.setNombreSucursal(empresa.getNombreSucursal());
 		
-		if (empresa.getFormaPagos() != null) {
-			Collection<FormaPagoTO> formaPagos = new LinkedList<FormaPagoTO>();
-			
-			for (FormaPago formaPago : empresa.getFormaPagos()) {
-				formaPagos.add(FormaPagoDWR.transform(formaPago));
+		if (transformCollections) {
+			if (empresa.getFormaPagos() != null) {
+				Collection<FormaPagoTO> formaPagos = new LinkedList<FormaPagoTO>();
+				
+				for (FormaPago formaPago : empresa.getFormaPagos()) {
+					formaPagos.add(FormaPagoDWR.transform(formaPago));
+				}
+				
+				result.setFormaPagos(formaPagos);
 			}
 			
-			empresaTO.setFormaPagos(formaPagos);
+			if (empresa.getEmpresaUsuarioContratos() != null) {
+				Collection<UsuarioTO> empresaUsuarioContratos = new LinkedList<UsuarioTO>();
+				
+				for (Usuario usuario : empresa.getEmpresaUsuarioContratos()) {
+					empresaUsuarioContratos.add(UsuarioDWR.transform(usuario, false));
+				}
+				
+				result.setEmpresaUsuarioContratos(empresaUsuarioContratos);
+			}
 		}
 		
-		empresaTO.setFact(empresa.getFact());
-		empresaTO.setId(empresa.getId());
-		empresaTO.setTerm(empresa.getTerm());
-		empresaTO.setUact(empresa.getUact());
+		result.setFcre(empresa.getFcre());
+		result.setFact(empresa.getFact());
+		result.setId(empresa.getId());
+		result.setTerm(empresa.getTerm());
+		result.setUact(empresa.getUact());
+		result.setUcre(empresa.getUcre());
 		
-		return empresaTO;
+		return result;
 	}
 
 	public static Empresa transform(EmpresaTO empresaTO) {
@@ -165,8 +201,23 @@ public class EmpresaDWR {
 			result.setFormaPagos(formaPagos);
 		}
 		
+		if (empresaTO.getEmpresaUsuarioContratos() != null) {
+			Set<Usuario> empresaUsuarioContratos = new HashSet<Usuario>();
+			
+			for (UsuarioTO empresaUsuarioContratoTO : empresaTO.getEmpresaUsuarioContratos()) {
+				Usuario usuario = new Usuario();
+				
+				usuario.setId(empresaUsuarioContratoTO.getId());
+				
+				empresaUsuarioContratos.add(usuario);
+			}
+			
+			result.setEmpresaUsuarioContratos(empresaUsuarioContratos);
+		}
+		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(empresaTO.getFcre());
 		result.setFact(date);
 		result.setId(empresaTO.getId());
 		result.setTerm(new Long(1));
@@ -175,6 +226,7 @@ public class EmpresaDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(empresaTO.getUcre());
 		
 		return result;
 	}

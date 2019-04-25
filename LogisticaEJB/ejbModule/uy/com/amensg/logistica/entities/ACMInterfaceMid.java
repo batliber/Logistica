@@ -21,12 +21,12 @@ public class ACMInterfaceMid implements Serializable {
 	@Column(name = "mid")
 	private Long mid;
 
-//	@Column(name = "estado")
-//	private Long estado;
-
 	@Column(name = "proceso_id")
 	private Long procesoId;
 
+	@Column(name = "random")
+	private Long random;
+	
 	@Column(name = "uact")
 	private Long uact;
 
@@ -62,6 +62,14 @@ public class ACMInterfaceMid implements Serializable {
 
 	public void setProcesoId(Long procesoId) {
 		this.procesoId = procesoId;
+	}
+
+	public Long getRandom() {
+		return random;
+	}
+
+	public void setRandom(Long random) {
+		this.random = random;
 	}
 
 	public Long getUact() {

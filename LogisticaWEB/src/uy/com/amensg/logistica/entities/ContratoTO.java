@@ -54,6 +54,7 @@ public class ContratoTO extends BaseTO {
 	private Date fechaActivacion;
 	private Date fechaActivarEn;
 	private Date fechaCoordinacion;
+	private Date fechaEnvioANucleo;
 	private String direccionEntregaCalle;
 	private Long direccionEntregaNumero;
 	private Boolean direccionEntregaBis;
@@ -82,6 +83,13 @@ public class ContratoTO extends BaseTO {
 	private Double valorCuota;
 	private Double valorUnidadIndexada;
 	private Double valorTasaInteresEfectivaAnual;
+	private String antelNroTrn;
+	private String antelFormaPago;
+	private String antelNroServicioCuenta;
+	private Double antelImporte;
+	private Boolean incluirChip;
+	private Double costoEnvio;
+	private Long random;
 	private DepartamentoTO direccionEntregaDepartamento;
 	private DepartamentoTO direccionFacturaDepartamento;
 	private TipoDocumentoTO tipoDocumento;
@@ -97,8 +105,10 @@ public class ContratoTO extends BaseTO {
 	private MotivoCambioPlanTO motivoCambioPlan;
 	private MonedaTO moneda;
 	private FormaPagoTO formaPago;
+	private TipoTasaInteresEfectivaAnualTO tipoTasaInteresEfectivaAnual;
 	private TarjetaCreditoTO tarjetaCredito;
 	private ResultadoEntregaDistribucionTO resultadoEntregaDistribucion;
+	private ModalidadVentaTO modalidadVenta;
 	private EstadoTO estado;
 	private EmpresaTO empresa;
 	private RolTO rol;
@@ -334,6 +344,38 @@ public class ContratoTO extends BaseTO {
 		this.fechaRechazo = fechaRechazo;
 	}
 
+	public Date getFechaEnvioANucleo() {
+		return fechaEnvioANucleo;
+	}
+
+	public void setFechaEnvioANucleo(Date fechaEnvioANucleo) {
+		this.fechaEnvioANucleo = fechaEnvioANucleo;
+	}
+
+	public String getAntelNroTrn() {
+		return antelNroTrn;
+	}
+
+	public void setAntelNroTrn(String antelNroTrn) {
+		this.antelNroTrn = antelNroTrn;
+	}
+
+	public String getAntelFormaPago() {
+		return antelFormaPago;
+	}
+
+	public void setAntelFormaPago(String antelFormaPago) {
+		this.antelFormaPago = antelFormaPago;
+	}
+
+	public String getAntelNroServicioCuenta() {
+		return antelNroServicioCuenta;
+	}
+
+	public void setAntelNroServicioCuenta(String antelNroServicioCuenta) {
+		this.antelNroServicioCuenta = antelNroServicioCuenta;
+	}
+
 	public PlanTO getNuevoPlan() {
 		return nuevoPlan;
 	}
@@ -364,6 +406,14 @@ public class ContratoTO extends BaseTO {
 
 	public void setFormaPago(FormaPagoTO formaPago) {
 		this.formaPago = formaPago;
+	}
+
+	public TipoTasaInteresEfectivaAnualTO getTipoTasaInteresEfectivaAnual() {
+		return tipoTasaInteresEfectivaAnual;
+	}
+
+	public void setTipoTasaInteresEfectivaAnual(TipoTasaInteresEfectivaAnualTO tipoTasaInteresEfectivaAnual) {
+		this.tipoTasaInteresEfectivaAnual = tipoTasaInteresEfectivaAnual;
 	}
 
 	public TarjetaCreditoTO getTarjetaCredito() {
@@ -693,6 +743,38 @@ public class ContratoTO extends BaseTO {
 		this.valorTasaInteresEfectivaAnual = valorTasaInteresEfectivaAnual;
 	}
 
+	public Double getAntelImporte() {
+		return antelImporte;
+	}
+
+	public void setAntelImporte(Double antelImporte) {
+		this.antelImporte = antelImporte;
+	}
+
+	public Boolean getIncluirChip() {
+		return incluirChip;
+	}
+
+	public void setIncluirChip(Boolean incluirChip) {
+		this.incluirChip = incluirChip;
+	}
+
+	public Double getCostoEnvio() {
+		return costoEnvio;
+	}
+
+	public void setCostoEnvio(Double costoEnvio) {
+		this.costoEnvio = costoEnvio;
+	}
+	
+	public Long getRandom() {
+		return random;
+	}
+
+	public void setRandom(Long random) {
+		this.random = random;
+	}
+
 	public DepartamentoTO getDireccionEntregaDepartamento() {
 		return direccionEntregaDepartamento;
 	}
@@ -790,6 +872,14 @@ public class ContratoTO extends BaseTO {
 	public void setResultadoEntregaDistribucion(
 			ResultadoEntregaDistribucionTO resultadoEntregaDistribucion) {
 		this.resultadoEntregaDistribucion = resultadoEntregaDistribucion;
+	}
+
+	public ModalidadVentaTO getModalidadVenta() {
+		return modalidadVenta;
+	}
+
+	public void setModalidadVenta(ModalidadVentaTO modalidadVenta) {
+		this.modalidadVenta = modalidadVenta;
 	}
 
 	public EstadoTO getEstado() {

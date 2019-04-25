@@ -57,6 +57,12 @@ function inputGuardarOnClick(event, element) {
 		return;
 	}
 	
+	if (!contrasenaNueva.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/)) {
+		alert("La nueva contraseña debe ser de 8 o más caracteres y debe contener mayúsculas, minúsculas y números.");
+		
+		return;
+	}
+	
 	$("#inputContrasenaActual").val(null);
 	$("#inputNuevaContrasena").val(null);
 	$("#inputConfirmaContrasena").val(null);

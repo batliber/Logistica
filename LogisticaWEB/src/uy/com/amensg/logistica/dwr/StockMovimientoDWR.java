@@ -245,7 +245,7 @@ public class StockMovimientoDWR {
 		result.setFecha(stockMovimiento.getFecha());
 		
 		if (stockMovimiento.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(stockMovimiento.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(stockMovimiento.getEmpresa(), false));
 		}
 
 		if (stockMovimiento.getMarca() != null) {
@@ -268,10 +268,12 @@ public class StockMovimientoDWR {
 			result.setStockTipoMovimiento(StockTipoMovimientoDWR.transform(stockMovimiento.getStockTipoMovimiento()));
 		}
 		
+		result.setFcre(stockMovimiento.getFcre());
 		result.setFact(stockMovimiento.getFact());
 		result.setId(stockMovimiento.getId());
 		result.setTerm(stockMovimiento.getTerm());
 		result.setUact(stockMovimiento.getUact());
+		result.setUcre(stockMovimiento.getUcre());
 		
 		return result;
 	}
@@ -282,7 +284,7 @@ public class StockMovimientoDWR {
 		result.setCantidad(stockActual.getCantidad());
 		
 		if (stockActual.getEmpresa() != null) {
-			result.setEmpresa(EmpresaDWR.transform(stockActual.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(stockActual.getEmpresa(), false));
 		}
 
 		if (stockActual.getMarca() != null) {
@@ -341,6 +343,7 @@ public class StockMovimientoDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(stockMovimientoTO.getFcre());
 		result.setFact(date);
 		result.setId(stockMovimientoTO.getId());
 		result.setTerm(new Long(1));
@@ -349,6 +352,7 @@ public class StockMovimientoDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(stockMovimientoTO.getUcre());
 		
 		return result;
 	}

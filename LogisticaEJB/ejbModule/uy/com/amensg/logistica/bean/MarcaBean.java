@@ -11,6 +11,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import uy.com.amensg.logistica.entities.Marca;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class MarcaBean implements IMarcaBean {
@@ -38,6 +41,30 @@ public class MarcaBean implements IMarcaBean {
 		return result;
 	}
 	
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<Marca>().list(entityManager, metadataConsulta, new Marca());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<Marca>().count(entityManager, metadataConsulta, new Marca());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Marca getById(Long id) {
 		Marca result = null;
 		
@@ -52,6 +79,9 @@ public class MarcaBean implements IMarcaBean {
 	
 	public void save(Marca marca) {
 		try {
+			marca.setFcre(marca.getFact());
+			marca.setUcre(marca.getUact());
+			
 			entityManager.persist(marca);
 		} catch (Exception e) {
 			e.printStackTrace();

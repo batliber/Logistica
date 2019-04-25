@@ -15,6 +15,9 @@ import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IZonaBean;
 import uy.com.amensg.logistica.bean.ZonaBean;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
 import uy.com.amensg.logistica.entities.Zona;
 import uy.com.amensg.logistica.entities.ZonaTO;
 
@@ -65,6 +68,67 @@ public class ZonaDWR {
 		return result;
 	}
 	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IZonaBean iZonaBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iZonaBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object zona : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(ZonaDWR.transform((Zona) zona));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IZonaBean iZonaBean = lookupBean();
+				
+				result = 
+					iZonaBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public ZonaTO getById(Long id) {
 		ZonaTO result = null;
 		
@@ -79,14 +143,18 @@ public class ZonaDWR {
 		return result;
 	}
 	
-	public void add(ZonaTO zonaTO) {
+	public ZonaTO add(ZonaTO zonaTO) {
+		ZonaTO result = null;
+		
 		try {
 			IZonaBean iZonaBean = lookupBean();
 			
-			iZonaBean.save(transform(zonaTO));
+			result = transform(iZonaBean.save(transform(zonaTO)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(ZonaTO zonaTO) {
@@ -110,40 +178,44 @@ public class ZonaDWR {
 	}
 	
 	public static ZonaTO transform(Zona zona) {
-		ZonaTO zonaTO = new ZonaTO();
+		ZonaTO result = new ZonaTO();
 		
-		zonaTO.setDetalle(zona.getDetalle());
-		zonaTO.setNombre(zona.getNombre());
+		result.setDetalle(zona.getDetalle());
+		result.setNombre(zona.getNombre());
 		
-		zonaTO.setDepartamento(DepartamentoDWR.transform(zona.getDepartamento()));
+		result.setDepartamento(DepartamentoDWR.transform(zona.getDepartamento()));
 		
-		zonaTO.setFact(zona.getFact());
-		zonaTO.setId(zona.getId());
-		zonaTO.setTerm(zona.getTerm());
-		zonaTO.setUact(zona.getUact());
+		result.setFcre(zona.getFcre());
+		result.setFact(zona.getFact());
+		result.setId(zona.getId());
+		result.setTerm(zona.getTerm());
+		result.setUact(zona.getUact());
+		result.setUcre(zona.getUcre());
 		
-		return zonaTO;
+		return result;
 	}
 	
 	public static Zona transform(ZonaTO zonaTO) {
-		Zona zona = new Zona();
+		Zona result = new Zona();
 		
-		zona.setDetalle(zonaTO.getDetalle());
-		zona.setNombre(zonaTO.getNombre());
+		result.setDetalle(zonaTO.getDetalle());
+		result.setNombre(zonaTO.getNombre());
 		
-		zona.setDepartamento(DepartamentoDWR.transform(zonaTO.getDepartamento()));
+		result.setDepartamento(DepartamentoDWR.transform(zonaTO.getDepartamento()));
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
-		zona.setFact(date);
-		zona.setId(zonaTO.getId());
-		zona.setTerm(new Long(1));
+		result.setFcre(zonaTO.getFcre());
+		result.setFact(date);
+		result.setId(zonaTO.getId());
+		result.setTerm(new Long(1));
 		
 		HttpSession httpSession = WebContextFactory.get().getSession(false);
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
-		zona.setUact(usuarioId);
+		result.setUact(usuarioId);
+		result.setUcre(zonaTO.getUcre());
 		
-		return zona;
+		return result;
 	}
 }

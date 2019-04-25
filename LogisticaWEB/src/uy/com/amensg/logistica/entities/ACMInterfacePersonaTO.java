@@ -1,5 +1,7 @@
 package uy.com.amensg.logistica.entities;
 
+import java.util.Date;
+
 import org.directwebremoting.annotations.DataTransferObject;
 
 @DataTransferObject
@@ -14,7 +16,7 @@ public class ACMInterfacePersonaTO extends BaseTO {
 	private String razonSocial;
 	private String tipoCliente;
 	private String actividad;
-	private String fechaNacimiento;
+	private Date fechaNacimiento;
 	private String sexo;
 	private String calle;
 	private String numero;
@@ -30,6 +32,7 @@ public class ACMInterfacePersonaTO extends BaseTO {
 	private String distribucion;
 	private String telefono;
 	private String email;
+	private RiesgoCrediticioTO riesgoCrediticio;
 
 	public String getIdCliente() {
 		return idCliente;
@@ -103,11 +106,11 @@ public class ACMInterfacePersonaTO extends BaseTO {
 		this.actividad = actividad;
 	}
 
-	public String getFechaNacimiento() {
+	public Date getFechaNacimiento() {
 		return fechaNacimiento;
 	}
 
-	public void setFechaNacimiento(String fechaNacimiento) {
+	public void setFechaNacimiento(Date fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 
@@ -229,5 +232,13 @@ public class ACMInterfacePersonaTO extends BaseTO {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public RiesgoCrediticioTO getRiesgoCrediticio() {
+		return riesgoCrediticio;
+	}
+
+	public void setRiesgoCrediticio(RiesgoCrediticioTO riesgoCrediticio) {
+		this.riesgoCrediticio = riesgoCrediticio;
 	}
 }

@@ -72,10 +72,16 @@ public class ACMInterfacePersonaDWR {
 		result.setTelefono(acmInterfacePersona.getTelefono());
 		result.setEmail(acmInterfacePersona.getEmail());
 		
+		if (acmInterfacePersona.getRiesgoCrediticio() != null) {
+			result.setRiesgoCrediticio(RiesgoCrediticioDWR.transform(acmInterfacePersona.getRiesgoCrediticio()));
+		}
+		
+		result.setFcre(acmInterfacePersona.getFcre());
 		result.setFact(acmInterfacePersona.getFact());
 		result.setId(acmInterfacePersona.getId());
 		result.setTerm(acmInterfacePersona.getTerm());
 		result.setUact(acmInterfacePersona.getUact());
+		result.setUcre(acmInterfacePersona.getUcre());
 		
 		return result;
 	}

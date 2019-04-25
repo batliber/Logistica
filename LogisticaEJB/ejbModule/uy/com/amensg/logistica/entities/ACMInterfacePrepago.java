@@ -49,6 +49,9 @@ public class ACMInterfacePrepago implements Serializable {
 	@Column(name = "agente")
 	private String agente;
 	
+	@Column(name = "random")
+	private Long random;
+	
 	@Column(name = "uact")
 	private Long uact;
 
@@ -144,6 +147,14 @@ public class ACMInterfacePrepago implements Serializable {
 
 	public void setAgente(String agente) {
 		this.agente = agente;
+	}
+
+	public Long getRandom() {
+		return random;
+	}
+
+	public void setRandom(Long random) {
+		this.random = random;
 	}
 
 	public Long getUact() {

@@ -59,10 +59,12 @@ public class TipoProductoDWR {
 			result.setFormaPagoCuota(FormaPagoCuotaDWR.transform(tipoProducto.getFormaPagoCuota()));
 		}
 		
+		result.setFcre(tipoProducto.getFcre());
 		result.setFact(tipoProducto.getFact());
 		result.setId(tipoProducto.getId());
 		result.setTerm(tipoProducto.getTerm());
 		result.setUact(tipoProducto.getUact());
+		result.setUcre(tipoProducto.getUcre());
 		
 		return result;
 	}
@@ -81,6 +83,7 @@ public class TipoProductoDWR {
 		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(tipoProductoTO.getFcre());
 		result.setFact(date);
 		result.setId(tipoProductoTO.getId());
 		result.setTerm(new Long(1));
@@ -89,6 +92,7 @@ public class TipoProductoDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(tipoProductoTO.getUcre());
 		
 		return result;
 	}

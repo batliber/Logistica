@@ -51,7 +51,7 @@ public class ACMInterfacePersona extends DataProcessingTemplateMethod {
 		
 		Iterator<String> iterator = data.iterator();
 		
-		// Parsear los par·metros tipados.
+		// Parsear los par√°metros tipados.
 		
 		// idCliente
 		result.add(iterator.next());

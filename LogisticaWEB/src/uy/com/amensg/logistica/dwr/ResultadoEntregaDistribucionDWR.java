@@ -46,15 +46,17 @@ public class ResultadoEntregaDistribucionDWR {
 	}
 	
 	public static ResultadoEntregaDistribucionTO transform(ResultadoEntregaDistribucion resultadoEntregaDistribucion) {
-		ResultadoEntregaDistribucionTO resultadoEntregaDistribucionTO = new ResultadoEntregaDistribucionTO();
+		ResultadoEntregaDistribucionTO result = new ResultadoEntregaDistribucionTO();
 		
-		resultadoEntregaDistribucionTO.setDescripcion(resultadoEntregaDistribucion.getDescripcion());
+		result.setDescripcion(resultadoEntregaDistribucion.getDescripcion());
 		
-		resultadoEntregaDistribucionTO.setFact(resultadoEntregaDistribucion.getFact());
-		resultadoEntregaDistribucionTO.setId(resultadoEntregaDistribucion.getId());
-		resultadoEntregaDistribucionTO.setTerm(resultadoEntregaDistribucion.getTerm());
-		resultadoEntregaDistribucionTO.setUact(resultadoEntregaDistribucion.getUact());
+		result.setFcre(resultadoEntregaDistribucion.getFcre());
+		result.setFact(resultadoEntregaDistribucion.getFact());
+		result.setId(resultadoEntregaDistribucion.getId());
+		result.setTerm(resultadoEntregaDistribucion.getTerm());
+		result.setUact(resultadoEntregaDistribucion.getUact());
+		result.setUcre(resultadoEntregaDistribucion.getUcre());
 		
-		return resultadoEntregaDistribucionTO;
+		return result;
 	}
 }

@@ -7,6 +7,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 @DataTransferObject
 public class PrecioTO extends BaseTO {
 
+	private Long cuotas;
 	private Double precio;
 	private Date fechaHasta;
 	private EmpresaTO empresa;
@@ -14,6 +15,14 @@ public class PrecioTO extends BaseTO {
 	private ModeloTO modelo;
 	private MonedaTO moneda;
 	private TipoProductoTO tipoProducto;
+
+	public Long getCuotas() {
+		return cuotas;
+	}
+
+	public void setCuotas(Long cuotas) {
+		this.cuotas = cuotas;
+	}
 
 	public Double getPrecio() {
 		return precio;

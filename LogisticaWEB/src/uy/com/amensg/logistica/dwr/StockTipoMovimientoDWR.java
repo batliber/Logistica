@@ -1,12 +1,16 @@
 package uy.com.amensg.logistica.dwr;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.IStockTipoMovimientoBean;
@@ -46,30 +50,40 @@ public class StockTipoMovimientoDWR {
 	}
 	
 	public static StockTipoMovimientoTO transform(StockTipoMovimiento stockTipoMovimiento) {
-		StockTipoMovimientoTO stockTipoMovimientoTO = new StockTipoMovimientoTO();
+		StockTipoMovimientoTO result = new StockTipoMovimientoTO();
 		
-		stockTipoMovimientoTO.setDescripcion(stockTipoMovimiento.getDescripcion());
-		stockTipoMovimientoTO.setSigno(stockTipoMovimiento.getSigno());
+		result.setDescripcion(stockTipoMovimiento.getDescripcion());
+		result.setSigno(stockTipoMovimiento.getSigno());
 		
-		stockTipoMovimientoTO.setFact(stockTipoMovimiento.getFact());
-		stockTipoMovimientoTO.setId(stockTipoMovimiento.getId());
-		stockTipoMovimientoTO.setUact(stockTipoMovimiento.getUact());
-		stockTipoMovimientoTO.setTerm(stockTipoMovimiento.getTerm());
+		result.setFcre(stockTipoMovimiento.getFcre());
+		result.setFact(stockTipoMovimiento.getFact());
+		result.setId(stockTipoMovimiento.getId());
+		result.setTerm(stockTipoMovimiento.getTerm());
+		result.setUact(stockTipoMovimiento.getUact());
+		result.setUcre(stockTipoMovimiento.getUcre());
 		
-		return stockTipoMovimientoTO;
+		return result;
 	}
 	
 	public static StockTipoMovimiento transform(StockTipoMovimientoTO stockTipoMovimientoTO) {
-		StockTipoMovimiento stockTipoMovimiento = new StockTipoMovimiento();
+		StockTipoMovimiento result = new StockTipoMovimiento();
 		
-		stockTipoMovimiento.setDescripcion(stockTipoMovimientoTO.getDescripcion());
-		stockTipoMovimiento.setSigno(stockTipoMovimientoTO.getSigno());
+		result.setDescripcion(stockTipoMovimientoTO.getDescripcion());
+		result.setSigno(stockTipoMovimientoTO.getSigno());
 		
-		stockTipoMovimiento.setFact(stockTipoMovimientoTO.getFact());
-		stockTipoMovimiento.setId(stockTipoMovimientoTO.getId());
-		stockTipoMovimiento.setUact(stockTipoMovimientoTO.getUact());
-		stockTipoMovimiento.setTerm(stockTipoMovimientoTO.getTerm());
+		Date date = GregorianCalendar.getInstance().getTime();
 		
-		return stockTipoMovimiento;
+		result.setFcre(stockTipoMovimientoTO.getFcre());
+		result.setFact(date);
+		result.setId(stockTipoMovimientoTO.getId());
+		result.setTerm(stockTipoMovimientoTO.getTerm());
+		
+		HttpSession httpSession = WebContextFactory.get().getSession(false);
+		Long usuarioId = (Long) httpSession.getAttribute("sesion");
+		
+		result.setUact(usuarioId);
+		result.setUcre(stockTipoMovimientoTO.getUcre());
+		
+		return result;
 	}
 }

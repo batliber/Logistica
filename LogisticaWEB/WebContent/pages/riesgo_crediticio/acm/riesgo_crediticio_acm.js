@@ -22,11 +22,11 @@ function init() {
 								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
 								tdDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING },
 								tdFechaCelular: { campo: "fechaCelular", descripcion: "Antigüedad celular", abreviacion: "Antig. cel.", tipo: __TIPO_CAMPO_FECHA },
-								tdDeudaCelular: { campo: "deudaCelular", descripcion: "Deuda celular", abreviacion: "Deuda cel.", tipo: __TIPO_CAMPO_BOOLEAN, ancho: 75 },
-								tdRiesgoCrediticioCelular: { campo: "riesgoCrediticioCelular", descripcion: "Riesgo celular", abreviacion: "Riesgo cel.", tipo: __TIPO_CAMPO_BOOLEAN, ancho: 75 },
-//								private Long contratosCelular;
-//								private Long contratosSolaFirmaCelular;
-//								private Long contratosGarantiaCelular;
+								tdDeudaCelular: { campo: "deudaCelular", descripcion: "Deuda celular", abreviacion: "Deuda cel.", tipo: __TIPO_CAMPO_STRING, ancho: 75 },
+								tdRiesgoCrediticioCelular: { campo: "riesgoCrediticioCelular", descripcion: "Riesgo celular", abreviacion: "Riesgo cel.", tipo: __TIPO_CAMPO_STRING, ancho: 75 },
+								tdContratosCelular: { campo: "contratosCelular", descripcion: "Cont. cel.", abreviacion: "Cont. cel.", tipo: __TIPO_CAMPO_NUMERICO, ancho: 90 },
+								tdContratosSolaFirmaCelular: { campo: "contratosSolaFirmaCelular", descripcion: "Contratos sola firma cel.", abreviacion: "Cont. s/f cel.", tipo: __TIPO_CAMPO_NUMERICO, ancho: 90 },
+								tdContratosGarantiaCelular: { campo: "contratosGarantiaCelular", descripcion: "Contratos garantía cel.", abreviacion: "Cont. gar. cel.", tipo: __TIPO_CAMPO_NUMERICO, ancho: 90 },
 //								private Double saldoAyudaEconomicaCelular;
 //								private Long numeroClienteFijo;
 //								private String nombreClienteFijo;
@@ -71,7 +71,7 @@ function init() {
 function listEmpresas() {
 	var result = [];
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				if (data != null) {

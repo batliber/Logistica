@@ -7,18 +7,6 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	grid = new Grid(
-		document.getElementById("divTableRoles"),
-		{
-			tdRolNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
-		}, 
-		false,
-		reloadData,
-		trRolOnClick
-	);
-	
-	grid.rebuild();
-	
 	SeguridadDWR.getActiveUserData(
 		{
 			callback: function(data) {
@@ -26,9 +14,20 @@ function init() {
 					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
 						mode = __FORM_MODE_ADMIN;
 						
+						grid = new Grid(
+							document.getElementById("divTableRoles"),
+							{
+								tdRolNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
+							}, 
+							false,
+							reloadData,
+							trRolOnClick
+						);
+						
+						grid.rebuild();
+							
 						$("#divButtonNew").show();
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-						
 						break;
 					}
 				}
@@ -42,62 +41,23 @@ function init() {
 }
 
 function reloadData() {
-	RolDWR.list(
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	RolDWR.listContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
 		{
 			callback: function(data) {
-				var registros = {
-					cantidadRegistros: data.length,
-					registrosMuestra: []
-				};
-				
-				var map = {}; 
-				for (var i=0; i<data.length; i++) {
-					map[data[i].id] = data[i];
-				}
-				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
-						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
-						
-						return result;
-					});
-				}
-				
-				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
-				}
-				
-				grid.reload(registros);
+				grid.reload(data);
 			}, async: false
+		}
+	);
+	
+	RolDWR.countContextAware(
+		grid.filtroDinamico.calcularMetadataConsulta(),
+		{
+			callback: function(data) {
+				grid.setCount(data);
+			}
 		}
 	);
 }

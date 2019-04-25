@@ -6,13 +6,19 @@ import java.util.LinkedList;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteProxy;
 
 import uy.com.amensg.logistica.bean.BarrioBean;
 import uy.com.amensg.logistica.bean.IBarrioBean;
 import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.BarrioTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
+import uy.com.amensg.logistica.entities.MetadataConsultaTO;
+import uy.com.amensg.logistica.entities.MinimalTO;
 
 @RemoteProxy
 public class BarrioDWR {
@@ -45,6 +51,27 @@ public class BarrioDWR {
 		return result;
 	}
 	
+	public Collection<MinimalTO> listMinimal() {
+		Collection<MinimalTO> result = new LinkedList<MinimalTO>();
+		
+		try {
+			IBarrioBean iBarrioBean = lookupBean();
+			
+			for (Barrio barrio : iBarrioBean.listMinimal()) {
+				MinimalTO minimalTO = new MinimalTO();
+				
+				minimalTO.setId(barrio.getId());
+				minimalTO.setNombre(barrio.getNombre());
+				
+				result.add(minimalTO);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<BarrioTO> listByDepartamentoId(Long departamentoId) {
 		Collection<BarrioTO> result = new LinkedList<BarrioTO>();
 		
@@ -53,6 +80,88 @@ public class BarrioDWR {
 			
 			for (Barrio barrio : iBarrioBean.listByDepartamentoId(departamentoId)) {
 				result.add(transform(barrio));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<MinimalTO> listMinimalByDepartamentoId(Long departamentoId) {
+		Collection<MinimalTO> result = new LinkedList<MinimalTO>();
+		
+		try {
+			IBarrioBean iBarrioBean = lookupBean();
+			
+			for (Barrio barrio : iBarrioBean.listMinimalByDepartamentoId(departamentoId)) {
+				MinimalTO minimalTO = new MinimalTO();
+				
+				minimalTO.setId(barrio.getId());
+				minimalTO.setNombre(barrio.getNombre());
+				
+				result.add(minimalTO);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultadoTO listContextAware(MetadataConsultaTO metadataConsultaTO) {
+		MetadataConsultaResultadoTO result = new MetadataConsultaResultadoTO();
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IBarrioBean iBarrioBean = lookupBean();
+				
+				MetadataConsultaResultado metadataConsultaResultado = 
+					iBarrioBean.list(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
+				
+				Collection<Object> registrosMuestra = new LinkedList<Object>();
+				
+				for (Object barrio : metadataConsultaResultado.getRegistrosMuestra()) {
+					registrosMuestra.add(BarrioDWR.transform((Barrio) barrio));
+				}
+				
+				result.setRegistrosMuestra(registrosMuestra);
+				result.setCantidadRegistros(metadataConsultaResultado.getCantidadRegistros());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countContextAware(MetadataConsultaTO metadataConsultaTO) {
+		Long result = null;
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IBarrioBean iBarrioBean = lookupBean();
+				
+				result = 
+					iBarrioBean.count(
+						MetadataConsultaDWR.transform(
+							metadataConsultaTO
+						),
+						usuarioId
+					);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -106,34 +215,38 @@ public class BarrioDWR {
 	}
 	
 	public static BarrioTO transform(Barrio barrio) {
-		BarrioTO barrioTO = new BarrioTO();
+		BarrioTO result = new BarrioTO();
 		
-		barrioTO.setNombre(barrio.getNombre());
+		result.setNombre(barrio.getNombre());
 		
-		barrioTO.setDepartamento(DepartamentoDWR.transform(barrio.getDepartamento()));
-		barrioTO.setZona(ZonaDWR.transform(barrio.getZona()));
+		result.setDepartamento(DepartamentoDWR.transform(barrio.getDepartamento()));
+		result.setZona(ZonaDWR.transform(barrio.getZona()));
 		
-		barrioTO.setFact(barrio.getFact());
-		barrioTO.setId(barrio.getId());
-		barrioTO.setTerm(barrio.getTerm());
-		barrioTO.setUact(barrio.getUact());
+		result.setFcre(barrio.getFcre());
+		result.setFact(barrio.getFact());
+		result.setId(barrio.getId());
+		result.setTerm(barrio.getTerm());
+		result.setUact(barrio.getUact());
+		result.setUcre(barrio.getUcre());
 		
-		return barrioTO;
+		return result;
 	}
 	
 	public static Barrio transform(BarrioTO barrioTO) {
-		Barrio barrio = new Barrio();
+		Barrio result = new Barrio();
 		
-		barrio.setNombre(barrioTO.getNombre());
+		result.setNombre(barrioTO.getNombre());
 		
-		barrio.setDepartamento(DepartamentoDWR.transform(barrioTO.getDepartamento()));
-		barrio.setZona(ZonaDWR.transform(barrioTO.getZona()));
+		result.setDepartamento(DepartamentoDWR.transform(barrioTO.getDepartamento()));
+		result.setZona(ZonaDWR.transform(barrioTO.getZona()));
 		
-		barrio.setFact(barrioTO.getFact());
-		barrio.setId(barrioTO.getId());
-		barrio.setTerm(barrioTO.getTerm());
-		barrio.setUact(barrioTO.getUact());
+		result.setFcre(barrioTO.getFcre());
+		result.setFact(barrioTO.getFact());
+		result.setId(barrioTO.getId());
+		result.setTerm(barrioTO.getTerm());
+		result.setUact(barrioTO.getUact());
+		result.setUcre(barrioTO.getUcre());
 		
-		return barrio;
+		return result;
 	}
 }

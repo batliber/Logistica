@@ -49,7 +49,9 @@ public interface RiesgoCrediticioWebService {
         @WebParam(name = "arg11", targetNamespace = "")
         java.lang.String arg11,
         @WebParam(name = "arg12", targetNamespace = "")
-        java.lang.String arg12
+        java.lang.String arg12,
+        @WebParam(name = "arg13", targetNamespace = "")
+        java.lang.String arg13
     );
     
     @WebMethod
@@ -93,7 +95,9 @@ public interface RiesgoCrediticioWebService {
         @WebParam(name = "arg13", targetNamespace = "")
         java.lang.String arg13,
         @WebParam(name = "arg14", targetNamespace = "")
-        java.lang.String arg14
+        java.lang.String arg14,
+        @WebParam(name = "arg15", targetNamespace = "")
+        java.lang.String arg15
     );
     
     @WebMethod
@@ -123,7 +127,9 @@ public interface RiesgoCrediticioWebService {
         @WebParam(name = "arg6", targetNamespace = "")
         java.lang.String arg6,
         @WebParam(name = "arg7", targetNamespace = "")
-        java.lang.String arg7
+        java.lang.String arg7,
+        @WebParam(name = "arg8", targetNamespace = "")
+        java.lang.String arg8
     );
 
     @WebMethod
@@ -139,4 +145,18 @@ public interface RiesgoCrediticioWebService {
     )
     @WebResult(name = "return", targetNamespace = "")
     public String getSiguienteDocumentoParaControlar();
+    
+    @WebMethod
+    @RequestWrapper(
+    	localName = "getSiguienteDocumentoParaControlarRiesgoOnLine", 
+    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
+    	className = "uy.com.amensg.riesgoCrediticio.webservices.GetSiguienteDocumentoParaControlarRiesgoOnLine"
+    )
+    @ResponseWrapper(
+    	localName = "getSiguienteDocumentoParaControlarRiesgoOnLineResponse", 
+    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
+    	className = "uy.com.amensg.riesgoCrediticio.webservices.GetSiguienteDocumentoParaControlarRiesgoOnLineResponse"
+    )
+    @WebResult(name = "return", targetNamespace = "")
+    public String getSiguienteDocumentoParaControlarRiesgoOnLine();
 }

@@ -18,8 +18,12 @@
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
 	<script type="text/javascript" src="./usuario_edit.js"></script>
 	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
 	<link rel="stylesheet" type="text/css" href="./usuario_edit.css"/>
 </head>
 <body>
@@ -41,41 +45,13 @@
 			<input type="password" id="inputUsuarioContrasena" disabled="disabled"/>
 			<input type="checkbox" id="inputCambiarContrasena" onchange="javascript:inputCambiarContrasenaOnChange(event, this)"/>
 		</div>
+		<div class="divFormLabel">Bloqueado:</div><div id="divUsuarioBloqueado" class="divFormValue"><input type="checkbox" id="inputUsuarioBloqueado"/></div>
+		<div class="divFormLabel" id="divLabelAgregarEmpresa">Empresa:</div><div class="divFormValue" id="divEmpresa"><select id="selectEmpresa"></select><input type="button" id="inputAgregarEmpresa" value="" onclick="javascript:inputAgregarEmpresaOnClick(event, this)"/></div>
+		<div class="divFormLabel" id="divLabelAgregarRol">Rol:</div><div class="divFormValue" id="divRol"><select id="selectRol"></select><input type="button" id="inputAgregarRol" value="" onclick="javascript:inputAgregarRolOnClick(event, this)"/></div>
+		<div class="divFormLabel">Empresas:</div>
+		<div id="divTableEmpresas">&nbsp;</div>
 		<div class="divFormLabel">Roles:</div>
-		<div class="divEmpresasRoles">
-			<div id="divEmpresas">
-				<table id="tableEmpresas" border="0" cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td class="tdEmpresaNombre">Empresa</td>
-							<td class="tdEmpresaCheck">&nbsp;</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div id="divRoles">
-				<table id="tableRoles" border="0" cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td class="tdRolNombre">Rol</td>
-							<td class="tdRolCheck">&nbsp;</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
+		<div id="divTableRoles">&nbsp;</div>
 	</div>
 </body>
 </html>

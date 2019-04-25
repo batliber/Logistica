@@ -13,6 +13,8 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PuntoVentaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ActivacionSubloteDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/LiquidacionDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/VisitaPuntoVentaDistribuidorDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
@@ -36,6 +38,8 @@
 			<div class="divButtonBar">
 				<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonNuevo"><input type="submit" id="inputNuevo" value="Nuevo" onclick="javascript:inputNuevoOnClick(event, this)"/></div>
+				<div class="divButton"><input type="submit" value="Recalcular porcentajes" onclick="javascript:inputRecalcularPorcentajesOnClick(event)"/></div>
+				<div class="divButton"><input type="submit" value="Asignar visitas" onclick="javascript:inputAsignarVisitasOnClick(event)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divButtonTitleBar">
@@ -55,6 +59,27 @@
 			<div id="divCloseIFrameActivacionSublote" class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
 		</div>
 		<iframe id="iFrameActivacionSublote" frameborder="0" src="#"></iframe>
+	</div>
+	<div id="divIFrameSeleccionDistribuidor" style="display: none;">
+		<div class="divTitleBar">
+			<div class="divTitleBarText" style="float:left;">Asignar visitas</div>
+			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
+		</div>
+		<div id="divSeleccionDistribuidor">
+			<div class="divButtonBar">
+				<div class="divButton"><input type="submit" value="Aceptar" onclick="javascript:inputAceptarOnClick(event)"/></div>
+				<div class="divButton"><input type="submit" value="Cancelar" onclick="javascript:inputCancelarOnClick(event)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divPopupWindow">
+				<div class="divFormLabelExtended">Distribuidor:</div><div id="divDistribuidor" class="divFormValue"><select id="selectDistribuidor"></select></div>
+				<div class="divFormLabelExtended">Observaciones:</div><div id="divObservaciones" class="divFormValue"><textarea id="textareaObservaciones"></textarea></div>
+			</div>
+		</div>
 	</div>
 	<div id="divModalBackgroundChild">&nbsp;</div>
 <%@ include file="/includes/footer.jsp" %>

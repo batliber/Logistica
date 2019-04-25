@@ -35,10 +35,18 @@
 					
 					<div class="divFormLabelExtendedPrint" id="divLabelNumeroTramite">Tr&aacute;mite:</div><div id="divNumeroTramite" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelNumeroTramiteBarCode">C&oacute;digo de barras:</div><div class="divFormValuePrint"><div id="divNumeroTramiteBarCode" class="divBarCode">&nbsp;</div></div>
-					<div class="divFormLabelExtendedPrint" id="divLabelDireccionEntrega">Direcci&oacute;n entrega:</div><div id="divDireccionEntrega" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelDepartamento">Departamento:</div><div class="divFormValuePrint divDepartamento">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelZona">Zona:</div><div class="divFormValuePrint divZona">&nbsp;</div>
-					<div class="divFormLabelExtendedPrint divObservaciones" id="divLabelObservaciones">Observaciones:</div><div id="divObservaciones" class="divFormValuePrint divObservaciones">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelBarrio">Barrio:</div><div class="divFormValuePrint divBarrio">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDireccionEntrega">Direcci&oacute;n entrega:</div><div id="divDireccionEntrega" class="divFormValuePrint">&nbsp;</div>
+					<!-- 
+					<div class="divFormLabelExtendedPrint" id="divLabelDireccionEntregaNumero">N&uacute;mero:</div><div id="divDireccionEntregaNumero" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDireccionEntregaApto">Apto.:</div><div id="divDireccionEntregaApto" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDireccionEntregaManzana">Manzana:</div><div id="divDireccionEntregaManzana" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDireccionEntregaSolar">Solar:</div><div id="divDireccionEntregaSolar" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelDireccionEntregaCodigoPostal">C.P.:</div><div id="divDireccionEntregaCodigoPostal" class="divFormValuePrint">&nbsp;</div>
+					 -->
+					<div class="divFormLabelExtendedPrint divDireccionEntregaObservaciones" id="divLabelDireccionEntregaObservaciones">Obs. entrega:</div><div id="divDireccionEntregaObservaciones" class="divFormValuePrint divDireccionEntregaObservaciones">&nbsp;</div>
 					
 					<!-- 
 					<div class="divFormLabelExtendedPrint" id="divLabelEstado">Estado:</div><div id="divEstado" class="divFormValuePrint">&nbsp;</div>
@@ -55,12 +63,15 @@
 					<div class="divFormLabelExtendedPrint" id="divLabelMidBarCode">C&oacute;digo de barras:</div><div class="divFormValuePrint"><div id="divMidBarCode" class="divBarCode">&nbsp;</div></div>
 					<div class="divFormLabelExtendedPrint" id="divLabelNombre">Nombre:</div><div id="divNombre" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelTelefonoContacto">Tel&eacute;fono contacto:</div><div id="divTelefonoContacto" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelCostoEnvio">Costo de env&iacute;o:</div><div id="divCostoEnvio" class="divFormValuePrint">&nbsp;</div>
+					<!-- 
 					<div class="divFormLabelExtendedPrint" id="divLabelNumeroFacturaRiverGreen">No. fac. River Green:</div><div id="divNumeroFacturaRiverGreen" class="divFormValueDoubleHeightPrint">&nbsp;</div>
-					<div class="divFormLabelExtendedPrint" id="divLabelBarrio">Barrio:</div><div class="divFormValuePrint divBarrio">&nbsp;</div>
+					 -->
 					<div class="divFormLabelExtendedPrint" id="divLabelTurno">Turno:</div><div id="divTurno" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelFechaEntrega">Fecha de entrega:</div><div id="divFechaEntrega" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelPrecio">Precio:</div><div id="divPrecio" class="divFormValuePrint">&nbsp;</div>
-					<div class="divFormLabelExtendedPrint" id="divLabelFormaPago">Forma de pago:</div><div id="divFormaPago" class="divFormValuePrint divFormaPago">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint" id="divLabelFormaPago">Forma de pago:</div><div id="divFormaPago" class="divFormValuePrint">&nbsp;</div>
+					<div class="divFormLabelExtendedPrint divObservaciones" id="divLabelObservaciones">Observaciones:</div><div id="divObservaciones" class="divFormValuePrint divObservaciones">&nbsp;</div>
 					
 					<!--
 					<div class="divFormLabelExtended" id="divLabelEmail">E-Mail:</div><div id="divEmail" class="divFormValuePrint">&nbsp;</div>
@@ -74,7 +85,10 @@
 					<div class="divFormLabelExtendedPrint" id="divLabelPlan">Plan anterior:</div><div id="divPlan" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelNuevoPlan">Nuevo plan:</div><div id="divNuevoPlan" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelDireccionFactura">Direcci&oacute;n factura:</div><div id="divDireccionFactura" class="divFormValuePrint">&nbsp;</div>
+					<!-- 
 					<div class="divFormLabelExtendedPrint" id="divLabelVendedor">Vendedor:</div><div id="divVendedor" class="divFormValuePrint">&nbsp;</div>
+					 -->
+					 <div class="divFormLabelExtendedPrint" id="divLabelIncluirChip">Inclu&iacute;r chip:</div><div id="divIncluirChip" class="divFormValuePrint">&nbsp;</div>
 				</div>
 				<div class="divColumn" style="border-top: solid 2px black;padding-top: 40px;">
 					<div class="divFormLabelExtendedPrint" id="divLabelFechaNacimiento">Fecha de nac.:</div><div id="divFechaNacimiento" class="divFormValuePrint">&nbsp;</div>

@@ -34,6 +34,9 @@ function init() {
 					$("#inputPuntoVentaTelefono").val(data.telefono);
 					$("#inputPuntoVentaContacto").val(data.contacto);
 					$("#inputPuntoVentaDocumento").val(data.documento);
+					$("#divPuntoVentaFechaAsignacionDistribuidor").text(formatRawDate(data.fechaAsignacionDistribuidor));
+					$("#divPuntoVentaFechaVisitaDistribuidor").text(formatRawDate(data.fechaVisitaDistribuidor));
+					$("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").text(formatRawDate(data.fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor));
 					
 					if (data.departamento != null) {
 						$("#selectPuntoVentaDepartamento").val(data.departamento.id);
@@ -47,6 +50,14 @@ function init() {
 					
 					if (data.estadoPuntoVenta != null) {
 						$("#selectPuntoVentaEstado").val(data.estadoPuntoVenta.id);
+					}
+					
+					if (data.estadoVisitaPuntoVentaDistribuidor != null) {
+						$("#divPuntoVentaEstadoVisitaPuntoVentaDistribuidor").attr("eid", data.estadoVisitaPuntoVentaDistribuidor.id);
+					}
+					
+					if (data.distribuidor != null) {
+						$("#divPuntoVentaDistribuidor").attr("did", data.distribuidor.id);
 					}
 					
 					if (data.latitud != null && data.longitud != null) {
@@ -73,6 +84,21 @@ function init() {
 }
 
 function refinarForm() {
+	$("#divLabelPorcentajeActivacion").hide();
+	$("#divPuntoVentaPorcentajeActivacion").hide();
+	$("#divLabelFechaCalculoPorcentajeActivacion").hide();
+	$("#divPuntoVentaFechaCalculoPorcentajeActivacion").hide();
+	$("#divLabelFechaAsignacionDistribuidor").hide();
+	$("#divPuntoVentaFechaAsignacionDistribuidor").hide();
+	$("#divLabelDistribuidor").hide();
+	$("#divPuntoVentaDistribuidor").hide();
+	$("#divLabelFechaVisitaDistribuidor").hide();
+	$("#divPuntoVentaFechaVisitaDistribuidor").hide();
+	$("#divLabelFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").hide();
+	$("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").hide();
+	$("#divLabelEstadoVisitaPuntoVentaDistribuidor").hide();
+	$("#divPuntoVentaEstadoVisitaPuntoVentaDistribuidor").hide();
+	
 	if (mode == __FORM_MODE_ADMIN) {
 		
 	} else if (mode == __FORM_MODE_USER) {
@@ -207,6 +233,18 @@ function inputGuardarOnClick(event) {
 		telefono: $("#inputPuntoVentaTelefono").val(),
 		contacto: $("#inputPuntoVentaContacto").val(),
 		documento: $("#inputPuntoVentaDocumento").val(),
+		fechaAsignacionDistribuidor: 
+			($("#divPuntoVentaFechaAsignacionDistribuidor").text().trim() != "" ?
+				new Date(parseInt($("#divPuntoVentaFechaAsignacionDistribuidor").text()))
+				: null),
+		fechaVisitaDistribuidor: 
+			($("#divPuntoVentaFechaVisitaDistribuidor").text().trim() != "" ?
+				new Date(parseInt($("#divPuntoVentaFechaVisitaDistribuidor").text()))
+				: null),
+		fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor: 
+			($("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").text().trim() != "" ?
+				new Date(parseInt($("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").text()))
+				: null),
 		latitud: marker.getPosition().lat(),
 		longitud: marker.getPosition().lng(),
 		precision: map.getZoom(),
@@ -220,6 +258,20 @@ function inputGuardarOnClick(event) {
 			id: $("#selectPuntoVentaEstado").val()
 		}
 	};
+	
+	if ($("#divPuntoVentaDistribuidor").attr("did") != null 
+		&& $("#divPuntoVentaDistribuidor").attr("did") != "") {
+		puntoVenta.distribuidor = {
+			id: $("#divPuntoVentaDistribuidor").attr("did")
+		};
+	}
+	
+	if ($("#divPuntoVentaEstadoVisitaPuntoVentaDistribuidor").attr("eid") != null 
+		&& $("#divPuntoVentaEstadoVisitaPuntoVentaDistribuidor").attr("eid") != "") {
+		puntoVenta.estadoVisitaPuntoVentaDistribuidor = {
+			id: $("#divPuntoVentaEstadoVisitaPuntoVentaDistribuidor").attr("eid")
+		};
+	}
 	
 	if (puntoVenta.nombre == "") {
 		alert("Debe ingresar un nombre.");

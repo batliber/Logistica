@@ -101,6 +101,54 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 	}
 	
 	/**
+	 * Exporta los datos que cumplen con los criterios especificados a un archivo .csv 
+	 * de nombre generado según: YYYYMMDDHHmmSS en la carpeta de exportación del sistema.
+	 * 
+	 * @param metadataConsulta Criterios de la consulta.
+	 * @param loggedUsuarioId ID del Usuario que consulta.
+	 */
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		String result = null;
+		
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName = 
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
+			
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
+			
+			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			
+			for (Object object : this.list(metadataConsulta).getRegistrosMuestra()) {
+				ACMInterfacePrepago acmInterfacePrepago = (ACMInterfacePrepago) object;
+				
+				// Agregar línea al archivo.
+				printWriter.println(this.buildCSVLine(acmInterfacePrepago, ""));
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Calcula estadístcas para la asignación de MIDs con los criterios seleccionados.
 	 * Devuelve un String con 3 tipos de caso:
 	 *     - Cantidad a asignar
@@ -210,12 +258,15 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 				"INSERT INTO contrato("
 					+ " id,"
 					+ " numero_tramite,"
+					+ " random,"
 					+ " empresa_id,"
 					+ " estado_id,"
 					+ " rol_id,"
+					+ " fcre,"
 					+ " fact,"
 					+ " term,"
 					+ " uact,"
+					+ " ucre,"
 					+ " agente,"
 					+ " codigo_postal,"
 					+ " direccion,"
@@ -234,6 +285,9 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 				+ " ) VALUES ("
 					+ " nextval('hibernate_sequence'),"
 					+ " nextval('numero_tramite_sequence'),"
+					+ " CAST(random() * 1000000 AS integer),"
+					+ " ?,"
+					+ " ?,"
 					+ " ?,"
 					+ " ?,"
 					+ " ?,"
@@ -263,12 +317,15 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 			insertContrato.setParameter(2, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
 			
 			insertContrato.setParameter(3, currentDate, TimestampType.INSTANCE);
-			insertContrato.setParameter(4, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(4, currentDate, TimestampType.INSTANCE);
 			insertContrato.setParameter(5, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(6, new Long(1), LongType.INSTANCE);
+			insertContrato.setParameter(7, new Long(1), LongType.INSTANCE);
 			
 			SQLQuery updateContrato = hibernateSession.createSQLQuery(
 				"UPDATE contrato"
-				+ " SET fact = ?,"
+				+ " SET random = CAST(random() * 1000000 AS integer),"
+					+ " fact = ?,"
 					+ " term = ?,"
 					+ " uact = ?,"
 					+ " agente = ?,"
@@ -299,8 +356,10 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 					+ " empresa_id,"
 					+ " usuario_id,"
 					+ " rol_id,"
+					+ " ucre,"
 					+ " uact,"
 					+ " fact,"
+					+ " fcre,"
 					+ " term,"
 					+ " contrato_id,"
 					+ " estado_id"
@@ -309,8 +368,10 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 					+ " c.empresa_id,"
 					+ " null,"
 					+ " c.rol_id,"
+					+ " c.ucre,"
 					+ " c.uact,"
 					+ " c.fact,"
+					+ " c.fcre,"
 					+ " c.term,"
 					+ " c.id,"
 					+ " c.estado_id"
@@ -338,27 +399,27 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 				
 				switch (map.get(acmInterfacePrepago.getMid())) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
-						insertContrato.setParameter(6, null, StringType.INSTANCE);
-						insertContrato.setParameter(7, null, StringType.INSTANCE);
 						insertContrato.setParameter(8, null, StringType.INSTANCE);
 						insertContrato.setParameter(9, null, StringType.INSTANCE);
-						insertContrato.setParameter(10, null, LongType.INSTANCE);
+						insertContrato.setParameter(10, null, StringType.INSTANCE);
 						insertContrato.setParameter(11, null, StringType.INSTANCE);
-						insertContrato.setParameter(12, null, DateType.INSTANCE);
+						insertContrato.setParameter(12, null, LongType.INSTANCE);
 						insertContrato.setParameter(13, null, StringType.INSTANCE);
-						insertContrato.setParameter(14, acmInterfacePrepago.getMid(), LongType.INSTANCE);
+						insertContrato.setParameter(14, null, DateType.INSTANCE);
 						insertContrato.setParameter(15, null, StringType.INSTANCE);
-						insertContrato.setParameter(16, null, LongType.INSTANCE);
-						insertContrato.setParameter(17, null, LongType.INSTANCE);
-						insertContrato.setParameter(18, 
+						insertContrato.setParameter(16, acmInterfacePrepago.getMid(), LongType.INSTANCE);
+						insertContrato.setParameter(17, null, StringType.INSTANCE);
+						insertContrato.setParameter(18, null, LongType.INSTANCE);
+						insertContrato.setParameter(19, null, LongType.INSTANCE);
+						insertContrato.setParameter(20, 
 							"Monto promedio: " 
 								+ (acmInterfacePrepago.getMontoPromedio() != null ? formatMonto.format(acmInterfacePrepago.getMontoPromedio()) : "0") 
 								+ ".\n"
 							+ observaciones,
 							StringType.INSTANCE
 						);
-						insertContrato.setParameter(19, null, StringType.INSTANCE);
-						insertContrato.setParameter(20, null, StringType.INSTANCE);
+						insertContrato.setParameter(21, null, StringType.INSTANCE);
+						insertContrato.setParameter(22, null, StringType.INSTANCE);
 						
 						insertContrato.executeUpdate();
 						

@@ -17,4 +17,15 @@ public interface IDisponibilidadEntregaEmpresaZonaTurnoBean {
 	public Collection<DisponibilidadEntregaEmpresaZonaTurno> listByEmpresaZonaTurno(Empresa empresa, Zona zona, Turno turno);
 	
 	public void generarDisponibilidadParaEmpresa(Empresa empresa);
+	
+	public void updateDisponibilidadByZona(
+		Zona zona,
+		Collection<DisponibilidadEntregaEmpresaZonaTurno> disponibilidadEntregaEmpresaZonaTurnos
+	);
+	
+	public void updateDisponibilidadByEmpresaZona(
+		Empresa empresa,
+		Zona zona,
+		Collection<DisponibilidadEntregaEmpresaZonaTurno> disponibilidadEntregaEmpresaZonaTurnos
+	);
 }

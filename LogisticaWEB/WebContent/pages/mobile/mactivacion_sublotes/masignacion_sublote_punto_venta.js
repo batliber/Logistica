@@ -14,8 +14,21 @@ function init() {
 	);
 	
 	fillSelectBarrio([]);
+	fillSelectPuntoVenta([]);
 	
 	initMap();
+	
+	/*
+	PuntoVentaDWR.listMinimalContextAndLocationAware(
+		{
+			callback: function(data) {
+				fillSelectPuntoVenta(data);
+				fillMap(data);
+			}
+			, async: false
+		}
+	);
+	*/
 }
 
 function initMap() {
@@ -78,12 +91,19 @@ function showSubloteData(data) {
 		if (data.puntoVenta != null) {
 			$("#selectDepartamento").val(data.puntoVenta.departamento.id);
 			
+			fillSelectBarrio([data.puntoVenta.barrio]);
+			$("#selectBarrio").val(data.puntoVenta.barrio.id);
+			
 			fillSelectPuntoVenta([data.puntoVenta]);
 			$("#selectPuntoVenta").val(data.puntoVenta.id);
 			
 			fillMap([data.puntoVenta]);
 		} else {
 			$("#selectDepartamento").val(0);
+			
+			fillSelectBarrio([]);
+			$("#selectBarrio").val(0);
+			
 			fillSelectPuntoVenta([]);
 			$("#selectPuntoVenta").val(0);
 					
@@ -190,7 +210,8 @@ function fillMap(data) {
 	if (data.length > 1) {
 		map.fitBounds(markerBounds);
 	} else if (data.length == 1 && data[0].precision != null) {
-		map.setZoom(data[0].precision)
+		map.setCenter({ lat: data[0].latitud, lng: data[0].longitud });
+		map.setZoom(data[0].precision);
 	}
 }
 
@@ -205,7 +226,7 @@ function inputNumeroSubloteOnChange(event, element) {
 	var numeroSublote = $("#inputNumeroSublote").val();
 	
 	if (numeroSublote != null && numeroSublote != "") {
-		ActivacionSubloteDWR.getByNumero(
+		ActivacionSubloteDWR.getByNumeroContextAware(
 			numeroSublote,
 			{
 				callback: showSubloteData, async: false
@@ -233,7 +254,7 @@ function selectDepartamentoOnChange(event, element) {
 			}
 		);
 		
-		PuntoVentaDWR.listByDepartamentoIdLocationAware(
+		PuntoVentaDWR.listByDepartamentoIdContextAndLocationAware(
 			departamentoId,
 			$("#inputLatitud").val(),
 			$("#inputLongitud").val(),
@@ -254,7 +275,7 @@ function selectBarrioOnChange(event, element) {
 	fillMap([]);
 	
 	if (barrioId != 0) {
-		PuntoVentaDWR.listByBarrioIdLocationAware(
+		PuntoVentaDWR.listByBarrioIdContextAndLocationAware(
 			barrioId,
 			$("#inputLatitud").val(),
 			$("#inputLongitud").val(),
@@ -296,6 +317,8 @@ function inputLimpiarOnClick(event, element) {
 	$("#divFechaAsignacionDistribuidor").html("&nbsp;");
 	$("#inputNumeroSublote").val(null);
 	$("#selectDepartamento").val(0);
+	$("#selectBarrio > option:gt(0)").remove();
+	$("#selectBarrio").val(0);
 	$("#selectPuntoVenta > option:gt(0)").remove();
 	$("#selectPuntoVenta").val(0);
 	

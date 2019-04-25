@@ -1,6 +1,21 @@
 $(document).ready(init);
 
 function init() {
+	TipoTasaInteresEfectivaAnualDWR.list(
+		{
+			callback: function(data) {
+				var html = "<option value='0'>Seleccione...</option>";
+				
+				for (var i=0; i<data.length; i++) {
+					html +=
+						"<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
+				}
+				
+				$("#selectTasaInteresEfectivaAnualTipo").html(html);
+			}, async: false
+		}
+	);
+	
 	refinarForm();
 	
 	$("#inputTasaInteresEfectivaAnualVigenciaHasta").prop("disabled", true);
@@ -12,17 +27,34 @@ function init() {
 			id,
 			{
 				callback: function(data) {
+					if (data.tipoTasaInteresEfectivaAnual != null) {
+						$("#selectTasaInteresEfectivaAnualTipo").val(data.tipoTasaInteresEfectivaAnual.id);
+					}
+					
 					$("#inputTasaInteresEfectivaAnualCuotasDesde").val(data.cuotasDesde);
-					$("#inputTasaInteresEfectivaAnualCuotasHasta").val(data.cuotasHasta);
+					if (data.cuotasHasta != null) {
+						$("#inputTasaInteresEfectivaAnualCuotasHasta").val(data.cuotasHasta);
+					} else {
+						$("#inputTasaInteresEfectivaAnualCuotasHastaMax").prop("checked", true);
+						$("#inputTasaInteresEfectivaAnualCuotasHasta").prop("disabled", true);
+					}
 					$("#inputTasaInteresEfectivaAnualMontoDesde").val(data.montoDesde);
-					$("#inputTasaInteresEfectivaAnualMontoHasta").val(data.montoHasta);
+					if (data.montoHasta != null) {
+						$("#inputTasaInteresEfectivaAnualMontoHasta").val(data.montoHasta);
+					} else {
+						$("#inputTasaInteresEfectivaAnualMontoHastaMax").prop("checked", true);
+						$("#inputTasaInteresEfectivaAnualMontoHasta").prop("disabled", true);
+					}
 					$("#inputTasaInteresEfectivaAnualValor").val(formatDecimal(data.valor, 2));
 					$("#inputTasaInteresEfectivaAnualVigenciaHasta").val(formatLongDate(data.fechaVigenciaHasta));
 					
+					$("#selectTasaInteresEfectivaAnualTipo").prop("disabled", true);
 					$("#inputTasaInteresEfectivaAnualCuotasDesde").prop("disabled", true);
 					$("#inputTasaInteresEfectivaAnualCuotasHasta").prop("disabled", true);
+					$("#inputTasaInteresEfectivaAnualCuotasHastaMax").prop("disabled", true);
 					$("#inputTasaInteresEfectivaAnualMontoDesde").prop("disabled", true);
 					$("#inputTasaInteresEfectivaAnualMontoHasta").prop("disabled", true);
+					$("#inputTasaInteresEfectivaAnualMontoHastaMax").prop("disabled", true);
 					$("#inputTasaInteresEfectivaAnualValor").prop("disabled", true);
 					
 					if (mode == __FORM_MODE_ADMIN) {
@@ -47,14 +79,43 @@ function refinarForm() {
 	}
 }
 
+function inputTasaInteresEfectivaAnualCuotasHastaMaxOnChange(event, element) {
+	if ($("#inputTasaInteresEfectivaAnualCuotasHastaMax").prop("checked")) {
+		$("#inputTasaInteresEfectivaAnualCuotasHasta").val(null);
+		$("#inputTasaInteresEfectivaAnualCuotasHasta").prop("disabled", true);
+	} else {
+		$("#inputTasaInteresEfectivaAnualCuotasHasta").prop("disabled", false);
+		$("#inputTasaInteresEfectivaAnualCuotasHasta").focus();
+	}
+}
+
+function inputTasaInteresEfectivaAnualMontoHastaMaxOnChange(event, element) {
+	if ($("#inputTasaInteresEfectivaAnualMontoHastaMax").prop("checked")) {
+		$("#inputTasaInteresEfectivaAnualMontoHasta").val(null);
+		$("#inputTasaInteresEfectivaAnualMontoHasta").prop("disabled", true);
+	} else {
+		$("#inputTasaInteresEfectivaAnualMontoHasta").prop("disabled", false);
+		$("#inputTasaInteresEfectivaAnualMontoHasta").focus();
+	}
+}
+
 function inputGuardarOnClick(event) {
 	var tasaInteresEfectivaAnual = {
 		cuotasDesde: $("#inputTasaInteresEfectivaAnualCuotasDesde").val(),
 		cuotasHasta: $("#inputTasaInteresEfectivaAnualCuotasHasta").val(),
 		montoDesde: $("#inputTasaInteresEfectivaAnualMontoDesde").val(),
 		montoHasta: $("#inputTasaInteresEfectivaAnualMontoHasta").val(),
-		valor: $("#inputTasaInteresEfectivaAnualValor").val()
+		valor: $("#inputTasaInteresEfectivaAnualValor").val(),
+		tipoTasaInteresEfectivaAnual: {
+			id: $("#selectTasaInteresEfectivaAnualTipo").val()
+		}
 	};
+	
+	if (tasaInteresEfectivaAnual.tipoTasaInteresEfectivaAnual.id == 0) {
+		alert("Debe seleccionar un tipo de tasa.");
+		
+		return;
+	}
 	
 	if (tasaInteresEfectivaAnual.cuotasDesde == "") {
 		alert("Debe ingresar cuotas desde.");
@@ -62,7 +123,8 @@ function inputGuardarOnClick(event) {
 		return;
 	}
 	
-	if (tasaInteresEfectivaAnual.cuotasHasta == "") {
+	if (!$("#inputTasaInteresEfectivaAnualCuotasHastaMax").prop("checked")
+		&& tasaInteresEfectivaAnual.cuotasHasta == "") {
 		alert("Debe ingresar cuotas hasta.");
 		
 		return;
@@ -74,7 +136,8 @@ function inputGuardarOnClick(event) {
 		return;
 	}
 	
-	if (tasaInteresEfectivaAnual.montoHasta == "") {
+	if (!$("#inputTasaInteresEfectivaAnualMontoHastaMax").prop("checked")
+		&& tasaInteresEfectivaAnual.montoHasta == "") {
 		alert("Debe ingresar monto hasta.");
 		
 		return;

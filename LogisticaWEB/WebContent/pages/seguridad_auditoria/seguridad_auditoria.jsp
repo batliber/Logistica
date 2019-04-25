@@ -42,8 +42,8 @@
 			<div class="divMainWindow">
 				<div>
 					<div id="divAgregarFiltroContainer">
-						<div class="divFormLabel" style="width: 75px;">Fecha desde:</div><div class="divFormValue" style="width: 90px;"><input type="text" id="inputFechaDesde" onchange="javascript:inputFechaDesdeOnChange(event, this)"/></div>
-						<div class="divFormLabel" style="width: 75px;">Fecha hasta:</div><div class="divFormValue" style="width: 90px;"><input type="text" id="inputFechaHasta" onchange="javascript:inputFechaHastaOnChange(event, this)"/></div>
+						<div class="divFormLabel">Fecha desde:</div><div class="divFormValue" id="divFechaDesde"><input type="text" id="inputFechaDesde" onchange="javascript:inputFechaDesdeOnChange(event, this)"/></div>
+						<div class="divFormLabel">Fecha hasta:</div><div class="divFormValue" id="divFechaHasta"><input type="text" id="inputFechaHasta" onchange="javascript:inputFechaHastaOnChange(event, this)"/></div>
 					</div>
 				</div> 
 				<div id="divTableSeguridadAuditoria">&nbsp;</div>

@@ -51,10 +51,18 @@ public class ContratoArchivoAdjuntoDWR {
 		result.setFechaSubida(contratoArchivoAdjunto.getFechaSubida());
 		result.setUrl(contratoArchivoAdjunto.getUrl());
 		
+		if (contratoArchivoAdjunto.getTipoArchivoAdjunto() != null) {
+			result.setTipoArchivoAdjunto(
+				TipoArchivoAdjuntoDWR.transform(contratoArchivoAdjunto.getTipoArchivoAdjunto())
+			);
+		}
+		
+		result.setFcre(contratoArchivoAdjunto.getFcre());
 		result.setFact(contratoArchivoAdjunto.getFact());
 		result.setId(contratoArchivoAdjunto.getId());
 		result.setTerm(contratoArchivoAdjunto.getTerm());
 		result.setUact(contratoArchivoAdjunto.getUact());
+		result.setUcre(contratoArchivoAdjunto.getUcre());
 		
 		return result;
 	}

@@ -21,6 +21,7 @@ import uy.com.amensg.logistica.entities.ActivacionSublote;
 import uy.com.amensg.logistica.entities.ActivacionTO;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EstadoActivacion;
+import uy.com.amensg.logistica.entities.Liquidacion;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
 import uy.com.amensg.logistica.entities.MetadataConsultaTO;
@@ -183,41 +184,106 @@ public class ActivacionDWR {
 		return result;
 	}
 	
-	public static ActivacionTO transform(Activacion activacion) {
-		ActivacionTO activacionTO = new ActivacionTO();
+	public String exportarAExcelSupervisorDistribucionChips(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
 		
-		activacionTO.setChip(activacion.getChip());
-		activacionTO.setFechaActivacion(activacion.getFechaActivacion());
-		activacionTO.setFechaVencimiento(activacion.getFechaVencimiento());
-		activacionTO.setFechaImportacion(activacion.getFechaImportacion());
-		activacionTO.setMid(activacion.getMid());
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IActivacionBean iActivacionBean = lookupBean();
+				
+				result = iActivacionBean.exportarAExcelSupervisorDistribucionChips(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String exportarAExcelEncargadoActivaciones(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IActivacionBean iActivacionBean = lookupBean();
+				
+				result = iActivacionBean.exportarAExcelEncargadoActivaciones(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String exportarAExcelEncargadoActivacionesSinDistribucion(MetadataConsultaTO metadataConsultaTO) {
+		String result = "";
+		
+		try {
+			HttpSession httpSession = WebContextFactory.get().getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IActivacionBean iActivacionBean = lookupBean();
+				
+				result = iActivacionBean.exportarAExcelEncargadoActivacionesSinDistribucion(MetadataConsultaDWR.transform(metadataConsultaTO), usuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public static ActivacionTO transform(Activacion activacion) {
+		ActivacionTO result = new ActivacionTO();
+		
+		result.setChip(activacion.getChip());
+		result.setFechaActivacion(activacion.getFechaActivacion());
+		result.setFechaVencimiento(activacion.getFechaVencimiento());
+		result.setFechaImportacion(activacion.getFechaImportacion());
+		result.setMid(activacion.getMid());
 		
 		if (activacion.getEmpresa() != null) {
-			activacionTO.setEmpresa(EmpresaDWR.transform(activacion.getEmpresa()));
+			result.setEmpresa(EmpresaDWR.transform(activacion.getEmpresa(), false));
 		}
 		
 		if (activacion.getTipoActivacion() != null) {
-			activacionTO.setTipoActivacion(TipoActivacionDWR.transform(activacion.getTipoActivacion()));
+			result.setTipoActivacion(TipoActivacionDWR.transform(activacion.getTipoActivacion()));
 		}
 		
 		if (activacion.getEstadoActivacion() != null) {
-			activacionTO.setEstadoActivacion(EstadoActivacionDWR.transform(activacion.getEstadoActivacion()));
+			result.setEstadoActivacion(EstadoActivacionDWR.transform(activacion.getEstadoActivacion()));
 		}
 		
 		if (activacion.getActivacionLote() != null) {
-			activacionTO.setActivacionLote(ActivacionLoteDWR.transform(activacion.getActivacionLote()));
+			result.setActivacionLote(ActivacionLoteDWR.transform(activacion.getActivacionLote()));
 		}
 		
 		if (activacion.getActivacionSublote() != null) {
-			activacionTO.setActivacionSublote(ActivacionSubloteDWR.transform(activacion.getActivacionSublote(), false));
+			result.setActivacionSublote(ActivacionSubloteDWR.transform(activacion.getActivacionSublote(), false));
 		}
 		
-		activacionTO.setFact(activacion.getFact());
-		activacionTO.setId(activacion.getId());
-		activacionTO.setTerm(activacion.getTerm());
-		activacionTO.setUact(activacion.getUact());
+		if (activacion.getLiquidacion() != null) {
+			result.setLiquidacion(LiquidacionDWR.transform(activacion.getLiquidacion()));
+		}
 		
-		return activacionTO;
+		result.setFcre(activacion.getFcre());
+		result.setFact(activacion.getFact());
+		result.setId(activacion.getId());
+		result.setTerm(activacion.getTerm());
+		result.setUcre(activacion.getUcre());
+		
+		return result;
 	}
 
 	public static Activacion transform(ActivacionTO activacionTO) {
@@ -262,8 +328,16 @@ public class ActivacionDWR {
 			result.setTipoActivacion(tipoActivacion);
 		}
 		
+		if (activacionTO.getLiquidacion() != null) {
+			Liquidacion liquidacion = new Liquidacion();
+			liquidacion.setId(activacionTO.getLiquidacion().getId());
+			
+			result.setLiquidacion(liquidacion);
+		}
+		
 		Date date = GregorianCalendar.getInstance().getTime();
 		
+		result.setFcre(activacionTO.getFcre());
 		result.setFact(date);
 		result.setId(activacionTO.getId());
 		result.setTerm(new Long(1));
@@ -272,6 +346,7 @@ public class ActivacionDWR {
 		Long usuarioId = (Long) httpSession.getAttribute("sesion");
 		
 		result.setUact(usuarioId);
+		result.setUcre(result.getUcre());
 
 		return result;
 	}

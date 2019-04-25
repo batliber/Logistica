@@ -11,6 +11,7 @@
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceContratoPHDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfacePrepagoPHDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceMidPHDWR.js"></script>
+	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
@@ -36,13 +37,15 @@
 				<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 				<div class="divButton"><input type="submit" id="inputHabilitarAcciones" value="Habilitar acciones" onclick="javascript:inputHabilitarAccionesOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
-				<!-- 
-				<div class="divButton"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></div>
+				<div class="divButton" id="divButtonExportarAExcel">
+					<form method="post" id="formExportarAExcel" action="#"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></form>
+				</div>
+				<!--
 				<div class="divButton"><input type="submit" id="inputExportarSubconjunto" value="Exportar subconjunto" onclick="javascript:inputExportarSubconjuntoOnClick(event, this)"/></div>
 				 -->
-				<div class="divButton"><input type="submit" id="inputAsignar" value="Asignar" onclick="javascript:inputAsignarOnClick(event, this)"/></div>
-				<div class="divButton"><input type="submit" id="inputAsignarSubconjunto" value="Asignar subconjunto" onclick="javascript:inputAsignarSubconjuntoOnClick(event, this)"/></div>
-				<div class="divButton"><input type="submit" id="inputDeshacerAsignacion" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event, this)"/></div>
+				<div class="divButton" id="divButtonAsignar"><input type="submit" id="inputAsignar" value="Asignar" onclick="javascript:inputAsignarOnClick(event, this)"/></div>
+				<div class="divButton" id="divButtonAsignarSubconjunto"><input type="submit" id="inputAsignarSubconjunto" value="Asignar subconjunto" onclick="javascript:inputAsignarSubconjuntoOnClick(event, this)"/></div>
+				<div class="divButton" id="divButtonDeshacerAsignacion"><input type="submit" id="inputDeshacerAsignacion" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
 				<!-- 
 				<div class="divButton"><input type="submit" id="inputReprocesar" value="Reprocesar" onclick="javascript:inputReprocesarOnClick(event, this)"/></div>
@@ -55,7 +58,7 @@
 				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 				<!-- <div id="divButtonTitleQuintupleSize" class="divButtonTitleBarTitle">Exportar</div> -->
-				<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Asignar</div>
+				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Asignar</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 				<!-- 
 				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Reprocesar</div>

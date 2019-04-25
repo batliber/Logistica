@@ -31,6 +31,7 @@ function init() {
 								tdContratoDocumento: { campo: "documento", descripcion: "Documento", abreviacion: "Documento", tipo: __TIPO_CAMPO_STRING },
 								tdContratoNuevoPlan: { campo: "nuevoPlan.descripcion", clave: "nuevoPlan.id", descripcion: "Nuevo plan", abreviacion: "Nuevo plan", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPlanes, clave: "id", valor: "descripcion" }, ancho: 80 },
 								tdContratoEquipo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 90 },
+								tdContratoCostoEnvio: { campo: "costoEnvio", descripcion: "Costo de envío", abreviacion: "C. env.", tipo: __TIPO_CAMPO_DECIMAL },
 								tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
 								tdFechaActivarEn: { campo: "fechaActivarEn", descripcion: "Activar en", abreviacion: "Act. en", tipo: __TIPO_CAMPO_FECHA },
 								tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
@@ -80,6 +81,7 @@ function init() {
 							tdContratoLocalidad: { campo: "localidad", descripcion: "Localidad", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING },
 							tdContratoNuevoPlan: { campo: "nuevoPlan.descripcion", clave: "nuevoPlan.id", descripcion: "Nuevo plan", abreviacion: "Nuevo plan", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPlanes, clave: "id", valor: "descripcion" }, ancho: 80 },
 							tdContratoEquipo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Equipo", abreviacion: "Equipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 90 },
+							tdContratoCostoEnvio: { campo: "costoEnvio", descripcion: "Costo de envío", abreviacion: "C. env.", tipo: __TIPO_CAMPO_DECIMAL },
 							tdContratoTelefonoContacto: { campo: "telefonoContacto", descripcion: "Teléfono contacto", abreviacion: "Teléfono", tipo: __TIPO_CAMPO_STRING },
 							tdContratoNumeroSerie: { campo: "numeroSerie", descripcion: "Número de serie", abreviacion: "Serie", tipo: __TIPO_CAMPO_STRING },
 							tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto por distribuidor", abreviacion: "Distribuído", tipo: __TIPO_CAMPO_FECHA },
@@ -110,7 +112,7 @@ function init() {
 function listEmpresas() {
 	var result = [];
 	
-	EmpresaDWR.list(
+	UsuarioRolEmpresaDWR.listEmpresasByContext(
 		{
 			callback: function(data) {
 				if (data != null) {
@@ -236,7 +238,8 @@ function trContratoOnClick(eventObject) {
 	var formMode = __FORM_MODE_READ;
 	if (estadoId == __ESTADO_ACTIVAR
 		|| estadoId == __ESTADO_CONTROL_ANTEL
-		|| estadoId == __ESTADO_ACT_DOC_VENTA) {
+		|| estadoId == __ESTADO_ACT_DOC_VENTA
+		|| estadoId == __ESTADO_FACTURA_IMPAGA) {
 		if (mode == __ROL_SUPERVISOR_ACTIVACION) {
 			formMode = __FORM_MODE_SUPERVISOR_ACTIVACION;
 		} else {
@@ -267,34 +270,38 @@ function inputAsignarOnClick() {
 		metadataConsulta.tamanoSubconjunto = grid.getCount();
 	}
 	
-	ContratoDWR.chequearAsignacion(
-		metadataConsulta,
-		{
-			callback: function(data) {
-				if (data || confirm("Atención: se modificarán registros que ya se encuentran asignados.")) {
-					$("#selectActivador > option").remove();
-					
-					$("#selectActivador").append("<option value='0'>Seleccione...</option>");
-					
-					UsuarioRolEmpresaDWR.listActivadoresByContext(
-						{
-							callback: function(data) {
-								var html = "";
-								
-								for (var i=0; i<data.length; i++) {
-									html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-								}
-								
-								$("#selectActivador").append(html);
-							}, async: false
-						}
-					);
-					
-					showPopUp(document.getElementById("divIFrameSeleccionActivador"));
-				}
-			}, async: false
-		}
-	);
+	if (metadataConsulta.tamanoSubconjunto <= __MAXIMA_CANTIDAD_REGISTROS_ASIGNACION) {
+		ContratoDWR.chequearAsignacion(
+			metadataConsulta,
+			{
+				callback: function(data) {
+					if (data || confirm("Atención: se modificarán registros que ya se encuentran asignados.")) {
+						$("#selectActivador > option").remove();
+						
+						$("#selectActivador").append("<option value='0'>Seleccione...</option>");
+						
+						UsuarioRolEmpresaDWR.listActivadoresByContext(
+							{
+								callback: function(data) {
+									var html = "";
+									
+									for (var i=0; i<data.length; i++) {
+										html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+									}
+									
+									$("#selectActivador").append(html);
+								}, async: false
+							}
+						);
+						
+						showPopUp(document.getElementById("divIFrameSeleccionActivador"));
+					}
+				}, async: false
+			}
+		);
+	} else {
+		alert("No se puede completar la operación. La asignación modificará más de 300 registros.");
+	}
 }
 
 function inputCancelarOnClick(event, element) {

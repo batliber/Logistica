@@ -4,6 +4,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -30,6 +33,10 @@ public class TasaInteresEfectivaAnual extends BaseEntity {
 	@Column(name = "valor")
 	private Double valor;
 
+	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+	@JoinColumn(name = "tipo_tasa_interes_efectiva_anual_id", nullable = true)
+	private TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual;
+	
 	public Long getCuotasDesde() {
 		return cuotasDesde;
 	}
@@ -76,5 +83,13 @@ public class TasaInteresEfectivaAnual extends BaseEntity {
 
 	public void setValor(Double valor) {
 		this.valor = valor;
+	}
+
+	public TipoTasaInteresEfectivaAnual getTipoTasaInteresEfectivaAnual() {
+		return tipoTasaInteresEfectivaAnual;
+	}
+
+	public void setTipoTasaInteresEfectivaAnual(TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual) {
+		this.tipoTasaInteresEfectivaAnual = tipoTasaInteresEfectivaAnual;
 	}
 }

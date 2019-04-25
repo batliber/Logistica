@@ -44,6 +44,9 @@ public class SeguridadAuditoriaBean implements ISeguridadAuditoriaBean {
 	
 	public void save(SeguridadAuditoria seguridadAuditoria) {
 		try {
+			seguridadAuditoria.setFcre(seguridadAuditoria.getFact());
+			seguridadAuditoria.setUcre(seguridadAuditoria.getUact());
+			
 			entityManager.persist(seguridadAuditoria);
 		} catch (Exception e) {
 			e.printStackTrace();
