@@ -13,8 +13,11 @@ import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.SeguridadAuditoria;
+import uy.com.amensg.logistica.entities.SeguridadTipoEvento;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
+import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
@@ -190,14 +193,36 @@ public class UsuarioBean implements IUsuarioBean {
 
 	public void update(Usuario usuario) {
 		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
 			Usuario managedUsuario = entityManager.find(Usuario.class, usuario.getId());
 			
 			for (UsuarioRolEmpresa usuarioRolEmpresa : managedUsuario.getUsuarioRolEmpresas()) {
 				entityManager.remove(usuarioRolEmpresa);
 			}
 			
-			if (usuario.getContrasena() != null) {
+			if (usuario.getContrasena() != null && !usuario.getContrasena().equals(managedUsuario.getContrasena())) {
 				managedUsuario.setContrasena(usuario.getContrasena());
+				
+				SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
+				seguridadAuditoria.setFecha(date);
+				
+				SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
+				seguridadTipoEvento.setId(
+					new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.CambioPassword"))
+				);
+				
+				seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
+				
+				seguridadAuditoria.setUsuario(managedUsuario);
+				
+				seguridadAuditoria.setFcre(date);
+				seguridadAuditoria.setFact(date);
+				seguridadAuditoria.setTerm(new Long(1));
+				seguridadAuditoria.setUact(managedUsuario.getId());
+				seguridadAuditoria.setUcre(managedUsuario.getId());
+				
+				entityManager.persist(seguridadAuditoria);
 			}
 			
 			managedUsuario.setBloqueado(usuario.getBloqueado());

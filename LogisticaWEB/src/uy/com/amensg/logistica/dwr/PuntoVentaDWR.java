@@ -22,7 +22,6 @@ import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.Departamento;
 import uy.com.amensg.logistica.entities.EstadoPuntoVenta;
 import uy.com.amensg.logistica.entities.EstadoVisitaPuntoVentaDistribuidor;
-import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultadoTO;
@@ -32,7 +31,6 @@ import uy.com.amensg.logistica.entities.PuntoVenta;
 import uy.com.amensg.logistica.entities.PuntoVentaTO;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.util.Configuration;
-import uy.com.amensg.logistica.util.Constants;
 
 @RemoteProxy
 public class PuntoVentaDWR {

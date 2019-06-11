@@ -26,7 +26,7 @@ function init() {
 							document.getElementById("divTablePuntosVenta"),
 							{
 								tdNombre: { campo: "puntoVenta.nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
-								tdDepartamento: { campo: "puntoVenta.departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"} },
+								tdDepartamento: { campo: "puntoVenta.departamento.nombre", clave: "puntoVenta.departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"} },
 								tdBarrio: { campo: "puntoVenta.barrio.nombre", clave: "puntoVenta.barrio.id", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listBarrios, clave: "id", valor: "nombre"} },
 								tdEstado: { campo: "puntoVenta.estadoPuntoVenta.nombre", clave: "puntoVenta.estadoPuntoVenta.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoPuntoVentas, clave: "id", valor: "nombre"}, ancho: 70 },
 								tdPorcentajeActivacion: { campo: "porcentajeActivacion", descripcion: "Porcentaje activación", abreviacion: "% act.", tipo: __TIPO_CAMPO_PORCENTAJE, decimales: 1 },
@@ -159,29 +159,7 @@ function reloadData() {
 	CalculoPorcentajeActivacionPuntoVentaDWR.listContextAware(
 		grid.filtroDinamico.calcularMetadataConsulta(),
 		{
-			callback: function(data) {
-//				initMap();
-				
-//				var markerBounds = new google.maps.LatLngBounds();
-//				
-//				for (var i=0; i<data.registrosMuestra.length; i++) {
-//					if (data.registrosMuestra[i].latitud != null && data.registrosMuestra[i].longitud != null) {
-//						var latlng = {
-//							lat: data.registrosMuestra[i].latitud, lng: data.registrosMuestra[i].longitud
-//						};
-//						
-//						var marker = new google.maps.Marker({
-//							position: latlng,
-//							map: map,
-//							title: data.registrosMuestra[i].nombre
-//						});
-//						
-//						markerBounds.extend(latlng);
-//					}
-//				}
-//				
-//				map.fitBounds(markerBounds);
-				
+			callback: function(data) {				
 				grid.reload(data);
 			}
 		}

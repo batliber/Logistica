@@ -2049,19 +2049,36 @@ public class ContratoBean implements IContratoBean {
 		String result = null;
 		
 		try {
+			Long empresaANBELId = 
+				new Long(
+					Configuration.getInstance().getProperty("empresa.ANBEL")
+				);
+			
 			Empresa empresa = iEmpresaBean.getById(empresaId, false);
 			
-			Rol rol = 
+			Rol rolVendedor = 
+				iRolBean.getById(
+					new Long(Configuration.getInstance().getProperty("rol.Vendedor")),
+					false
+				);
+			
+			Rol rolSupervisorCallCenter = 
 				iRolBean.getById(
 					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
+			Usuario uact =
+				iUsuarioBean.getById(loggedUsuarioId, false);
+			
 			GregorianCalendar gregorianCalendar = new GregorianCalendar();
 			
 			Date hoy = gregorianCalendar.getTime();
 			
-			gregorianCalendar.add(GregorianCalendar.MONTH, -1 * new Integer(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta")));
+			gregorianCalendar.add(
+				GregorianCalendar.MONTH, 
+				-1 * new Integer(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta"))
+			);
 			
 			// Se admite volver a vender contratos transcurridos 6 meses de la última venta. 
 			Date fechaVentaLimite = gregorianCalendar.getTime();
@@ -2147,7 +2164,12 @@ public class ContratoBean implements IContratoBean {
 				
 				contrato.setEmpresa(empresa);
 				contrato.setEstado(estado);
-				contrato.setRol(rol);
+				contrato.setRol(rolSupervisorCallCenter);
+				
+				if (empresaId.equals(empresaANBELId)) {
+					contrato.setRol(rolVendedor);
+					contrato.setUsuario(uact);
+				}
 				
 				contrato.setFact(hoy);
 				contrato.setTerm(new Long(1));
@@ -2160,7 +2182,12 @@ public class ContratoBean implements IContratoBean {
 				contratoRoutingHistoryNew.setEmpresa(empresa);
 				contratoRoutingHistoryNew.setEstado(contratoManaged.getEstado());
 				contratoRoutingHistoryNew.setFecha(hoy);
-				contratoRoutingHistoryNew.setRol(rol);
+				contratoRoutingHistoryNew.setRol(rolSupervisorCallCenter);
+				
+				if (empresaId.equals(empresaANBELId)) {
+					contratoRoutingHistoryNew.setRol(rolVendedor);
+					contratoRoutingHistoryNew.setUsuario(uact);
+				}
 				
 				contratoRoutingHistoryNew.setFcre(hoy);
 				contratoRoutingHistoryNew.setFact(hoy);

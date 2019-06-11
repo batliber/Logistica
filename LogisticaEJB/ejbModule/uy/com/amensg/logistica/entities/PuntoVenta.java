@@ -51,8 +51,8 @@ public class PuntoVenta extends BaseEntity {
 	@Column(name = "fecha_ultimo_cambio_estado_visita_punto_venta_distribuidor")
 	private Date fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
 	
-	@ManyToOne(optional = true, fetch=FetchType.EAGER)
-	@JoinColumn(name = "departamento_id", nullable = true)
+	@ManyToOne(optional=true, fetch=FetchType.EAGER)
+	@JoinColumn(name="departamento_id", nullable=true)
 	private Departamento departamento;
 	
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)

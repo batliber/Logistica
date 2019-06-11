@@ -82,7 +82,9 @@ public class ACMInterfaceContrato implements Serializable {
 	@Column(name = "term")
 	private Long term;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(
+		fetch=FetchType.EAGER
+	)
 	@JoinTable(
 		name = "acm_interface_mid_persona", 
 		joinColumns = @JoinColumn(name = "mid"),

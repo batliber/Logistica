@@ -24,8 +24,8 @@ public class CalculoPorcentajeActivacionPuntoVenta extends BaseEntity {
 	@Column(name = "porcentaje_activacion")
 	private Double porcentajeActivacion;
 	
-	@ManyToOne(optional = true, fetch=FetchType.EAGER)
-	@JoinColumn(name = "punto_venta_id", nullable = true)
+	@ManyToOne(optional=true, fetch=FetchType.EAGER)
+	@JoinColumn(name="punto_venta_id", nullable=true)
 	private PuntoVenta puntoVenta;
 
 	public Date getFechaCalculo() {

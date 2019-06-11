@@ -56,7 +56,9 @@ public class CalculoPorcentajeActivacionPuntoVentaDWR {
 				Collection<Object> registrosMuestra = new LinkedList<Object>();
 				
 				for (Object calculoPorcentajeActivacionPuntoVenta : metadataConsultaResultado.getRegistrosMuestra()) {
-					registrosMuestra.add(transform((CalculoPorcentajeActivacionPuntoVenta) calculoPorcentajeActivacionPuntoVenta));
+					registrosMuestra.add(
+						transform((CalculoPorcentajeActivacionPuntoVenta) calculoPorcentajeActivacionPuntoVenta)
+					);
 				}
 				
 				result.setRegistrosMuestra(registrosMuestra);

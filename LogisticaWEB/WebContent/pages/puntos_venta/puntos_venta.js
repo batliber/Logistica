@@ -24,12 +24,16 @@ function init() {
 							document.getElementById("divTablePuntosVenta"),
 							{
 								tdNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
-								tdTelefono: { campo: "telefono", descripcion: "Teléfono", abreviacion: "Tel.", tipo: __TIPO_CAMPO_STRING, ancho: 100 },
-								tdContacto: { campo: "contacto", descripcion: "Contacto", abreviacion: "Contacto", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
+								tdTelefono: { campo: "telefono", descripcion: "Teléfono", abreviacion: "Tel.", tipo: __TIPO_CAMPO_STRING, ancho: 100, oculto: true },
+								tdContacto: { campo: "contacto", descripcion: "Contacto", abreviacion: "Contacto", tipo: __TIPO_CAMPO_STRING, ancho: 150, oculto: true },
 								tdDepartamento: { campo: "departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Depto.", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre"} },
 								tdBarrio: { campo: "barrio.nombre", descripcion: "Barrio", abreviacion: "Barrio", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
 								tdEstado: { campo: "estadoPuntoVenta.nombre", clave: "estadoPuntoVenta.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoPuntoVentas, clave: "id", valor: "nombre"}, ancho: 100 },
 								tdFechaBaja: { campo: "fechaBaja", descripcion: "Eliminado", abreviacion: "Eliminado", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdFechaAsignacion: { campo: "fechaAsignacionDistribuidor", descripcion: "Asignado distribuidor", abreviacion: "F. asign. distr.", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdFechaVisita: { campo: "fechaVisitaDistribuidor", descripcion: "Visitado distribuidor", abreviacion: "F. visit. distr.", tipo: __TIPO_CAMPO_FECHA_HORA },
+								tdEstadoVisita: { campo: "estadoVisitaPuntoVentaDistribuidor.nombre", clave: "puntoVenta.estadoVisitaPuntoVentaDistribuidor.id", descripcion: "Estado última visita", abreviacion: "Estado últ. visita", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoVisitaPuntoVentaDistribuidores, clave: "id", valor: "nombre"}, ancho: 100 },
+								tdFechaUltimoCambioEstadoVisita: { campo: "fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor", descripcion: "Fecha último cambio estado visita", abreviacion: "F. últ. camb. est. visit.", tipo: __TIPO_CAMPO_FECHA_HORA, ancho: 120 },
 								tdUcre: { campo: "ucre", descripcion: "Creado por", abreviacion: "Creado por", tipo: __TIPO_CAMPO_STRING, oculto: true },
 								tdFcre: { campo: "fcre", descripcion: "Creado", abreviacion: "Creado", tipo: __TIPO_CAMPO_FECHA_HORA }
 							},
@@ -81,6 +85,38 @@ function listEstadoPuntoVentas() {
 	var result = [];
 	
 	EstadoPuntoVentaDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listEstadoVisitaPuntoVentaDistribuidores() {
+	var result = [];
+	
+	EstadoVisitaPuntoVentaDistribuidorDWR.list(
+		{
+			callback: function(data) {
+				if (data != null) {
+					result = data;
+				}
+			}, async: false
+		}
+	);
+	
+	return result;
+}
+
+function listDistribuidoresChips() {
+	var result = [];
+	
+	UsuarioRolEmpresaDWR.listDistribuidoresChipsByContext(
 		{
 			callback: function(data) {
 				if (data != null) {

@@ -48,13 +48,16 @@ public class SeguridadBean implements ISeguridadBean {
 		} else if (usuario.getBloqueado() != null && usuario.getBloqueado()) {
 			throw new UsuarioBloqueadoException();
 		} else if (usuario.getContrasena().equals(MD5Utils.stringToMD5(contrasena))) {
-			usuario.setIntentosFallidosLogin(new Long(0));
-			
-			usuario.setFact(date);
-			usuario.setUact(new Long(1));
-			usuario.setTerm(new Long(1));
-			
-			iUsuarioBean.update(usuario);
+			if (usuario.getIntentosFallidosLogin() != null 
+				&& !usuario.getIntentosFallidosLogin().equals(new Long(0))) {
+				usuario.setIntentosFallidosLogin(new Long(0));
+				
+				usuario.setFact(date);
+				usuario.setUact(new Long(1));
+				usuario.setTerm(new Long(1));
+				
+				iUsuarioBean.update(usuario);
+			}
 			
 			SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
 			seguridadAuditoria.setFecha(date);
@@ -84,12 +87,36 @@ public class SeguridadBean implements ISeguridadBean {
 				usuario.setIntentosFallidosLogin(new Long(1));
 			}
 			
+			usuario.setFact(date);
+			usuario.setUact(new Long(1));
+			usuario.setTerm(new Long(1));
+			
 			if (usuario.getIntentosFallidosLogin().equals(
 				new Long(Configuration.getInstance().getProperty("seguridad.maximaCantidadIntentosFallidosLogin"))
 			)) {
 				usuario.setBloqueado(true);
 				
 				iUsuarioBean.update(usuario);
+				
+				SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
+				seguridadAuditoria.setFecha(date);
+				
+				SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
+				seguridadTipoEvento.setId(
+					new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.BloqueoUsuario"))
+				);
+				
+				seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
+				
+				seguridadAuditoria.setUsuario(usuario);
+				
+				seguridadAuditoria.setFcre(date);
+				seguridadAuditoria.setFact(date);
+				seguridadAuditoria.setTerm(new Long(1));
+				seguridadAuditoria.setUact(usuario.getId());
+				seguridadAuditoria.setUcre(usuario.getId());
+				
+				entityManager.persist(seguridadAuditoria);
 				
 				throw new UsuarioBloqueadoException();
 			} else {
