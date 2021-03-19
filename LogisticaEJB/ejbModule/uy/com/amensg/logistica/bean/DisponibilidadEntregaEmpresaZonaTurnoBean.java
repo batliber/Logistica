@@ -48,7 +48,8 @@ public class DisponibilidadEntregaEmpresaZonaTurnoBean implements IDisponibilida
 	}
 	
 	public Collection<DisponibilidadEntregaEmpresaZonaTurno> listByEmpresaZona(Empresa empresa, Zona zona) {
-		Collection<DisponibilidadEntregaEmpresaZonaTurno> result = new LinkedList<DisponibilidadEntregaEmpresaZonaTurno>();
+		Collection<DisponibilidadEntregaEmpresaZonaTurno> result = 
+			new LinkedList<DisponibilidadEntregaEmpresaZonaTurno>();
 		
 		try {
 			TypedQuery<DisponibilidadEntregaEmpresaZonaTurno> query = 
@@ -103,7 +104,7 @@ public class DisponibilidadEntregaEmpresaZonaTurnoBean implements IDisponibilida
 		try {
 			Empresa empresaDefault = 
 				iEmpresaBean.getById(
-					new Long(Configuration.getInstance().getProperty("empresa.ELARED")),
+					Long.parseLong(Configuration.getInstance().getProperty("empresa.ELARED")),
 					false
 				);
 			
@@ -117,7 +118,7 @@ public class DisponibilidadEntregaEmpresaZonaTurnoBean implements IDisponibilida
 				
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setFcre(empresa.getFact());
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setFact(empresa.getFact());
-				disponibilidadEntregaEmpresaZonaTurnoNueva.setTerm(new Long(1));
+				disponibilidadEntregaEmpresaZonaTurnoNueva.setTerm(Long.valueOf(1));
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setUact(empresa.getUact());
 				disponibilidadEntregaEmpresaZonaTurnoNueva.setUcre(empresa.getUcre());
 				

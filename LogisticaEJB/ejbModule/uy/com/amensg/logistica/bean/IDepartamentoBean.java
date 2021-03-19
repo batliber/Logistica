@@ -10,4 +10,6 @@ import uy.com.amensg.logistica.entities.Departamento;
 public interface IDepartamentoBean {
 
 	public Collection<Departamento> list();
+	
+	public Departamento getByNombre(String nombre);
 }

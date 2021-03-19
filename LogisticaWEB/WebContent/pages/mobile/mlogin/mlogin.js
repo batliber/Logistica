@@ -1,18 +1,28 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#inputUsuario").focus();
-});
+}
 
 function inputAccederOnClick(event, element) {
-	SeguridadDWR.login(
-		$("#inputUsuario").val(),
-		$("#inputContrasena").val(),
-		{
-			callback: function(data) {
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/login",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify({
+        	"l": $("#inputUsuario").val(),
+        	"p": $("#inputContrasena").val()
+        })
+	}).then(
+		function(data) {
+			if (requestedPage != null && requestedPage != "") {
+				window.location = requestedPage;
+			} else {
 				window.location = "/LogisticaWEB/pages/mobile/mmain.jsp";
-			}, 
-			errorHandler: function(data) {
-				$("#divError").text(data);
-			}, async: false
+			}
+		}, 
+		function(data) {
+			$("#divError").text(data.responseText);
 		}
 	);
 }

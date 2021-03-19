@@ -3,17 +3,15 @@ $(document).ready(init);
 function init() {
 	$("#inputUsuarioLogin").prop("disabled", true);
 	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				if (data != null) {
-					$("#inputUsuarioLogin").val(data.login);
-					
-					$("#inputContrasenaActual").focus();
-				}
-			}, async: false
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+    }).then(function(data) {
+		if (data != null) {
+			$("#inputUsuarioLogin").val(data.login);
+			
+			$("#inputContrasenaActual").focus();
 		}
-	);
+	}	);
 }
 
 function inputConfirmaContrasenaOnChange(event, element) {
@@ -67,16 +65,28 @@ function inputGuardarOnClick(event, element) {
 	$("#inputNuevaContrasena").val(null);
 	$("#inputConfirmaContrasena").val(null);
 	
-	UsuarioDWR.cambiarContrasena(
-		contrasenaActual,
-		contrasenaNueva,
-		contrasenaConfirma,
-		{
-			callback: function(data) {
-				alert(data);
-				
-				$("#inputContrasenaActual").focus();
-			}, async: false
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/UsuarioREST/cambiarContrasena",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify({
+        	contrasenaActual: contrasenaActual,
+        	contrasenaNueva: contrasenaNueva,
+        	contrasenaConfirma: contrasenaConfirma
+        })
+    }).then(
+    	function(data) {
+	    	if (data != null) {
+	    		alert(data.responseText);
+	    	} else {
+	    		alert("Operación exitosa.");
+	    	}
+	    	
+	    	$("#inputContrasenaActual").focus();
+    	}, function(data) {
+    		if (data != null) {
+	    		alert(data.responseText);
+	    	}
+    	}
+    );
 }

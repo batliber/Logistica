@@ -9,6 +9,7 @@ public class MetadataCondicion implements Serializable {
 
 	private String campo;
 	private String operador;
+	private Boolean fijo;
 	private Collection<String> valores;
 
 	public String getCampo() {
@@ -25,6 +26,14 @@ public class MetadataCondicion implements Serializable {
 
 	public void setOperador(String operador) {
 		this.operador = operador;
+	}
+
+	public Boolean getFijo() {
+		return fijo;
+	}
+
+	public void setFijo(Boolean fijo) {
+		this.fijo = fijo;
 	}
 
 	public Collection<String> getValores() {

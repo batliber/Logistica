@@ -46,43 +46,30 @@ function init() {
 	
 	$("#divEliminarRol").hide();
 	
-	MenuDWR.list(
-		{
-			callback: function(data) {
-				var html = 
-					"<option value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].titulo + "</option>";
-				}
-				
-				$("#selectMenu").html(html);
-			}, async: false
-		}
-	);
-	
-	RolDWR.list(
-		{
-			callback: function(data) {
-				var html = 
-					"<option value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectRol").html(html);
-			}, async: false
-		}
-	);
-	
-	if (id != null) {
-		RolDWR.getById(
-			id,
-			{
-				callback: function(data) {
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/MenuREST/list"
+    }).then(function(data) {
+		fillSelect(
+			"selectMenu", 
+			data,
+			"id", 
+			"titulo"
+		);
+    }).then(function(data) {
+    	$.ajax({
+            url: "/LogisticaWEB/RESTFacade/RolREST/listMinimal"
+        }).then(function(data) { 
+    		fillSelect(
+    			"selectRol", 
+    			data,
+    			"id", 
+    			"nombre"
+    		);
+        }).then(function(data) {
+			if (id != null) {
+				$.ajax({
+			        url: "/LogisticaWEB/RESTFacade/RolREST/getById/" + id
+			    }).then(function(data) { 
 					$("#inputRolNombre").val(data.nombre);
 					
 					menus.cantidadRegistros = data.menus.length,
@@ -103,10 +90,10 @@ function init() {
 					} else {
 						$("#selectMenu").prop("disabled", true);
 					}
-				}, async: false
+				});
 			}
-		);
-	}
+        });
+    });
 }
 
 function reloadMenus() {
@@ -171,17 +158,14 @@ function inputAgregarMenuOnClick(event, element) {
 		}
 		
 		if (!found) {
-			MenuDWR.getById(
-				menuId,
-				{
-					callback: function(data) {
-						menus.cantidadRegistros = menus.cantidadRegistros + 1;
-						menus.registrosMuestra[menus.registrosMuestra.length] = data;
-						
-						reloadMenus();
-					}, async: false
-				}
-			);
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/MenuREST/getById/" + menuId
+		    }).then(function(data) {
+				menus.cantidadRegistros = menus.cantidadRegistros + 1;
+				menus.registrosMuestra[menus.registrosMuestra.length] = data;
+				
+				reloadMenus();
+			});
 		}
 	} else {
 		alert("Debe seleccionar un menú.");
@@ -200,17 +184,14 @@ function inputAgregarRolOnClick(event, element) {
 		}
 		
 		if (!found) {
-			RolDWR.getById(
-				rolId,
-				{
-					callback: function(data) {
-						subordinados.cantidadRegistros = subordinados.cantidadRegistros + 1;
-						subordinados.registrosMuestra[subordinados.registrosMuestra.length] = data;
-						
-						reloadSubordinados();
-					}, async: false
-				}
-			);
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/RolREST/getById/" + rolId
+		    }).then(function(data) {
+				subordinados.cantidadRegistros = subordinados.cantidadRegistros + 1;
+				subordinados.registrosMuestra[subordinados.registrosMuestra.length] = data;
+			
+				reloadSubordinados();
+			});
 		}
 	} else {
 		alert("Debe seleccionar un rol.");
@@ -227,36 +208,37 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		rol.id = id;
 		
-		RolDWR.update(
-			rol,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/RolREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(rol)
+	    }).then(function(data) {
+	    	alert("Operación exitosa");
+	    });
 	} else {
-		RolDWR.getByNombre(
-			rol.nombre,
-			{
-				callback: function(data) {
-					if (data == null) {
-						RolDWR.add(
-							rol,
-							{
-								callback: function(data) {
-									alert("Operación exitosa");
-									
-									$("#inputEliminarRol").prop("disabled", false);
-								}, async: false
-							}
-						);
-					} else {
-						alert("Ya existe un rol con ese nombre.");
-					}
-				}, async: false
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/RolREST/getByNombre/" + rol.nombre
+	    }).then(function(data) {
+			if (data == null) {
+				$.ajax({
+			        url: "/LogisticaWEB/RESTFacade/RolREST/add",
+			        method: "POST",
+			        contentType: 'application/json',
+			        data: JSON.stringify(rol)
+			    }).then(function(data) {
+			    	if (data != null) {
+						alert("Operación exitosa");
+							
+						$("#inputEliminarRol").prop("disabled", false);
+			    	} else {
+			    		alert("Error en la operación");
+			    	}
+			    });
+			} else {
+				alert("Ya existe un rol con ese nombre.");
 			}
-		);
+		});
 	}
 }
 
@@ -266,13 +248,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		RolDWR.remove(
-			rol,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/RolREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(rol)
+	    }).then(function(data) { 
+	    	alert("Operación exitosa");
+	    });
 	}
 }

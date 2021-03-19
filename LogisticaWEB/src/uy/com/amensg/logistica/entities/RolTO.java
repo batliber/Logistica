@@ -2,9 +2,6 @@ package uy.com.amensg.logistica.entities;
 
 import java.util.Collection;
 
-import org.directwebremoting.annotations.DataTransferObject;
-
-@DataTransferObject
 public class RolTO extends BaseTO {
 
 	private String nombre;

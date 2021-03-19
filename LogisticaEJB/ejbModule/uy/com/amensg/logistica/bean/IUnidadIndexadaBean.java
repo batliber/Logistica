@@ -13,7 +13,7 @@ public interface IUnidadIndexadaBean {
 	
 	public UnidadIndexada getById(Long id);
 	
-	public void save(UnidadIndexada unidadIndexada);
+	public UnidadIndexada save(UnidadIndexada unidadIndexada);
 	
 	public void remove(UnidadIndexada unidadIndexada);
 	

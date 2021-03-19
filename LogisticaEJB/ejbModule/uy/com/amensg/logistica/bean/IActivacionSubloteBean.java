@@ -28,9 +28,11 @@ public interface IActivacionSubloteBean {
 	
 	public ActivacionSublote getByNumeroUsuario(Long numero, Long usuarioId, boolean initializeCollections);
 	
-	public Long save(ActivacionSublote activacionSublote);
+	public ActivacionSublote save(ActivacionSublote activacionSublote);
 	
 	public void update(ActivacionSublote activacionSublote);
 	
 	public void asignarAPuntoVenta(ActivacionSublote activacionSublote, PuntoVenta puntoVenta);
+
+	public void calcularFechasVencimientoChipMasViejo(Long loggedUsuarioId);
 }

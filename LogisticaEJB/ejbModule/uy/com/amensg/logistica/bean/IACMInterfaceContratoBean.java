@@ -16,9 +16,9 @@ public interface IACMInterfaceContratoBean {
 
 	public Collection<ACMInterfaceContrato> list();
 	
-	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
+	public String preprocesarAsignacion(MetadataConsulta metadataConsulta, Empresa empresa);
 	
-	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
+	public String asignar(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
 	
 	public void reprocesarPorMID(MetadataConsulta metadataConsulta, String observaciones);
 	

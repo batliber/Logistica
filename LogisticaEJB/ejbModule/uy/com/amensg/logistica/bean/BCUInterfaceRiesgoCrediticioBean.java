@@ -146,7 +146,7 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -156,12 +156,12 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								query.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -269,7 +269,7 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 							} else if (field.getJavaType().equals(Long.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								queryCount.setParameter(
@@ -279,12 +279,12 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 							} else if (field.getJavaType().equals(Double.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -341,9 +341,9 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 			
 			bcuInterfaceRiesgoCrediticio.setFcre(date);
 			bcuInterfaceRiesgoCrediticio.setFact(date);
-			bcuInterfaceRiesgoCrediticio.setTerm(new Long(1));
-			bcuInterfaceRiesgoCrediticio.setUact(new Long(1));
-			bcuInterfaceRiesgoCrediticio.setUcre(new Long(1));
+			bcuInterfaceRiesgoCrediticio.setTerm(Long.valueOf(1));
+			bcuInterfaceRiesgoCrediticio.setUact(Long.valueOf(1));
+			bcuInterfaceRiesgoCrediticio.setUcre(Long.valueOf(1));
 			
 			entityManager.persist(bcuInterfaceRiesgoCrediticio);
 		} catch (Exception e) {
@@ -398,7 +398,7 @@ public class BCUInterfaceRiesgoCrediticioBean implements IBCUInterfaceRiesgoCred
 				+ ";Obtenido"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			String etiquetaSi = "SI";
 			String etiquetaNo = "NO";

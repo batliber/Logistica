@@ -123,6 +123,9 @@ public class Contrato extends BaseEntity {
 	@Column(name = "resultado_entrega_distribucion_precision")
 	private Double resultadoEntregaDistribucionPrecision;
 	
+	@Column(name = "resultado_entrega_distribucion_fecha")
+	private Date resultadoEntregaDistribucionFecha;
+
 	@Column(name = "fecha_venta")
 	private Date fechaVenta;
 
@@ -152,6 +155,9 @@ public class Contrato extends BaseEntity {
 	
 	@Column(name = "fecha_envio_a_nucleo")
 	private Date fechaEnvioANucleo;
+	
+	@Column(name = "fecha_pick_up")
+	private Date fechaPickUp;
 	
 	@Column(name = "numero_chip")
 	private String numeroChip;
@@ -611,6 +617,14 @@ public class Contrato extends BaseEntity {
 		this.fechaRechazo = fechaRechazo;
 	}
 
+	public Date getFechaPickUp() {
+		return fechaPickUp;
+	}
+
+	public void setFechaPickUp(Date fechaPickUp) {
+		this.fechaPickUp = fechaPickUp;
+	}
+
 	public Plan getNuevoPlan() {
 		return nuevoPlan;
 	}
@@ -743,6 +757,14 @@ public class Contrato extends BaseEntity {
 		this.resultadoEntregaDistribucionPrecision = resultadoEntregaDistribucionPrecision;
 	}
 
+	public Date getResultadoEntregaDistribucionFecha() {
+		return resultadoEntregaDistribucionFecha;
+	}
+
+	public void setResultadoEntregaDistribucionFecha(Date resultadoEntregaDistribucionFecha) {
+		this.resultadoEntregaDistribucionFecha = resultadoEntregaDistribucionFecha;
+	}
+	
 	public String getDireccionEntregaCalle() {
 		return direccionEntregaCalle;
 	}

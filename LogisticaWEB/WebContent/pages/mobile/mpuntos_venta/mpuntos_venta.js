@@ -1,20 +1,30 @@
+var __ESTADO_VISITA_PENDIENTE_ID = 1;
+var __ESTADO_VISITA_VISITADO_ID = 2;
+var __ESTADO_VISITA_PERMANENTE_ID = 6;
+var __ESTADO_VISITA_AUTOR_ID = 7;
+
 var map = null;
 var marker = null;
+var markers = [];
 
 $(document).ready(init);
 
 function init() {
-	$("#divTitle").append("Punto de venta");
+	$("#divTitle").append("Mapa");
 	
-	DepartamentoDWR.list(
-		{
-			callback: fillSelectDepartamento, async: false
-		}
-	);
+	$("#selectDepartamento").change(reloadData);
+	$("#selectBarrio").change(reloadData);
+	$("#selectEstado").change(reloadData);
 	
-	fillSelectBarrio([]);
+	fillSelect("selectBarrio", [], "id", "nombre");
+	fillSelect("selectEstado", [], "id", "nombre");
 	
-	initMap();
+	listDepartamentos()
+		.then(function(data) { 
+			fillSelect("selectDepartamento", data, "id", "nombre");
+			
+			initMap();
+		});
 }
 
 function initMap() {
@@ -26,7 +36,7 @@ function initMap() {
 		divMap, {
 			center: initialCenter,
 			zoom: 15
-    	}
+		}
 	);
 	
 	marker = new google.maps.Marker({
@@ -34,221 +44,186 @@ function initMap() {
 		map: map
 	});
 	
-	map.addListener('center_changed', function() {
-		var coords = map.getCenter();
-		
-		marker.setPosition(coords);
-	});
-	
-	map.addListener('zoom_changed', function() {
-		var coords = map.getCenter();
-		
-		marker.setPosition(coords);
-	});
-	
 	navigator.geolocation.getCurrentPosition(
 		center, 
 		positionError
 	);
-	
-	var input = document.getElementById("inputBusqueda");
-	var searchBox = new google.maps.places.SearchBox(input);
-	
-	map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-	
-	map.addListener('bounds_changed', function() {
-		searchBox.setBounds(map.getBounds());
-	});
-	
-	searchBox.addListener('places_changed', function() {
-		var places = searchBox.getPlaces();
-		
-		if (places.length == 0) {
-			return;
-		}
-		
-		var bounds = new google.maps.LatLngBounds();
-		
-		places.forEach(function(place) {
-			var latitud = place.geometry.location.lat();
-			var longitud = place.geometry.location.lng();
-			
-			marker.setPosition(new google.maps.LatLng(latitud, longitud));
-		
-			if (place.geometry.viewport) {
-				bounds.union(place.geometry.viewport);
-			} else {
-				bounds.extend(place.geometry.location);
-			}
-		});
-		
-		map.fitBounds(bounds);
-	});
 }
 
 function center(data) {
 	var crd = data.coords;
 	
-	$("#divPosicion").text(crd.latitude + ", " + crd.longitude + " - " + crd.accuracy);
-	$("#inputLatitud").val(crd.latitude);
-	$("#inputLongitud").val(crd.longitude);
-	$("#inputPrecision").val(crd.accuracy);
-	
 	var latlng = new google.maps.LatLng(crd.latitude, crd.longitude);
 	
 	marker.setPosition(latlng);
+	
+	reloadData();
 }
 
 function positionError() {
-	
+	reloadData();
 }
 
-function fillSelectDepartamento(data) {
-	$("#selectDepartamento > option").remove();
-	
-	html =
-		"<option value='0'>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
+function clearMarkers() {
+	for (var j=0; j<markers.length; j++) {
+		markers[j].setMap(null);
 	}
-	
-	$("#selectDepartamento").append(html);
+	markers = [];
 }
 
-function fillSelectBarrio(data) {
-	$("#selectBarrio > option").remove();
+function fillMap(visitas) {
+	clearMarkers();
 	
-	html =
-		"<option value=0>Seleccione...</option>";
+	var markerBounds = new google.maps.LatLngBounds();
 	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectBarrio").append(html);
-}
-
-function selectDepartamentoOnChange(event, element) {
-	var departamentoId = $("#selectDepartamento").val();
-	
-	fillSelectBarrio([]);
-	
-	if (departamentoId != 0) {
-		BarrioDWR.listByDepartamentoId(
-			departamentoId,
-			{
-				callback: fillSelectBarrio, async: false
+	for (var i=0; i<visitas.length; i++) {
+		var visita = visitas[i];
+		var puntoVenta = visita.puntoVenta;
+		if (puntoVenta.latitud != null && puntoVenta.longitud != null) {
+			var latlng = {
+				lat: puntoVenta.latitud, lng: puntoVenta.longitud
+			};
+			
+			var icon = {
+				url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
 			}
-		);
+			if (puntoVenta.estadoVisitaPuntoVentaDistribuidor != null) {
+				if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_PENDIENTE_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_VISITADO_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/green-dot.png";
+				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_PERMANENTE_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
+				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_AUTOR_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+				}
+			}
+			
+			var marker = new google.maps.Marker({
+				position: latlng,
+				map: map,
+				title: puntoVenta.nombre,
+				icon: icon,
+				customInfo: visita.id
+			});
+			
+			marker.addListener('click', function(data){
+				$.ajax({
+					url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/getById/" + this.customInfo
+				}).then(function(visitaPuntoVenta) {
+					if (visitaPuntoVenta != null) {
+						/*
+						if (confirm(
+								"Punto de Venta: " + visitaPuntoVenta.puntoVenta.nombre + ".\n"
+								+ "Direccion: " + visitaPuntoVenta.puntoVenta.direccion + ".\n"
+								+ "Desea visitar el punto de venta?"
+							)
+						) {
+							window.location.href = 
+								"/LogisticaWEB/pages/mobile/mvisita/mvisita.jsp?vid=" + visitaPuntoVenta.id;
+						}
+						*/
+						if (confirm(
+								"Punto de Venta: " + visitaPuntoVenta.puntoVenta.nombre + ".\n"
+								+ "Direccion: " + visitaPuntoVenta.puntoVenta.direccion + ".\n"
+								+ "Desea navegar al punto de venta?"
+							)
+						) {
+							window.location.href = 
+								"https://www.google.com/maps/search/?api=1&dir_action=navigate&query=" + 
+									visitaPuntoVenta.puntoVenta.latitud
+									+ ", " + visitaPuntoVenta.puntoVenta.longitud
+						}
+					}
+				});
+			});
+
+			
+			markers.push(marker);
+			
+			markerBounds.extend(latlng);
+		}
+	}
+	
+	if (visitas.length > 1) {
+		map.fitBounds(markerBounds);
+	} else if (visitas.length == 1 && visitas[0].puntoVenta.precision != null) {
+		map.setCenter({ lat: visitas[0].puntoVenta.latitud, lng: visitas[0].puntoVenta.longitud });
+		map.setZoom(visitas[0].puntoVenta.precision);
 	}
 }
 
-function selectBarrioOnChange(event, element) {
-	
-}
-
-function inputLimpiarOnClick(event, element) {
-	$("#inputNombre").val(null);
-	$("#inputTelefono").val(null);
-	$("#inputDocumento").val(null);
-	$("#inputContacto").val(null);
-	$("#selectDepartamento").val(0);
-	$("#inputDireccion").val(null);
-}
-
-function inputSubmitOnClick(event) {
-	var puntoVenta = { 
-		latitud: marker.getPosition().lat(),
-		longitud: marker.getPosition().lng(),
-		precision: map.getZoom(),
+function reloadData(eventObject) {
+	var metadataConsulta = {
+		tamanoMuestra: 1000,
+		metadataCondiciones: [],
+		metadataOrdenaciones: []
 	};
 	
-	var nombre = $("#inputNombre").val();
-	if (nombre != null && nombre != "") {
-		puntoVenta.nombre = nombre;
-	} else {
-		alert("Debe ingresar el nombre del Punto de venta.");
-		return;
+	if ($("#selectDepartamento").val() != "0") {
+		metadataConsulta.metadataCondiciones[metadataConsulta.metadataCondiciones.length] = {
+			campo: "puntoVenta.departamento.id",
+			operador: "eq",
+			valores: [$("#selectDepartamento").val()]
+		}
 	}
 	
-	var telefono = $("#inputTelefono").val();
-	if (telefono != null && telefono != "") {
-		puntoVenta.telefono = telefono;
-	} else {
-		alert("Debe ingresar el teléfono del Punto de venta.");
-		return;
+	if ($("#selectBarrio").val() != "0") {
+		metadataConsulta.metadataCondiciones[metadataConsulta.metadataCondiciones.length] = {
+			campo: "puntoVenta.barrio.id",
+			operador: "eq",
+			valores: [$("#selectBarrio").val()]
+		}
 	}
 	
-	var documento = $("#inputDocumento").val();
-	if (documento != null && documento != "") {
-		puntoVenta.documento = documento;
-	} else {
-		alert("Debe ingresar el documento del contacto del Punto de venta.");
-		return;
+	if ($("#selectEstado").val() != "0") {
+		metadataConsulta.metadataCondiciones[metadataConsulta.metadataCondiciones.length] = {
+			campo: "estadoVisitaPuntoVentaDistribuidor.id",
+			operador: "eq",
+			valores: [$("#selectEstado").val()]
+		}
 	}
 	
-	var contacto = $("#inputContacto").val();
-	if (contacto != null && contacto != "") {
-		puntoVenta.contacto = contacto;
-	} else {
-		alert("Debe ingresar el contacto del Punto de venta.");
-		return;
-	}
-	
-	var departamentoId = $("#selectDepartamento").val();
-	if (departamentoId > 0) {
-		puntoVenta.departamento = {
-			id: departamentoId
-		};
-	}
-	else {
-		alert("Debe seleccionar un Departamento.");
-		return;
-	}
-	
-	var barrioId = $("#selectBarrio").val();
-	if (barrioId > 0) {
-		puntoVenta.barrio = {
-			id: barrioId
-		};
-	}
-	else {
-		alert("Debe seleccionar un Barrio.");
-		return;
-	}
-	
-	var direccion = $("#inputDireccion").val();
-	if (direccion != null && direccion != "") {
-		puntoVenta.direccion = direccion;
-	} else {
-		alert("Debe ingresar la dirección del Punto de venta.");
-		return;
-	}
-	
-//	if (id != null) {
-//		PuntoVentaDWR.update(
-//			puntoVenta,
-//			{
-//				callback: function(data) {
-//					alert("Operación exitosa.");
-//					
-//					inputLimpiarOnClick();
-//				}, async: false
-//			}
-//		);
-//	} else {
-		PuntoVentaDWR.addMobile(
-			puntoVenta,
-			{
-				callback: function(data) {
-					alert("Operación exitosa.");
-					
-					inputLimpiarOnClick();
-				}, async: false
-			}
-		);
-//	}
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/listMisVisitasContextAndLocationAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify({
+			"metadataConsulta": metadataConsulta,
+			"latitud": -34.9017,
+			"longitud": -56.1634
+		})
+	}).then(function(data) {
+		var departamentos = [];
+		var barrios = [];
+		var estados = [];
+		
+		var visitas = data.registrosMuestra;
+		for (var i=0; i<visitas.length; i++) {
+			departamentos[departamentos.length] = {
+				id: visitas[i].puntoVenta.departamento.id,
+				nombre: visitas[i].puntoVenta.departamento.nombre
+			};
+			
+			barrios[barrios.length] = {
+				id: visitas[i].puntoVenta.barrio.id,
+				nombre: visitas[i].puntoVenta.barrio.nombre
+			};
+			
+			estados[estados.length] = {
+				id: visitas[i].estadoVisitaPuntoVentaDistribuidor.id,
+				nombre: visitas[i].estadoVisitaPuntoVentaDistribuidor.nombre
+			};
+		}
+		
+		if ($("#selectBarrio").val() == "0") {
+			fillSelect("selectBarrio", barrios, "id", "nombre");
+		}
+		
+		if ($("#selectEstado").val() == "0") {
+			fillSelect("selectEstado", estados, "id", "nombre");
+		}
+		
+		fillMap(visitas);
+	});
 }

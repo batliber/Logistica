@@ -4,21 +4,18 @@ $(document).ready(function() {
 	$("#divEliminarEmpresaService").hide();
 	
 	if (id != null) {
-		EmpresaServiceDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputEmpresaServiceNombre").val(data.nombre);
-					$("#inputEmpresaServiceDireccion").val(data.direccion);
-					$("#inputEmpresaServiceTelefono").val(data.telefono);
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarEmpresaService").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/EmpresaServiceREST/getById/" + id
+	    }).then(function(data) { 
+			$("#inputEmpresaServiceNombre").val(data.nombre);
+			$("#inputEmpresaServiceDireccion").val(data.direccion);
+			$("#inputEmpresaServiceTelefono").val(data.telefono);
+			
+			if (mode == __FORM_MODE_ADMIN) {
+				$("#divEliminarEmpresaService").show();
+				$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 			}
-		);
+		});
 	}
 });
 
@@ -40,41 +37,45 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		empresaService.id = id;
 		
-		EmpresaServiceDWR.update(
-			empresaService,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/EmpresaServiceREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(empresaService)
+	    }).then(function(data) {
+	    	alert("Operaci√≥n exitosa");
+	    });
 	} else {
-		EmpresaServiceDWR.add(
-			empresaService,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-					
-					$("#inputEliminarEmpresaService").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/EmpresaServiceREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(empresaService)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operaci√≥n exitosa");
+	    	
+				$("#inputEliminarEmpresaService").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operaci√≥n");
+	    	}
+	    });
 	}
 }
 
 function inputEliminarOnClick(event) {
-	if ((id != null) && confirm("Se eliminar· el Service")) {
+	if ((id != null) && confirm("Se eliminar√° el Service")) {
 		var empresaService = {
 			id: id
 		};
 		
-		EmpresaServiceDWR.remove(
-			empresaService,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/EmpresaServiceREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(empresaService)
+	    }).then(function(data) {
+	    	alert("Operaci√≥n exitosa");
+	    });
 	}
 }

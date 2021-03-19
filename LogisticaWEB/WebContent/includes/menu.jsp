@@ -59,17 +59,19 @@
 
 		<div class="inactiveMenuBarItemLogo">
 			<div id="divLogo">
+				<a href="/LogisticaWEB/">
 <%
 	if (empresasId.size() > 1 || empresaTO == null || empresaTO.getLogoURL() == null || empresaTO.getLogoURL().isEmpty()) {
 %>
-				&nbsp;
+					&nbsp;
 <%
 	} else {
 %>
-				<img id="imgLogo" src="/LogisticaWEB/Stream?fn=<%= empresaTO.getLogoURL() %>" />
+					<img id="imgLogo" src="/LogisticaWEB/Stream?fn=<%= empresaTO.getLogoURL() %>" />
 <%
 	}
 %>
+				</a>
 			</div>
 		</div>
 		<div class="divUserInfo">
@@ -77,46 +79,4 @@
 				<a href="#" onclick="javascript:divLogoutOnClick(event, this)"><%= usuarioTO.getNombre() %></a>
 			</div>
 		</div>
-<%
-	boolean first = true;
-
-	List<MenuTO> menus = new LinkedList<MenuTO>();
-	menus.addAll(usuarioTO.getMenus());
-
-	Collections.sort(menus, new Comparator<MenuTO>() {
-		public int compare(MenuTO arg1, MenuTO arg2) {
-			return arg1.getOrden().compareTo(arg2.getOrden());
-		}
-	});
-	
-	for (MenuTO menuTO : menus) {
-		if (!menuTO.getUrl().contains("mobile")) {
-%>
-		<div class="<%= request.getRequestURI().equals(menuTO.getUrl()) ? "activeMenuBarItem" : "inactiveMenuBarItem" %>">
-			<div>
-<%
-			if (menuTO.getPadre() != null) {
-%>
-				<a href="<%= menuTO.getUrl() %>" onclick="javascript:menuItemOnClick(event, this)"
-					id="<%= menuTO.getId() %>"
-					url="<%= menuTO.getUrl() %>"
-					class="aMenuLeaf"> 
-					<%= menuTO.getTitulo() %>
-				</a>
-<%
-			} else {
-%>
-				<div class="divMenuParent">
-					<%= menuTO.getTitulo() %>
-				</div>
-<%
-			}
-%>
-			</div>
-		</div>
-<%
-			first = false;
-		}
-	}
-%>
 	</div>

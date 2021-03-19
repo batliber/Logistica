@@ -20,7 +20,7 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		Iterator<String> iterator = data.iterator();
 		
-		// Parsear los parámetros tipados.
+		// Parsear los parï¿½metros tipados.
 		
 		// empresaId
 		try {

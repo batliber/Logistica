@@ -2,6 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,6 +31,30 @@ public class DepartamentoBean implements IDepartamentoBean {
 			
 			for (Departamento departamento : query.getResultList()) {
 				result.add(departamento);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Departamento getByNombre(String nombre) {
+		Departamento result = null;
+		
+		try {
+			TypedQuery<Departamento> query = 
+				entityManager.createQuery(
+					"SELECT d"
+					+ " FROM Departamento d"
+					+ " WHERE d.nombre = :nombre", 
+					Departamento.class
+				);
+			query.setParameter("nombre", nombre);
+			
+			List<Departamento> resultList = query.getResultList();
+			if (resultList.size() > 0) {
+				result = resultList.get(0);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

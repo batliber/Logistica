@@ -24,46 +24,30 @@ function init() {
 	reloadData();
 }
 
-function listPuntoVentas() {
-	var result = [];
-	
-	PuntoVentaDWR.listMinimalContextAware(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
 function reloadData() {
-	grid.setStatus(grid.__STATUS_LOADING);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/listMisSublotesContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.reload(data);
+    });
 	
-	ActivacionSubloteDWR.listMisSublotesContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.reload(data);
-			}
-		}
-	);
-	
-	ActivacionSubloteDWR.countMisSublotesContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.setCount(data);
-			}
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/countMisSublotesContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.setCount(data);
+    });
 }
 
 function trSubloteOnClick(eventObject) {
 	var target = eventObject.currentTarget;
 	
-	window.location.href = "/LogisticaWEB/pages/mobile/mactivacion_sublotes/masignacion_sublote_punto_venta.jsp?sid=" + $(target).attr("id");
+	window.location.href = 
+		"/LogisticaWEB/pages/mobile/mactivacion_sublotes/masignacion_sublote_punto_venta.jsp?sid=" 
+		+ $(target).attr("id");
 }

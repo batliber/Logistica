@@ -77,15 +77,21 @@ public class MarcaBean implements IMarcaBean {
 		return result;
 	}
 	
-	public void save(Marca marca) {
+	public Marca save(Marca marca) {
+		Marca result = null;
+		
 		try {
 			marca.setFcre(marca.getFact());
 			marca.setUcre(marca.getUact());
 			
 			entityManager.persist(marca);
+			
+			result = marca;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Marca marca) {

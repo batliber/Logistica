@@ -60,7 +60,7 @@ public class ControlesWebService {
 			
 			Empresa empresa = new Empresa();
 			try {
-				empresa.setId(new Long(empresaId));
+				empresa.setId(Long.parseLong(empresaId));
 			} catch (Exception e) {
 				e.printStackTrace();
 				empresa = null;
@@ -69,18 +69,18 @@ public class ControlesWebService {
 			
 			TipoControl tipoControl = new TipoControl();
 			try {
-				tipoControl.setId(new Long(tipoControlId));
+				tipoControl.setId(Long.parseLong(tipoControlId));
 			} catch (Exception e) {
 				e.printStackTrace();
 				tipoControl = null;
 			}
 			control.setTipoControl(tipoControl);
 			
-			control.setMid(new Long(mid));
+			control.setMid(Long.parseLong(mid));
 			
 			EstadoControl estadoControl = new EstadoControl();
 			try {
-				estadoControl.setId(new Long(estadoControlId));
+				estadoControl.setId(Long.parseLong(estadoControlId));
 			} catch (Exception e) {
 				e.printStackTrace();
 				estadoControl = null;
@@ -106,19 +106,19 @@ public class ControlesWebService {
 			}
 			
 			try {
-				control.setCargaInicial(new Long("0" + cargaInicial));
+				control.setCargaInicial(Long.parseLong("0" + cargaInicial));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}		
 			
 			try {
-				control.setMontoCargar(new Long("0" + montoCargar));
+				control.setMontoCargar(Long.parseLong("0" + montoCargar));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			try {
-				control.setMontoTotal(new Long("0" + montoTotal));
+				control.setMontoTotal(Long.parseLong("0" + montoTotal));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

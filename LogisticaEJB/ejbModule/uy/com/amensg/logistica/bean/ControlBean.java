@@ -18,10 +18,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.type.DateType;
 import org.hibernate.type.LongType;
 import org.hibernate.type.StringType;
@@ -139,12 +140,12 @@ public class ControlBean implements IControlBean {
 			
 			EstadoProcesoImportacion estadoProcesoImportacionInicio = 
 				iEstadoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio"))
 				);
 			
 			TipoProcesoImportacion tipoProcesoImportacion =
 				iTipoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("tipoProcesoImportacion.Controles"))
+					Long.parseLong(Configuration.getInstance().getProperty("tipoProcesoImportacion.Controles"))
 				);
 			
 			Usuario usuario =
@@ -161,7 +162,7 @@ public class ControlBean implements IControlBean {
 			
 			procesoImportacion.setFcre(hoy);
 			procesoImportacion.setFact(hoy);
-			procesoImportacion.setTerm(new Long(1));
+			procesoImportacion.setTerm(Long.valueOf(1));
 			procesoImportacion.setUact(loggedUsuarioId);
 			procesoImportacion.setUcre(loggedUsuarioId);
 			
@@ -169,12 +170,12 @@ public class ControlBean implements IControlBean {
 			
 			boolean errorFatal = false;
 			String line = null;
-			Long numeroLinea = new Long(1);
+			Long numeroLinea = Long.valueOf(1);
 			while ((line = bufferedReader.readLine()) != null) {
 				String[] fields = line.split(";");
 				
 				try {
-					new Long (fields[0].trim());
+					Long.parseLong (fields[0].trim());
 					
 					ProcesoImportacionLinea procesoImportacionLinea = new ProcesoImportacionLinea();
 					procesoImportacionLinea.setClave(fields[0].trim());
@@ -184,7 +185,7 @@ public class ControlBean implements IControlBean {
 					
 					procesoImportacionLinea.setFact(hoy);
 					procesoImportacionLinea.setFcre(hoy);
-					procesoImportacionLinea.setTerm(new Long(1));
+					procesoImportacionLinea.setTerm(Long.valueOf(1));
 					procesoImportacionLinea.setUact(loggedUsuarioId);
 					procesoImportacionLinea.setUcre(loggedUsuarioId);
 					
@@ -202,9 +203,9 @@ public class ControlBean implements IControlBean {
 			if (!errorFatal) {
 				Map<Long, Integer> map = this.preprocesarConjunto(procesoImportacionManaged, empresaId);
 				
-				Long importar = new Long(0);
-				Long sobreescribir = new Long(0);
-				Long omitir = new Long(0);
+				Long importar = Long.valueOf(0);
+				Long sobreescribir = Long.valueOf(0);
+				Long omitir = Long.valueOf(0);
 				for (Entry<Long, Integer> entry : map.entrySet()) {
 					switch (entry.getValue()) {
 						case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
@@ -253,7 +254,7 @@ public class ControlBean implements IControlBean {
 				String clave = procesoImportacionLinea.getClave();
 				
 				try {
-					Long mid = new Long(clave);
+					Long mid = Long.parseLong(clave);
 					
 					if (mid > 0) {
 						result.put(procesoImportacionLinea.getId(), Constants.__COMPROBACION_IMPORTACION_IMPORTAR);
@@ -292,16 +293,16 @@ public class ControlBean implements IControlBean {
 			Date fechaMin = gregorianCalendar.getTime();
 			
 			EstadoControl estado = 
-				iEstadoControlBean.getById(new Long(Configuration.getInstance().getProperty("estadoControl.PENDIENTE")));
+				iEstadoControlBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoControl.PENDIENTE")));
 			
 			Empresa empresa = 
 				iEmpresaBean.getById(empresaId, false);
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoOK = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoConErrores = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
 			
 			ProcesoImportacion procesoImportacionManaged = 
 				iProcesoImportacionBean.getByNombreArchivo(fileName);
@@ -311,18 +312,19 @@ public class ControlBean implements IControlBean {
 			
 			Session hibernateSession = entityManager.unwrap(Session.class);
 			
-			SQLQuery selectActivacion = hibernateSession.createSQLQuery(
+			NativeQuery<Tuple> selectActivacion = hibernateSession.createNativeQuery(
 				"SELECT asl.distribuidor_id, asl.fecha_asignacion_distribuidor, asl.punto_venta_id, asl.fecha_asignacion_punto_venta"
 				+ " FROM activacion a"
 				+ " INNER JOIN activacion_sublote_activacion asla ON asla.activacion_id = a.id"
 				+ " INNER JOIN activacion_sublote asl ON asl.id = asla.activacion_sublote_id"
 				+ " WHERE a.empresa_id = ?"
 				+ " AND a.mid = ?"
-				+ " AND a.chip = ?"
+				+ " AND a.chip = ?",
+				Tuple.class
 			);
-			selectActivacion.setParameter(0, empresa.getId(), LongType.INSTANCE);
+			selectActivacion.setParameter(1, empresa.getId(), LongType.INSTANCE);
 			
-			SQLQuery insertControl = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertControl = hibernateSession.createNativeQuery(
 				"INSERT INTO control("
 					+ " id,"
 					+ " fecha_control,"
@@ -371,23 +373,23 @@ public class ControlBean implements IControlBean {
 				+ " )"
 			);
 			
-			insertControl.setParameter(0, fechaMin, DateType.INSTANCE);
 			insertControl.setParameter(1, fechaMin, DateType.INSTANCE);
-			insertControl.setParameter(2, hoy, TimestampType.INSTANCE);
-			insertControl.setParameter(3, fechaMin, DateType.INSTANCE);
-			insertControl.setParameter(4, new Long(0), LongType.INSTANCE);
-			insertControl.setParameter(5, new Long(0), LongType.INSTANCE);
-			insertControl.setParameter(6, hoy, TimestampType.INSTANCE);
+			insertControl.setParameter(2, fechaMin, DateType.INSTANCE);
+			insertControl.setParameter(3, hoy, TimestampType.INSTANCE);
+			insertControl.setParameter(4, fechaMin, DateType.INSTANCE);
+			insertControl.setParameter(5, Long.valueOf(0), LongType.INSTANCE);
+			insertControl.setParameter(6, Long.valueOf(0), LongType.INSTANCE);
 			insertControl.setParameter(7, hoy, TimestampType.INSTANCE);
-			insertControl.setParameter(8, new Long(1), LongType.INSTANCE);
-			insertControl.setParameter(9, loggedUsuarioId, LongType.INSTANCE);
+			insertControl.setParameter(8, hoy, TimestampType.INSTANCE);
+			insertControl.setParameter(9, Long.valueOf(1), LongType.INSTANCE);
 			insertControl.setParameter(10, loggedUsuarioId, LongType.INSTANCE);
-			insertControl.setParameter(11, empresa.getId(), LongType.INSTANCE);
-			insertControl.setParameter(12, estado.getId(), LongType.INSTANCE);
-			insertControl.setParameter(13, tipoControlId, LongType.INSTANCE);
+			insertControl.setParameter(11, loggedUsuarioId, LongType.INSTANCE);
+			insertControl.setParameter(12, empresa.getId(), LongType.INSTANCE);
+			insertControl.setParameter(13, estado.getId(), LongType.INSTANCE);
+			insertControl.setParameter(14, tipoControlId, LongType.INSTANCE);
 			
-			Long successful = new Long(0);
-			Long errors = new Long(0);
+			Long successful = Long.valueOf(0);
+			Long errors = Long.valueOf(0);
 			for (ProcesoImportacionLinea procesoImportacionLinea : 
 				iProcesoImportacionLineaBean.listByProcesoImportacion(procesoImportacionManaged)) {
 				String[] fields = procesoImportacionLinea.getLinea().split(";", -1);
@@ -405,7 +407,7 @@ public class ControlBean implements IControlBean {
 					
 					Long mid = null;
 					try {
-						mid = new Long(fields[0].trim());
+						mid = Long.parseLong(fields[0].trim());
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
@@ -425,50 +427,50 @@ public class ControlBean implements IControlBean {
 						ok = false;
 					}
 					
-					selectActivacion.setParameter(1, mid, LongType.INSTANCE);
-					selectActivacion.setParameter(2, chip, StringType.INSTANCE);
+					selectActivacion.setParameter(2, mid, LongType.INSTANCE);
+					selectActivacion.setParameter(3, chip, StringType.INSTANCE);
 					
-					List<?> resultList = selectActivacion.list();
+					List<Tuple> resultList = selectActivacion.list();
 					if (!resultList.isEmpty()) {
-						Object[] tuple = (Object[]) resultList.get(0);
+						Tuple tuple = resultList.get(0);
 						
-						if (tuple.length == 4) {
+						if (tuple.toArray().length == 4) {
 							Long distribuidorId = null;
-							if (tuple[0] != null) {
-								distribuidorId = new Long((Integer) tuple[0]);
+							if (tuple.get(0) != null) {
+								distribuidorId = Long.valueOf((Integer) tuple.get(0));
 							}
-							insertControl.setParameter(16, distribuidorId, LongType.INSTANCE);
+							insertControl.setParameter(17, distribuidorId, LongType.INSTANCE);
 							
 							Date fechaAsignacionDistribuidor = null;
-							if (tuple[1] != null) {
-								fechaAsignacionDistribuidor = (Date) tuple[1];
+							if (tuple.get(1) != null) {
+								fechaAsignacionDistribuidor = (Date) tuple.get(1);
 							}
-							insertControl.setParameter(17, fechaAsignacionDistribuidor, TimestampType.INSTANCE);
+							insertControl.setParameter(18, fechaAsignacionDistribuidor, TimestampType.INSTANCE);
 							
 							Long puntoVentaId = null;
-							if (tuple[2] != null) {
-								puntoVentaId = new Long((Integer) tuple[2]);
+							if (tuple.get(2) != null) {
+								puntoVentaId = Long.valueOf((Integer) tuple.get(2));
 							}
-							insertControl.setParameter(18, puntoVentaId, LongType.INSTANCE);
+							insertControl.setParameter(19, puntoVentaId, LongType.INSTANCE);
 							
 							Date fechaAsignacionPuntoVenta = null;
-							if (tuple[3] != null) {
-								fechaAsignacionPuntoVenta = (Date) tuple[3];
+							if (tuple.get(3) != null) {
+								fechaAsignacionPuntoVenta = (Date) tuple.get(3);
 							}
-							insertControl.setParameter(19, fechaAsignacionPuntoVenta, TimestampType.INSTANCE);
+							insertControl.setParameter(20, fechaAsignacionPuntoVenta, TimestampType.INSTANCE);
 						}
 					} else {
-						insertControl.setParameter(16, null, LongType.INSTANCE);
-						insertControl.setParameter(17, null, TimestampType.INSTANCE);
-						insertControl.setParameter(18, null, LongType.INSTANCE);
-						insertControl.setParameter(19, null, TimestampType.INSTANCE);
+						insertControl.setParameter(17, null, LongType.INSTANCE);
+						insertControl.setParameter(18, null, TimestampType.INSTANCE);
+						insertControl.setParameter(19, null, LongType.INSTANCE);
+						insertControl.setParameter(20, null, TimestampType.INSTANCE);
 					}
 					
 					if (!ok) {
 						errors++;
 					} else {
-						insertControl.setParameter(14, mid, LongType.INSTANCE);
-						insertControl.setParameter(15, chip, StringType.INSTANCE);
+						insertControl.setParameter(15, mid, LongType.INSTANCE);
+						insertControl.setParameter(16, chip, StringType.INSTANCE);
 						
 						insertControl.executeUpdate();
 
@@ -522,7 +524,7 @@ public class ControlBean implements IControlBean {
 					+ " WHERE c.estadoControl.id = :estadoPendienteId", 
 					Control.class
 				);
-			query.setParameter("estadoPendienteId", new Long(Configuration.getInstance().getProperty("estadoControl.PENDIENTE")));
+			query.setParameter("estadoPendienteId", Long.parseLong(Configuration.getInstance().getProperty("estadoControl.PENDIENTE")));
 			query.setMaxResults(1);
 			
 			List<Control> resultList = query.getResultList();
@@ -530,13 +532,13 @@ public class ControlBean implements IControlBean {
 				Control control = resultList.get(0);
 				
 				EstadoControl estadoControl = 
-					iEstadoControlBean.getById(new Long(Configuration.getInstance().getProperty("estadoControl.PROCESANDO")));
+					iEstadoControlBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoControl.PROCESANDO")));
 				
 				control.setEstadoControl(estadoControl);
 				
 				control.setFact(hoy);
-				control.setTerm(new Long(1));
-				control.setUact(new Long(1));
+				control.setTerm(Long.valueOf(1));
+				control.setUact(Long.valueOf(1));
 				
 				control = entityManager.merge(control);
 				
@@ -568,7 +570,7 @@ public class ControlBean implements IControlBean {
 			query.setParameter("mid", control.getMid());
 			query.setParameter(
 				"estadoControlProcesandoId", 
-				new Long(Configuration.getInstance().getProperty("estadoControl.PROCESANDO"))
+				Long.parseLong(Configuration.getInstance().getProperty("estadoControl.PROCESANDO"))
 			);
 			query.setMaxResults(1);
 			
@@ -580,9 +582,9 @@ public class ControlBean implements IControlBean {
 				controlManaged.setEstadoControl(control.getEstadoControl());
 				
 				Long estadoControlId = control.getEstadoControl().getId();
-				if (estadoControlId.equals(new Long(Configuration.getInstance().getProperty("estadoControl.OK")))
-					|| estadoControlId.equals(new Long(Configuration.getInstance().getProperty("estadoControl.INVALIDO")))
-					|| estadoControlId.equals(new Long(Configuration.getInstance().getProperty("estadoControl.CARGAR")))
+				if (estadoControlId.equals(Long.parseLong(Configuration.getInstance().getProperty("estadoControl.OK")))
+					|| estadoControlId.equals(Long.parseLong(Configuration.getInstance().getProperty("estadoControl.INVALIDO")))
+					|| estadoControlId.equals(Long.parseLong(Configuration.getInstance().getProperty("estadoControl.CARGAR")))
 				) {
 					controlManaged.setFechaControl(hoy);
 					controlManaged.setMesControl(hoy);
@@ -595,8 +597,8 @@ public class ControlBean implements IControlBean {
 				controlManaged.setMontoTotal(control.getMontoTotal());
 				
 				controlManaged.setFact(hoy);
-				controlManaged.setTerm(new Long(1));
-				controlManaged.setUact(new Long(1));
+				controlManaged.setTerm(Long.valueOf(1));
+				controlManaged.setUact(Long.valueOf(1));
 				
 				control = entityManager.merge(controlManaged);
 			}
@@ -689,7 +691,7 @@ public class ControlBean implements IControlBean {
 				+ ";Monto total"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {

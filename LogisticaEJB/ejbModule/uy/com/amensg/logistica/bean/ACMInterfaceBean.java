@@ -9,10 +9,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.type.LongType;
 import org.hibernate.type.StringType;
 
@@ -42,11 +43,12 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			ACMInterfaceEstado estado = 
 				entityManager.find(
 					ACMInterfaceEstado.class, 
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso"))
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso"))
 				);
 			
 			Query query = entityManager.createNativeQuery(
-				"SELECT m.mid AS mid, c.documento AS documento, c.numero_contrato AS numero_contrato, random() AS random"
+				"SELECT m.mid AS mid, "
+					+ " c.documento AS documento, c.numero_contrato AS numero_contrato, random() AS random"
 				+ " FROM acm_interface_mid m"
 				+ " LEFT OUTER JOIN acm_interface_contrato c ON c.mid = m.mid"
 				+ " WHERE m.estado IN ("
@@ -55,9 +57,9 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 				+ " ORDER BY m.estado DESC, random"
 			);
 			query.setParameter("paraProcesar", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesar")));
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesar")));
 			query.setParameter("paraProcesarPrioritario", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")));
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")));
 			query.setMaxResults(1);
 			
 			List<?> resultList =  query.getResultList();
@@ -78,11 +80,11 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 				
 				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
 				acmInterfaceMid.setEstado(estado);
-				acmInterfaceMid.setMid(new Long((Integer)row[0]));
+				acmInterfaceMid.setMid(Long.valueOf((Integer)row[0]));
 				
 				acmInterfaceMid.setFact(today);
-				acmInterfaceMid.setTerm(new Long(1));
-				acmInterfaceMid.setUact(new Long(1));
+				acmInterfaceMid.setTerm(Long.valueOf(1));
+				acmInterfaceMid.setUact(Long.valueOf(1));
 				
 				this.update(acmInterfaceMid);
 			}
@@ -102,7 +104,7 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			ACMInterfaceEstado estado = 
 				entityManager.find(
 					ACMInterfaceEstado.class, 
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso"))
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.EnProceso"))
 				);
 			
 			TypedQuery<ACMInterfaceNumeroContrato> query = entityManager.createQuery(
@@ -114,9 +116,9 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 				+ " ORDER BY a.estado DESC"
 				, ACMInterfaceNumeroContrato.class);
 			query.setParameter("paraProcesar", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesar")));
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesar")));
 			query.setParameter("paraProcesarPrioritario", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")));
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario")));
 			query.setMaxResults(1);
 			
 			List<ACMInterfaceNumeroContrato> resultList = query.getResultList();
@@ -199,14 +201,14 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			ACMInterfaceEstado estado = 
 				entityManager.find(
 					ACMInterfaceEstado.class, 
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
 				);
 			
 			this.remove(acmInterfaceContrato);
 			
 			acmInterfaceContrato.setFact(today);
 			
-			entityManager.merge(acmInterfaceContrato);
+			entityManager.persist(acmInterfaceContrato);
 			
 			ACMInterfaceMid acmInterfaceMidManaged = 
 				entityManager.find(
@@ -228,7 +230,7 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			ACMInterfaceEstado estado = 
 				entityManager.find(
 					ACMInterfaceEstado.class, 
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
 				);
 			
 			this.remove(acmInterfacePrepago);
@@ -293,7 +295,7 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			
 			Session hibernateSession = entityManager.unwrap(Session.class);
 			
-			SQLQuery insertPersonaQuery = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertPersonaQuery = hibernateSession.createNativeQuery(
 				"INSERT INTO acm_interface_persona("
 					+ " id,"
 					+ " fcre,"
@@ -391,53 +393,53 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 				acmInterfacePersonaManaged.setFact(today);
 				acmInterfacePersonaManaged.setFcre(today);
 			} else {
-				insertPersonaQuery.setParameter(0, today);
 				insertPersonaQuery.setParameter(1, today);
-				insertPersonaQuery.setParameter(2, new Long(1));
-				insertPersonaQuery.setParameter(3, new Long(1));
-				insertPersonaQuery.setParameter(4, new Long(1));
-				insertPersonaQuery.setParameter(5, acmInterfacePersona.getActividad());
-				insertPersonaQuery.setParameter(6, acmInterfacePersona.getApartamento());
-				insertPersonaQuery.setParameter(7, acmInterfacePersona.getApellido());
-				insertPersonaQuery.setParameter(8, acmInterfacePersona.getBis());
-				insertPersonaQuery.setParameter(9, acmInterfacePersona.getBlock());
-				insertPersonaQuery.setParameter(10, acmInterfacePersona.getCalle());
-				insertPersonaQuery.setParameter(11, acmInterfacePersona.getCodigoPostal());
-				insertPersonaQuery.setParameter(12, acmInterfacePersona.getDireccion());
-				insertPersonaQuery.setParameter(13, acmInterfacePersona.getDistribucion());
-				insertPersonaQuery.setParameter(14, acmInterfacePersona.getDocumento());
-				insertPersonaQuery.setParameter(15, acmInterfacePersona.getEmail());
-				insertPersonaQuery.setParameter(16, acmInterfacePersona.getEsquina());
-				insertPersonaQuery.setParameter(17, acmInterfacePersona.getFechaNacimiento());
-				insertPersonaQuery.setParameter(18, acmInterfacePersona.getIdCliente());
-				insertPersonaQuery.setParameter(19, acmInterfacePersona.getLocalidad());
-				insertPersonaQuery.setParameter(20, acmInterfacePersona.getManzana());
-				insertPersonaQuery.setParameter(21, acmInterfacePersona.getNombre());
-				insertPersonaQuery.setParameter(22, acmInterfacePersona.getNumero());
-				insertPersonaQuery.setParameter(23, acmInterfacePersona.getPais());
-				insertPersonaQuery.setParameter(24, acmInterfacePersona.getRazonSocial());
-				insertPersonaQuery.setParameter(25, acmInterfacePersona.getSexo());
-				insertPersonaQuery.setParameter(26, acmInterfacePersona.getSolar());
-				insertPersonaQuery.setParameter(27, acmInterfacePersona.getTelefono());
-				insertPersonaQuery.setParameter(28, acmInterfacePersona.getTipoCliente());
-				insertPersonaQuery.setParameter(29, acmInterfacePersona.getTipoDocumento());
+				insertPersonaQuery.setParameter(2, today);
+				insertPersonaQuery.setParameter(3, Long.valueOf(1));
+				insertPersonaQuery.setParameter(4, Long.valueOf(1));
+				insertPersonaQuery.setParameter(5, Long.valueOf(1));
+				insertPersonaQuery.setParameter(6, acmInterfacePersona.getActividad());
+				insertPersonaQuery.setParameter(7, acmInterfacePersona.getApartamento());
+				insertPersonaQuery.setParameter(8, acmInterfacePersona.getApellido());
+				insertPersonaQuery.setParameter(9, acmInterfacePersona.getBis());
+				insertPersonaQuery.setParameter(10, acmInterfacePersona.getBlock());
+				insertPersonaQuery.setParameter(11, acmInterfacePersona.getCalle());
+				insertPersonaQuery.setParameter(12, acmInterfacePersona.getCodigoPostal());
+				insertPersonaQuery.setParameter(13, acmInterfacePersona.getDireccion());
+				insertPersonaQuery.setParameter(14, acmInterfacePersona.getDistribucion());
+				insertPersonaQuery.setParameter(15, acmInterfacePersona.getDocumento());
+				insertPersonaQuery.setParameter(16, acmInterfacePersona.getEmail());
+				insertPersonaQuery.setParameter(17, acmInterfacePersona.getEsquina());
+				insertPersonaQuery.setParameter(18, acmInterfacePersona.getFechaNacimiento());
+				insertPersonaQuery.setParameter(19, acmInterfacePersona.getIdCliente());
+				insertPersonaQuery.setParameter(20, acmInterfacePersona.getLocalidad());
+				insertPersonaQuery.setParameter(21, acmInterfacePersona.getManzana());
+				insertPersonaQuery.setParameter(22, acmInterfacePersona.getNombre());
+				insertPersonaQuery.setParameter(23, acmInterfacePersona.getNumero());
+				insertPersonaQuery.setParameter(24, acmInterfacePersona.getPais());
+				insertPersonaQuery.setParameter(25, acmInterfacePersona.getRazonSocial());
+				insertPersonaQuery.setParameter(26, acmInterfacePersona.getSexo());
+				insertPersonaQuery.setParameter(27, acmInterfacePersona.getSolar());
+				insertPersonaQuery.setParameter(28, acmInterfacePersona.getTelefono());
+				insertPersonaQuery.setParameter(29, acmInterfacePersona.getTipoCliente());
+				insertPersonaQuery.setParameter(30, acmInterfacePersona.getTipoDocumento());
 				
 				insertPersonaQuery.executeUpdate();
 			}
 			
-			SQLQuery deleteMidPersonaQuery = hibernateSession.createSQLQuery(
+			NativeQuery<?> deleteMidPersonaQuery = hibernateSession.createNativeQuery(
 				"DELETE FROM acm_interface_mid_persona WHERE mid = :mid"
 			);
 			deleteMidPersonaQuery.setParameter("mid", mid, LongType.INSTANCE);
 			
-			SQLQuery selectPersonaQuery = hibernateSession.createSQLQuery(
-				" SELECT p.id"
+			NativeQuery<Tuple> selectPersonaQuery = hibernateSession.createNativeQuery(
+				"SELECT p.id"
 				+ " FROM acm_interface_persona p"
-				+ " WHERE p.id_cliente = :idCliente"
+				+ " WHERE p.id_cliente = :idCliente", Tuple.class
 			);
 			selectPersonaQuery.setParameter("idCliente", acmInterfacePersona.getIdCliente(), StringType.INSTANCE);
 			
-			SQLQuery insertMidPersonaQuery = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertMidPersonaQuery = hibernateSession.createNativeQuery(
 				"INSERT INTO acm_interface_mid_persona(mid, persona_id)"
 				+ " SELECT :mid, p.id"
 				+ " FROM acm_interface_persona p"
@@ -468,7 +470,7 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			ACMInterfaceEstado estado = 
 				entityManager.find(
 					ACMInterfaceEstado.class, 
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
 				);
 			
 			ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
@@ -476,8 +478,8 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			acmInterfaceMid.setMid(mid);
 			
 			acmInterfaceMid.setFact(GregorianCalendar.getInstance().getTime());
-			acmInterfaceMid.setTerm(new Long(1));
-			acmInterfaceMid.setUact(new Long(1));
+			acmInterfaceMid.setTerm(Long.valueOf(1));
+			acmInterfaceMid.setUact(Long.valueOf(1));
 			
 			this.update(acmInterfaceMid);
 		} catch (Exception e) {
@@ -495,7 +497,7 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			ACMInterfaceEstado estado = 
 				entityManager.find(
 					ACMInterfaceEstado.class, 
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
 				);
 			
 			ACMInterfaceNumeroContrato acmInterfaceNumeroContrato = new ACMInterfaceNumeroContrato();
@@ -503,9 +505,9 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			acmInterfaceNumeroContrato.setNumeroContrato(numeroContrato);
 			
 			acmInterfaceNumeroContrato.setFact(GregorianCalendar.getInstance().getTime());
-			acmInterfaceNumeroContrato.setTerm(new Long(1));
-			acmInterfaceNumeroContrato.setUact(new Long(1));
-			acmInterfaceNumeroContrato.setUcre(new Long(1));
+			acmInterfaceNumeroContrato.setTerm(Long.valueOf(1));
+			acmInterfaceNumeroContrato.setUact(Long.valueOf(1));
+			acmInterfaceNumeroContrato.setUcre(Long.valueOf(1));
 			
 			this.update(acmInterfaceNumeroContrato);
 		} catch (Exception e) {

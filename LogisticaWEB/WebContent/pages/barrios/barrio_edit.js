@@ -1,68 +1,59 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	$("#divEliminarBarrio").hide();
 	
-	DepartamentoDWR.list(
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectDepartamento").append(html);
-			}, async: false
-		}
-	);
-	
-	ZonaDWR.list(
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectZona").append(html);
-			}, async: false
-		}
-	);
-	
-	if (id != null) {
-		BarrioDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputBarrioNombre").val(data.nombre);
-					
-					if ($("#selectDepartamento").length > 0) { 
-						$("#selectDepartamento").val(data.departamento.id);
-					} else {
-						$("#divDepartamento").attr("did", data.departamento.id);
-						$("#divDepartamento").html(data.departamento.nombre);
-					}
-					
-					if ($("#selectZona").length > 0) { 
-						$("#selectZona").val(data.zona.id);
-					} else {
-						$("#divZona").attr("zid", data.zona.id);
-						$("#divZona").html(data.zona.nombre);
-					}
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarBarrio").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
-			}
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/DepartamentoREST/list"
+    }).then(function(data) { 
+		fillSelect(
+			"selectDepartamento", 
+			data,
+			"id", 
+			"nombre"
 		);
-	}
-});
+    }).then(function(data) {
+    	$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ZonaREST/listMinimal"
+	    }).then(function(data) { 
+			fillSelect(
+				"selectZona", 
+				data,
+				"id", 
+				"nombre"
+			);
+		});
+    }).then(function(data) {
+		if (id != null) {
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/BarrioREST/getById/" + id
+		    }).then(function(data) { 
+				$("#inputBarrioNombre").val(data.nombre);
+				
+				if ($("#selectDepartamento").length > 0) { 
+					$("#selectDepartamento").val(data.departamento.id);
+				} else {
+					$("#divDepartamento").attr("did", data.departamento.id);
+					$("#divDepartamento").html(data.departamento.nombre);
+				}
+				
+				if ($("#selectZona").length > 0) { 
+					$("#selectZona").val(data.zona.id);
+				} else {
+					$("#divZona").attr("zid", data.zona.id);
+					$("#divZona").html(data.zona.nombre);
+				}
+				
+				if (mode == __FORM_MODE_ADMIN) {
+					$("#divEliminarBarrio").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				}
+			});
+		}
+    });
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -73,24 +64,16 @@ function refinarForm() {
 }
 
 function selectDepartamentoOnChange() {
-	$("#selectZona > option:gt(0)").remove();
-
-	ZonaDWR.listByDepartamentoId(
-		$("#selectDepartamento").val(),
-		{
-			callback: function(data) {
-				$("#selectZona > option:gt(0)").remove();
-				
-				var html = "";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectZona").append(html);
-			}, async: false
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/ZonaREST/listMinimalByDepartamentoId/" + $("#selectDepartamento").val()
+    }).then(function(data) { 
+		fillSelect(
+			"selectZona",
+			data,
+			"id",
+			"nombre"
+		);		
+    });
 }
 
 function inputGuardarOnClick(event) {
@@ -124,41 +107,45 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		barrio.id = id;
 		
-		BarrioDWR.update(
-			barrio,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/BarrioREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(barrio)
+	    }).then(function(data) {
+			alert("Operaci√≥n exitosa");
+		});
 	} else {
-		BarrioDWR.add(
-			barrio,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-					
-					$("#inputEliminarBarrio").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/BarrioREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(barrio)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operaci√≥n exitosa");
+				
+				$("#inputEliminarBarrio").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operaci√≥n");
+	    	}
+		});
 	}
 }
 
 function inputEliminarOnClick(event) {
-	if ((id != null) && confirm("Se eliminar· el Barrio")) {
+	if ((id != null) && confirm("Se eliminar√° el Barrio")) {
 		var barrio = {
 			id: id
 		};
 		
-		BarrioDWR.remove(
-			barrio,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/BarrioREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(barrio)
+	    }).then(function(data) {
+			alert("Operaci√≥n exitosa");
+		});
 	}
 }

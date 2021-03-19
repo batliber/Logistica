@@ -107,15 +107,21 @@ public class TasaInteresEfectivaAnualBean implements ITasaInteresEfectivaAnualBe
 		return result;
 	}
 	
-	public void save(TasaInteresEfectivaAnual tasaInteresEfectivaAnual) {
+	public TasaInteresEfectivaAnual save(TasaInteresEfectivaAnual tasaInteresEfectivaAnual) {
+		TasaInteresEfectivaAnual result = null;
+		
 		try {
 			tasaInteresEfectivaAnual.setFcre(tasaInteresEfectivaAnual.getFact());
 			tasaInteresEfectivaAnual.setUcre(tasaInteresEfectivaAnual.getUact());
 			
 			entityManager.persist(tasaInteresEfectivaAnual);
+			
+			result = tasaInteresEfectivaAnual;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(TasaInteresEfectivaAnual tasaInteresEfectivaAnual) {

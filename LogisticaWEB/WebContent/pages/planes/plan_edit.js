@@ -5,65 +5,56 @@ function init() {
 	
 	$("#divEliminarPlan").hide();
 	
-	TipoPlanDWR.list(
-		{
-			callback: function(data) {
-				$("#selectPlanTipoPlan option").remove();
-				
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/TipoPlanREST/list"
+    }).then(function(data) { 
+		fillSelect(
+			"selectPlanTipoPlan", 
+			data,
+			"id", 
+			"descripcion"
+		);
+    }).then(function(data) { 
+		if (id != null) {
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/PlanREST/getById/" + id
+		    }).then(function(data) { 
+				if (data.tipoPlan != null) {
+					$("#selectPlanTipoPlan").val(data.tipoPlan.id);
 				}
 				
-				$("#selectPlanTipoPlan").append(html);
-			}, async: false
+				$("#inputPlanDescripcion").val(data.descripcion);
+				$("#inputPlanAbreviacion").val(data.abreviacion);
+				$("#inputPlanConsumoMinimo").val(data.consumoMinimo);
+				$("#inputPlanDuracion").val(data.duracion);
+				$("#inputPlanPrecioMinutoDestinosAntelHorarioNormal").val(data.precioMinutoDestinosAntelHorarioNormal);
+				$("#inputPlanPrecioMinutoDestinosAntelHorarioReducido").val(data.precioMinutoDestinosAntelHorarioReducido);
+				$("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").val(data.rendimientoMinutosMensualDestinosAntelHorarioNormal);
+				$("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").val(data.rendimientoMinutosMensualDestinosAntelHorarioReducido);
+				$("#inputPlanPrecioMinutoNumerosAmigos").val(data.precioMinutoNumerosAmigos);
+				$("#inputPlanPrecioMinutoOtrasOperadoras").val(data.precioMinutoOtrasOperadoras);
+				$("#inputPlanRendimientoMinutosMensualOtrasOperadoras").val(data.rendimientoMinutosMensualOtrasOperadoras);
+				$("#inputPlanPrecioSms").val(data.precioSms);
+				$("#inputPlanMontoNavegacionCelular").val(data.montoNavegacionCelular);
+				$("#inputPlanPrecioConsumoFueraBono").val(data.precioConsumoFueraBono);
+				$("#inputPlanTopeFacturacionMensualTraficoDatos").val(data.topeFacturacionMensualTraficoDatos);
+				$("#inputPlanDestinosGratis").val(data.destinosGratis);
+				$("#inputPlanMinutosGratisMesCelularesAntel").val(data.minutosGratisMesCelularesAntel);
+				$("#inputPlanCantidadCelularesAntelMinutosGratis").val(data.cantidadCelularesAntelMinutosGratis);
+				$("#inputPlanSmsGratisMesCelularesAntel").val(data.smsGratisMesCelularesAntel);
+				$("#inputPlanCantidadCelularesAntelSmsGratis").val(data.cantidadCelularesAntelSmsGratis);
+				$("#inputPlanMinutosGratisMesFijosAntel").val(data.minutosGratisMesFijosAntel);
+				$("#inputPlanCantidadFijosAntelMinutosGratis").val(data.cantidadFijosAntelMinutosGratis);
+				$("#inputPlanPiePagina").val(data.piePagina);
+				$("#inputPlanBeneficioIncluidoEnLlamadas").prop("checked", data.beneficioIncluidoEnLlamadas);
+				
+				if (mode == __FORM_MODE_ADMIN) {
+					$("#divEliminarPlan").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				}
+			});
 		}
-	);
-	
-	if (id != null) {
-		PlanDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					if (data.tipoPlan != null) {
-						$("#selectPlanTipoPlan").val(data.tipoPlan.id);
-					}
-					
-					$("#inputPlanDescripcion").val(data.descripcion);
-					$("#inputPlanAbreviacion").val(data.abreviacion);
-					$("#inputPlanConsumoMinimo").val(data.consumoMinimo);
-					$("#inputPlanDuracion").val(data.duracion);
-					$("#inputPlanPrecioMinutoDestinosAntelHorarioNormal").val(data.precioMinutoDestinosAntelHorarioNormal);
-					$("#inputPlanPrecioMinutoDestinosAntelHorarioReducido").val(data.precioMinutoDestinosAntelHorarioReducido);
-					$("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").val(data.rendimientoMinutosMensualDestinosAntelHorarioNormal);
-					$("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").val(data.rendimientoMinutosMensualDestinosAntelHorarioReducido);
-					$("#inputPlanPrecioMinutoNumerosAmigos").val(data.precioMinutoNumerosAmigos);
-					$("#inputPlanPrecioMinutoOtrasOperadoras").val(data.precioMinutoOtrasOperadoras);
-					$("#inputPlanRendimientoMinutosMensualOtrasOperadoras").val(data.rendimientoMinutosMensualOtrasOperadoras);
-					$("#inputPlanPrecioSms").val(data.precioSms);
-					$("#inputPlanMontoNavegacionCelular").val(data.montoNavegacionCelular);
-					$("#inputPlanPrecioConsumoFueraBono").val(data.precioConsumoFueraBono);
-					$("#inputPlanTopeFacturacionMensualTraficoDatos").val(data.topeFacturacionMensualTraficoDatos);
-					$("#inputPlanDestinosGratis").val(data.destinosGratis);
-					$("#inputPlanMinutosGratisMesCelularesAntel").val(data.minutosGratisMesCelularesAntel);
-					$("#inputPlanCantidadCelularesAntelMinutosGratis").val(data.cantidadCelularesAntelMinutosGratis);
-					$("#inputPlanSmsGratisMesCelularesAntel").val(data.smsGratisMesCelularesAntel);
-					$("#inputPlanCantidadCelularesAntelSmsGratis").val(data.cantidadCelularesAntelSmsGratis);
-					$("#inputPlanMinutosGratisMesFijosAntel").val(data.minutosGratisMesFijosAntel);
-					$("#inputPlanCantidadFijosAntelMinutosGratis").val(data.cantidadFijosAntelMinutosGratis);
-					$("#inputPlanPiePagina").val(data.piePagina);
-					$("#inputPlanBeneficioIncluidoEnLlamadas").prop("checked", data.beneficioIncluidoEnLlamadas);
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarPlan").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
-			}
-		);
-	}
+    });
 }
 
 function refinarForm() {
@@ -99,13 +90,6 @@ function refinarForm() {
 //	$("#divLabelPlanCantidadCelularesAntelSmsGratis").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanMinutosGratisMesFijosAntel").addClass("requiredFormLabelExtraExtended");
 //	$("#divLabelPlanCantidadFijosAntelMinutosGratis").addClass("requiredFormLabelExtraExtended");
-}
-
-function hideField(elementId) {
-	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, elementId.length);
-	
-	$("#divLabel" + elementSuffix).hide();
-	$("#div" + elementSuffix).hide();
 }
 
 function checkRequiredFields() {
@@ -184,25 +168,29 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		plan.id = id;
 		
-		PlanDWR.update(
-			plan,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PlanREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(plan)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	} else {
-		PlanDWR.add(
-			plan,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PlanREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(plan)
+	    }).then(function(data) {
+	    	if (data != null) {
+	    		alert("Operación exitosa");
 					
-					$("#inputEliminarPlan").prop("disabled", false);
-				}, async: false
-			}
-		);
+	    		("#inputEliminarPlan").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+		});
 	}
 }
 
@@ -212,13 +200,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		PlanDWR.remove(
-			plan,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PlanREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(plan)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	}
 }

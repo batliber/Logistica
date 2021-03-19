@@ -9,12 +9,14 @@ input[type="text"] {
 	font-family: Segoe UI;
 	font-size: 9pt;
 	height: 14px;
+	margin-top: -1px;
 }
 
 input[type="password"] {
 	font-family: Segoe UI;
 	font-size: 9pt;
 	height: 14px;
+	margin-top: -1px;
 }
 
 input[type="submit"] {
@@ -207,7 +209,9 @@ a {
 }
 
 .divMainWindow {
-	width: 1366px;
+	/* width: 1366px; */
+	width: auto;
+	overflow: hidden;
 	float: left;
 	padding-top: 10px;
 }
@@ -309,6 +313,13 @@ tr:hover {
 	float: left;
 	width: 120px;
 	height: 21px;
+	text-align: right;
+	margin-top: 2px;
+}
+
+.divFormLabelPrint {
+	float: left;
+	width: 80px;
 	text-align: right;
 	margin-top: 2px;
 }

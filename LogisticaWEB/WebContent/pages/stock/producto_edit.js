@@ -1,66 +1,53 @@
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	refinarForm();
 	
 	$("#divEliminarProducto").hide();
 	
-	EmpresaServiceDWR.list(
-		{
-			callback: function(data) {
-				$("#selectProductoEmpresaService option").remove();
-				
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectProductoEmpresaService").append(html);
-			}, async: false
-		}
-	);
-	
-	MarcaDWR.list(
-		{
-			callback: function(data) {
-				$("#selectProductoMarca option").remove();
-				
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectProductoMarca").append(html);
-			}, async: false
-		}
-	);
-	
-	if (id != null) {
-		ProductoDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputProductoDescripcion").val(data.descripcion);
-					
-					if (data.empresaService != null) {
-						$("#selectProductoEmpresaService").val(data.empresaService.id);
-					}
-					
-					if (data.marca != null) {
-						$("#selectProductoMarca").val(data.marca.id);
-					}
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarProducto").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
-			}
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/EmpresaServiceREST/list"
+    }).then(function(data) { 
+		fillSelect(
+			"selectModeloEmpresaService", 
+			data,
+			"id", 
+			"nombre"
 		);
-	}
-});
+    }).then(function(data) { 
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MarcaREST/list"
+	    }).then(function(data) { 
+			fillSelect(
+				"selectModeloMarca", 
+				data,
+				"id",
+				"nombre"
+			);
+		});
+    }).then(function(data) {
+    	if (id != null) {
+	    	$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/ProductoREST/getById/" + id
+		    }).then(function(data) { 
+				$("#inputProductoDescripcion").val(data.descripcion);
+				
+				if (data.empresaService != null) {
+					$("#selectProductoEmpresaService").val(data.empresaService.id);
+				}
+				
+				if (data.marca != null) {
+					$("#selectProductoMarca").val(data.marca.id);
+				}
+				
+				if (mode == __FORM_MODE_ADMIN) {
+					$("#divEliminarProducto").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				}
+		    });
+    	}
+    });
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -82,7 +69,7 @@ function inputGuardarOnClick(event) {
 	};
 	
 	if (producto.descripcion == "") {
-		alert("Debe ingresar una descripciÛn.");
+		alert("Debe ingresar una descripci√≥n.");
 		
 		return;
 	}
@@ -102,41 +89,45 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		producto.id = id;
 		
-		ProductoDWR.update(
-			producto,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ProductoREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(producto)
+	    }).then(function(data) {
+	    	alert("Operaci√≥n exitosa");
+	    });
 	} else {
-		ProductoDWR.add(
-			producto,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-					
-					$("#inputEliminarProducto").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ProductoREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(producto)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operaci√≥n exitosa");
+	    	
+				$("#inputEliminarProducto").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operaci√≥n");
+	    	}
+	    });
 	}
 }
 
 function inputEliminarOnClick(event) {
-	if ((id != null) && confirm("Se eliminar· el Equipo")) {
+	if ((id != null) && confirm("Se eliminar√° el Equipo")) {
 		var producto = {
 			id: id
 		};
 		
-		ProductoDWR.remove(
-			producto,
-			{
-				callback: function(data) {
-					alert("OperaciÛn exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ProductoREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(producto)
+	    }).then(function(data) { 
+	    	alert("Operaci√≥n exitosa");
+	    });
 	}
 }

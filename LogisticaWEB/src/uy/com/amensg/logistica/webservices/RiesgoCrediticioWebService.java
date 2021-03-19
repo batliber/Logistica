@@ -87,7 +87,7 @@ public class RiesgoCrediticioWebService {
 			
 			Empresa empresa = new Empresa();
 			try {
-				empresa.setId(new Long(empresaId));
+				empresa.setId(Long.parseLong(empresaId));
 			} catch (Exception e) {
 				e.printStackTrace();
 				empresa = null;
@@ -115,31 +115,31 @@ public class RiesgoCrediticioWebService {
 			}
 			
 			try {
-				acmInterfaceRiesgoCrediticio.setContratosCelular(new Long(contratosCelular));
+				acmInterfaceRiesgoCrediticio.setContratosCelular(Long.parseLong(contratosCelular));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				acmInterfaceRiesgoCrediticio.setContratosSolaFirmaCelular(new Long("0" + contratosSolaFirmaCelular));
+				acmInterfaceRiesgoCrediticio.setContratosSolaFirmaCelular(Long.parseLong("0" + contratosSolaFirmaCelular));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				acmInterfaceRiesgoCrediticio.setContratosGarantiaCelular(new Long("0" + contratosGarantiaCelular));
+				acmInterfaceRiesgoCrediticio.setContratosGarantiaCelular(Long.parseLong("0" + contratosGarantiaCelular));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				acmInterfaceRiesgoCrediticio.setSaldoAyudaEconomicaCelular(new Double("0" + saldoAyudaEconomicaCelular.replace(",", ".")));
+				acmInterfaceRiesgoCrediticio.setSaldoAyudaEconomicaCelular(Double.valueOf("0" + saldoAyudaEconomicaCelular.replace(",", ".")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				acmInterfaceRiesgoCrediticio.setNumeroClienteFijo(new Long(numeroClienteFijo));
+				acmInterfaceRiesgoCrediticio.setNumeroClienteFijo(Long.parseLong(numeroClienteFijo));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -150,7 +150,7 @@ public class RiesgoCrediticioWebService {
 			);
 			
 			try {
-				acmInterfaceRiesgoCrediticio.setNumeroClienteMovil(new Long(numeroClienteMovil));
+				acmInterfaceRiesgoCrediticio.setNumeroClienteMovil(Long.parseLong(numeroClienteMovil));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -158,7 +158,7 @@ public class RiesgoCrediticioWebService {
 			IRiesgoCrediticioBean iRiesgoCrediticioBean = lookupRiesgoCrediticioBean();
 			
 			iRiesgoCrediticioBean.actualizarDatosRiesgoCrediticioACM(
-				new Long(riesgoCrediticioId),
+				Long.parseLong(riesgoCrediticioId),
 				acmInterfaceRiesgoCrediticio
 			);
 		} catch (Exception e) {
@@ -192,7 +192,7 @@ public class RiesgoCrediticioWebService {
 			
 			Empresa empresa = new Empresa();
 			try {
-				empresa.setId(new Long(empresaId));
+				empresa.setId(Long.parseLong(empresaId));
 			} catch (Exception e) {
 				e.printStackTrace();
 				empresa = null;
@@ -205,25 +205,25 @@ public class RiesgoCrediticioWebService {
 			bcuInterfaceRiesgoCrediticio.setActividad(actividad);
 			
 			try {
-				bcuInterfaceRiesgoCrediticio.setVigente(new Double("0" + vigente.replace(",", ".")));
+				bcuInterfaceRiesgoCrediticio.setVigente(Double.valueOf("0" + vigente.replace(",", ".")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				bcuInterfaceRiesgoCrediticio.setVigenteNoAutoliquidable(new Double("0" + vigenteNoAutoLiquidable.replace(",", ".")));
+				bcuInterfaceRiesgoCrediticio.setVigenteNoAutoliquidable(Double.valueOf("0" + vigenteNoAutoLiquidable.replace(",", ".")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				bcuInterfaceRiesgoCrediticio.setGarantiasComputables(new Double("0" + garantiasComputables.replace(",", ".")));
+				bcuInterfaceRiesgoCrediticio.setGarantiasComputables(Double.valueOf("0" + garantiasComputables.replace(",", ".")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				bcuInterfaceRiesgoCrediticio.setGarantiasNoComputables(new Double("0" + garantiasNoComputables.replace(",", ".")));
+				bcuInterfaceRiesgoCrediticio.setGarantiasNoComputables(Double.valueOf("0" + garantiasNoComputables.replace(",", ".")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -241,19 +241,19 @@ public class RiesgoCrediticioWebService {
 			}
 			
 			try {
-				bcuInterfaceRiesgoCrediticio.setPrevisionesTotales(new Double("0" + previsionesTotales.replace(",", ".")));
+				bcuInterfaceRiesgoCrediticio.setPrevisionesTotales(Double.valueOf("0" + previsionesTotales.replace(",", ".")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				bcuInterfaceRiesgoCrediticio.setContingencias(new Double("0" + contingencias.replace(",", ".")));
+				bcuInterfaceRiesgoCrediticio.setContingencias(Double.valueOf("0" + contingencias.replace(",", ".")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				bcuInterfaceRiesgoCrediticio.setOtorgantesGarantias(new Double("0" + otorgantesGarantias.replace(",", ".")));
+				bcuInterfaceRiesgoCrediticio.setOtorgantesGarantias(Double.valueOf("0" + otorgantesGarantias.replace(",", ".")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -262,12 +262,12 @@ public class RiesgoCrediticioWebService {
 			
 			if (sinDatos != null && sinDatos.toLowerCase().equals(etiquetaSi.toLowerCase())) {
 				iRiesgoCrediticioBean.actualizarDatosRiesgoCrediticioBCUSinDatos(
-					new Long(riesgoCrediticioId),
+					Long.parseLong(riesgoCrediticioId),
 					bcuInterfaceRiesgoCrediticio
 				);
 			} else {
 				iRiesgoCrediticioBean.actualizarDatosRiesgoCrediticioBCU(
-					new Long(riesgoCrediticioId),
+					Long.parseLong(riesgoCrediticioId),
 					bcuInterfaceRiesgoCrediticio
 				);
 			}
@@ -293,7 +293,7 @@ public class RiesgoCrediticioWebService {
 			
 			Empresa empresa = new Empresa();
 			try {
-				empresa.setId(new Long(empresaId));
+				empresa.setId(Long.parseLong(empresaId));
 			} catch (Exception e) {
 				e.printStackTrace();
 				empresa = null;
@@ -313,7 +313,7 @@ public class RiesgoCrediticioWebService {
 			
 			try {
 				bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setVigente(
-					new Double("0" + vigente.replace(",", "."))
+					Double.valueOf("0" + vigente.replace(",", "."))
 				);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -321,7 +321,7 @@ public class RiesgoCrediticioWebService {
 			
 			try {
 				bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setVigenteNoAutoliquidable(
-					new Double("0" + vigenteNoAutoLiquidable.replace(",", "."))
+					Double.valueOf("0" + vigenteNoAutoLiquidable.replace(",", "."))
 				);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -329,7 +329,7 @@ public class RiesgoCrediticioWebService {
 			
 			try {
 				bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setPrevisionesTotales(
-					new Double("0" + previsionesTotales.replace(",", "."))
+					Double.valueOf("0" + previsionesTotales.replace(",", "."))
 				);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -337,7 +337,7 @@ public class RiesgoCrediticioWebService {
 			
 			try {
 				bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setContingencias(
-					new Double("0" + contingencias.replace(",",  "."))
+					Double.valueOf("0" + contingencias.replace(",",  "."))
 				);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -346,7 +346,7 @@ public class RiesgoCrediticioWebService {
 			IRiesgoCrediticioBean iRiesgoCrediticioBean = lookupRiesgoCrediticioBean();
 			
 			iRiesgoCrediticioBean.actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
-				new Long(riesgoCrediticioId),
+				Long.parseLong(riesgoCrediticioId),
 				bcuInterfaceRiesgoCrediticioInstitucionFinanciera
 			);
 		} catch (Exception e) {

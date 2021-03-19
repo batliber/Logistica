@@ -10,5 +10,7 @@ public interface IACMInterfaceListaNegraBean {
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
+	public Long count(MetadataConsulta metadataConsulta);
+	
 	public String exportarAExcel(MetadataConsulta metadataConsulta);
 }

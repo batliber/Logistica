@@ -14,15 +14,17 @@ public interface IACMInterfaceContratoPHBean {
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
-	public Collection<TipoContrato> listTipoContratos();
+	public Long count(MetadataConsulta metadataConsulta);
 	
-	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta);
+	public String preprocesarAsignacion(MetadataConsulta metadataConsulta, Empresa empresa);
+	
+	public String asignar(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
+	
+	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	
-	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
+	public Collection<TipoContrato> listTipoContratos();
 	
-	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
-	
-	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
+	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta);
 }

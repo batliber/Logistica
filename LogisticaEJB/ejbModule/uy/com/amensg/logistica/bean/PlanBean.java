@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
@@ -41,6 +42,32 @@ public class PlanBean implements IPlanBean {
 		return result;
 	}
 	
+	public Collection<Plan> listMinimal() {
+		Collection<Plan> result = new LinkedList<Plan>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT p.id, p.descripcion"
+					+ " FROM Plan p"
+					+ " ORDER BY p.descripcion ASC", 
+					Object[].class
+				);
+			
+			for (Object[] plan : query.getResultList()) {
+				Plan planMinimal = new Plan();
+				planMinimal.setId((Long)plan[0]);
+				planMinimal.setDescripcion((String)plan[1]);
+				
+				result.add(planMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<Plan> listVigentes() {
 		Collection<Plan> result = new LinkedList<Plan>();
 		
@@ -61,7 +88,34 @@ public class PlanBean implements IPlanBean {
 		
 		return result;
 	}
-
+	
+	public Collection<Plan> listVigentesMinimal() {
+		Collection<Plan> result = new LinkedList<Plan>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT p.id, p.descripcion"
+					+ " FROM Plan p"
+					+ " WHERE p.fechaBaja IS NULL"
+					+ " ORDER BY p.descripcion ASC", 
+					Object[].class
+				);
+			
+			for (Object[] plan : query.getResultList()) {
+				Plan planMinimal = new Plan();
+				planMinimal.setId((Long)plan[0]);
+				planMinimal.setDescripcion((String)plan[1]);
+				
+				result.add(planMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
@@ -98,15 +152,21 @@ public class PlanBean implements IPlanBean {
 		return result;
 	}
 	
-	public void save(Plan plan) {
+	public Plan save(Plan plan) {
+		Plan result = null;
+		
 		try {
 			plan.setFcre(plan.getFact());
 			plan.setUcre(plan.getUact());
 			
 			entityManager.persist(plan);
+			
+			result = plan;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Plan plan) {

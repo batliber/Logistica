@@ -15,6 +15,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,6 +25,8 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.hibernate.Session;
 
 import uy.com.amensg.logistica.entities.Activacion;
 import uy.com.amensg.logistica.entities.ActivacionSublote;
@@ -178,7 +181,7 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -188,12 +191,12 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								query.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -303,7 +306,7 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								queryCount.setParameter(
@@ -313,12 +316,12 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -466,8 +469,8 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 		return result;
 	}
 
-	public Long save(ActivacionSublote activacionSublote) {
-		Long result = null;
+	public ActivacionSublote save(ActivacionSublote activacionSublote) {
+		ActivacionSublote result = null;
 		
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
@@ -479,7 +482,7 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 					Long.class
 				);
 			
-			Long maxNumero = new Long(1);
+			Long maxNumero = Long.valueOf(1);
 			
 			List<Long> resultList = query.getResultList();
 			if (resultList.size() > 0 && resultList.get(0) != null) {
@@ -492,26 +495,48 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				activacionSublote.setFechaAsignacionDistribuidor(date);
 			}
 			
-			if (activacionSublote.getPuntoVenta() != null) {
-				activacionSublote.setFechaAsignacionPuntoVenta(date);
-			}
-			
+			Date fechaVencimientoChipMasViejo = null;
 			Set<Activacion> activaciones = new HashSet<Activacion>();
 			for (Activacion activacion : activacionSublote.getActivaciones()) {
 				Activacion activacionManaged = entityManager.find(Activacion.class, activacion.getId()); 
 				
 				activacionManaged.setActivacionSublote(activacionSublote);
 				
+				if (fechaVencimientoChipMasViejo == null
+					|| fechaVencimientoChipMasViejo.getTime() > 
+					activacionManaged.getFechaVencimiento().getTime()
+				) {
+					fechaVencimientoChipMasViejo = activacionManaged.getFechaVencimiento();
+				}
+				
 				activaciones.add(activacionManaged);
 			}
 			activacionSublote.setActivaciones(activaciones);
+			
+			activacionSublote.setFechaVencimientoChipMasViejo(fechaVencimientoChipMasViejo);
+			
+			if (activacionSublote.getPuntoVenta() != null) {
+				activacionSublote.setFechaAsignacionPuntoVenta(date);
+				
+				PuntoVenta puntoVentaManaged = entityManager.find(PuntoVenta.class, activacionSublote.getPuntoVenta().getId());
+				
+				if (puntoVentaManaged.getFechaVencimientoChipMasViejo() == null
+//					|| puntoVentaManaged.getFechaVencimientoChipMasViejo().getTime() > fechaVencimientoChipMasViejo.getTime()
+//					Siempre que se asigna un Sublote a un Punto de venta se actualiza la fecha de vencimiento del chip más viejo.
+				) {
+					puntoVentaManaged.setFechaVencimientoChipMasViejo(fechaVencimientoChipMasViejo);
+					
+					puntoVentaManaged.setUact(activacionSublote.getUact());
+					puntoVentaManaged.setFact(activacionSublote.getFact());
+				}
+			}
 			
 			activacionSublote.setFcre(activacionSublote.getFact());
 			activacionSublote.setUcre(activacionSublote.getUact());
 			
 			entityManager.persist(activacionSublote);
 			
-			result = maxNumero;
+			result = activacionSublote;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -523,6 +548,20 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
+			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidorVisitaAutor = 
+				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty(
+						"estadoVisitaPuntoVentaDistribuidor.VisitaAutor")
+					)
+				);
+				
+			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidorVisitaPermanente = 
+				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty(
+						"estadoVisitaPuntoVentaDistribuidor.VisitaPermanente")
+					)
+				);
+			
 			ActivacionSublote activacionSubloteManaged = 
 				entityManager.find(ActivacionSublote.class, activacionSublote.getId());
 			
@@ -530,7 +569,7 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 			
 			if (activacionSubloteManaged.getDistribuidor() != null && 
 				activacionSublote.getDistribuidor() != null) {
-				// Si el sublote tenía distribuidor asignado y el sublote parámetro tiene distribuidor asignado.
+				// Si el sublote tenía distribuidor asignado y el sublote parámetro tiene distribuidor.
 				if (!activacionSubloteManaged.getDistribuidor().getId().equals(
 					activacionSublote.getDistribuidor().getId())
 				) {
@@ -538,7 +577,15 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 					activacionSubloteManaged.setDistribuidor(activacionSublote.getDistribuidor());
 					activacionSubloteManaged.setFechaAsignacionDistribuidor(date);
 					
-					if (activacionSublote.getPuntoVenta() != null) {
+					if (activacionSublote.getPuntoVenta() != null
+						&& !activacionSublote.getPuntoVenta().getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+							estadoVisitaPuntoVentaDistribuidorVisitaAutor.getId()
+						)
+						&& !activacionSublote.getPuntoVenta().getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+							estadoVisitaPuntoVentaDistribuidorVisitaPermanente.getId()
+						)
+					) {
+						// Si el distribuidor no tiene visita de autor o permanente asignada.
 						iVisitaPuntoVentaDistribuidorBean.crearVisita(
 							activacionSublote.getDistribuidor(), 
 							activacionSublote.getPuntoVenta(), 
@@ -557,7 +604,14 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				activacionSubloteManaged.setDistribuidor(activacionSublote.getDistribuidor());
 				activacionSubloteManaged.setFechaAsignacionDistribuidor(date);
 				
-				if (activacionSublote.getPuntoVenta() != null) {
+				if (activacionSublote.getPuntoVenta() != null
+					&& !activacionSublote.getPuntoVenta().getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+						estadoVisitaPuntoVentaDistribuidorVisitaAutor.getId()
+					)
+					&& !activacionSublote.getPuntoVenta().getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+						estadoVisitaPuntoVentaDistribuidorVisitaPermanente.getId()
+					)
+				) {
 					iVisitaPuntoVentaDistribuidorBean.crearVisita(
 						activacionSublote.getDistribuidor(), 
 						activacionSublote.getPuntoVenta(), 
@@ -595,11 +649,19 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 			}
 			
 			Set<Activacion> activaciones = new HashSet<Activacion>();
+			Date fechaVencimientoChipMasViejo = null;
 			for (Activacion activacion : activacionSublote.getActivaciones()) {
 				Activacion activacionManaged = entityManager.find(Activacion.class, activacion.getId());
 				activacionManaged.setActivacionSublote(activacionSubloteManaged);
 				
 				activaciones.add(activacionManaged);
+				
+				if (fechaVencimientoChipMasViejo == null
+					|| fechaVencimientoChipMasViejo.getTime() > 
+						activacionManaged.getFechaVencimiento().getTime()
+				) {
+					fechaVencimientoChipMasViejo = activacionManaged.getFechaVencimiento();
+				}
 				
 				activacionesManaged.remove(activacion.getId());
 			}
@@ -609,6 +671,19 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				activacion.setActivacionSublote(null);
 				
 				entityManager.merge(activacion);
+			}
+			
+			activacionSubloteManaged.setFechaVencimientoChipMasViejo(fechaVencimientoChipMasViejo);
+			
+			if ((activacionSubloteManaged.getPuntoVenta() != null)
+//				&& (activacionSubloteManaged.getPuntoVenta().getFechaVencimientoChipMasViejo() == null
+//				|| activacionSubloteManaged.getPuntoVenta().getFechaVencimientoChipMasViejo().getTime() > fechaVencimientoChipMasViejo.getTime())
+//				Siempre que se asigna un Sublote a un Punto de venta se actualiza la fecha de vencimiento del chip más viejo.
+			) {
+				activacionSubloteManaged.getPuntoVenta().setFechaVencimientoChipMasViejo(fechaVencimientoChipMasViejo);
+				
+				activacionSubloteManaged.getPuntoVenta().setUact(activacionSublote.getUact());
+				activacionSubloteManaged.getPuntoVenta().setFact(activacionSublote.getFact());
 			}
 			
 			activacionSubloteManaged.setFact(activacionSublote.getFact());
@@ -624,14 +699,21 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 			
 			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidorVisitado = 
 				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
-					new Long(Configuration.getInstance().getProperty(
+					Long.parseLong(Configuration.getInstance().getProperty(
 						"estadoVisitaPuntoVentaDistribuidor.Visitado")
+					)
+				);
+			
+			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidorVisitaAutor = 
+				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty(
+						"estadoVisitaPuntoVentaDistribuidor.VisitaAutor")
 					)
 				);
 			
 			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidorVisitaPermanente = 
 				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
-					new Long(Configuration.getInstance().getProperty(
+					Long.parseLong(Configuration.getInstance().getProperty(
 						"estadoVisitaPuntoVentaDistribuidor.VisitaPermanente")
 					)
 				);
@@ -646,22 +728,32 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 			activacionSubloteManaged.setFechaAsignacionPuntoVenta(date);
 			
 			activacionSubloteManaged.setFact(date);
-			activacionSubloteManaged.setTerm(new Long(1));
+			activacionSubloteManaged.setTerm(Long.valueOf(1));
 			activacionSubloteManaged.setUact(activacionSublote.getUact());
 			
 			if (puntoVentaManaged.getEstadoVisitaPuntoVentaDistribuidor() == null
-				|| !puntoVentaManaged.getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
-					estadoVisitaPuntoVentaDistribuidorVisitaPermanente.getId()
+				|| (
+					!puntoVentaManaged.getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+						estadoVisitaPuntoVentaDistribuidorVisitaPermanente.getId()
+					)
+					&& !puntoVentaManaged.getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+						estadoVisitaPuntoVentaDistribuidorVisitaAutor.getId()
+					)
 				)
 			) {
-				puntoVentaManaged.setEstadoVisitaPuntoVentaDistribuidor(estadoVisitaPuntoVentaDistribuidorVisitado);
+				puntoVentaManaged.setEstadoVisitaPuntoVentaDistribuidor(
+					estadoVisitaPuntoVentaDistribuidorVisitado
+				);
 				puntoVentaManaged.setFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor(date);
-				puntoVentaManaged.setFechaVisitaDistribuidor(date);
 			}
 			
+//			Siempre que se asigna un Sublote a un Punto de venta se actualiza la fecha de vencimiento del chip más viejo.
+			puntoVentaManaged.setFechaVencimientoChipMasViejo(
+				activacionSubloteManaged.getFechaVencimientoChipMasViejo()
+			);
 			puntoVentaManaged.setFechaVisitaDistribuidor(date);
 			puntoVentaManaged.setFact(date);
-			puntoVentaManaged.setTerm(new Long(1));
+			puntoVentaManaged.setTerm(Long.valueOf(1));
 			puntoVentaManaged.setUact(activacionSublote.getUact());
 			
 			VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidorManaged = 
@@ -671,9 +763,15 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				);
 			
 			if (visitaPuntoVentaDistribuidorManaged != null) {
+				// Si había una visita para el distribuidor y punto de venta.
 				if (!visitaPuntoVentaDistribuidorManaged.getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
-					estadoVisitaPuntoVentaDistribuidorVisitaPermanente.getId()
-				)) {
+						estadoVisitaPuntoVentaDistribuidorVisitaAutor.getId()
+					)
+					&& !visitaPuntoVentaDistribuidorManaged.getEstadoVisitaPuntoVentaDistribuidor().getId().equals(
+						estadoVisitaPuntoVentaDistribuidorVisitaPermanente.getId()
+					)
+				) {
+					// Si la visita no era de autor ni era permanente.
 					visitaPuntoVentaDistribuidorManaged.setEstadoVisitaPuntoVentaDistribuidor(
 						estadoVisitaPuntoVentaDistribuidorVisitado
 					);
@@ -682,11 +780,12 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				visitaPuntoVentaDistribuidorManaged.setFechaVisita(date);
 				
 				visitaPuntoVentaDistribuidorManaged.setFact(date);
-				visitaPuntoVentaDistribuidorManaged.setTerm(new Long(1));
+				visitaPuntoVentaDistribuidorManaged.setTerm(Long.valueOf(1));
 				visitaPuntoVentaDistribuidorManaged.setUact(activacionSublote.getUact());
 				
 				entityManager.merge(visitaPuntoVentaDistribuidorManaged);
 			} else {
+				// Si no había una visita para el distribuidor y punto de venta.
 				visitaPuntoVentaDistribuidorManaged = new VisitaPuntoVentaDistribuidor();
 				visitaPuntoVentaDistribuidorManaged.setDistribuidor(activacionSubloteManaged.getDistribuidor());
 				visitaPuntoVentaDistribuidorManaged.setEstadoVisitaPuntoVentaDistribuidor(
@@ -699,13 +798,33 @@ public class ActivacionSubloteBean implements IActivacionSubloteBean {
 				);
 				visitaPuntoVentaDistribuidorManaged.setPuntoVenta(puntoVentaManaged);
 				
-				visitaPuntoVentaDistribuidorManaged.setTerm(new Long(1));
+				visitaPuntoVentaDistribuidorManaged.setTerm(Long.valueOf(1));
 				visitaPuntoVentaDistribuidorManaged.setFact(date);
 				visitaPuntoVentaDistribuidorManaged.setFcre(date);
 				visitaPuntoVentaDistribuidorManaged.setUcre(activacionSublote.getUact());
 				visitaPuntoVentaDistribuidorManaged.setUact(activacionSublote.getUact());
 				
 				entityManager.merge(visitaPuntoVentaDistribuidorManaged);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void calcularFechasVencimientoChipMasViejo(Long loggedUsuarioId) {
+		try {
+			Session hibernateSession = entityManager.unwrap(Session.class);
+			
+			Query updateFechasVencimientoChipMasViejo = 
+				hibernateSession.createNativeQuery(
+					"SELECT f_actualizar_vencimiento_chip_mas_viejo()"
+				);
+//			updateFechasVencimientoChipMasViejo.setParameter(1, loggedUsuarioId, LongType.INSTANCE);
+			
+			List<?> resultList = updateFechasVencimientoChipMasViejo.getResultList();
+			for (Object row : resultList) {
+				String srow =  (String) row;
+				System.out.println(srow);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

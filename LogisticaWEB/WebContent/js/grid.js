@@ -26,15 +26,23 @@ function Grid(element, campos, showFilters, reloadListener, trOnClickListener, t
 	
 	this.element = element;
 	this.campos = campos;
-	this.showFilters = showFilters;
+	this.count = 0;
+	this.rowPixelHeight = rowPixelHeight;
+	this.rowHeight = rowHeight;
+	
+	this.status = this.__STATUS_LOADED;
+	
+	/**
+	 * Listener del evento click del contenedor de los filtros.
+	 */
 	this.reloadListener = reloadListener;
 	this.trOnClickListener = trOnClickListener;
+	
+	this.showFilters = showFilters;
+	
 	this.tdOpenDetailListener = tdOpenDetailListener;
-	this.rowHeight = rowHeight;
-	this.rowPixelHeight = rowPixelHeight;
-	this.status = this.__STATUS_LOADED;
+	
 	this.filtroDinamico = new FiltroDinamico(this, this.campos, this.reloadListener);
-	this.count = 0;
 }
 
 Grid.prototype.setCampos = function(campos) {
@@ -221,7 +229,7 @@ Grid.prototype.rebuild = function() {
 		"line-height",
 		(this.rowPixelHeight != null ? this.rowPixelHeight : this.__ALTO_FILA) + "px"
 	);
-	this.table.find(".divTableHeaderCell").click(this.filtroDinamico.agregarOrden.bind(this.filtroDinamico));
+	this.table.find(".divTableHeaderCell").click(this.filtroDinamico.agregarOrdenOnClick.bind(this.filtroDinamico));
 	this.table.children(".divTableBody").css(
 		"width", 
 		width - 2 * this.__ANCHO_BORDE
@@ -445,157 +453,316 @@ Grid.prototype.openDetail = function(eventObject) {
 		
 		var campoParent = divCell.attr("campo");
 		var camposDetail = this.filtroDinamico.campos[campoParent].detail;
-		var data = this.tdOpenDetailListener(divRow);
 		
-		var html =
+		var funcionThen = this.tdOpenDetailListener(divRow).then;
+		
+		if (typeof funcionThen == 'function') {
+			var callbackOpenDetail = function(data) {
+				var html =
 					"<div class='divTableHeaderDetailRow' rid='" + divRow.attr("id") + "'"
-					+ " style='width: " + (this.anchoFila - this.__ANCHO_CAMPO_DETAIL - this.__ANCHO_SCROLL_VERTICAL - 4 * this.__ANCHO_BORDE) + "px;'"
+						+ " style='width: " + (this.anchoFila - this.__ANCHO_CAMPO_DETAIL - this.__ANCHO_SCROLL_VERTICAL - 4 * this.__ANCHO_BORDE) + "px;'"
 					+ ">";
 		
-		var width = this.__ANCHO_SCROLL_VERTICAL;
-		for (var campoHeader in camposDetail) {
-			if (camposDetail[campoHeader].ancho == null) {
-				switch (camposDetail[campoHeader].tipo) {
-					case __TIPO_CAMPO_NUMERICO:
-						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_NUMERICO;
-						
-						break;
-					case __TIPO_CAMPO_DECIMAL:
-						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_DECIMAL;
-						
-						break;
-					case __TIPO_CAMPO_PORCENTAJE:
-						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_PORCENTAJE;
-						
-						break;
-					case __TIPO_CAMPO_STRING:
-						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_STRING;
-						
-						break;
-					case __TIPO_CAMPO_FECHA:
-						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA;
-						
-						break;
-					case __TIPO_CAMPO_FECHA_HORA:
-						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_HORA;
-						
-						break;
-					case __TIPO_CAMPO_FECHA_MES_ANO:
-						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_MES_ANO;
-						
-						break;
-					case __TIPO_CAMPO_BOOLEAN:
-						width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_BOOLEAN;
-						
-						break;
+				var width = this.__ANCHO_SCROLL_VERTICAL;
+				for (var campoHeader in camposDetail) {
+					if (camposDetail[campoHeader].ancho == null) {
+						switch (camposDetail[campoHeader].tipo) {
+							case __TIPO_CAMPO_NUMERICO:
+								width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_NUMERICO;
+								
+								break;
+							case __TIPO_CAMPO_DECIMAL:
+								width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_DECIMAL;
+								
+								break;
+							case __TIPO_CAMPO_PORCENTAJE:
+								width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_PORCENTAJE;
+								
+								break;
+							case __TIPO_CAMPO_STRING:
+								width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_STRING;
+								
+								break;
+							case __TIPO_CAMPO_FECHA:
+								width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA;
+								
+								break;
+							case __TIPO_CAMPO_FECHA_HORA:
+								width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_HORA;
+								
+								break;
+							case __TIPO_CAMPO_FECHA_MES_ANO:
+								width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_MES_ANO;
+								
+								break;
+							case __TIPO_CAMPO_BOOLEAN:
+								width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_BOOLEAN;
+								
+								break;
+						}
+					} else {
+						width += camposDetail[campoHeader].oculto ? 0 : camposDetail[campoHeader].ancho + this.__ANCHO_BORDE;
+					}
+					
+					html +=
+								"<div id='" + campoHeader + "'"
+									+ " class='divTableHeaderCell divTableHeaderCell" + camposDetail[campoHeader].tipo + "NOO'";
+					
+					if (camposDetail[campoHeader].oculto) {
+						html += 
+									" style='display: none;'";
+					} else if (camposDetail[campoHeader].ancho != null) {
+						html +=
+									" style='width: " + camposDetail[campoHeader].ancho + "px;'";
+					}
+					
+					html +=
+								">"
+									+ "<div class='divTableHeaderCellText'"
+										+ "title='" + camposDetail[campoHeader].descripcion + "'"
+									+ ">"
+										+ (camposDetail[campoHeader].abreviacion != null ? 
+											camposDetail[campoHeader].abreviacion
+											: camposDetail[campoHeader].descripcion)
+									+ "</div>"
+								+ "</div>"
 				}
-			} else {
-				width += camposDetail[campoHeader].oculto ? 0 : camposDetail[campoHeader].ancho + this.__ANCHO_BORDE;
-			}
-			
-			html +=
-						"<div id='" + campoHeader + "'"
-							+ " class='divTableHeaderCell divTableHeaderCell" + camposDetail[campoHeader].tipo + "NOO'";
-			
-			if (camposDetail[campoHeader].oculto) {
+				
 				html += 
-							" style='display: none;'";
-			} else if (camposDetail[campoHeader].ancho != null) {
-				html +=
-							" style='width: " + camposDetail[campoHeader].ancho + "px;'";
+						"</div>";
+				
+				for (var i=0; i<data.length; i++) {
+					var registro = data[i];
+					
+					html += 
+						"<div class='divTableBodyDetailRow' rid='" + divRow.attr("id") + "'"
+						+ " style='width: " + (this.anchoFila - this.__ANCHO_CAMPO_DETAIL - this.__ANCHO_SCROLL_VERTICAL - 4 * this.__ANCHO_BORDE) + "px;'"
+						+ ">";
+					
+					for (var campoBody in camposDetail) {
+						var value = null;
+						var formattedValue = null;
+						
+						try {
+							value = eval("registro." + camposDetail[campoBody].campo);
+						} catch(e) {
+							value = null;
+					    }
+						
+					    switch (camposDetail[campoBody].tipo) {
+							case __TIPO_CAMPO_NUMERICO:
+								formattedValue = value != null && value !== "" ? value : "&nbsp;";
+								
+								break;
+							case __TIPO_CAMPO_DECIMAL:
+								formattedValue = value != null && value !== "" ? formatDecimal(value, 2) : "&nbsp;";
+								
+								break;
+							case __TIPO_CAMPO_PORCENTAJE:
+								formattedValue = value != null && value !== "" ? formatDecimal(value * 100, 2) : "&nbsp;";
+								
+								break;
+							case __TIPO_CAMPO_STRING:
+								formattedValue = value != null && value != "" ? value : "&nbsp;";
+								
+								break;
+							case __TIPO_CAMPO_FECHA:
+								formattedValue = value != null && value != "" ? formatShortDate(value) : "&nbsp;";
+								
+								break;
+							case __TIPO_CAMPO_FECHA_HORA:
+								formattedValue = value != null && value != "" ? formatLongDate(value) : "&nbsp;";
+								
+								break;
+							case __TIPO_CAMPO_FECHA_MES_ANO:
+								formattedValue = value != null && value != "" ? formatMonthYearDate(value) : "&nbsp;";
+								
+								break;
+							case __TIPO_CAMPO_BOOLEAN:
+								formattedValue = value != null && value !== "" ? formatBoolean(value) : "&nbsp;";
+								
+								break;
+						}
+					    
+					    html +=
+							"<div class='divTableBodyCell" + camposDetail[campoBody].tipo + "' campo='" + campoBody + "'";
+				
+						if (camposDetail[campoBody].oculto) {
+							html += 
+								" style='display: none;'";
+						} else if (camposDetail[campoBody].ancho != null) {
+							html +=
+								" style='width: " + ((camposDetail[campoBody].ancho - 2) * this.__ANCHO_BORDE) + "px;'";
+						}
+						
+						html +=
+								" title='" + formattedValue + "'"
+							+ ">"
+								+ formattedValue
+							+ "</div>";
+					}
+					
+					html +=
+						"</div>";
+				}
+				
+				$(html).insertAfter(divRow);
 			}
 			
-			html +=
-						">"
-							+ "<div class='divTableHeaderCellText'"
-								+ "title='" + camposDetail[campoHeader].descripcion + "'"
-							+ ">"
-								+ (camposDetail[campoHeader].abreviacion != null ? 
-									camposDetail[campoHeader].abreviacion
-									: camposDetail[campoHeader].descripcion)
+			this.tdOpenDetailListener(divRow).then(callbackOpenDetail.bind(this));
+		} else {
+			var data = this.tdOpenDetailListener(divRow);
+			
+			var html =
+						"<div class='divTableHeaderDetailRow' rid='" + divRow.attr("id") + "'"
+						+ " style='width: " + (this.anchoFila - this.__ANCHO_CAMPO_DETAIL - this.__ANCHO_SCROLL_VERTICAL - 4 * this.__ANCHO_BORDE) + "px;'"
+						+ ">";
+			
+			var width = this.__ANCHO_SCROLL_VERTICAL;
+			for (var campoHeader in camposDetail) {
+				if (camposDetail[campoHeader].ancho == null) {
+					switch (camposDetail[campoHeader].tipo) {
+						case __TIPO_CAMPO_NUMERICO:
+							width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_NUMERICO;
+							
+							break;
+						case __TIPO_CAMPO_DECIMAL:
+							width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_DECIMAL;
+							
+							break;
+						case __TIPO_CAMPO_PORCENTAJE:
+							width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_PORCENTAJE;
+							
+							break;
+						case __TIPO_CAMPO_STRING:
+							width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_STRING;
+							
+							break;
+						case __TIPO_CAMPO_FECHA:
+							width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA;
+							
+							break;
+						case __TIPO_CAMPO_FECHA_HORA:
+							width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_HORA;
+							
+							break;
+						case __TIPO_CAMPO_FECHA_MES_ANO:
+							width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_FECHA_MES_ANO;
+							
+							break;
+						case __TIPO_CAMPO_BOOLEAN:
+							width += camposDetail[campoHeader].oculto ? 0 : this.__ANCHO_CAMPO_BOOLEAN;
+							
+							break;
+					}
+				} else {
+					width += camposDetail[campoHeader].oculto ? 0 : camposDetail[campoHeader].ancho + this.__ANCHO_BORDE;
+				}
+				
+				html +=
+							"<div id='" + campoHeader + "'"
+								+ " class='divTableHeaderCell divTableHeaderCell" + camposDetail[campoHeader].tipo + "NOO'";
+				
+				if (camposDetail[campoHeader].oculto) {
+					html += 
+								" style='display: none;'";
+				} else if (camposDetail[campoHeader].ancho != null) {
+					html +=
+								" style='width: " + camposDetail[campoHeader].ancho + "px;'";
+				}
+				
+				html +=
+							">"
+								+ "<div class='divTableHeaderCellText'"
+									+ "title='" + camposDetail[campoHeader].descripcion + "'"
+								+ ">"
+									+ (camposDetail[campoHeader].abreviacion != null ? 
+										camposDetail[campoHeader].abreviacion
+										: camposDetail[campoHeader].descripcion)
+								+ "</div>"
 							+ "</div>"
-						+ "</div>"
-		}
-		
-		html += 
-				"</div>";
-		
-		for (var i=0; i<data.length; i++) {
-			var registro = data[i];
+			}
 			
 			html += 
-				"<div class='divTableBodyDetailRow' rid='" + divRow.attr("id") + "'"
-				+ " style='width: " + (this.anchoFila - this.__ANCHO_CAMPO_DETAIL - this.__ANCHO_SCROLL_VERTICAL - 4 * this.__ANCHO_BORDE) + "px;'"
-				+ ">";
+					"</div>";
 			
-			for (var campoBody in camposDetail) {
-				var value = null;
-				var formattedValue = null;
+			for (var i=0; i<data.length; i++) {
+				var registro = data[i];
 				
-				try {
-					value = eval("registro." + camposDetail[campoBody].campo);
-				} catch(e) {
-					value = null;
-			    }
+				html += 
+					"<div class='divTableBodyDetailRow' rid='" + divRow.attr("id") + "'"
+					+ " style='width: " + (this.anchoFila - this.__ANCHO_CAMPO_DETAIL - this.__ANCHO_SCROLL_VERTICAL - 4 * this.__ANCHO_BORDE) + "px;'"
+					+ ">";
 				
-			    switch (camposDetail[campoBody].tipo) {
-					case __TIPO_CAMPO_NUMERICO:
-						formattedValue = value != null && value !== "" ? value : "&nbsp;";
-						
-						break;
-					case __TIPO_CAMPO_DECIMAL:
-						formattedValue = value != null && value !== "" ? formatDecimal(value, 2) : "&nbsp;";
-						
-						break;
-					case __TIPO_CAMPO_PORCENTAJE:
-						formattedValue = value != null && value !== "" ? formatDecimal(value * 100, 2) : "&nbsp;";
-						
-						break;
-					case __TIPO_CAMPO_STRING:
-						formattedValue = value != null && value != "" ? value : "&nbsp;";
-						
-						break;
-					case __TIPO_CAMPO_FECHA:
-						formattedValue = value != null && value != "" ? formatShortDate(value) : "&nbsp;";
-						
-						break;
-					case __TIPO_CAMPO_FECHA_HORA:
-						formattedValue = value != null && value != "" ? formatLongDate(value) : "&nbsp;";
-						
-						break;
-					case __TIPO_CAMPO_FECHA_MES_ANO:
-						formattedValue = value != null && value != "" ? formatMonthYearDate(value) : "&nbsp;";
-						
-						break;
-					case __TIPO_CAMPO_BOOLEAN:
-						formattedValue = value != null && value !== "" ? formatBoolean(value) : "&nbsp;";
-						
-						break;
-				}
-			    
-			    html +=
-					"<div class='divTableBodyCell" + camposDetail[campoBody].tipo + "' campo='" + campoBody + "'";
-		
-				if (camposDetail[campoBody].oculto) {
-					html += 
-						" style='display: none;'";
-				} else if (camposDetail[campoBody].ancho != null) {
+				for (var campoBody in camposDetail) {
+					var value = null;
+					var formattedValue = null;
+					
+					try {
+						value = eval("registro." + camposDetail[campoBody].campo);
+					} catch(e) {
+						value = null;
+				    }
+					
+				    switch (camposDetail[campoBody].tipo) {
+						case __TIPO_CAMPO_NUMERICO:
+							formattedValue = value != null && value !== "" ? value : "&nbsp;";
+							
+							break;
+						case __TIPO_CAMPO_DECIMAL:
+							formattedValue = value != null && value !== "" ? formatDecimal(value, 2) : "&nbsp;";
+							
+							break;
+						case __TIPO_CAMPO_PORCENTAJE:
+							formattedValue = value != null && value !== "" ? formatDecimal(value * 100, 2) : "&nbsp;";
+							
+							break;
+						case __TIPO_CAMPO_STRING:
+							formattedValue = value != null && value != "" ? value : "&nbsp;";
+							
+							break;
+						case __TIPO_CAMPO_FECHA:
+							formattedValue = value != null && value != "" ? formatShortDate(value) : "&nbsp;";
+							
+							break;
+						case __TIPO_CAMPO_FECHA_HORA:
+							formattedValue = value != null && value != "" ? formatLongDate(value) : "&nbsp;";
+							
+							break;
+						case __TIPO_CAMPO_FECHA_MES_ANO:
+							formattedValue = value != null && value != "" ? formatMonthYearDate(value) : "&nbsp;";
+							
+							break;
+						case __TIPO_CAMPO_BOOLEAN:
+							formattedValue = value != null && value !== "" ? formatBoolean(value) : "&nbsp;";
+							
+							break;
+					}
+				    
+				    html +=
+						"<div class='divTableBodyCell" + camposDetail[campoBody].tipo + "' campo='" + campoBody + "'";
+			
+					if (camposDetail[campoBody].oculto) {
+						html += 
+							" style='display: none;'";
+					} else if (camposDetail[campoBody].ancho != null) {
+						html +=
+							" style='width: " + ((camposDetail[campoBody].ancho - 2) * this.__ANCHO_BORDE) + "px;'";
+					}
+					
 					html +=
-						" style='width: " + ((camposDetail[campoBody].ancho - 2) * this.__ANCHO_BORDE) + "px;'";
+							" title='" + formattedValue + "'"
+						+ ">"
+							+ formattedValue
+						+ "</div>";
 				}
 				
 				html +=
-						" title='" + formattedValue + "'"
-					+ ">"
-						+ formattedValue
-					+ "</div>";
+					"</div>";
 			}
 			
-			html +=
-				"</div>";
+			$(html).insertAfter(divRow);
 		}
-		
-		$(html).insertAfter(divRow);
 	} else {
 		divCell.attr("class", "divTableBodyCell10");
 		$('.divTableHeaderDetailRow[rid="' + divRow.attr("id") + '"]').remove();

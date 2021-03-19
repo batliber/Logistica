@@ -1,8 +1,5 @@
 package uy.com.amensg.logistica.entities;
 
-import org.directwebremoting.annotations.DataTransferObject;
-
-@DataTransferObject
 public class ArchivoTO {
 
 	private String nombre;

@@ -67,15 +67,15 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 			);
 			queryMidsEnProceso.setParameter(
 				"estadoIdProcesado", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
 			);
 			queryMidsEnProceso.setParameter(
 				"estadoIdListaVacia", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
 			);
 			queryMidsEnProceso.setParameter(
 				"estadoIdListaNegra", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
 			);
 			
 			Collection<Long> procesosConMidsSinTerminar = new LinkedList<Long>();
@@ -94,11 +94,11 @@ public class ACMInterfaceProcesoBean implements IACMInterfaceProcesoBean {
 			);
 			queryUltimaFactProcesadaXProceso.setParameter(
 				"estadoIdProcesado", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.Procesado"))
 			);
 			queryUltimaFactProcesadaXProceso.setParameter(
 				"estadoIdListaVacia", 
-				new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
+				Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaVacia"))
 			);
 			
 			Map<Long, Date> ultimaFactXProceso = new HashMap<Long, Date>();

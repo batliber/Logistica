@@ -1,0 +1,39 @@
+#divIFrameContrato {
+	position: relative;
+	top: 50px;
+	left: 100px;
+	width: 875px;
+	height: 612px;
+	z-index: 1;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameContrato {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 591px;
+}
+
+#divIFrameHistoricoContrato {
+	position: relative;
+	top: 50px;
+	left: 100px;
+	width: 680px;
+	height: 441px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: white;
+}
+
+#iFrameHistorico {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	border: none;
+	width: 100%;
+	height: 420px;
+}

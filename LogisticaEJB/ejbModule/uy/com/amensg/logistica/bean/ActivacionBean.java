@@ -20,8 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.type.DateType;
 import org.hibernate.type.LongType;
 import org.hibernate.type.StringType;
@@ -144,7 +144,7 @@ public class ActivacionBean implements IActivacionBean {
 				String[] fields = line.split(";");
 				
 				try {
-					mids.add(new Long (fields[0].trim()));
+					mids.add(Long.parseLong(fields[0].trim()));
 				} catch (Exception e) {
 					errorFatal = true;
 					
@@ -156,9 +156,9 @@ public class ActivacionBean implements IActivacionBean {
 			if (!errorFatal) {
 				Map<Long, Integer> map = this.preprocesarConjunto(mids, empresaId);
 				
-				Long importar = new Long(0);
-				Long sobreescribir = new Long(0);
-				Long omitir = new Long(0);
+				Long importar = Long.valueOf(0);
+				Long sobreescribir = Long.valueOf(0);
+				Long omitir = Long.valueOf(0);
 				for (Entry<Long, Integer> entry : map.entrySet()) {
 					switch (entry.getValue()) {
 						case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
@@ -242,22 +242,22 @@ public class ActivacionBean implements IActivacionBean {
 			Date fechaMin = gregorianCalendar.getTime();
 			
 			EstadoActivacion estado = 
-				iEstadoActivacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoActivacion.SINPROCESAR")));
+				iEstadoActivacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoActivacion.SINPROCESAR")));
 			
 			Empresa empresa = 
 				iEmpresaBean.getById(empresaId, false);
 			
 			TipoProcesoImportacion tipoProcesoImportacion =
-				iTipoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("tipoProcesoImportacion.Activaciones")));
+				iTipoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("tipoProcesoImportacion.Activaciones")));
 			
 			EstadoProcesoImportacion estadoProcesoImportacionInicio = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio")));
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio")));
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoOK = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoConErrores = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
 			
 			Usuario usuario =
 				iUsuarioBean.getById(loggedUsuarioId, false);
@@ -271,7 +271,7 @@ public class ActivacionBean implements IActivacionBean {
 			
 			procesoImportacion.setFcre(hoy);
 			procesoImportacion.setFact(hoy);
-			procesoImportacion.setTerm(new Long(1));
+			procesoImportacion.setTerm(Long.valueOf(1));
 			procesoImportacion.setUact(loggedUsuarioId);
 			procesoImportacion.setUcre(loggedUsuarioId);
 			
@@ -284,7 +284,7 @@ public class ActivacionBean implements IActivacionBean {
 			
 			activacionLote.setFcre(hoy);
 			activacionLote.setFact(hoy);
-			activacionLote.setTerm(new Long(1));
+			activacionLote.setTerm(Long.valueOf(1));
 			activacionLote.setUact(loggedUsuarioId);
 			activacionLote.setUcre(loggedUsuarioId);
 			
@@ -292,7 +292,7 @@ public class ActivacionBean implements IActivacionBean {
 			
 			Session hibernateSession = entityManager.unwrap(Session.class);
 			
-			SQLQuery insertActivacion = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertActivacion = hibernateSession.createNativeQuery(
 				"INSERT INTO activacion("
 					+ " id,"
 					+ " fecha_activacion,"
@@ -326,17 +326,17 @@ public class ActivacionBean implements IActivacionBean {
 				+ " )"
 			);
 			
-			insertActivacion.setParameter(0, fechaMin, DateType.INSTANCE);
-			insertActivacion.setParameter(1, hoy, DateType.INSTANCE);
+			insertActivacion.setParameter(1, fechaMin, DateType.INSTANCE);
 			insertActivacion.setParameter(2, hoy, DateType.INSTANCE);
 			insertActivacion.setParameter(3, hoy, DateType.INSTANCE);
-			insertActivacion.setParameter(4, new Long(1), LongType.INSTANCE);
-			insertActivacion.setParameter(5, loggedUsuarioId, LongType.INSTANCE);
+			insertActivacion.setParameter(4, hoy, DateType.INSTANCE);
+			insertActivacion.setParameter(5, Long.valueOf(1), LongType.INSTANCE);
 			insertActivacion.setParameter(6, loggedUsuarioId, LongType.INSTANCE);
-			insertActivacion.setParameter(7, empresa.getId(), LongType.INSTANCE);
-			insertActivacion.setParameter(8, estado.getId(), LongType.INSTANCE);
-			insertActivacion.setParameter(9, tipoActivacionId, LongType.INSTANCE);
-			insertActivacion.setParameter(10, activacionLoteManaged.getId(), LongType.INSTANCE);
+			insertActivacion.setParameter(7, loggedUsuarioId, LongType.INSTANCE);
+			insertActivacion.setParameter(8, empresa.getId(), LongType.INSTANCE);
+			insertActivacion.setParameter(9, estado.getId(), LongType.INSTANCE);
+			insertActivacion.setParameter(10, tipoActivacionId, LongType.INSTANCE);
+			insertActivacion.setParameter(11, activacionLoteManaged.getId(), LongType.INSTANCE);
 			
 			String line = null;
 			long lineNumber = 0;
@@ -359,7 +359,7 @@ public class ActivacionBean implements IActivacionBean {
 					
 					Long mid = null;
 					try {
-						mid = new Long(fields[0].trim());
+						mid = Long.parseLong(fields[0].trim());
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
@@ -374,8 +374,8 @@ public class ActivacionBean implements IActivacionBean {
 					if (!ok) {
 						errors++;
 					} else {
-						insertActivacion.setParameter(11, mid, LongType.INSTANCE);
-						insertActivacion.setParameter(12, chip, StringType.INSTANCE);
+						insertActivacion.setParameter(12, mid, LongType.INSTANCE);
+						insertActivacion.setParameter(13, chip, StringType.INSTANCE);
 
 						insertActivacion.executeUpdate();
 
@@ -429,7 +429,7 @@ public class ActivacionBean implements IActivacionBean {
 					+ " WHERE a.estadoActivacion.id = :estadoSinProcesarId", 
 					Activacion.class
 				);
-			query.setParameter("estadoSinProcesarId", new Long(Configuration.getInstance().getProperty("estadoActivacion.SINPROCESAR")));
+			query.setParameter("estadoSinProcesarId", Long.parseLong(Configuration.getInstance().getProperty("estadoActivacion.SINPROCESAR")));
 			query.setMaxResults(1);
 			
 			List<Activacion> resultList = query.getResultList();
@@ -437,13 +437,13 @@ public class ActivacionBean implements IActivacionBean {
 				Activacion activacion = resultList.get(0);
 				
 				EstadoActivacion estadoActivacion = 
-					iEstadoActivacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoActivacion.PROCESANDO")));
+					iEstadoActivacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoActivacion.PROCESANDO")));
 				
 				activacion.setEstadoActivacion(estadoActivacion);
 				
 				activacion.setFact(hoy);
-				activacion.setTerm(new Long(1));
-				activacion.setUact(new Long(1));
+				activacion.setTerm(Long.valueOf(1));
+				activacion.setUact(Long.valueOf(1));
 				
 				activacion = entityManager.merge(activacion);
 				
@@ -481,7 +481,7 @@ public class ActivacionBean implements IActivacionBean {
 				EstadoActivacion estadoActivacion = 
 					iEstadoActivacionBean.getById(estadoActivacionId);
 				
-				if (estadoActivacionId.equals(new Long(Configuration.getInstance().getProperty("estadoActivacion.OK")))) {
+				if (estadoActivacionId.equals(Long.parseLong(Configuration.getInstance().getProperty("estadoActivacion.OK")))) {
 					activacion.setFechaActivacion(hoy);
 					
 					gregorianCalendar.add(GregorianCalendar.MONTH, 6);
@@ -492,8 +492,8 @@ public class ActivacionBean implements IActivacionBean {
 				activacion.setEstadoActivacion(estadoActivacion);
 				
 				activacion.setFact(hoy);
-				activacion.setTerm(new Long(1));
-				activacion.setUact(new Long(1));
+				activacion.setTerm(Long.valueOf(1));
+				activacion.setUact(Long.valueOf(1));
 				
 				activacion = entityManager.merge(activacion);
 			}
@@ -637,7 +637,7 @@ public class ActivacionBean implements IActivacionBean {
 //				+ ";Fecha asignación punto venta"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
@@ -742,7 +742,7 @@ public class ActivacionBean implements IActivacionBean {
 				+ ";Fecha de liquidación"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
@@ -844,7 +844,7 @@ public class ActivacionBean implements IActivacionBean {
 				+ ";Fecha asignación distribuidor"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
@@ -940,7 +940,7 @@ public class ActivacionBean implements IActivacionBean {
 				+ ";Tipo de activación"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {

@@ -31,7 +31,7 @@ public class FileManagerBean implements IFileManagerBean {
 			
 			Arrays.sort(files, new Comparator<File>(){
 				public int compare(File arg0, File arg1) {
-					return - new Long(arg0.lastModified()).compareTo(new Long(arg1.lastModified()));
+					return - Long.valueOf(arg0.lastModified()).compareTo(Long.valueOf(arg1.lastModified()));
 				}
 			});
 			

@@ -48,9 +48,9 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinancieraBean implements IB
 			
 			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setFcre(date);
 			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setFact(date);
-			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setTerm(new Long(1));
-			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setUact(new Long(1));
-			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setUcre(new Long(1));
+			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setTerm(Long.valueOf(1));
+			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setUact(Long.valueOf(1));
+			bcuInterfaceRiesgoCrediticioInstitucionFinanciera.setUcre(Long.valueOf(1));
 			
 			entityManager.persist(bcuInterfaceRiesgoCrediticioInstitucionFinanciera);
 		} catch (Exception e) {

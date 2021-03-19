@@ -5,57 +5,47 @@ $(document).ready(init);
 function init() {
 	$("#divTitle").append("Distribuci&oacute;n");
 	
-	ResultadoEntregaDistribucionDWR.list(
-		{
-			callback: function(data) {
-				$("#selectResultadoEntregaDistribucion > option").remove();
-				
-				html =
-					"<option value=0>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ResultadoEntregaDistribucionREST/list"
+	}).then(function(data) {
+		fillSelect(
+			"selectResultadoEntregaDistribucion", 
+			data,
+			"id", 
+			"descripcion"
+		);
+	}).then(function(data) {
+		if (numeroTramite != null) {
+			$("#inputNumeroTramite").val(numeroTramite);
+			
+			inputNumeroTramiteOnChange();
+		} else if (id != null) {
+			$.ajax({
+				url: "/LogisticaWEB/RESTFacade/ContratoREST/getById/" + id
+			}).then(function(data) {
+				if (data != null) {
+					$("#inputNumeroTramite").val(data.numeroTramite);
+					$("#aMID").attr("href", "tel:0" + data.mid);
+					$("#aMID").text(data.mid);
+					if (data.resultadoEntregaDistribucion != null) {
+						$("#selectResultadoEntregaDistribucion").val(data.resultadoEntregaDistribucion.id);
+					}
+					if (data.resultadoEntregaDistribucionObservaciones) {
+						$("#textareaObservaciones").text(data.resultadoEntregaDistribucionObservaciones);
+					}
 				}
 				
-				$("#selectResultadoEntregaDistribucion").append(html);
-			}, async: false
+				$("#inputNumeroTramite").focus();
+			});
 		}
-	);
-	
-	if (numeroTramite != null) {
-		$("#inputNumeroTramite").val(numeroTramite);
 		
-		inputNumeroTramiteOnChange();
-	} else if (id != null) {
-		ContratoDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					if (data != null) {
-						$("#inputNumeroTramite").val(data.numeroTramite);
-						$("#aMID").attr("href", "tel:0" + data.mid);
-						$("#aMID").text(data.mid);
-						if (data.resultadoEntregaDistribucion != null) {
-							$("#selectResultadoEntregaDistribucion").val(data.resultadoEntregaDistribucion.id);
-						}
-						if (data.resultadoEntregaDistribucionObservaciones) {
-							$("#textareaObservaciones").text(data.resultadoEntregaDistribucionObservaciones);
-						}
-					}
-				}, async: false
-			}
+		initMap();
+		
+		navigator.geolocation.getCurrentPosition(
+			center, 
+			positionError
 		);
-		
-		$("#inputNumeroTramite").focus();
-	}
-	
-	initMap();
-	
-	navigator.geolocation.getCurrentPosition(
-		center, 
-		positionError
-	);
+	});
 }
 
 function center(data) {
@@ -67,10 +57,10 @@ function center(data) {
 	$("#inputPrecision").val(crd.accuracy);
 	
 	new google.maps.InfoWindow({
-        map: map,
-        position: new google.maps.LatLng(crd.latitude, crd.longitude),
-        content: "Ubicación actual"
-    });
+		map: map,
+		position: new google.maps.LatLng(crd.latitude, crd.longitude),
+		content: "Ubicación actual"
+	});
 }
 
 function positionError(data) {
@@ -83,25 +73,22 @@ function initMap() {
 		divMap, {
 			center: {lat: 0, lng: 0},
 			zoom: 8
-    	}
+		}
 	);
 }
 
 function inputNumeroTramiteOnChange(event, element) {
-	ContratoDWR.getByNumeroTramite(
-		$("#inputNumeroTramite").val(),
-		{
-			callback: function(data) {
-				if (data != null) {
-					$("#aMID").attr("href", "tel:0" + data.mid);
-					$("#aMID").text(data.mid);
-				} else {
-					alert("No se encuentra el trámite solicitado.");
-					inputLimpiarOnClick();
-				}
-			}, async: false
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ContratoREST/getByNumeroTramite/" + $("#inputNumeroTramite").val()
+	}).then(function(data) { 
+		if (data != null) {
+			$("#aMID").attr("href", "tel:0" + data.mid);
+			$("#aMID").text(data.mid);
+		} else {
+			alert("No se encuentra el trámite solicitado.");
+			inputLimpiarOnClick();
 		}
-	);
+	});
 }
 
 function inputAgregarArchivoOnClick(event, element) {
@@ -118,9 +105,6 @@ function inputAgregarArchivoOnClick(event, element) {
 }
 
 function inputLimpiarOnClick(event, element) {
-//	$("#formResultadoEntregaDistribucionAnverso")[0].reset();
-//	$("#formResultadoEntregaDistribucionReverso")[0].reset();
-	
 	$(".divArchivos").html("&nbsp");
 	
 	$("#aMID").html("&nbsp;");
@@ -141,6 +125,12 @@ function inputLimpiarOnClick(event, element) {
 
 function inputSubmitOnClick(event, element) {
 	var numeroTramite = $("#inputNumeroTramite").val();
+	var resultadoEntregaDistribucion = $("#selectResultadoEntregaDistribucion").val();
+	
+	if (resultadoEntregaDistribucion == 0) {
+		alert("Seleccione un resultado de entrega.");
+		return false;
+	}
 	
 	var xmlHTTPRequest = new XMLHttpRequest();
 	xmlHTTPRequest.open(
@@ -153,7 +143,7 @@ function inputSubmitOnClick(event, element) {
 	var formData = new FormData();
 	formData.append("caller", "mobile");
 	formData.append("inputNumeroTramite", numeroTramite);
-	formData.append("selectResultadoEntregaDistribucion", $("#selectResultadoEntregaDistribucion").val());
+	formData.append("selectResultadoEntregaDistribucion", resultadoEntregaDistribucion);
 	formData.append("textareaObservaciones", $("#textareaObservaciones").val());
 	formData.append("inputLatitud", $("#inputLatitud").val());
 	formData.append("inputLongitud", $("#inputLongitud").val());
@@ -181,7 +171,7 @@ function inputSubmitOnClick(event, element) {
 		formData = new FormData(document.getElementById("formArchivo" + i));
 		formData.append("caller", "mobile");
 		formData.append("inputNumeroTramite", numeroTramite);
-		formData.append("selectResultadoEntregaDistribucion", $("#selectResultadoEntregaDistribucion").val());
+		formData.append("selectResultadoEntregaDistribucion", resultadoEntregaDistribucion);
 		formData.append("textareaObservaciones", $("#textareaObservaciones").val());
 		formData.append("inputLatitud", $("#inputLatitud").val());
 		formData.append("inputLongitud", $("#inputLongitud").val());

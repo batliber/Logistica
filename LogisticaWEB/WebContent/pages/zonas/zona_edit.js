@@ -1,3 +1,5 @@
+__EMPRESA_ELARED_ID = 1;
+
 $(document).ready(init);
 
 function init() {
@@ -5,70 +7,53 @@ function init() {
 	
 	$("#divEliminarZona").hide();
 	
-	DepartamentoDWR.list(
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectDepartamento").append(html);
-			}, async: false
-		}
-	);
-	
-	$(".inputCantidad").prop("disabled", true);
-	$("input:checkbox").change(function(eventObject) {
-		var target = eventObject.target;
-		
-		if ($(target).prop("checked")) {
-			$("#" + $(target).attr("id") + "Cantidad").val(10);
-			$("#" + $(target).attr("id") + "Cantidad").prop("disabled", false);
-		} else {
-			$("#" + $(target).attr("id") + "Cantidad").val("");
-			$("#" + $(target).attr("id") + "Cantidad").prop("disabled", true);
-		}
-	});
-	$("input:checkbox").prop("checked", false);
-	
-	if (id != null) {
-		ZonaDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputZonaNombre").val(data.nombre);
-					$("#inputZonaDetalle").val(data.detalle);
-					
-					if ($("#selectDepartamento").length > 0) { 
-						$("#selectDepartamento").val(data.departamento.id);
-					} else {
-						$("#divDepartamento").attr("did", data.departamento.id);
-						$("#divDepartamento").html(data.departamento.nombre);
-					}
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarZona").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
-			}
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/DepartamentoREST/list"
+	}).then(function(data) {
+		fillSelect(
+			"selectDepartamento", 
+			data,
+			"id", 
+			"nombre"
 		);
+	}).then(function(data) {
+		$(".inputCantidad").prop("disabled", true);
+		$("input:checkbox").change(function(eventObject) {
+			var target = eventObject.target;
+			
+			if ($(target).prop("checked")) {
+				$("#" + $(target).attr("id") + "Cantidad").val(10);
+				$("#" + $(target).attr("id") + "Cantidad").prop("disabled", false);
+			} else {
+				$("#" + $(target).attr("id") + "Cantidad").val("");
+				$("#" + $(target).attr("id") + "Cantidad").prop("disabled", true);
+			}
+		});
+		$("input:checkbox").prop("checked", false);
 		
-		DisponibilidadEntregaEmpresaZonaTurnoDWR.listByEmpresaZona(
-			{
-				id: 1
-			},
-			{
-				id: id,
-				departamento: {
-					id: $("#selectDepartamento").val()
+		if (id != null) {
+			$.ajax({
+				url: "/LogisticaWEB/RESTFacade/ZonaREST/getById/" + id
+			}).then(function(data) {
+				$("#inputZonaNombre").val(data.nombre);
+				$("#inputZonaDetalle").val(data.detalle);
+				
+				if ($("#selectDepartamento").length > 0) { 
+					$("#selectDepartamento").val(data.departamento.id);
+				} else {
+					$("#divDepartamento").attr("did", data.departamento.id);
+					$("#divDepartamento").html(data.departamento.nombre);
 				}
-			},
-			{
-				callback: function(data) {
+				
+				if (mode == __FORM_MODE_ADMIN) {
+					$("#divEliminarZona").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				}
+			}).then(function(data) {
+				$.ajax({
+					url: "/LogisticaWEB/RESTFacade/DisponibilidadEntregaEmpresaZonaTurnoREST/listByEmpresaZona"
+						+ "?eid=" + __EMPRESA_ELARED_ID + "&zid=" + id
+				}).then(function(data) { 
 					for (var i=0; i<data.length; i++) {
 						var turno = data[i].turno;
 						var dia = data[i].dia;
@@ -86,10 +71,10 @@ function init() {
 							}
 						}
 					}
-				}, async: false
-			}
-		);
-	}
+				});
+			});
+		}
+	});
 }
 
 function refinarForm() {
@@ -119,7 +104,7 @@ function inputGuardarOnClick(event) {
 	}
 	
 	var empresa = {
-		id: 1
+		id: __EMPRESA_ELARED_ID
 	};
 	
 	var inputsCantidad = $(".inputCantidad");
@@ -142,43 +127,43 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		zona.id = id;
 		
-		ZonaDWR.update(
-			zona,
-			{
-				callback: function(data) {
-					DisponibilidadEntregaEmpresaZonaTurnoDWR.updateDisponibilidadByZona(
-						zona,
-						disponibilidades,
-						{
-							callback: function(dataDisponibilidad) {
-								alert("Operación exitosa");
-							}, async: false
-						}
-					);
-				}, async: false
-			}
-		);
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/ZonaREST/update",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(zona)
+		}).then(function(data) {
+			$.ajax({
+				url: "/LogisticaWEB/RESTFacade/DisponibilidadEntregaEmpresaZonaTurnoREST/updateDisponibilidadByZona/" + zona.id,
+				method: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify(disponibilidades)
+			}).then(function(data) {
+				alert("Operación exitosa");
+			});
+		});
 	} else {
-		ZonaDWR.add(
-			zona,
-			{
-				callback: function(data) {
-					zona.id = data.id;
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/ZonaREST/add",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(zona)
+		}).then(function(data) {
+			if (data != null) {
+				$.ajax({
+					url: "/LogisticaWEB/RESTFacade/DisponibilidadEntregaEmpresaZonaTurnoREST/updateDisponibilidadByZona/" + data.id,
+					method: "POST",
+					contentType: 'application/json',
+					data: JSON.stringify(disponibilidades)
+				}).then(function(data) {
+					alert("Operación exitosa");
 					
-					DisponibilidadEntregaEmpresaZonaTurnoDWR.updateDisponibilidadByZona(
-						zona,
-						disponibilidades,
-						{
-							callback: function(dataDisponibilidad) {
-								alert("Operación exitosa");
-								
-								$("#inputEliminarZona").prop("disabled", false);
-							}, async: false
-						}
-					);
-				}, async: false
+					$("#inputEliminarZona").prop("disabled", false);
+				});
+			} else {
+				alert("Error en la operación");
 			}
-		);
+		});
 	}
 }
 
@@ -188,13 +173,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		ZonaDWR.remove(
-			zona,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/ZonaREST/remove",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(zona)
+		}).then(function(data) {
+			alert("Operación exitosa");
+		});
 	}
 }

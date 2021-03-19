@@ -43,6 +43,33 @@ public class ProductoBean implements IProductoBean {
 		
 		return result;
 	}
+	
+	public Collection<Producto> listMinimal() {
+		Collection<Producto> result = new LinkedList<Producto>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT p.id, p.descripcion"
+					+ " FROM Producto p"
+					+ " WHERE p.fechaBaja IS NULL"
+					+ " ORDER BY p.descripcion ASC", 
+					Object[].class
+				);
+			
+			for (Object[] producto : query.getResultList()) {
+				Producto productoMinimal = new Producto();
+				productoMinimal.setId((Long)producto[0]);
+				productoMinimal.setDescripcion((String)producto[1]);
+				
+				result.add(productoMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
@@ -126,15 +153,21 @@ public class ProductoBean implements IProductoBean {
 		return result;
 	}
 	
-	public void save(Producto producto) {
+	public Producto save(Producto producto) {
+		Producto result = null;
+		
 		try {
 			producto.setFcre(producto.getFact());
 			producto.setUcre(producto.getUact());
 			
 			entityManager.persist(producto);
+			
+			result = producto;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Producto producto) {

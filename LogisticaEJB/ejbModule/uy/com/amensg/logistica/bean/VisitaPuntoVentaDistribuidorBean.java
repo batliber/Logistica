@@ -105,15 +105,21 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 		return result;
 	}
 	
-	public void save(VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidor) {
+	public VisitaPuntoVentaDistribuidor save(VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidor) {
+		VisitaPuntoVentaDistribuidor result = null;
+		
 		try {
 			visitaPuntoVentaDistribuidor.setFcre(visitaPuntoVentaDistribuidor.getFact());
 			visitaPuntoVentaDistribuidor.setUcre(visitaPuntoVentaDistribuidor.getUact());
 			
 			entityManager.persist(visitaPuntoVentaDistribuidor);
+			
+			result = visitaPuntoVentaDistribuidor;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidor) {
@@ -125,7 +131,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 			
 			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidorCancelado = 
 				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Cancelado"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Cancelado"))
 				);
 			
 			managedVisitaPuntoVentaDistribuidor.setEstadoVisitaPuntoVentaDistribuidor(
@@ -145,16 +151,28 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 			VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidorManaged = 
 				entityManager.find(VisitaPuntoVentaDistribuidor.class, visitaPuntoVentaDistribuidor.getId());
 			
-			visitaPuntoVentaDistribuidorManaged.setFechaAsignacion(visitaPuntoVentaDistribuidor.getFechaAsignacion());
-			visitaPuntoVentaDistribuidorManaged.setFechaVisita(visitaPuntoVentaDistribuidor.getFechaVisita());
-			visitaPuntoVentaDistribuidorManaged.setObservaciones(visitaPuntoVentaDistribuidor.getObservaciones());
+			visitaPuntoVentaDistribuidorManaged.setFechaAsignacion(
+				visitaPuntoVentaDistribuidor.getFechaAsignacion()
+			);
+			visitaPuntoVentaDistribuidorManaged.setFechaVisita(
+				visitaPuntoVentaDistribuidor.getFechaVisita()
+			);
+			visitaPuntoVentaDistribuidorManaged.setObservaciones(
+				visitaPuntoVentaDistribuidor.getObservaciones()
+			);
 			
-			visitaPuntoVentaDistribuidorManaged.setDistribuidor(visitaPuntoVentaDistribuidor.getDistribuidor());
+			visitaPuntoVentaDistribuidorManaged.setDistribuidor(
+				visitaPuntoVentaDistribuidor.getDistribuidor()
+			);
 			
 			if (visitaPuntoVentaDistribuidorManaged.getEstadoVisitaPuntoVentaDistribuidor() != null) {
+				// Si el estado anterior no era null.
 				if (visitaPuntoVentaDistribuidor.getEstadoVisitaPuntoVentaDistribuidor() != null) {
+					// Si el estado nuevo no es null.
 					if (!visitaPuntoVentaDistribuidorManaged.getEstadoVisitaPuntoVentaDistribuidor().equals(
-						visitaPuntoVentaDistribuidor.getEstadoVisitaPuntoVentaDistribuidor())) {
+						visitaPuntoVentaDistribuidor.getEstadoVisitaPuntoVentaDistribuidor()
+					)) {
+						// Si el estado es diferente al actual.
 						PuntoVenta puntoVentaManaged = visitaPuntoVentaDistribuidorManaged.getPuntoVenta();
 						
 						puntoVentaManaged.setEstadoVisitaPuntoVentaDistribuidor(
@@ -170,7 +188,9 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 					}
 				}
 			} else {
+				// Si el estado anterior era null.
 				if (visitaPuntoVentaDistribuidor.getEstadoVisitaPuntoVentaDistribuidor() != null) {
+					// Si el estado nuevo no es null.
 					PuntoVenta puntoVentaManaged = visitaPuntoVentaDistribuidorManaged.getPuntoVenta();
 					
 					puntoVentaManaged.setEstadoVisitaPuntoVentaDistribuidor(
@@ -204,7 +224,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 		
 		EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidor = 
 			iEstadoVisitaPuntoVentaDistribuidorBean.getById(
-				new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"))
+				Long.parseLong(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"))
 			);
 		
 		PuntoVenta puntoVentaManaged = 
@@ -218,7 +238,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 		
 		visitaPuntoVentaDistribuidor.setFact(hoy);
 		visitaPuntoVentaDistribuidor.setFcre(hoy);
-		visitaPuntoVentaDistribuidor.setTerm(new Long(1));
+		visitaPuntoVentaDistribuidor.setTerm(Long.valueOf(1));
 		visitaPuntoVentaDistribuidor.setUact(loggedUsuarioId);
 		visitaPuntoVentaDistribuidor.setUcre(loggedUsuarioId);
 		
@@ -231,7 +251,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 		
 		puntoVentaManaged.setFact(hoy);
 		puntoVentaManaged.setUact(loggedUsuarioId);
-		puntoVentaManaged.setTerm(new Long(1));
+		puntoVentaManaged.setTerm(Long.valueOf(1));
 		
 		iPuntoVentaBean.update(puntoVentaManaged);
 	}
@@ -244,7 +264,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 			
 			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidor = 
 				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"))
 				);
 			
 			MetadataConsultaResultado metadataConsultaResultado = 
@@ -274,7 +294,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 					
 					visitaPuntoVentaDistribuidor.setFact(hoy);
 					visitaPuntoVentaDistribuidor.setFcre(hoy);
-					visitaPuntoVentaDistribuidor.setTerm(new Long(1));
+					visitaPuntoVentaDistribuidor.setTerm(Long.valueOf(1));
 					visitaPuntoVentaDistribuidor.setUact(loggedUsuarioId);
 					visitaPuntoVentaDistribuidor.setUcre(loggedUsuarioId);
 					
@@ -287,7 +307,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 					
 					puntoVenta.setFact(hoy);
 					puntoVenta.setUact(loggedUsuarioId);
-					puntoVenta.setTerm(new Long(1));
+					puntoVenta.setTerm(Long.valueOf(1));
 					
 					i--;
 					
@@ -310,7 +330,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 			
 			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidor = 
 				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.VisitaPermanente"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.VisitaPermanente"))
 				);
 			
 			MetadataConsultaResultado metadataConsultaResultado = 
@@ -340,7 +360,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 					
 					visitaPuntoVentaDistribuidor.setFact(hoy);
 					visitaPuntoVentaDistribuidor.setFcre(hoy);
-					visitaPuntoVentaDistribuidor.setTerm(new Long(1));
+					visitaPuntoVentaDistribuidor.setTerm(Long.valueOf(1));
 					visitaPuntoVentaDistribuidor.setUact(loggedUsuarioId);
 					visitaPuntoVentaDistribuidor.setUcre(loggedUsuarioId);
 					
@@ -353,7 +373,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 					
 					puntoVenta.setFact(hoy);
 					puntoVenta.setUact(loggedUsuarioId);
-					puntoVenta.setTerm(new Long(1));
+					puntoVenta.setTerm(Long.valueOf(1));
 					
 					i--;
 					
@@ -376,7 +396,11 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 			
 			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidor = 
 				iEstadoVisitaPuntoVentaDistribuidorBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoVisitaPuntoVentaDistribuidor.Pendiente"))
+					Long.parseLong(
+						Configuration.getInstance().getProperty(
+							"estadoVisitaPuntoVentaDistribuidor.Pendiente"
+						)
+					)
 				);
 			
 			MetadataConsultaResultado metadataConsultaResultado = 
@@ -396,16 +420,19 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 					
 					puntoVentaIds.add(puntoVenta.getId());
 					
-					VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidor = new VisitaPuntoVentaDistribuidor();
+					VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidor = 
+						new VisitaPuntoVentaDistribuidor();
 					visitaPuntoVentaDistribuidor.setDistribuidor(distribuidor);
-					visitaPuntoVentaDistribuidor.setEstadoVisitaPuntoVentaDistribuidor(estadoVisitaPuntoVentaDistribuidor);
+					visitaPuntoVentaDistribuidor.setEstadoVisitaPuntoVentaDistribuidor(
+						estadoVisitaPuntoVentaDistribuidor
+					);
 					visitaPuntoVentaDistribuidor.setFechaAsignacion(hoy);
 					visitaPuntoVentaDistribuidor.setObservaciones(observaciones);
 					visitaPuntoVentaDistribuidor.setPuntoVenta(puntoVenta);
 					
 					visitaPuntoVentaDistribuidor.setFact(hoy);
 					visitaPuntoVentaDistribuidor.setFcre(hoy);
-					visitaPuntoVentaDistribuidor.setTerm(new Long(1));
+					visitaPuntoVentaDistribuidor.setTerm(Long.valueOf(1));
 					visitaPuntoVentaDistribuidor.setUact(loggedUsuarioId);
 					visitaPuntoVentaDistribuidor.setUcre(loggedUsuarioId);
 					
@@ -418,7 +445,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 					
 					puntoVenta.setFact(hoy);
 					puntoVenta.setUact(loggedUsuarioId);
-					puntoVenta.setTerm(new Long(1));
+					puntoVenta.setTerm(Long.valueOf(1));
 					
 					i--;
 					
@@ -471,7 +498,7 @@ public class VisitaPuntoVentaDistribuidorBean implements IVisitaPuntoVentaDistri
 				+ ";Observaciones"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			for (Object object : this.list(metadataConsulta).getRegistrosMuestra()) {

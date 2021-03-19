@@ -151,7 +151,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			
-			// Setear los par�metros seg�n las condiciones del filtro
+			// Setear los parámetros según las condiciones del filtro
 			int i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -183,7 +183,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -193,12 +193,12 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								query.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -214,7 +214,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 				}
 			}
 			
-			// Acotar al tama�o de la muestra
+			// Acotar al tamaño de la muestra
 			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
 			
 			Collection<Object> registrosMuestra = new LinkedList<Object>();
@@ -295,7 +295,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 			queryCount.setParameter("usuario2", usuario);
 			queryCount.setParameter("usuario3", usuario);
 			
-			// Setear los par�metros seg�n las condiciones del filtro
+			// Setear los parámetros según las condiciones del filtro
 			i = 0;
 			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -327,7 +327,7 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								queryCount.setParameter(
@@ -337,12 +337,12 @@ public class ContratoRoutingHistoryBean implements IContratoRoutingHistoryBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {

@@ -13,17 +13,21 @@ public interface IUsuarioBean {
 
 	public Collection<Usuario> list();
 	
+	public Collection<Usuario> listMinimal();
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Usuario getById(Long id, boolean initializeCollections);
 	
+	public Usuario getByIdMinimal(Long id);
+	
 	public Usuario getByLogin(String login, boolean initializeCollections);
 	
-	public void save(Usuario usuario);
+	public Usuario save(Usuario usuario);
 	
 	public void remove(Usuario usuario);
 	
-	public void update(Usuario usuario);
+	public Usuario update(Usuario usuario);
 }

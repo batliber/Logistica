@@ -1,0 +1,27 @@
+#divFormulario {
+	width: 100%;
+	margin: auto;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+}
+
+#divTotales {
+	width: 325px;
+	margin: auto;
+	overflow: hidden;
+}
+
+#divButtonSolicitudSaldo {
+	width: 325px;
+	margin: auto;
+	overflow: hidden;
+}
+
+#divSolicitudesSaldo {
+	width: 325px;
+	margin: auto;
+	overflow: hidden;
+}

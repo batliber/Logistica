@@ -48,84 +48,71 @@ function init() {
 	
 	gridEmpresaUsuarioContratos.rebuild();
 	
-	FormaPagoDWR.list(
-		{
-			callback: function(data) {
-				var html = 
-					"<option value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
-				}
-				
-				$("#selectFormaPago").html(html);
-			}, async: false
-		}
-	);
-	
-	UsuarioDWR.list(
-		{
-			callback: function(data) {
-				var html = 
-					"<option value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectUsuario").html(html);
-			}, async: false
-		}
-	);
-	
-	if (id != null) {
-		EmpresaDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputEmpresaNombre").val(data.nombre);
-					$("#inputEmpresaCodigoPromotor").val(data.codigoPromotor);
-					$("#inputEmpresaNombreContrato").val(data.nombreContrato);
-					$("#inputEmpresaNombreSucursal").val(data.nombreSucursal);
-					$("#inputEmpresaDireccion").val(data.direccion);
-					$("#inputEmpresaId").val(data.id);
-					
-					if (data.formaPagos != null) {
-						formaPagos.cantidadRegistros = data.formaPagos.length;
-						
-						for (var i=0; i<data.formaPagos.length; i++) {
-							formaPagos.registrosMuestra[formaPagos.registrosMuestra.length] = data.formaPagos[i];
-						}
-					}
-					
-					if (data.empresaUsuarioContratos != null) {
-						empresaUsuarioContratos.cantidadRegistros = data.empresaUsuarioContratos.length;
-						
-						for (var i=0; i<data.empresaUsuarioContratos.length; i++) {
-							empresaUsuarioContratos.registrosMuestra[empresaUsuarioContratos.registrosMuestra.length] = data.empresaUsuarioContratos[i];
-						}
-					}
-					
-					if (data.logoURL != null) {
-						$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + data.logoURL);
-						$("#imgEmpresaLogo").attr("fn", data.logoURL);
-					}
-					
-					reloadFormaPagos();
-					reloadEmpresaUsuarioContratos();
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarEmpresa").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					} else {
-						
-					}
-				}, async: false
-			}
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/FormaPagoREST/list"
+    }).then(function(data) {
+		fillSelect(
+			"selectFormaPago", 
+			data,
+			"id", 
+			"descripcion"
 		);
-	}
+    }).then(function(data) {
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/UsuarioREST/listMinimal"
+	    }).then(function(data) { 
+			fillSelect(
+				"selectUsuario", 
+				data,
+				"id", 
+				"nombre"
+			);
+		});
+    }).then(function(data) {
+		if (id != null) {
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/EmpresaREST/getById/" + id
+		    }).then(function(data) {
+				$("#inputEmpresaNombre").val(data.nombre);
+				$("#inputEmpresaCodigoPromotor").val(data.codigoPromotor);
+				$("#inputEmpresaNombreContrato").val(data.nombreContrato);
+				$("#inputEmpresaNombreSucursal").val(data.nombreSucursal);
+				$("#inputEmpresaDireccion").val(data.direccion);
+				$("#inputEmpresaId").val(data.id);
+				
+				if (data.formaPagos != null) {
+					formaPagos.cantidadRegistros = data.formaPagos.length;
+					
+					for (var i=0; i<data.formaPagos.length; i++) {
+						formaPagos.registrosMuestra[formaPagos.registrosMuestra.length] = data.formaPagos[i];
+					}
+				}
+				
+				if (data.empresaUsuarioContratos != null) {
+					empresaUsuarioContratos.cantidadRegistros = data.empresaUsuarioContratos.length;
+					
+					for (var i=0; i<data.empresaUsuarioContratos.length; i++) {
+						empresaUsuarioContratos.registrosMuestra[empresaUsuarioContratos.registrosMuestra.length] = data.empresaUsuarioContratos[i];
+					}
+				}
+				
+				if (data.logoURL != null) {
+					$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + data.logoURL);
+					$("#imgEmpresaLogo").attr("fn", data.logoURL);
+				}
+				
+				reloadFormaPagos();
+				reloadEmpresaUsuarioContratos();
+				
+				if (mode == __FORM_MODE_ADMIN) {
+					$("#divEliminarEmpresa").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				} else {
+					
+				}
+			});
+		}
+    });
 }
 
 function refinarForm() {
@@ -190,17 +177,14 @@ function inputAgregarFormaPagoOnClick(event, element) {
 		}
 		
 		if (!found) {
-			FormaPagoDWR.getById(
-				formaPagoId,
-				{
-					callback: function(data) {
-						formaPagos.cantidadRegistros = formaPagos.cantidadRegistros + 1;
-						formaPagos.registrosMuestra[formaPagos.registrosMuestra.length] = data;
-						
-						reloadFormaPagos();
-					}, async: false
-				}
-			);
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/FormaPagoREST/getById/" + formaPagoId
+		    }).then(function(data) {
+				formaPagos.cantidadRegistros = formaPagos.cantidadRegistros + 1;
+				formaPagos.registrosMuestra[formaPagos.registrosMuestra.length] = data;
+				
+				reloadFormaPagos();
+			});
 		}
 	} else {
 		alert("Debe seleccionar una forma de pago.");
@@ -219,17 +203,14 @@ function inputAgregarUsuarioOnClick(event, element) {
 		}
 		
 		if (!found) {
-			UsuarioDWR.getById(
-				usuarioId,
-				{
-					callback: function(data) {
-						empresaUsuarioContratos.cantidadRegistros = empresaUsuarioContratos.cantidadRegistros + 1;
-						empresaUsuarioContratos.registrosMuestra[empresaUsuarioContratos.registrosMuestra.length] = data;
-						
-						reloadEmpresaUsuarioContratos();
-					}, async: false
-				}
-			);
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/UsuarioREST/getByIdMinimal/" + usuarioId
+		    }).then(function(data) {
+				empresaUsuarioContratos.cantidadRegistros = empresaUsuarioContratos.cantidadRegistros + 1;
+				empresaUsuarioContratos.registrosMuestra[empresaUsuarioContratos.registrosMuestra.length] = data;
+				
+				reloadEmpresaUsuarioContratos();
+			});
 		}
 	} else {
 		alert("Debe seleccionar un usuario.");
@@ -277,67 +258,71 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		empresa.id = id;
 		
-		EmpresaDWR.update(
-			empresa,
-			{
-				callback: function(data) {
-					if (updateLogo) {
-						var xmlHTTPRequest = new XMLHttpRequest();
-						xmlHTTPRequest.open(
-							"POST",
-							"/LogisticaWEB/Upload",
-							false
-						);
-						
-						var formData = new FormData(document.getElementById("formEmpresa"));
-						
-						xmlHTTPRequest.send(formData);
-						
-						if (xmlHTTPRequest.status == 200) {
-							var response = JSON.parse(xmlHTTPRequest.responseText);
-							
-							$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + response.fileName);
-						} else {
-							alert(xmlHTTPRequest.responseText);
-						}
-					}
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/EmpresaREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(empresa)
+	    }).then(function(data) {
+			if (updateLogo) {
+				var xmlHTTPRequest = new XMLHttpRequest();
+				xmlHTTPRequest.open(
+					"POST",
+					"/LogisticaWEB/Upload",
+					false
+				);
+				
+				var formData = new FormData(document.getElementById("formEmpresa"));
+				
+				xmlHTTPRequest.send(formData);
+				
+				if (xmlHTTPRequest.status == 200) {
+					var response = JSON.parse(xmlHTTPRequest.responseText);
 					
-					alert("Operación exitosa");
-				}, async: false
+					$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + response.fileName);
+				} else {
+					alert(xmlHTTPRequest.responseText);
+				}
 			}
-		);
+			
+			alert("Operación exitosa");
+		});
 	} else {
-		EmpresaDWR.add(
-			empresa,
-			{
-				callback: function(data) {
-					if (updateLogo) {
-						var xmlHTTPRequest = new XMLHttpRequest();
-						xmlHTTPRequest.open(
-							"POST",
-							"/LogisticaWEB/Upload",
-							false
-						);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/EmpresaREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(empresa)
+	    }).then(function(data) {
+	    	if(data != null) {
+				if (updateLogo) {
+					var xmlHTTPRequest = new XMLHttpRequest();
+					xmlHTTPRequest.open(
+						"POST",
+						"/LogisticaWEB/Upload",
+						false
+					);
+					
+					var formData = new FormData(document.getElementById("formEmpresa"));
+					
+					xmlHTTPRequest.send(formData);
+					
+					if (xmlHTTPRequest.status == 200) {
+						var response = JSON.parse(xmlHTTPRequest.responseText);
 						
-						var formData = new FormData(document.getElementById("formEmpresa"));
-						
-						xmlHTTPRequest.send(formData);
-						
-						if (xmlHTTPRequest.status == 200) {
-							var response = JSON.parse(xmlHTTPRequest.responseText);
-							
-							$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + response.fileName);
-						} else {
-							alert(xmlHTTPRequest.responseText);
-						}
+						$("#imgEmpresaLogo").attr("src", "/LogisticaWEB/Stream?fn=" + response.fileName);
+					} else {
+						alert(xmlHTTPRequest.responseText);
 					}
-					
-					alert("Operación exitosa");
-					
-					$("#divEliminarEmpresa").show();
-				}, async: false
-			}
-		);
+				}
+				
+				alert("Operación exitosa");
+				
+				$("#divEliminarEmpresa").show();
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+		});
 	}
 }
 
@@ -347,13 +332,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		EmpresaDWR.remove(
-			empresa,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/EmpresaREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(empresa)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	}
 }

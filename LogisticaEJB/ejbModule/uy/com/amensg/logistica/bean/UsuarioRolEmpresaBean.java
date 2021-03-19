@@ -102,7 +102,7 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 	public Collection<UsuarioRolEmpresa> listVendedoresByUsuario(Usuario usuario) {
 		Rol rol = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Vendedor")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Vendedor")),
 				false
 			);
 		
@@ -112,7 +112,7 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 	public Collection<UsuarioRolEmpresa> listBackofficesByUsuario(Usuario usuario) {
 		Rol rol = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Backoffice")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Backoffice")),
 				false
 			);
 		
@@ -122,7 +122,7 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 	public Collection<UsuarioRolEmpresa> listDistribuidoresByUsuario(Usuario usuario) {
 		Rol rol = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Distribuidor")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Distribuidor")),
 				false
 			);
 			
@@ -132,7 +132,7 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 	public Collection<UsuarioRolEmpresa> listDistribuidoresByUsuarioMinimal(Usuario usuario) {
 		Rol rol = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Distribuidor")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Distribuidor")),
 				false
 			);
 			
@@ -142,7 +142,7 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 	public Collection<UsuarioRolEmpresa> listActivadoresByUsuario(Usuario usuario) {
 		Rol rol = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Activador")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Activador")),
 				false
 			);
 		
@@ -152,7 +152,7 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 	public Collection<UsuarioRolEmpresa> listDistribuidoresChipsByUsuario(Usuario usuario) {
 		Rol rol = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.DistribuidorChips")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.DistribuidorChips")),
 				false
 			);
 			

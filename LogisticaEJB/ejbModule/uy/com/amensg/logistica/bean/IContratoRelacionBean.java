@@ -14,5 +14,5 @@ public interface IContratoRelacionBean {
 	
 	public boolean chequearAsignacion(MetadataConsulta metadataConsulta, Long usuarioId);
 	
-	public void save(ContratoRelacion contratoRelacion);
+	public ContratoRelacion save(ContratoRelacion contratoRelacion);
 }

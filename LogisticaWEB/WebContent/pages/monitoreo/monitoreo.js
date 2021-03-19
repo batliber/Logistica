@@ -1,190 +1,86 @@
+var __ROL_ADMINISTRADOR = 1;
+var __ROL_GERENCIA = 41733595;
+var __ROL_SUPERVISOR_DISTRIBUCION = 7;
+
 var grid = null;
 var formularioContrato = null;
 
 $(document).ready(init);
 
 function init() {
-	grid = new Grid(
-		document.getElementById("divTableContratos"),
-		{
-			tdContratoNumeroTramite: { campo: "numeroTramite", descripcion: "Número de trámite", abreviacion: "Trámite", tipo: __TIPO_CAMPO_NUMERICO, ancho: 75 },
-			tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" } },
-			tdContratoMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
-			tdContratoFinContrato: { campo: "fechaFinContrato", abreviacion: "Fin", descripcion: "Fin de contrato", tipo: __TIPO_CAMPO_FECHA },
-			tdContratoTipoContratoDescripcion: { campo: "tipoContratoDescripcion", abreviacion: "Plan", descripcion: "Plan actual", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
-			tdFechaVenta: { campo: "fechaVenta", descripcion: "Fecha de venta", abreviacion: "Vendido", tipo: __TIPO_CAMPO_FECHA },
-			tdContratoLocalidad: { campo: "localidad", descripcion: "Localidad", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING, ancho: 90 },
-			tdContratoObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING },
-			tdVendedor: { campo: "vendedor.nombre", clave: "vendedor.id", descripcion: "Vendedor", abreviacion: "Vendedor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listVendedores, clave: "id", valor: "nombre" }, ancho: 90 },
-			tdBackoffice: { campo: "backoffice.nombre", clave: "backoffice.id", descripcion: "Backoffice", abreviacion: "Backoffice", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listBackoffices, clave: "id", valor: "nombre" }, ancho: 80 },
-			tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 80 },
-			tdActivador: { campo: "activador.nombre", clave: "activador.id", descripcion: "Activador", abreviacion: "Activador", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listActivadores, clave: "id", valor: "nombre" }, ancho: 90 },
-			tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
-			tdFechaRechazo: { campo: "fechaRechazo", descripcion: "Fecha de rechazo", abreviacion: "Rechazado", tipo: __TIPO_CAMPO_FECHA },
-			tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 90 },
-			tdEstado: { campo: "estado.nombre", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "nombre" }, ancho: 90 },
-		}, 
-		true,
-		reloadData,
-		trContratoOnClick
-	);
-	
-	grid.rebuild();
-	
-	reloadData();
-	
-//	formularioContrato = new FormularioContrato(document.getElementById("divFormularioContrato"));
-	$("#divIFrameContrato").draggable();
-}
-
-function listEmpresas() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",
+	}).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_GERENCIA
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION) {
+				grid = new Grid(
+					document.getElementById("divTableContratos"),
+					{
+						tdContratoNumeroTramite: { campo: "numeroTramite", descripcion: "Número de trámite", abreviacion: "Trámite", tipo: __TIPO_CAMPO_NUMERICO, ancho: 75 },
+						tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" } },
+						tdContratoMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+						tdContratoFinContrato: { campo: "fechaFinContrato", abreviacion: "Fin", descripcion: "Fin de contrato", tipo: __TIPO_CAMPO_FECHA },
+						tdContratoTipoContratoDescripcion: { campo: "tipoContratoDescripcion", abreviacion: "Plan", descripcion: "Plan actual", tipo: __TIPO_CAMPO_STRING, ancho: 80 },
+						tdFechaVenta: { campo: "fechaVenta", descripcion: "Fecha de venta", abreviacion: "Vendido", tipo: __TIPO_CAMPO_FECHA },
+						tdContratoLocalidad: { campo: "localidad", descripcion: "Localidad", abreviacion: "Localidad", tipo: __TIPO_CAMPO_STRING, ancho: 90 },
+						tdContratoObservaciones: { campo: "observaciones", descripcion: "Observaciones", abreviacion: "Observaciones", tipo: __TIPO_CAMPO_STRING },
+						tdVendedor: { campo: "vendedor.nombre", clave: "vendedor.id", descripcion: "Vendedor", abreviacion: "Vendedor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listVendedores, clave: "id", valor: "nombre" }, ancho: 90 },
+						tdBackoffice: { campo: "backoffice.nombre", clave: "backoffice.id", descripcion: "Backoffice", abreviacion: "Backoffice", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listBackoffices, clave: "id", valor: "nombre" }, ancho: 80 },
+						tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 80 },
+						tdFechaPickUp: { campo: "fechaPickUp", descripcion: "Fecha de Pick-up", abreviacion: "Pick-Up", tipo: __TIPO_CAMPO_FECHA_HORA },
+						tdFechaEntregaDistribuidor: { campo: "fechaEntregaDistribuidor", descripcion: "Asignado a distribuidor", abreviacion: "Asignado", tipo: __TIPO_CAMPO_FECHA },
+						tdFechaDevolucionDistribuidor: { campo: "fechaDevolucionDistribuidor", descripcion: "Devuelto", abreviacion: "Devuelto", tipo: __TIPO_CAMPO_FECHA },
+						tdResultadoEntregaDistribucion: { campo: "resultadoEntregaDistribucion.descripcion", clave: "resultadoEntregaDistribucion.id", descripcion: "Resultado entrega", abreviacion: "Entrega", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listResultadoEntregaDistribuciones, clave: "id", valor: "descripcion" } },
+						tdResultadoEntregaDistribucionFecha: { campo: "resultadoEntregaDistribucionFecha", descripcion: "Fecha de entregado", abreviacion: "Entregado", tipo: __TIPO_CAMPO_FECHA_HORA },
+						tdActivador: { campo: "activador.nombre", clave: "activador.id", descripcion: "Activador", abreviacion: "Activador", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listActivadores, clave: "id", valor: "nombre" }, ancho: 90 },
+						tdFechaEnvioAntel: { campo: "fechaEnvioAntel", descripcion: "Fecha de envío a ANTEL", abreviacion: "E. ANTEL", tipo: __TIPO_CAMPO_FECHA },
+						tdFechaRechazo: { campo: "fechaRechazo", descripcion: "Fecha de rechazo", abreviacion: "Rechazado", tipo: __TIPO_CAMPO_FECHA },
+						tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 90 },
+						tdEstado: { campo: "estado.nombre", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "nombre" }, ancho: 90 },
+						tdFcre: { campo: "fcre", descripcion: "Creado", abreviacion: "Creado", tipo: __TIPO_CAMPO_FECHA_HORA }
+					}, 
+					true,
+					reloadData,
+					trContratoOnClick
+				);
+				
+				grid.rebuild();
+				
+				break;
+			}
 		}
-	);
-	
-	return result;
-}
 
-function listProductos() {
-	var result = [];
-	
-	ProductoDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
+		reloadData();
 
-function listVendedores() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listVendedoresByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
+//		formularioContrato = new FormularioContrato(document.getElementById("divFormularioContrato"));
 
-function listBackoffices() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listBackofficesByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listDistribuidores() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listDistribuidoresByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listActivadores() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listActivadoresByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listUsuarios() {
-	var result = [];
-	
-	UsuarioDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listEstados() {
-	var result = [];
-	
-	EstadoDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
+		$("#divIFrameContrato").draggable();
+		$("#divIFrameHistoricoContrato").draggable();
+	});
 }
 
 function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
-	ContratoDWR.listContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.reload(data);
-			}
-		}
-	);
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ContratoREST/listContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.reload(data);
+	});
 	
-	ContratoDWR.countContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.setCount(data);
-			}
-		}
-	);
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ContratoREST/countContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.setCount(data);
+	});
 }
 
 function inputActualizarOnClick(event, element) {
@@ -196,16 +92,6 @@ function trContratoOnClick(eventObject) {
 	
 	document.getElementById("iFrameHistorico").src = "/LogisticaWEB/pages/monitoreo/historico.jsp?cid=" + $(target).attr("id");
 	showPopUp(document.getElementById("divIFrameHistoricoContrato"));
-	
-//	var cid = $(target).attr("cid");
-//	ContratoDWR.getById(
-//		cid,
-//		{
-//			callback: function(data) {
-//				formularioContrato.setContrato(data);
-//			}, async: false
-//		}
-//	);
 }
 
 function divCloseOnClick(event, element) {
@@ -219,23 +105,16 @@ function closeDialog() {
 }
 
 function inputSubirArchivoOnClick() {
-	$("#selectEmpresa > option").remove();
-	
-	$("#selectEmpresa").append("<option value='0'>Seleccione...</option>");
-	
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				var html = "";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectEmpresa").append(html);
-			}, async: false
-		}
-	);
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+	}).then(function(data) {
+		fillSelect(
+			"selectEmpresa",
+			data,
+			"id",
+			"nombre"
+		);
+	});
 	
 	showPopUp(document.getElementById("divIFrameImportacionArchivo"));
 }
@@ -250,42 +129,43 @@ function inputCancelarOnClick(event, element) {
 }
 
 function inputAceptarOnClick(event, element) {
-	if ($("#selectEmpresa").val() != "0") {
-		var xmlHTTPRequest = new XMLHttpRequest();
-		xmlHTTPRequest.open(
-			"POST",
-			"/LogisticaWEB/Upload",
-			false
-		);
-		
-		var formData = new FormData(document.getElementById("formSubirArchivo"));
-		
-		xmlHTTPRequest.send(formData);
-		
-		if (xmlHTTPRequest.status == 200) {
-			var response = JSON.parse(xmlHTTPRequest.responseText);
-			
-			if (confirm(response.message.replace(new RegExp("\\|", "g"), "\n"))) {
-				ContratoDWR.procesarArchivoEmpresa(
-					response.fileName,
-					response.empresaId,
-					{
-						callback: function(data) {
-							if (data != null) {
-								alert(data.replace(new RegExp("\\|", "g"), "\n"));
-							}
-							
-							reloadData();
-						}, async: false
-					}
-				);
-			}
-		} else {
-			alert(xmlHTTPRequest.responseText);
-		}
-	} else {
+	if ($("#selectEmpresa").val() == "0") {
 		alert("Debe seleccionar una empresa.");
+		
+		return;
 	}
+	
+	var formData = new FormData(document.getElementById("formSubirArchivo"));
+	
+	$.ajax({
+		url: '/LogisticaWEB/Upload', 
+		type: 'POST',
+		data: formData,
+		processData: false,
+		contentType: false
+	}).then(function(data) {
+		if (data.message.includes("err: ")) {
+			alert(data.message.replace("err\:\ ", ""));
+		} else if (confirm(data.message.replace(new RegExp("\\|", "g"), "\n"))) {
+			$.ajax({
+				url: '/LogisticaWEB/RESTFacade/ContratoREST/procesarArchivo', 
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					"nombre": data.fileName,
+					"empresaId": data.empresaId
+				})
+			}).then(function(data) {
+				if (data != null) {
+					alert(data.mensaje.replace(new RegExp("\\|", "g"), "\n"));
+				}
+				
+				reloadData();
+			});
+		}
+	}, function(data) {
+		alert(data);
+	});
 }
 
 function inputAgregarMidOnClick(event, element) {
@@ -294,13 +174,21 @@ function inputAgregarMidOnClick(event, element) {
 }
 
 function inputExportarAExcelOnClick(event, element) {
-	ContratoDWR.exportarAExcel(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				document.getElementById("formExportarAExcel").action = "/LogisticaWEB/Download?fn=" + data;
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	
+	if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/ContratoREST/exportarAExcel",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(metadataConsulta)
+		}).then(function(data) {
+			if (data != null) {
+				document.getElementById("formExportarAExcel").action = 
+					"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+				
 				document.getElementById("formExportarAExcel").submit();
-			}, async: false
-		}
-	);
+			}
+		});
+	}
 }

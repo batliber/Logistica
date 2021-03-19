@@ -13,6 +13,10 @@ public interface IZonaBean {
 
 	public Collection<Zona> list();
 	
+	public Collection<Zona> listMinimal();
+	
+	public Collection<Zona> listMinimalByDepartamentoId(Long departamentoId);
+	
 	public Collection<Zona> listByDepartamentoId(Long departamentoId);
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);

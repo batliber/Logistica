@@ -77,7 +77,9 @@ public class UnidadIndexadaBean implements IUnidadIndexadaBean {
 		return result;
 	}
 
-	public void save(UnidadIndexada unidadIndexada) {
+	public UnidadIndexada save(UnidadIndexada unidadIndexada) {
+		UnidadIndexada result = null;
+		
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
@@ -86,7 +88,7 @@ public class UnidadIndexadaBean implements IUnidadIndexadaBean {
 				unidadIndexadaVigente.setFechaVigenciaHasta(date);
 				
 				unidadIndexadaVigente.setFact(date);
-				unidadIndexadaVigente.setTerm(new Long(1));
+				unidadIndexadaVigente.setTerm(Long.valueOf(1));
 				unidadIndexadaVigente.setUact(unidadIndexada.getUact());
 				
 				entityManager.merge(unidadIndexadaVigente);
@@ -96,9 +98,13 @@ public class UnidadIndexadaBean implements IUnidadIndexadaBean {
 			unidadIndexada.setUcre(unidadIndexada.getUact());
 			
 			entityManager.persist(unidadIndexada);
+			
+			return unidadIndexada;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(UnidadIndexada unidadIndexada) {

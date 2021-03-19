@@ -143,7 +143,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -153,12 +153,12 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								query.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -266,7 +266,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 							} else if (field.getJavaType().equals(Long.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								queryCount.setParameter(
@@ -276,12 +276,12 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 							} else if (field.getJavaType().equals(Double.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -311,9 +311,9 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 			
 			acmInterfaceRiesgoCrediticio.setFact(date);
 			acmInterfaceRiesgoCrediticio.setFcre(date);
-			acmInterfaceRiesgoCrediticio.setTerm(new Long(1));
-			acmInterfaceRiesgoCrediticio.setUact(new Long(1));
-			acmInterfaceRiesgoCrediticio.setUcre(new Long(1));
+			acmInterfaceRiesgoCrediticio.setTerm(Long.valueOf(1));
+			acmInterfaceRiesgoCrediticio.setUact(Long.valueOf(1));
+			acmInterfaceRiesgoCrediticio.setUcre(Long.valueOf(1));
 			
 			entityManager.persist(acmInterfaceRiesgoCrediticio);
 		} catch (Exception e) {
@@ -359,7 +359,7 @@ public class ACMInterfaceRiesgoCrediticioBean implements IACMInterfaceRiesgoCred
 				+ ";Obtenido"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			

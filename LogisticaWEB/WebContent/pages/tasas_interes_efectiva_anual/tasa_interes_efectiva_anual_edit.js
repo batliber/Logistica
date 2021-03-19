@@ -1,20 +1,16 @@
 $(document).ready(init);
 
 function init() {
-	TipoTasaInteresEfectivaAnualDWR.list(
-		{
-			callback: function(data) {
-				var html = "<option value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
-				}
-				
-				$("#selectTasaInteresEfectivaAnualTipo").html(html);
-			}, async: false
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/TipoTasaInteresEfectivaAnualREST/list"
+    }).then(function(data) { 
+		fillSelect(
+			"selectTasaInteresEfectivaAnualTipo", 
+			data,
+			"id", 
+			"descripcion"
+		);
+	});
 	
 	refinarForm();
 	
@@ -23,51 +19,48 @@ function init() {
 	$("#divEliminarTasaInteresEfectivaAnual").hide();
 	
 	if (id != null) {
-		TasaInteresEfectivaAnualDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					if (data.tipoTasaInteresEfectivaAnual != null) {
-						$("#selectTasaInteresEfectivaAnualTipo").val(data.tipoTasaInteresEfectivaAnual.id);
-					}
-					
-					$("#inputTasaInteresEfectivaAnualCuotasDesde").val(data.cuotasDesde);
-					if (data.cuotasHasta != null) {
-						$("#inputTasaInteresEfectivaAnualCuotasHasta").val(data.cuotasHasta);
-					} else {
-						$("#inputTasaInteresEfectivaAnualCuotasHastaMax").prop("checked", true);
-						$("#inputTasaInteresEfectivaAnualCuotasHasta").prop("disabled", true);
-					}
-					$("#inputTasaInteresEfectivaAnualMontoDesde").val(data.montoDesde);
-					if (data.montoHasta != null) {
-						$("#inputTasaInteresEfectivaAnualMontoHasta").val(data.montoHasta);
-					} else {
-						$("#inputTasaInteresEfectivaAnualMontoHastaMax").prop("checked", true);
-						$("#inputTasaInteresEfectivaAnualMontoHasta").prop("disabled", true);
-					}
-					$("#inputTasaInteresEfectivaAnualValor").val(formatDecimal(data.valor, 2));
-					$("#inputTasaInteresEfectivaAnualVigenciaHasta").val(formatLongDate(data.fechaVigenciaHasta));
-					
-					$("#selectTasaInteresEfectivaAnualTipo").prop("disabled", true);
-					$("#inputTasaInteresEfectivaAnualCuotasDesde").prop("disabled", true);
-					$("#inputTasaInteresEfectivaAnualCuotasHasta").prop("disabled", true);
-					$("#inputTasaInteresEfectivaAnualCuotasHastaMax").prop("disabled", true);
-					$("#inputTasaInteresEfectivaAnualMontoDesde").prop("disabled", true);
-					$("#inputTasaInteresEfectivaAnualMontoHasta").prop("disabled", true);
-					$("#inputTasaInteresEfectivaAnualMontoHastaMax").prop("disabled", true);
-					$("#inputTasaInteresEfectivaAnualValor").prop("disabled", true);
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						if (data.fechaVigenciaHasta == null) {
-							$("#divEliminarTasaInteresEfectivaAnual").show();
-							$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-						} else {
-							$("#inputGuardar").prop("disabled", true);
-						}
-					}
-				}, async: false
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/TasaInteresEfectivaAnualREST/getById/" + id
+	    }).then(function(data) { 
+			if (data.tipoTasaInteresEfectivaAnual != null) {
+				$("#selectTasaInteresEfectivaAnualTipo").val(data.tipoTasaInteresEfectivaAnual.id);
 			}
-		);
+			
+			$("#inputTasaInteresEfectivaAnualCuotasDesde").val(data.cuotasDesde);
+			if (data.cuotasHasta != null) {
+				$("#inputTasaInteresEfectivaAnualCuotasHasta").val(data.cuotasHasta);
+			} else {
+				$("#inputTasaInteresEfectivaAnualCuotasHastaMax").prop("checked", true);
+				$("#inputTasaInteresEfectivaAnualCuotasHasta").prop("disabled", true);
+			}
+			$("#inputTasaInteresEfectivaAnualMontoDesde").val(data.montoDesde);
+			if (data.montoHasta != null) {
+				$("#inputTasaInteresEfectivaAnualMontoHasta").val(data.montoHasta);
+			} else {
+				$("#inputTasaInteresEfectivaAnualMontoHastaMax").prop("checked", true);
+				$("#inputTasaInteresEfectivaAnualMontoHasta").prop("disabled", true);
+			}
+			$("#inputTasaInteresEfectivaAnualValor").val(formatDecimal(data.valor, 2));
+			$("#inputTasaInteresEfectivaAnualVigenciaHasta").val(formatLongDate(data.fechaVigenciaHasta));
+			
+			$("#selectTasaInteresEfectivaAnualTipo").prop("disabled", true);
+			$("#inputTasaInteresEfectivaAnualCuotasDesde").prop("disabled", true);
+			$("#inputTasaInteresEfectivaAnualCuotasHasta").prop("disabled", true);
+			$("#inputTasaInteresEfectivaAnualCuotasHastaMax").prop("disabled", true);
+			$("#inputTasaInteresEfectivaAnualMontoDesde").prop("disabled", true);
+			$("#inputTasaInteresEfectivaAnualMontoHasta").prop("disabled", true);
+			$("#inputTasaInteresEfectivaAnualMontoHastaMax").prop("disabled", true);
+			$("#inputTasaInteresEfectivaAnualValor").prop("disabled", true);
+			
+			if (mode == __FORM_MODE_ADMIN) {
+				if (data.fechaVigenciaHasta == null) {
+					$("#divEliminarTasaInteresEfectivaAnual").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				} else {
+					$("#inputGuardar").prop("disabled", true);
+				}
+			}
+		});
 	}
 }
 
@@ -152,16 +145,20 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		tasaInteresEfectivaAnual.id = id;
 	} else {
-		TasaInteresEfectivaAnualDWR.add(
-			tasaInteresEfectivaAnual,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarTasaInteresEfectivaAnual").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/TasaInteresEfectivaAnualREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(tasaInteresEfectivaAnual)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operación exitosa");
+	    	
+				$("#inputEliminarTasaInteresEfectivaAnual").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+	    });
 	}
 }
 
@@ -171,13 +168,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		TasaInteresEfectivaAnualDWR.remove(
-			tasaInteresEfectivaAnual,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/TasaInteresEfectivaAnualREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(tasaInteresEfectivaAnual)
+	    }).then(function(data) { 
+	    	alert("Operación exitosa");
+	    });
 	}
 }

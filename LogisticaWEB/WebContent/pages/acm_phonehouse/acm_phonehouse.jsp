@@ -1,31 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="/includes/header.jsp" %>
 	<title>ACM-PHONEHOUSE</title>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceContratoPHDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfacePrepagoPHDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ACMInterfaceMidPHDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/pages/acm_phonehouse/acm_phonehouse.js"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/acm_phonehouse/acm_phonehouse.css"/>
+	<script type="text/javascript" src="./acm_phonehouse.js"></script>
+	<link rel="stylesheet" type="text/css" href="./acm_phonehouse.css"/>
 </head>
 <body>
 	<div class="divMenuBarContainer">
@@ -37,34 +15,18 @@
 				<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 				<div class="divButton"><input type="submit" id="inputHabilitarAcciones" value="Habilitar acciones" onclick="javascript:inputHabilitarAccionesOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
-				<div class="divButton" id="divButtonExportarAExcel">
-					<form method="post" id="formExportarAExcel" action="#"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></form>
-				</div>
-				<!--
-				<div class="divButton"><input type="submit" id="inputExportarSubconjunto" value="Exportar subconjunto" onclick="javascript:inputExportarSubconjuntoOnClick(event, this)"/></div>
-				 -->
+				<form method="post" id="formExportarAExcel" action="#"></form>
+				<div class="divButton" id="divButtonExportarAExcel"><input type="submit" id="inputExportarAExcel" value="Exportar a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonAsignar"><input type="submit" id="inputAsignar" value="Asignar" onclick="javascript:inputAsignarOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonAsignarSubconjunto"><input type="submit" id="inputAsignarSubconjunto" value="Asignar subconjunto" onclick="javascript:inputAsignarSubconjuntoOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonDeshacerAsignacion"><input type="submit" id="inputDeshacerAsignacion" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
-				<!-- 
-				<div class="divButton"><input type="submit" id="inputReprocesar" value="Reprocesar" onclick="javascript:inputReprocesarOnClick(event, this)"/></div>
-				<div class="divButton"><input type="submit" id="inputReprocesarSubconjunto" value="Reprocesar subconjunto" onclick="javascript:inputReprocesarSubconjuntoOnClick(event, this)"/></div>
-				<div class="divButtonBarSeparator">&nbsp;</div>
-				<div class="divButton"><input type="submit" id="inputListaNegra" value="Lista negra" onclick="javascript:inputListaNegraOnClick(event, this)"/></div>
-				 -->
 			</div>
 			<div class="divButtonTitleBar">
 				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
-				<!-- <div id="divButtonTitleQuintupleSize" class="divButtonTitleBarTitle">Exportar</div> -->
-				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Asignar</div>
+				<div id="divButtonTitleFourfoldSize" class="divButtonTitleBarTitle">Asignar</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
-				<!-- 
-				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Reprocesar</div>
-				<div class="divButtonTitleBarSeparator">&nbsp;</div>
-				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Lista negra</div>
-				 -->
 			</div>
 			<div class="divMainWindow">
 				<div>
@@ -73,9 +35,6 @@
 						<select id="selectTipoRegistro" onchange="javascript:selectTipoRegistroOnChange(event)">
 							<option value="contrato">Contrato</option>
 							<option value="prepago">Prepago</option>
-					<!-- 
-							<option value="listaNegra">Lista negra</option>
-					-->
 							<option value="sinDatos">Sin datos</option>
 						</select>
 					</div>

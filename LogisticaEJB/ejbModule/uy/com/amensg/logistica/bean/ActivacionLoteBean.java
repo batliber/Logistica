@@ -26,7 +26,7 @@ public class ActivacionLoteBean implements IActivacionLoteBean {
 					Long.class
 				);
 			
-			Long maxNumero = new Long(1);
+			Long maxNumero = Long.valueOf(1);
 			
 			List<Long> resultList = query.getResultList();
 			if (resultList.size() > 0 && resultList.get(0) != null) {

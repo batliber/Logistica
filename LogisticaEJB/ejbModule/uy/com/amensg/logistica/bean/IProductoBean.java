@@ -13,6 +13,8 @@ public interface IProductoBean {
 
 	public Collection<Producto> list();
 	
+	public Collection<Producto> listMinimal();
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
@@ -23,7 +25,7 @@ public interface IProductoBean {
 	
 	public Boolean existeIMEI(String imei);
 	
-	public void save(Producto producto);
+	public Producto save(Producto producto);
 	
 	public void remove(Producto producto);
 	

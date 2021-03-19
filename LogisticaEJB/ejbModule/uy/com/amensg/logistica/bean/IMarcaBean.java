@@ -19,7 +19,7 @@ public interface IMarcaBean {
 	
 	public Marca getById(Long id);
 	
-	public void save(Marca marca);
+	public Marca save(Marca marca);
 	
 	public void remove(Marca marca);
 	

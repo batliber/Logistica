@@ -1,54 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="/includes/header.jsp" %>
 	<title>Contrato</title>
 	<script type="text/javascript">
 		var mode = <%= request.getParameter("m") != null ? request.getParameter("m") : "0" %>;
 		var id = <%= request.getParameter("cid") != null ? request.getParameter("cid") : "null" %>;
 	</script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/BarrioDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DisponibilidadEntregaEmpresaZonaTurnoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/FormaPagoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoTasaInteresEfectivaAnualDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MonedaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MotivoCambioPlanDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PlanDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoProductoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/MarcaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModalidadVentaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ModeloDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ProductoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PrecioDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/FinanciacionDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/RiesgoCrediticioDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SexoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/StockMovimientoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TarjetaCreditoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoDocumentoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TurnoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ZonaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoArchivoAdjuntoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoArchivoAdjuntoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoRelacionDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
 	<script type="text/javascript" src="./contrato.js"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
+	<script type="text/javascript" src="./contrato_acciones.js"></script>
 	<link rel="stylesheet" type="text/css" href="./contrato.css"/>
 </head>
 <body>
@@ -83,6 +42,7 @@
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton" id="divInputEstadoRiesgoCrediticio"><input type="submit" value="Estado Riesgo" onclick="javascript:inputEstadoRiesgoCrediticioOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirKit"><input type="submit" value="Imprimir kit" onclick="javascript:inputImprimirKitOnClick(event)"/></div>
+		<div class="divButton" id="divInputImprimirKitANTEL"><input type="submit" value="Imprimir kit" onclick="javascript:inputImprimirKitANTELOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirContrato"><input type="submit" value="Imprimir contrato" onclick="javascript:inputImprimirContratoOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirPagare"><input type="submit" value="Imprimir pagare" onclick="javascript:inputImprimirPagareOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirRemito"><input type="submit" value="Imprimir remito" onclick="javascript:inputImprimirRemitoOnClick(event)"/></div>
@@ -105,7 +65,7 @@
 			<div class="divFormLabelExtended" id="divLabelRol">Rol:</div><div id="divRol" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelUsuario">Usuario:</div><div id="divUsuario" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelNumeroTramite">Tr&aacute;mite:</div><div id="divNumeroTramite" class="divFormValue">&nbsp;</div>
-			<div class="divFormLabelExtended" id="divLabelAntelNroTrn">Nro Trn:</div><div id="divAntelNroTrn" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelAntelNroTrn">Nro. orden:</div><div id="divAntelNroTrn" class="divFormValue"><input type="text" id="inputAntelNroTrn"/></div>
 			<div class="divFormLabelExtended" id="divLabelAntelFormaPago">Forma de pago:</div><div id="divAntelFormaPago" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelAntelNroServicioCuenta">Nro servicio cuenta:</div><div id="divAntelNroServicioCuenta" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelAntelImporte">Importe:</div><div id="divAntelImporte" class="divFormValue">&nbsp;</div>
@@ -121,6 +81,8 @@
 			<div class="divFormLabelExtended" id="divLabelFechaActivacion">Fecha de activaci&oacute;n:</div><div id="divFechaActivacion" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaCoordinacion">Fecha de cordinaci&oacute;n:</div><div id="divFechaCoordinacion" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaEnvioANucleo">Fecha de env. N&uacute;cleo:</div><div id="divFechaEnvioANucleo" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionFecha">Fecha de resultado entrega:</div><div id="divResultadoEntregaDistribucionFecha" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaPickUp">Fecha de pick-up:</div><div id="divFechaPickUp" divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelLocalidad">Localidad:</div><div id="divLocalidad" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelCodigoPostal">C&oacute;digo postal:</div><div id="divCodigoPostal" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaVencimiento">Fecha de vencimiento:</div><div id="divFechaVencimiento" class="divFormValue">&nbsp;</div>
@@ -176,7 +138,7 @@
 			<div class="divFormLabelExtended" id="divLabelObservaciones">Observaciones:</div><div id="divObservaciones" class="divFormValue"><textarea id="textareaObservaciones"></textarea></div>
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionObservaciones">Obs. entrega:</div><div id="divResultadoEntregaDistribucionObservaciones" class="divFormValue"><textarea id="textareaResultadoEntregaDistribucionObservaciones"></textarea></div>
 		</div>
-		<div style="float: left;width: 100%;">&nbsp;</div>
+		<div style="float: left;width: 100%;height: 21px;">&nbsp;</div>
 		<div class="divTabbedPanel">
 			<div class="divTabHeader">
 				<div class="divTabTitleSelected" id="divTabTitle1">Direcci&oacute;n de entrega</div>

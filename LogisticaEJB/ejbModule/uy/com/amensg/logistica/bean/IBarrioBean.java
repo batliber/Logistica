@@ -25,7 +25,7 @@ public interface IBarrioBean {
 	
 	public Barrio getById(Long id);
 	
-	public void save(Barrio barrio);
+	public Barrio save(Barrio barrio);
 	
 	public void remove(Barrio barrio);
 	

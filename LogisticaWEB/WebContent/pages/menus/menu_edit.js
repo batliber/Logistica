@@ -5,46 +5,35 @@ function init() {
 	
 	$("#divEliminarMenu").hide();
 	
-	MenuDWR.list(
-		{
-			callback: function(data) {
-				$("#selectMenuPadre option").remove();
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/MenuREST/list"
+    }).then(function(data) {
+		fillSelect(
+			"selectMenuPadre", 
+			data,
+			"id", 
+			"titulo"
+		);
+    }).then(function(data) {
+		if (id != null) {
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/MenuREST/getById/" + id
+		    }).then(function(data) { 
+				$("#inputMenuTitulo").val(data.titulo);
+				$("#inputMenuURL").val(data.url);
+				$("#inputMenuOrden").val(data.orden);
 				
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					if (data[i].padre == null) {
-						html += "<option value='" + data[i].id + "'>" + data[i].titulo + "</option>";
-					}
+				if (data.padre != null) {
+					$("#selectMenuPadre").val(data.padre);
 				}
 				
-				$("#selectMenuPadre").append(html);
-			}, async: false
+				if (mode == __FORM_MODE_ADMIN) {
+					$("#divEliminarMenu").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				}
+			});
 		}
-	);
-	
-	if (id != null) {
-		MenuDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputMenuTitulo").val(data.titulo);
-					$("#inputMenuURL").val(data.url);
-					$("#inputMenuOrden").val(data.orden);
-					
-					if (data.padre != null) {
-						$("#selectMenuPadre").val(data.padre);
-					}
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarMenu").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
-			}
-		);
-	}
+    });
 }
 
 function refinarForm() {
@@ -88,25 +77,29 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		menu.id = id;
 		
-		MenuDWR.update(
-			menu,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MenuREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(menu)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	} else {
-		MenuDWR.add(
-			menu,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarMenu").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MenuREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(menu)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operación exitosa");
+			
+				$("#inputEliminarMenu").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+		});
 	}
 }
 
@@ -116,13 +109,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		MenuDWR.remove(
-			menu,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MenuREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(menu)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	}
 }

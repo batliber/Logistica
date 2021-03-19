@@ -19,7 +19,7 @@ public interface IVisitaPuntoVentaDistribuidorBean {
 	
 	public VisitaPuntoVentaDistribuidor getLastByPuntoVentaDistribuidor(Usuario distribuidor, PuntoVenta puntoVenta);
 	
-	public void save(VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidor);
+	public VisitaPuntoVentaDistribuidor save(VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidor);
 	
 	public void remove(VisitaPuntoVentaDistribuidor visitaPuntoVentaDistribuidor);
 	

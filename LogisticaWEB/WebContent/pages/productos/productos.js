@@ -7,93 +7,59 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
-						mode = __FORM_MODE_ADMIN;
-						
-						grid = new Grid(
-							document.getElementById("divTableProductos"),
-							{
-								tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 80 },
-								tdModelo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Modelo", abreviacion: "Modelo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 200 },
-								tdProductoIMEI: { campo: "imei", descripcion: "IMEI", abreviacion: "IMEI", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
-							}, 
-							true,
-							reloadData,
-							trProductoOnClick
-						);
-						
-						grid.rebuild();
-						
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+    }).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+				mode = __FORM_MODE_ADMIN;
+				
+				grid = new Grid(
+					document.getElementById("divTableProductos"),
+					{
+						tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 80 },
+						tdModelo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Modelo", abreviacion: "Modelo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 200 },
+						tdProductoIMEI: { campo: "imei", descripcion: "IMEI", abreviacion: "IMEI", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
+					}, 
+					true,
+					reloadData,
+					trProductoOnClick
+				);
+				
+				grid.rebuild();
+				
 //						$("#divButtonNew").show();
 //						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-						break;
-					}
-				}
-			}, async: false
+				break;
+			}
 		}
-	);
-	
-	reloadData();
-	
-	$("#divIFrameProducto").draggable();
-}
-
-function listMarcas() {
-	var result = [];
-	
-	MarcaDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listModelos() {
-	var result = [];
-	
-	ModeloDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
+		
+		reloadData();
+		
+		$("#divIFrameProducto").draggable();
+	});
 }
 
 function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
-	ProductoDWR.listContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.reload(data);
-			}, async: false
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/ProductoREST/listContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.reload(data);
+    });
 	
-	ProductoDWR.countContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.setCount(data);
-			}
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/ProductoREST/countContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) { 
+    	grid.setCount(data);
+    });
 }
 
 function trProductoOnClick(eventObject) {

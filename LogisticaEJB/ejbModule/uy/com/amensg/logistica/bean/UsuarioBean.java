@@ -51,6 +51,33 @@ public class UsuarioBean implements IUsuarioBean {
 		
 		return result;
 	}
+	
+	public Collection<Usuario> listMinimal() {
+		Collection<Usuario> result = new LinkedList<Usuario>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT u.id, u.nombre"
+					+ " FROM Usuario u"
+					+ " WHERE u.fechaBaja IS NULL"
+					+ " ORDER BY u.nombre ASC", 
+					Object[].class
+				);
+				
+			for (Object[] usuario : query.getResultList()) {
+				Usuario usuarioMinimal = new Usuario();
+				usuarioMinimal.setId((Long)usuario[0]);
+				usuarioMinimal.setNombre((String)usuario[1]);
+				
+				result.add(usuarioMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
@@ -117,6 +144,35 @@ public class UsuarioBean implements IUsuarioBean {
 		
 		return result;
 	}
+	
+	public Usuario getByIdMinimal(Long id) {
+		Usuario result = null;
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT u.id, u.nombre"
+					+ " FROM Usuario u"
+					+ " WHERE u.id = :usuarioId",
+					Object[].class
+				);
+			query.setParameter("usuarioId", id);
+			
+			List<Object[]> resultList = query.getResultList();
+			
+			if (!resultList.isEmpty()) {
+				Object[] object = resultList.get(0);
+				
+				result = new Usuario();
+				result.setId((Long) object[0]);
+				result.setNombre((String) object[1]);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 
 	public Usuario getByLogin(String login, boolean initializeCollections) {
 		Usuario result = null;
@@ -151,7 +207,9 @@ public class UsuarioBean implements IUsuarioBean {
 		return result;
 	}
 	
-	public void save(Usuario usuario) {
+	public Usuario save(Usuario usuario) {
+		Usuario result = null;
+		
 		try {
 			Collection<UsuarioRolEmpresa> usuarioRolEmpresas = usuario.getUsuarioRolEmpresas();
 			
@@ -168,9 +226,13 @@ public class UsuarioBean implements IUsuarioBean {
 				
 				entityManager.persist(usuarioRolEmpresa);
 			}
+			
+			result = usuario;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Usuario usuario) {
@@ -191,7 +253,9 @@ public class UsuarioBean implements IUsuarioBean {
 		}
 	}
 
-	public void update(Usuario usuario) {
+	public Usuario update(Usuario usuario) {
+		Usuario result = null;
+		
 		try {
 			Date date = GregorianCalendar.getInstance().getTime();
 			
@@ -201,6 +265,8 @@ public class UsuarioBean implements IUsuarioBean {
 				entityManager.remove(usuarioRolEmpresa);
 			}
 			
+			entityManager.flush();
+			
 			if (usuario.getContrasena() != null && !usuario.getContrasena().equals(managedUsuario.getContrasena())) {
 				managedUsuario.setContrasena(usuario.getContrasena());
 				
@@ -209,7 +275,7 @@ public class UsuarioBean implements IUsuarioBean {
 				
 				SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
 				seguridadTipoEvento.setId(
-					new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.CambioPassword"))
+					Long.parseLong(Configuration.getInstance().getProperty("seguridadTipoEvento.CambioPassword"))
 				);
 				
 				seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
@@ -218,7 +284,7 @@ public class UsuarioBean implements IUsuarioBean {
 				
 				seguridadAuditoria.setFcre(date);
 				seguridadAuditoria.setFact(date);
-				seguridadAuditoria.setTerm(new Long(1));
+				seguridadAuditoria.setTerm(Long.valueOf(1));
 				seguridadAuditoria.setUact(managedUsuario.getId());
 				seguridadAuditoria.setUcre(managedUsuario.getId());
 				
@@ -236,6 +302,8 @@ public class UsuarioBean implements IUsuarioBean {
 			managedUsuario.setTerm(usuario.getTerm());
 			managedUsuario.setUact(usuario.getUact());
 			
+			managedUsuario.setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+			
 			entityManager.merge(managedUsuario);
 			
 			for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
@@ -247,8 +315,12 @@ public class UsuarioBean implements IUsuarioBean {
 				
 				entityManager.merge(usuarioRolEmpresa);
 			}
+			
+			result = managedUsuario;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 }

@@ -18,7 +18,7 @@ public interface ITasaInteresEfectivaAnualBean {
 	
 	public TasaInteresEfectivaAnual getById(Long id);
 	
-	public void save(TasaInteresEfectivaAnual tasaInteresEfectivaAnual);
+	public TasaInteresEfectivaAnual save(TasaInteresEfectivaAnual tasaInteresEfectivaAnual);
 	
 	public void remove(TasaInteresEfectivaAnual tasaInteresEfectivaAnual);
 }

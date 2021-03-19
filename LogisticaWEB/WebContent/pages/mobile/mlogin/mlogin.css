@@ -4,24 +4,34 @@ body {
 	margin-top: 0px;
 	margin-left: 0px;
 	margin-right: 0px;
-	background-color: #F0F0F0;
+	/* background-color: #F0F0F0; */
 }
 
 input[type='text'] {
 	font-family: Segoe UI;
 	font-size: 12pt;
 	width: 100%;
+	height: 80%;
+	border: none;
 }
 
 input[type='password'] {
 	font-family: Segoe UI;
 	font-size: 12pt;
 	width: 100%;
+	height: 80%;
+	border: none;
 }
 
 input[type='submit'] {
 	font-family: Segoe UI;
+	height: 100%;
 	font-size: 12pt;
+}
+
+.divLoginMainWindow {
+	margin: auto;
+	width: 350px;
 }
 
 .divTitleBar {
@@ -60,6 +70,140 @@ input[type='submit'] {
 	color: red;
 }
 
+.divUsuario {
+	float: left;
+	width: 100%;
+	height: 75px;
+}
+
+.divContrasena {
+	float: left;
+	width: 100%;
+	height: 75px;
+}
+
+.divUsuario div {
+	float: left;
+}
+
+.divContrasena div {
+	float: left;
+}
+
+.divLabelLeftColumn {
+	width: 4%;
+	height: 100%;
+	border-bottom: solid 1px #D0D0D0
+}
+
+.divLabelLeftColumnTopRow {
+	width: 100%;
+	height: 25%;
+	border-bottom: solid 1px #D0D0D0;
+}
+
+.divLabelLeftColumnMiddleRow {
+	width: 100%;
+	height: 25%;
+	border-left: solid 1px #D0D0D0;
+}
+
+.divLabelLeftColumnBottomRow {
+	width: 100%;
+	height: 50%;
+	border-left: solid 1px #D0D0D0;
+}
+
+.divLabelMiddleColumn {
+	width: 92%;
+	height: 100%;
+	border-bottom: solid 1px #D0D0D0
+}
+
+.divLabelMiddleColumnLeft {
+	width: 20%;
+	height: 40%;
+}
+
+.divLabelMiddleColumnLeftTopRow {
+	width: 100%;
+	height: 40%;
+}
+
+.divLabelUsuario {
+	font-size: 8pt;
+	width: 100%;
+	height: 60%;
+	text-align: left;
+	margin-left: 3px;
+}
+
+.divLabelContrasena {
+	font-size: 8pt;
+	width: 100%;
+	height: 60%;
+	text-align: left;
+	margin-left: 3px;
+}
+
+.divLabelMiddleColumnRight {
+	width: 80%;
+	height: 40%;
+}
+
+.divLabelMiddleColumnRightTopRow {
+	width: 100%;
+	height: 64%;
+	border-bottom: solid 1px #D0D0D0;
+}
+
+.divLabelMiddleColumnRightBottomRow {
+	width: 100%;
+	height: 36%;
+}
+
+.divInput {
+	width: 100%;
+	height: 60%;
+}
+
+.divLabelMiddleColumnBottomnRow {
+	width: 100%;
+	height: 30%;
+}
+
+.divLabelRightColumn {
+	width: 4%;
+	height: 100%;
+	border-bottom: solid 1px #D0D0D0
+}
+
+.divLabelRightColumnTopRow {
+	width: 100%;
+	height: 25%;
+	border-bottom: solid 1px #D0D0D0;
+}
+
+.divLabelRightColumnMiddleRow {
+	width: 100%;
+	height: 25%;
+	border-right: solid 1px #D0D0D0;
+}
+
+.divLabelRightColumnBottomRow {
+	width: 100%;
+	height: 50%;
+	border-right: solid 1px #D0D0D0;
+}
+
+.divButtonBar {
+	float: left;
+	width: 100%;
+	height: 40px;
+	margin-top: 15px;
+	text-align: right;
+}	
+
 .divFormLabel {
 	float: left;
 	width: 35%;
@@ -75,5 +219,5 @@ input[type='submit'] {
 }
 
 #inputAcceder {
-	width: 75px;
+	width: 90px;
 }

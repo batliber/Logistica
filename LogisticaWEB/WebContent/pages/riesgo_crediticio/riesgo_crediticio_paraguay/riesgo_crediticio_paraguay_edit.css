@@ -1,0 +1,11 @@
+.divLayoutColumn {
+	float: left;
+	width: 50%;
+	overflow: hidden;
+}
+
+#divRespuestaExterna {
+	width: 275px;
+	height: 200px;
+	overflow: auto;
+}

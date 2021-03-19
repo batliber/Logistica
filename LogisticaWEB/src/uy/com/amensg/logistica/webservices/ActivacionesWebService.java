@@ -49,7 +49,7 @@ public class ActivacionesWebService {
 		try {
 			IActivacionBean iActivacionBean = lookupActivacionBean();
 			
-			iActivacionBean.actualizarDatosActivacion(new Long(mid), chip, new Long(estadoActivacionId));
+			iActivacionBean.actualizarDatosActivacion(Long.parseLong(mid), chip, Long.parseLong(estadoActivacionId));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

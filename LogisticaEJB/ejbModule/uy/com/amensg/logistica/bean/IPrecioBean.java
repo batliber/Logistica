@@ -35,7 +35,7 @@ public interface IPrecioBean {
 		Long cuotas
 	);
 	
-	public void save(Precio precio);
+	public Precio save(Precio precio);
 	
 	public void update(Precio precio);
 }

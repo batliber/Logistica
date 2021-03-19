@@ -2,11 +2,13 @@ package uy.com.amensg.logistica.entities;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -51,6 +53,9 @@ public class PuntoVenta extends BaseEntity {
 	@Column(name = "fecha_ultimo_cambio_estado_visita_punto_venta_distribuidor")
 	private Date fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
 	
+	@Column(name = "fecha_vencimiento_chip_mas_viejo")
+	private Date fechaVencimientoChipMasViejo;
+	
 	@ManyToOne(optional=true, fetch=FetchType.EAGER)
 	@JoinColumn(name="departamento_id", nullable=true)
 	private Departamento departamento;
@@ -70,6 +75,13 @@ public class PuntoVenta extends BaseEntity {
 	@ManyToOne(optional = true, fetch=FetchType.EAGER)
 	@JoinColumn(name = "estado_visita_punto_venta_distribuidor_id", nullable = true)
 	private EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidor;
+	
+	@ManyToOne(optional = true, fetch = FetchType.EAGER)
+	@JoinColumn(name = "ucre", nullable = true, insertable = false, updatable = false)
+	private Usuario creador;
+	
+	@OneToOne(mappedBy = "puntoVenta", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private RecargaPuntoVentaCota recargaPuntoVentaCota;
 	
 	public String getNombre() {
 		return nombre;
@@ -168,12 +180,28 @@ public class PuntoVenta extends BaseEntity {
 		this.fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor = fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor;
 	}
 
+	public Date getFechaVencimientoChipMasViejo() {
+		return fechaVencimientoChipMasViejo;
+	}
+
+	public void setFechaVencimientoChipMasViejo(Date fechaVencimientoChipMasViejo) {
+		this.fechaVencimientoChipMasViejo = fechaVencimientoChipMasViejo;
+	}
+
 	public Usuario getDistribuidor() {
 		return distribuidor;
 	}
 
 	public void setDistribuidor(Usuario distribuidor) {
 		this.distribuidor = distribuidor;
+	}
+
+	public Usuario getCreador() {
+		return creador;
+	}
+
+	public void setCreador(Usuario creador) {
+		this.creador = creador;
 	}
 
 	public Departamento getDepartamento() {
@@ -207,5 +235,13 @@ public class PuntoVenta extends BaseEntity {
 	public void setEstadoVisitaPuntoVentaDistribuidor(
 			EstadoVisitaPuntoVentaDistribuidor estadoVisitaPuntoVentaDistribuidor) {
 		this.estadoVisitaPuntoVentaDistribuidor = estadoVisitaPuntoVentaDistribuidor;
+	}
+
+	public RecargaPuntoVentaCota getRecargaPuntoVentaCota() {
+		return recargaPuntoVentaCota;
+	}
+
+	public void setRecargaPuntoVentaCota(RecargaPuntoVentaCota recargaPuntoVentaCota) {
+		this.recargaPuntoVentaCota = recargaPuntoVentaCota;
 	}
 }

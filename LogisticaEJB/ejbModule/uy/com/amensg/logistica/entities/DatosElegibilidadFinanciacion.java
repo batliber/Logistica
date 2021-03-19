@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class DatosElegibilidadFinanciacion implements Serializable {
 
-	private static final long serialVersionUID = 4454909573083137727L;
-
+	private static final long serialVersionUID = 3975420761483562802L;
+	
 	private Long elegibilidad;
 	private String mensaje;
 

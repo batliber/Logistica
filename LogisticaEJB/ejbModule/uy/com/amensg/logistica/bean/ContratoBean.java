@@ -27,6 +27,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -39,8 +40,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.type.DateType;
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.LongType;
@@ -55,17 +56,23 @@ import uy.com.amensg.logistica.entities.DatosFinanciacion;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Estado;
 import uy.com.amensg.logistica.entities.EstadoProcesoImportacion;
+import uy.com.amensg.logistica.entities.FormaPago;
 import uy.com.amensg.logistica.entities.Marca;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
+import uy.com.amensg.logistica.entities.ModalidadVenta;
 import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Moneda;
+import uy.com.amensg.logistica.entities.MotivoCambioPlan;
+import uy.com.amensg.logistica.entities.Plan;
 import uy.com.amensg.logistica.entities.Precio;
 import uy.com.amensg.logistica.entities.ProcesoExportacion;
 import uy.com.amensg.logistica.entities.ProcesoImportacion;
+import uy.com.amensg.logistica.entities.Producto;
 import uy.com.amensg.logistica.entities.Rol;
+import uy.com.amensg.logistica.entities.Sexo;
 import uy.com.amensg.logistica.entities.StockMovimiento;
 import uy.com.amensg.logistica.entities.StockTipoMovimiento;
 import uy.com.amensg.logistica.entities.TipoContrato;
@@ -266,7 +273,7 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -276,12 +283,12 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								query.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -308,6 +315,25 @@ public class ContratoBean implements IContratoBean {
 			result.setRegistrosMuestra(registrosMuestra);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Lista los Contrato que cumplan los criterios encapsulados en metadataConsulta y que puede ver el usuarioId.
+	 * Los objetos retornados son desconectados del PersistentContext.
+	 * @param metadataConsulta
+	 * @param usuarioId
+	 * @return
+	 */
+	public MetadataConsultaResultado listDetached(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = this.list(metadataConsulta, usuarioId);
+		
+		for (Object o : result.getRegistrosMuestra()) {
+			Contrato c = (Contrato) o;
+			
+			entityManager.detach(c);
 		}
 		
 		return result;
@@ -425,7 +451,7 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								queryCount.setParameter(
@@ -435,12 +461,12 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							} else if (field.getJavaType().equals(Boolean.class)) {
 								queryCount.setParameter(
 									"p" + i,
-									new Boolean(valor)
+									Boolean.parseBoolean(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -620,7 +646,7 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -630,7 +656,7 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -687,37 +713,42 @@ public class ContratoBean implements IContratoBean {
 			while ((line = bufferedReader.readLine()) != null) {
 				String[] fields = line.split(";");
 				
-				Long mid = new Long (fields[0].trim());
+				Long mid = Long.parseLong(fields[0].trim());
 				
 				mids.add(mid);
 			}
 			
-			Map<Long, Integer> map = this.preprocesarConjunto(mids, empresaId);
-			
-			Long importar = new Long(0);
-			Long sobreescribir = new Long(0);
-			Long omitir = new Long(0);
-			for (Entry<Long, Integer> entry : map.entrySet()) {
-				switch (entry.getValue()) {
-					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
-						importar++;
-						
-						break;
-					case Constants.__COMPROBACION_IMPORTACION_OMITIR:
-						omitir++;
-						
-						break;
-					case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
-						sobreescribir++;
-						
-						break;
+			if (mids.size() > 300) {
+				result =
+					"err: La cantidad de líneas del archivo supera el máximo permitido (300).";
+			} else {
+				Map<Long, Integer> map = this.preprocesarConjunto(mids, empresaId);
+				
+				Long importar = Long.valueOf(0);
+				Long sobreescribir = Long.valueOf(0);
+				Long omitir = Long.valueOf(0);
+				for (Entry<Long, Integer> entry : map.entrySet()) {
+					switch (entry.getValue()) {
+						case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
+							importar++;
+							
+							break;
+						case Constants.__COMPROBACION_IMPORTACION_OMITIR:
+							omitir++;
+							
+							break;
+						case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
+							sobreescribir++;
+							
+							break;
+					}
 				}
+				
+				result =
+					"Se importarán " + importar + " MIDs nuevos.|"
+					+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
+					+ "Se omitirán " + omitir + " MIDs.";
 			}
-			
-			result =
-				"Se importarán " + importar + " MIDs nuevos.|"
-				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
-				+ "Se omitirán " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -769,9 +800,9 @@ public class ContratoBean implements IContratoBean {
 			
 			Map<String, Integer> map = this.preprocesarConjuntoANTEL(nros, empresaId);
 			
-			Long importar = new Long(0);
-			Long sobreescribir = new Long(0);
-			Long omitir = new Long(0);
+			Long importar = Long.valueOf(0);
+			Long sobreescribir = Long.valueOf(0);
+			Long omitir = Long.valueOf(0);
 			for (Entry<String, Integer> entry : map.entrySet()) {
 				switch (entry.getValue()) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
@@ -820,35 +851,38 @@ public class ContratoBean implements IContratoBean {
 		
 		try {
 			Long estadoLlamarId = 
-				new Long(Configuration.getInstance().getProperty("estado.LLAMAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.LLAMAR"));
 			Long estadoVendidoId = 
-				new Long(Configuration.getInstance().getProperty("estado.VENDIDO"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDO"));
 			Long estadoDistribuirId =
-				new Long(Configuration.getInstance().getProperty("estado.DISTRIBUIR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.DISTRIBUIR"));
 			Long estadoActivarId =
-				new Long(Configuration.getInstance().getProperty("estado.ACTIVAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACTIVAR"));
 			Long estadoFaltaDocumentacionId =
-				new Long(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
 			Long estadoRecoordinarId =
-				new Long(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
 			Long estadoActDocVentaId =
-				new Long(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"));
 			Long estadoRedistribuirId =
-				new Long(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"));
 			Long estadoControlAntelId =
-				new Long(Configuration.getInstance().getProperty("estado.CONTROLANTEL"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.CONTROLANTEL"));
 			Long estadoACMId =
-				new Long(Configuration.getInstance().getProperty("estado.ACM"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACM"));
 			Long estadoReagendarId =
-				new Long(Configuration.getInstance().getProperty("estado.REAGENDAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.REAGENDAR"));
 			Long estadoNoFirmaId =
-				new Long(Configuration.getInstance().getProperty("estado.NOFIRMA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.NOFIRMA"));
 			Long estadoFacturaImpagaId =
-				new Long(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"));
 			
 			GregorianCalendar gregorianCalendar = new GregorianCalendar();
 			
-			gregorianCalendar.add(GregorianCalendar.MONTH, -1 * new Integer(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta")));
+			gregorianCalendar.add(
+				GregorianCalendar.MONTH, 
+				-1 * Integer.parseInt(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta"))
+			);
 			
 			// Se admite volver a vender contratos transcurridos 6 meses de la última venta.
 			Date fechaVentaLimite = gregorianCalendar.getTime();
@@ -976,7 +1010,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Date hoy = gregorianCalendar.getTime();
 			
-			gregorianCalendar.add(GregorianCalendar.MONTH, -1 * new Integer(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta")));
+			gregorianCalendar.add(GregorianCalendar.MONTH, -1 * Integer.parseInt(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta")));
 			
 			// Se admite volver a vender contratos transcurridos 6 meses de la última venta. 
 			Date fechaVentaLimite = gregorianCalendar.getTime();
@@ -985,27 +1019,27 @@ public class ContratoBean implements IContratoBean {
 			
 			Rol rolSupervisorCallCenter = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
 			Estado estado = 
-				iEstadoBean.getById(new Long(Configuration.getInstance().getProperty("estado.LLAMAR")));
+				iEstadoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estado.LLAMAR")));
 			
 			Empresa empresa = 
 				iEmpresaBean.getById(empresaId, false);
 			
 			TipoProcesoImportacion tipoProcesoImportacion =
-				iTipoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("tipoProcesoImportacion.ContratosParaLlamar")));
+				iTipoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("tipoProcesoImportacion.ContratosParaLlamar")));
 			
 			EstadoProcesoImportacion estadoProcesoImportacionInicio = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio")));
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio")));
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoOK = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoConErrores = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
 			
 			Usuario usuario =
 				iUsuarioBean.getById(loggedUsuarioId, false);
@@ -1019,40 +1053,40 @@ public class ContratoBean implements IContratoBean {
 			
 			procesoImportacion.setFcre(hoy);
 			procesoImportacion.setFact(hoy);
-			procesoImportacion.setTerm(new Long(1));
+			procesoImportacion.setTerm(Long.valueOf(1));
 			procesoImportacion.setUact(loggedUsuarioId);
 			procesoImportacion.setUcre(loggedUsuarioId);
 			
 			ProcesoImportacion procesoImportacionManaged = iProcesoImportacionBean.save(procesoImportacion);
 			
 			Long estadoVendidoId = 
-				new Long(Configuration.getInstance().getProperty("estado.VENDIDO"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDO"));
 			Long estadoDistribuirId =
-				new Long(Configuration.getInstance().getProperty("estado.DISTRIBUIR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.DISTRIBUIR"));
 			Long estadoActivarId =
-				new Long(Configuration.getInstance().getProperty("estado.ACTIVAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACTIVAR"));
 			Long estadoFaltaDocumentacionId =
-				new Long(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
 			Long estadoRecoordinarId =
-				new Long(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
 			Long estadoActDocVentaId =
-				new Long(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"));
 			Long estadoRedistribuirId =
-				new Long(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"));
 			Long estadoControlAntelId =
-				new Long(Configuration.getInstance().getProperty("estado.CONTROLANTEL"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.CONTROLANTEL"));
 			Long estadoACMId =
-				new Long(Configuration.getInstance().getProperty("estado.ACM"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACM"));
 			Long estadoReagendarId =
-				new Long(Configuration.getInstance().getProperty("estado.REAGENDAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.REAGENDAR"));
 			Long estadoNoFirmaId =
-				new Long(Configuration.getInstance().getProperty("estado.NOFIRMA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.NOFIRMA"));
 			Long estadoFacturaImpagaId =
-				new Long(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"));
 			
 			Session hibernateSession = entityManager.unwrap(Session.class);
 			
-			SQLQuery selectVendidos = hibernateSession.createSQLQuery(
+			NativeQuery<Tuple> selectVendidos = hibernateSession.createNativeQuery(
 				"SELECT id"
 				+ " FROM contrato"
 				+ " WHERE estado_id IN ("
@@ -1061,7 +1095,8 @@ public class ContratoBean implements IContratoBean {
 					+ " :estadoACMId, :estadoReagendarId, :estadoNoFirmaId, :estadoFacturaImpagaId"
 				+ " )"
 				+ " AND mid = :mid"
-				+ " AND fecha_venta > :fechaVentaLimite"
+				+ " AND fecha_venta > :fechaVentaLimite",
+				Tuple.class
 			);
 			selectVendidos.setParameter("estadoVendidoId", estadoVendidoId, LongType.INSTANCE);
 			selectVendidos.setParameter("estadoDistribuirId", estadoDistribuirId, LongType.INSTANCE);
@@ -1077,18 +1112,19 @@ public class ContratoBean implements IContratoBean {
 			selectVendidos.setParameter("estadoFacturaImpagaId", estadoFacturaImpagaId, LongType.INSTANCE);
 			selectVendidos.setParameter("fechaVentaLimite", fechaVentaLimite, TimestampType.INSTANCE);
 			
-			SQLQuery selectContratoExisteEmpresa = hibernateSession.createSQLQuery(
+			NativeQuery<Tuple> selectContratoExisteEmpresa = hibernateSession.createNativeQuery(
 				"SELECT id"
 				+ " FROM contrato"
 				+ " WHERE mid = :mid"
 				+ " AND empresa_id = :empresaId"
-				+ " AND estado_id = :estadoLlamarId"
+				+ " AND estado_id = :estadoLlamarId",
+				Tuple.class
 			);
 			selectContratoExisteEmpresa.addScalar("id", LongType.INSTANCE);
 			selectContratoExisteEmpresa.setParameter("empresaId", empresa.getId(), LongType.INSTANCE);
 			selectContratoExisteEmpresa.setParameter("estadoLlamarId", estado.getId(), LongType.INSTANCE);
 			
-			SQLQuery insertContrato = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertContrato = hibernateSession.createNativeQuery(
 				"INSERT INTO contrato("
 					+ " id,"
 					+ " numero_tramite,"
@@ -1146,17 +1182,17 @@ public class ContratoBean implements IContratoBean {
 				+ " )"
 			);
 			
-			insertContrato.setParameter(0, empresa.getId(), LongType.INSTANCE);
-			insertContrato.setParameter(1, estado.getId(), LongType.INSTANCE);
-			insertContrato.setParameter(2, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
+			insertContrato.setParameter(1, empresa.getId(), LongType.INSTANCE);
+			insertContrato.setParameter(2, estado.getId(), LongType.INSTANCE);
+			insertContrato.setParameter(3, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
 			
-			insertContrato.setParameter(3, hoy, TimestampType.INSTANCE);
 			insertContrato.setParameter(4, hoy, TimestampType.INSTANCE);
-			insertContrato.setParameter(5, new Long(1), LongType.INSTANCE);
-			insertContrato.setParameter(6, loggedUsuarioId, LongType.INSTANCE);
+			insertContrato.setParameter(5, hoy, TimestampType.INSTANCE);
+			insertContrato.setParameter(6, Long.valueOf(1), LongType.INSTANCE);
 			insertContrato.setParameter(7, loggedUsuarioId, LongType.INSTANCE);
+			insertContrato.setParameter(8, loggedUsuarioId, LongType.INSTANCE);
 			
-			SQLQuery updateContrato = hibernateSession.createSQLQuery(
+			NativeQuery<?> updateContrato = hibernateSession.createNativeQuery(
 				"UPDATE contrato"
 				+ " SET random = CAST(random() * 1000000 AS integer),"
 					+ " fact = ?,"
@@ -1179,11 +1215,11 @@ public class ContratoBean implements IContratoBean {
 				+ " WHERE id = ?"
 			);
 			
-			updateContrato.setParameter(0, hoy, TimestampType.INSTANCE);
-			updateContrato.setParameter(1, new Long(1), LongType.INSTANCE);
-			updateContrato.setParameter(2, loggedUsuarioId, LongType.INSTANCE);
+			updateContrato.setParameter(1, hoy, TimestampType.INSTANCE);
+			updateContrato.setParameter(2, Long.valueOf(1), LongType.INSTANCE);
+			updateContrato.setParameter(3, loggedUsuarioId, LongType.INSTANCE);
 			
-			SQLQuery insertContratoRoutingHistory = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertContratoRoutingHistory = hibernateSession.createNativeQuery(
 				"INSERT INTO contrato_routing_history("
 					+ " id,"
 					+ " fecha,"
@@ -1215,7 +1251,7 @@ public class ContratoBean implements IContratoBean {
 				+ " AND crh.id IS NULL"
 			);
 			
-			insertContratoRoutingHistory.setParameter(0, hoy, TimestampType.INSTANCE);
+			insertContratoRoutingHistory.setParameter(1, hoy, TimestampType.INSTANCE);
 			
 			String line = null;
 			long lineNumber = 0;
@@ -1238,7 +1274,7 @@ public class ContratoBean implements IContratoBean {
 					
 					Long mid = null;
 					try {
-						mid = new Long(fields[0].trim());
+						mid = Long.parseLong(fields[0].trim());
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
@@ -1268,7 +1304,7 @@ public class ContratoBean implements IContratoBean {
 					Long documentoTipo = null;
 					try {
 						documentoTipo =
-							(fields[4] != null && !fields[4].equals("")) ? new Long(fields[4].trim()) : null;
+							(fields[4] != null && !fields[4].equals("")) ? Long.parseLong(fields[4].trim()) : null;
 					} catch (Exception e) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
@@ -1308,7 +1344,7 @@ public class ContratoBean implements IContratoBean {
 					Long numeroCliente = null;
 					try {
 						numeroCliente = 
-							(fields[12] != null && !fields[12].equals("")) ? new Long(fields[12].trim()) : null;	
+							(fields[12] != null && !fields[12].equals("")) ? Long.parseLong(fields[12].trim()) : null;	
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
@@ -1321,7 +1357,7 @@ public class ContratoBean implements IContratoBean {
 					Long numeroContrato = null;
 					try {
 						numeroContrato = 
-							(fields[13] != null && !fields[13].equals("")) ? new Long(fields[13].trim()) : null;	
+							(fields[13] != null && !fields[13].equals("")) ? Long.parseLong(fields[13].trim()) : null;	
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
@@ -1344,45 +1380,45 @@ public class ContratoBean implements IContratoBean {
 							// Busco si el mid ya está asignado en estado LLAMAR para la empresa.
 							selectContratoExisteEmpresa.setParameter("mid", mid, LongType.INSTANCE);
 							
-							List<?> listContratoExisteEmpresa = selectContratoExisteEmpresa.list();
+							List<Tuple> listContratoExisteEmpresa = selectContratoExisteEmpresa.list();
 							if (listContratoExisteEmpresa.size() > 0) {
 								// Si ya está en estado LLAMAR sobre-escribo.
-								Long contratoId = (Long) listContratoExisteEmpresa.get(0);
+								Long contratoId = (Long) listContratoExisteEmpresa.get(0).get(0);
 								
-								updateContrato.setParameter(3, agente, StringType.INSTANCE);
-								updateContrato.setParameter(4, codigoPostal, StringType.INSTANCE);
-								updateContrato.setParameter(5, direccion, StringType.INSTANCE);
-								updateContrato.setParameter(6, documento, StringType.INSTANCE);
-								updateContrato.setParameter(7, documentoTipo, LongType.INSTANCE);
-								updateContrato.setParameter(8, equipo, StringType.INSTANCE);
-								updateContrato.setParameter(9, fechaFinContrato, DateType.INSTANCE);
-								updateContrato.setParameter(10, localidad, StringType.INSTANCE);
-								updateContrato.setParameter(11, nombre, StringType.INSTANCE);
-								updateContrato.setParameter(12, numeroCliente, LongType.INSTANCE);
-								updateContrato.setParameter(13, numeroContrato, LongType.INSTANCE);
-								updateContrato.setParameter(14, observaciones, StringType.INSTANCE);
-								updateContrato.setParameter(15, tipoContratoCodigo, StringType.INSTANCE);
-								updateContrato.setParameter(16, tipoContratoDescripcion, StringType.INSTANCE);
-								updateContrato.setParameter(17, contratoId, LongType.INSTANCE);
+								updateContrato.setParameter(4, agente, StringType.INSTANCE);
+								updateContrato.setParameter(5, codigoPostal, StringType.INSTANCE);
+								updateContrato.setParameter(6, direccion, StringType.INSTANCE);
+								updateContrato.setParameter(7, documento, StringType.INSTANCE);
+								updateContrato.setParameter(8, documentoTipo, LongType.INSTANCE);
+								updateContrato.setParameter(9, equipo, StringType.INSTANCE);
+								updateContrato.setParameter(10, fechaFinContrato, DateType.INSTANCE);
+								updateContrato.setParameter(11, localidad, StringType.INSTANCE);
+								updateContrato.setParameter(12, nombre, StringType.INSTANCE);
+								updateContrato.setParameter(13, numeroCliente, LongType.INSTANCE);
+								updateContrato.setParameter(14, numeroContrato, LongType.INSTANCE);
+								updateContrato.setParameter(15, observaciones, StringType.INSTANCE);
+								updateContrato.setParameter(16, tipoContratoCodigo, StringType.INSTANCE);
+								updateContrato.setParameter(17, tipoContratoDescripcion, StringType.INSTANCE);
+								updateContrato.setParameter(18, contratoId, LongType.INSTANCE);
 								
 								updateContrato.executeUpdate();
 							} else {
 								// Si no, creo el contrato.
-								insertContrato.setParameter(8, agente, StringType.INSTANCE);
-								insertContrato.setParameter(9, codigoPostal, StringType.INSTANCE);
-								insertContrato.setParameter(10, direccion, StringType.INSTANCE);
-								insertContrato.setParameter(11, documento, StringType.INSTANCE);
-								insertContrato.setParameter(12, documentoTipo, LongType.INSTANCE);
-								insertContrato.setParameter(13, equipo, StringType.INSTANCE);
-								insertContrato.setParameter(14, fechaFinContrato, DateType.INSTANCE);
-								insertContrato.setParameter(15, localidad, StringType.INSTANCE);
-								insertContrato.setParameter(16, mid, LongType.INSTANCE);
-								insertContrato.setParameter(17, nombre, StringType.INSTANCE);
-								insertContrato.setParameter(18, numeroCliente, LongType.INSTANCE);
-								insertContrato.setParameter(19, numeroContrato, LongType.INSTANCE);
-								insertContrato.setParameter(20, observaciones, StringType.INSTANCE);
-								insertContrato.setParameter(21, tipoContratoCodigo, StringType.INSTANCE);
-								insertContrato.setParameter(22, tipoContratoDescripcion, StringType.INSTANCE);
+								insertContrato.setParameter(9, agente, StringType.INSTANCE);
+								insertContrato.setParameter(10, codigoPostal, StringType.INSTANCE);
+								insertContrato.setParameter(11, direccion, StringType.INSTANCE);
+								insertContrato.setParameter(12, documento, StringType.INSTANCE);
+								insertContrato.setParameter(13, documentoTipo, LongType.INSTANCE);
+								insertContrato.setParameter(14, equipo, StringType.INSTANCE);
+								insertContrato.setParameter(15, fechaFinContrato, DateType.INSTANCE);
+								insertContrato.setParameter(16, localidad, StringType.INSTANCE);
+								insertContrato.setParameter(17, mid, LongType.INSTANCE);
+								insertContrato.setParameter(18, nombre, StringType.INSTANCE);
+								insertContrato.setParameter(19, numeroCliente, LongType.INSTANCE);
+								insertContrato.setParameter(20, numeroContrato, LongType.INSTANCE);
+								insertContrato.setParameter(21, observaciones, StringType.INSTANCE);
+								insertContrato.setParameter(22, tipoContratoCodigo, StringType.INSTANCE);
+								insertContrato.setParameter(23, tipoContratoDescripcion, StringType.INSTANCE);
 								
 								insertContrato.executeUpdate();
 							}
@@ -1454,27 +1490,27 @@ public class ContratoBean implements IContratoBean {
 			
 			Rol rolSupervisorCallCenter = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
 			Estado estado = 
-				iEstadoBean.getById(new Long(Configuration.getInstance().getProperty("estado.LLAMAR")));
+				iEstadoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estado.LLAMAR")));
 			
 			Empresa empresa = 
 				iEmpresaBean.getById(empresaId, false);
 			
 			TipoProcesoImportacion tipoProcesoImportacion =
-				iTipoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("tipoProcesoImportacion.VentasANTEL")));
+				iTipoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("tipoProcesoImportacion.VentasANTEL")));
 			
 			EstadoProcesoImportacion estadoProcesoImportacionInicio = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio")));
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio")));
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoOK = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK")));		
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoConErrores = 
-				iEstadoProcesoImportacionBean.getById(new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
+				iEstadoProcesoImportacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")));
 			
 			Usuario usuario = iUsuarioBean.getById(loggedUsuarioId, false);
 			
@@ -1487,7 +1523,7 @@ public class ContratoBean implements IContratoBean {
 			
 			procesoImportacion.setFcre(hoy);
 			procesoImportacion.setFact(hoy);
-			procesoImportacion.setTerm(new Long(1));
+			procesoImportacion.setTerm(Long.valueOf(1));
 			procesoImportacion.setUact(loggedUsuarioId);
 			procesoImportacion.setUcre(loggedUsuarioId);
 			
@@ -1495,12 +1531,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Session hibernateSession = entityManager.unwrap(Session.class);
 			
-			SQLQuery selectId = 
-				hibernateSession.createSQLQuery(
-					"SELECT nextval('hibernate_sequence')"
+			NativeQuery<Tuple> selectId = 
+				hibernateSession.createNativeQuery(
+					"SELECT nextval('hibernate_sequence')", Tuple.class
 				);
 			
-			SQLQuery insertContrato = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertContrato = hibernateSession.createNativeQuery(
 				"INSERT INTO contrato("
 					+ " numero_tramite,"
 					+ " random,"
@@ -1590,55 +1626,59 @@ public class ContratoBean implements IContratoBean {
 				+ " )"
 			);
 			
-			insertContrato.setParameter(0, empresa.getId(), LongType.INSTANCE);
-			insertContrato.setParameter(1, estado.getId(), LongType.INSTANCE);
-			insertContrato.setParameter(2, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
+			insertContrato.setParameter(1, empresa.getId(), LongType.INSTANCE);
+			insertContrato.setParameter(2, estado.getId(), LongType.INSTANCE);
+			insertContrato.setParameter(3, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
 			
-			Long tipoProductoId = new Long(Configuration.getInstance().getProperty("tipoProducto.ANTEL"));
-			insertContrato.setParameter(3, tipoProductoId, LongType.INSTANCE);
+			Long tipoProductoId = Long.parseLong(Configuration.getInstance().getProperty("tipoProducto.ANTEL"));
+			insertContrato.setParameter(4, tipoProductoId, LongType.INSTANCE);
 			
-			Long nuevoPlanId = new Long(Configuration.getInstance().getProperty("plan.SinPlan"));
-			insertContrato.setParameter(4, nuevoPlanId, LongType.INSTANCE);
+			Long nuevoPlanId = Long.parseLong(Configuration.getInstance().getProperty("plan.SinPlan"));
+			insertContrato.setParameter(5, nuevoPlanId, LongType.INSTANCE);
 			
-			Long formaPagoNuestroCreditoId = new Long(Configuration.getInstance().getProperty("formaPago.NuestroCredito"));
-			insertContrato.setParameter(5, formaPagoNuestroCreditoId, LongType.INSTANCE);
+			Long formaPagoNuestroCreditoId = Long.parseLong(Configuration.getInstance().getProperty("formaPago.NuestroCredito"));
+			insertContrato.setParameter(6, formaPagoNuestroCreditoId, LongType.INSTANCE);
 			
-			Long tipoTasaInteresEfectivaAnualANTELId = new Long(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.tipoTasaInteresEfectivaAnualANTEL"));
-			insertContrato.setParameter(6, tipoTasaInteresEfectivaAnualANTELId, LongType.INSTANCE);
+			Long tipoTasaInteresEfectivaAnualANTELId = Long.parseLong(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.tipoTasaInteresEfectivaAnualANTEL"));
+			insertContrato.setParameter(7, tipoTasaInteresEfectivaAnualANTELId, LongType.INSTANCE);
 			
-			insertContrato.setParameter(7, hoy, TimestampType.INSTANCE);
-			insertContrato.setParameter(8, new Long(1), LongType.INSTANCE);
-			insertContrato.setParameter(9, hoy, TimestampType.INSTANCE);
-			insertContrato.setParameter(10, new Long(1), LongType.INSTANCE);
-			insertContrato.setParameter(11, loggedUsuarioId, LongType.INSTANCE);
+			insertContrato.setParameter(8, hoy, TimestampType.INSTANCE);
+			insertContrato.setParameter(9, Long.valueOf(1), LongType.INSTANCE);
+			insertContrato.setParameter(10, hoy, TimestampType.INSTANCE);
+			insertContrato.setParameter(11, Long.valueOf(1), LongType.INSTANCE);
+			insertContrato.setParameter(12, loggedUsuarioId, LongType.INSTANCE);
 			
-			SQLQuery selectModelo = hibernateSession.createSQLQuery(
+			NativeQuery<Tuple> selectModelo = hibernateSession.createNativeQuery(
 				"SELECT id, marca_id"
 				+ " FROM modelo"
 				+ " WHERE descripcion = ?"
-				+ " AND fecha_baja IS NULL"
+				+ " AND fecha_baja IS NULL",
+				Tuple.class
 			);
 			
-			SQLQuery selectMoneda = hibernateSession.createSQLQuery(
+			NativeQuery<Tuple> selectMoneda = hibernateSession.createNativeQuery(
 				"SELECT id"
 				+ " FROM moneda"
-				+ " WHERE codigo_iso = ?"
+				+ " WHERE codigo_iso = ?",
+				Tuple.class
 			);
 			
-			SQLQuery selectTipoDocumento = hibernateSession.createSQLQuery(
+			NativeQuery<Tuple> selectTipoDocumento = hibernateSession.createNativeQuery(
 				"SELECT id"
 				+ " FROM tipo_documento"
-				+ " WHERE abreviacion = ?"
+				+ " WHERE abreviacion = ?",
+				Tuple.class
 			);
 			
-			SQLQuery selectContrato = hibernateSession.createSQLQuery(
+			NativeQuery<Tuple> selectContrato = hibernateSession.createNativeQuery(
 				"SELECT id"
 				+ " FROM contrato"
 				+ " WHERE empresa_id = ?"
-				+ " AND antel_nro_trn = ?"
+				+ " AND antel_nro_trn = ?",
+				Tuple.class
 			);
 			
-			SQLQuery insertContratoRoutingHistory = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertContratoRoutingHistory = hibernateSession.createNativeQuery(
 				"INSERT INTO contrato_routing_history("
 					+ " id,"
 					+ " fecha,"
@@ -1670,7 +1710,7 @@ public class ContratoBean implements IContratoBean {
 				+ " AND crh.id IS NULL"
 			);
 			
-			insertContratoRoutingHistory.setParameter(0, hoy, TimestampType.INSTANCE);
+			insertContratoRoutingHistory.setParameter(1, hoy, TimestampType.INSTANCE);
 			
 			String line = null;
 			long lineNumber = 0;
@@ -1724,14 +1764,14 @@ public class ContratoBean implements IContratoBean {
 						Long modeloId = null;
 						Long marcaId = null;
 						if (conceptoCodigo != null) {
-							selectModelo.setParameter(0, conceptoCodigo, StringType.INSTANCE);
+							selectModelo.setParameter(1, conceptoCodigo, StringType.INSTANCE);
 							
-							List<?> resultSelectModelo = selectModelo.list();
+							List<Tuple> resultSelectModelo = selectModelo.list();
 							if (resultSelectModelo.size() > 0) {
-								Object[] tuple = (Object[]) resultSelectModelo.get(0);
+								Tuple tuple = (Tuple) resultSelectModelo.get(0);
 								
-								modeloId = new Long((Integer) tuple[0]);
-								marcaId = new Long((Integer) tuple[1]);
+								modeloId = Long.valueOf((Integer) tuple.get(0));
+								marcaId = Long.valueOf((Integer) tuple.get(1));
 							}
 						}
 						
@@ -1742,7 +1782,7 @@ public class ContratoBean implements IContratoBean {
 	//					Long conceptoCantidadUni = null;
 	//					try {
 	//						conceptoCantidadUni =
-	//							(fields[7] != null && !fields[7].equals("")) ? new Long(fields[7].trim()) : null;
+	//							(fields[7] != null && !fields[7].equals("")) ? Long.parseLong(fields[7].trim()) : null;
 	//					} catch (Exception e) {
 	//						System.err.println(
 	//							"Error al procesar archivo: " + fileName + "."
@@ -1767,11 +1807,11 @@ public class ContratoBean implements IContratoBean {
 						
 						Long tipoDocumentoId = null;
 						if (tipoDocumentoAbreviacion != null) {
-							selectTipoDocumento.setParameter(0, tipoDocumentoAbreviacion, StringType.INSTANCE);
+							selectTipoDocumento.setParameter(1, tipoDocumentoAbreviacion, StringType.INSTANCE);
 							
-							List<?> resultSelectTipoDocumento = selectTipoDocumento.list();
+							List<Tuple> resultSelectTipoDocumento = selectTipoDocumento.list();
 							if (resultSelectTipoDocumento.size() > 0) {
-								tipoDocumentoId = new Long((Integer) resultSelectTipoDocumento.get(0));
+								tipoDocumentoId = Long.valueOf((Integer) resultSelectTipoDocumento.get(0).get(0));
 							}
 						}
 						
@@ -1829,7 +1869,7 @@ public class ContratoBean implements IContratoBean {
 							if (cantCuotasString != null) {
 								String[] tokens = cantCuotasString.split(" ");
 								if (tokens.length > 0) {
-									cargoCantCuotas = new Long(tokens[0]);
+									cargoCantCuotas = Long.parseLong(tokens[0]);
 								}
 							}
 						} catch (Exception e) {
@@ -1845,7 +1885,7 @@ public class ContratoBean implements IContratoBean {
 						Double cargoImporteTotal = null;
 						try {
 							cargoImporteTotal =
-								(fields[22] != null && !fields[22].equals("")) ? new Double(fields[22].trim()) : null;
+								(fields[22] != null && !fields[22].equals("")) ? Double.valueOf(fields[22].trim()) : null;
 						} catch (Exception e) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
@@ -1860,11 +1900,11 @@ public class ContratoBean implements IContratoBean {
 						
 						Long monedaId = null;
 						if (cargoMoneda != null) {
-							selectMoneda.setParameter(0, cargoMoneda, StringType.INSTANCE);
+							selectMoneda.setParameter(1, cargoMoneda, StringType.INSTANCE);
 							
-							List<?> resultSelectMoneda = selectMoneda.list();
+							List<Tuple> resultSelectMoneda = selectMoneda.list();
 							if (resultSelectMoneda.size() > 0) {
-								monedaId = new Long((Integer) resultSelectMoneda.get(0));
+								monedaId = Long.valueOf((Integer) resultSelectMoneda.get(0).get(0));
 							}
 						}
 						
@@ -1894,7 +1934,7 @@ public class ContratoBean implements IContratoBean {
 						
 						TipoTasaInteresEfectivaAnual tipoTasaInteresEfectivaAnual = new TipoTasaInteresEfectivaAnual();
 						tipoTasaInteresEfectivaAnual.setId(
-							new Long(Configuration.getInstance().getProperty(
+							Long.parseLong(Configuration.getInstance().getProperty(
 								"financiacion.creditoDeLaCasa.tipoTasaInteresEfectivaAnualANTEL"
 							))
 						);
@@ -1916,68 +1956,67 @@ public class ContratoBean implements IContratoBean {
 							errors++;
 						} else {
 							// Busco si el numeroTRN ya existe.
-							selectContrato.setParameter(0, empresaId, LongType.INSTANCE);
-							selectContrato.setParameter(1, numeroTrn, StringType.INSTANCE);
+							selectContrato.setParameter(1, empresaId, LongType.INSTANCE);
+							selectContrato.setParameter(2, numeroTrn, StringType.INSTANCE);
 							
-							List<?> listContrato = selectContrato.list();
+							List<Tuple> listContrato = selectContrato.list();
 							if (listContrato.size() > 0) {
 								// Si el antelNroTrn existe, omito.
-								
 							} else {
-								Long id = new Long(((BigInteger) selectId.list().get(0)).longValue());
+								Long id = Long.valueOf(((BigInteger) selectId.list().get(0).get(0)).longValue());
 								
 								// Si no, creo el contrato.
 								
-								insertContrato.setParameter(12, id, LongType.INSTANCE);
-								insertContrato.setParameter(13, docSerie + "-" + docNumero, StringType.INSTANCE);
-								insertContrato.setParameter(14, tipoDocumentoId, LongType.INSTANCE);
-								insertContrato.setParameter(15, documento, StringType.INSTANCE);
-								insertContrato.setParameter(16, entregaContactoNombre, StringType.INSTANCE);
+								insertContrato.setParameter(13, id, LongType.INSTANCE);
+								insertContrato.setParameter(14, docSerie + "-" + docNumero, StringType.INSTANCE);
+								insertContrato.setParameter(15, tipoDocumentoId, LongType.INSTANCE);
+								insertContrato.setParameter(16, documento, StringType.INSTANCE);
 								insertContrato.setParameter(17, entregaContactoNombre, StringType.INSTANCE);
-								insertContrato.setParameter(18, entregaTelefono, StringType.INSTANCE);
-								insertContrato.setParameter(19, entregaDireccion, StringType.INSTANCE);
-								insertContrato.setParameter(20, entregaObs, StringType.INSTANCE);
-								insertContrato.setParameter(21, marcaId, LongType.INSTANCE);
-								insertContrato.setParameter(22, modeloId, LongType.INSTANCE);
-								insertContrato.setParameter(23, monedaId, LongType.INSTANCE);
+								insertContrato.setParameter(18, entregaContactoNombre, StringType.INSTANCE);
+								insertContrato.setParameter(19, entregaTelefono, StringType.INSTANCE);
+								insertContrato.setParameter(20, entregaDireccion, StringType.INSTANCE);
+								insertContrato.setParameter(21, entregaObs, StringType.INSTANCE);
+								insertContrato.setParameter(22, marcaId, LongType.INSTANCE);
+								insertContrato.setParameter(23, modeloId, LongType.INSTANCE);
+								insertContrato.setParameter(24, monedaId, LongType.INSTANCE);
 								if (precio != null) {
-									insertContrato.setParameter(24, precio.getPrecio(), DoubleType.INSTANCE);
+									insertContrato.setParameter(25, precio.getPrecio(), DoubleType.INSTANCE);
 								} else {
-									insertContrato.setParameter(24, null, DoubleType.INSTANCE);
+									insertContrato.setParameter(25, null, DoubleType.INSTANCE);
 								}
-								insertContrato.setParameter(25, cargoCantCuotas, LongType.INSTANCE);
+								insertContrato.setParameter(26, cargoCantCuotas, LongType.INSTANCE);
 								if (datosFinanciacion != null) {
-									insertContrato.setParameter(26, datosFinanciacion.getIntereses(), DoubleType.INSTANCE);
-									insertContrato.setParameter(27, datosFinanciacion.getGastosAdministrativos(), DoubleType.INSTANCE);
-									insertContrato.setParameter(28, datosFinanciacion.getMontoCuota(), DoubleType.INSTANCE);
-									insertContrato.setParameter(29, datosFinanciacion.getValorUnidadIndexada(), DoubleType.INSTANCE);
-									insertContrato.setParameter(30, datosFinanciacion.getGastosConcesion(), DoubleType.INSTANCE);
-									insertContrato.setParameter(31, datosFinanciacion.getGastosAdministrativosTotales(), DoubleType.INSTANCE);
-									insertContrato.setParameter(32, datosFinanciacion.getValorTasaInteresEfectivaAnual(), DoubleType.INSTANCE);
+									insertContrato.setParameter(27, datosFinanciacion.getIntereses(), DoubleType.INSTANCE);
+									insertContrato.setParameter(28, datosFinanciacion.getGastosAdministrativos(), DoubleType.INSTANCE);
+									insertContrato.setParameter(29, datosFinanciacion.getMontoCuota(), DoubleType.INSTANCE);
+									insertContrato.setParameter(30, datosFinanciacion.getValorUnidadIndexada(), DoubleType.INSTANCE);
+									insertContrato.setParameter(31, datosFinanciacion.getGastosConcesion(), DoubleType.INSTANCE);
+									insertContrato.setParameter(32, datosFinanciacion.getGastosAdministrativosTotales(), DoubleType.INSTANCE);
+									insertContrato.setParameter(33, datosFinanciacion.getValorTasaInteresEfectivaAnual(), DoubleType.INSTANCE);
 								} else {
-									insertContrato.setParameter(26, null, DoubleType.INSTANCE);
 									insertContrato.setParameter(27, null, DoubleType.INSTANCE);
 									insertContrato.setParameter(28, null, DoubleType.INSTANCE);
 									insertContrato.setParameter(29, null, DoubleType.INSTANCE);
 									insertContrato.setParameter(30, null, DoubleType.INSTANCE);
 									insertContrato.setParameter(31, null, DoubleType.INSTANCE);
 									insertContrato.setParameter(32, null, DoubleType.INSTANCE);
+									insertContrato.setParameter(33, null, DoubleType.INSTANCE);
 								}
-								insertContrato.setParameter(33, numeroTrn, StringType.INSTANCE);
-								insertContrato.setParameter(34, docFormaPago, StringType.INSTANCE);
-								insertContrato.setParameter(35, cargoNroServicioCuenta, StringType.INSTANCE);
-								insertContrato.setParameter(36, cargoImporteTotal, DoubleType.INSTANCE);
-								insertContrato.setParameter(37, fechaEmision, DateType.INSTANCE);
-								insertContrato.setParameter(38, observaciones, StringType.INSTANCE);
+								insertContrato.setParameter(34, numeroTrn, StringType.INSTANCE);
+								insertContrato.setParameter(35, docFormaPago, StringType.INSTANCE);
+								insertContrato.setParameter(36, cargoNroServicioCuenta, StringType.INSTANCE);
+								insertContrato.setParameter(37, cargoImporteTotal, DoubleType.INSTANCE);
+								insertContrato.setParameter(38, fechaEmision, DateType.INSTANCE);
+								insertContrato.setParameter(39, observaciones, StringType.INSTANCE);
 								
 								insertContrato.executeUpdate();
 								
 								StockTipoMovimiento stockTipoMovimiento = iStockTipoMovimientoBean.getById(
-									new Long(Configuration.getInstance().getProperty("stockTipoMovimiento.Venta"))
+									Long.parseLong(Configuration.getInstance().getProperty("stockTipoMovimiento.Venta"))
 								);
 								
 								StockMovimiento stockMovimiento = new StockMovimiento();
-								stockMovimiento.setCantidad(new Long(1) * stockTipoMovimiento.getSigno());
+								stockMovimiento.setCantidad(Long.valueOf(1) * stockTipoMovimiento.getSigno());
 								stockMovimiento.setDocumentoId(id);
 								stockMovimiento.setFecha(hoy);
 								
@@ -1989,7 +2028,7 @@ public class ContratoBean implements IContratoBean {
 								
 								stockMovimiento.setFcre(hoy);
 								stockMovimiento.setFact(hoy);
-								stockMovimiento.setTerm(new Long(1));
+								stockMovimiento.setTerm(Long.valueOf(1));
 								stockMovimiento.setUact(loggedUsuarioId);
 								stockMovimiento.setUcre(loggedUsuarioId);
 								
@@ -2050,21 +2089,40 @@ public class ContratoBean implements IContratoBean {
 		
 		try {
 			Long empresaANBELId = 
-				new Long(
+				Long.parseLong(
 					Configuration.getInstance().getProperty("empresa.ANBEL")
+				);
+			
+			Long empresaANTELPolo1Id = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ANTELPolo1")
+				);
+			Long empresaANTELPolo2Id = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ANTELPolo2")
+				);
+			
+			Long empresaROCHEId = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ROCHE")
+				);
+			
+			Long empresaXiaomiId = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.Xiaomi")
 				);
 			
 			Empresa empresa = iEmpresaBean.getById(empresaId, false);
 			
 			Rol rolVendedor = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.Vendedor")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.Vendedor")),
 					false
 				);
 			
 			Rol rolSupervisorCallCenter = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
@@ -2077,38 +2135,38 @@ public class ContratoBean implements IContratoBean {
 			
 			gregorianCalendar.add(
 				GregorianCalendar.MONTH, 
-				-1 * new Integer(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta"))
+				-1 * Integer.parseInt(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta"))
 			);
 			
 			// Se admite volver a vender contratos transcurridos 6 meses de la última venta. 
 			Date fechaVentaLimite = gregorianCalendar.getTime();
 			
-			Estado estado = iEstadoBean.getById(new Long(Configuration.getInstance().getProperty("estado.LLAMAR")));
+			Estado estado = iEstadoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estado.LLAMAR")));
 			
 			Long estadoVendidoId = 
-				new Long(Configuration.getInstance().getProperty("estado.VENDIDO"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDO"));
 			Long estadoDistribuirId =
-				new Long(Configuration.getInstance().getProperty("estado.DISTRIBUIR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.DISTRIBUIR"));
 			Long estadoActivarId =
-				new Long(Configuration.getInstance().getProperty("estado.ACTIVAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACTIVAR"));
 			Long estadoFaltaDocumentacionId =
-				new Long(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
 			Long estadoRecoordinarId =
-				new Long(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
 			Long estadoActDocVentaId =
-				new Long(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"));
 			Long estadoRedistribuirId =
-				new Long(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"));
 			Long estadoControlAntelId =
-				new Long(Configuration.getInstance().getProperty("estado.CONTROLANTEL"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.CONTROLANTEL"));
 			Long estadoACMId =
-				new Long(Configuration.getInstance().getProperty("estado.ACM"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACM"));
 			Long estadoReagendarId =
-				new Long(Configuration.getInstance().getProperty("estado.REAGENDAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.REAGENDAR"));
 			Long estadoNoFirmaId =
-				new Long(Configuration.getInstance().getProperty("estado.NOFIRMA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.NOFIRMA"));
 			Long estadoFacturaImpagaId =
-				new Long(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"));
 			
 			TypedQuery<Contrato> queryVendidos = 
 				entityManager.createQuery(
@@ -2151,28 +2209,114 @@ public class ContratoBean implements IContratoBean {
 			queryCallCenter.setParameter("mid", contrato.getMid());
 			queryCallCenter.setParameter("empresaId", empresaId);
 			
+			boolean omitirControlVendidos = 
+				empresaId.equals(empresaANTELPolo1Id) 
+				|| empresaId.equals(empresaANTELPolo2Id)
+				|| empresaId.equals(empresaROCHEId)
+				|| empresaId.equals(empresaXiaomiId);
+			
 			List<Contrato> resultList = queryVendidos.getResultList();
-			if (resultList.size() == 0) {
-				List<Contrato> resultListCallCenter = queryCallCenter.getResultList();
-				
-				if (resultListCallCenter.size() > 0) {
-					Contrato contratoAnterior = resultListCallCenter.get(0);
-					
-					contrato.setId(contratoAnterior.getId());
-					contrato.setNumeroTramite(contratoAnterior.getNumeroTramite());
-				}
-				
+			if (!omitirControlVendidos && resultList.size() > 0) {
+				result = ";El MID ya fue vendido. No se puede asignar.";
+			} else {
 				contrato.setEmpresa(empresa);
 				contrato.setEstado(estado);
 				contrato.setRol(rolSupervisorCallCenter);
 				
-				if (empresaId.equals(empresaANBELId)) {
+				if (empresaId.equals(empresaANBELId) || omitirControlVendidos) {
 					contrato.setRol(rolVendedor);
 					contrato.setUsuario(uact);
+					
+					if (omitirControlVendidos) {
+						ModalidadVenta modalidadVentaTelemarketing = new ModalidadVenta();
+						modalidadVentaTelemarketing.setId(
+							Long.decode(Configuration.getInstance().getProperty("modalidadVenta.Telemarketing"))
+						);
+						
+						Plan planSinPlan = new Plan();
+						planSinPlan.setId(
+							Long.decode(Configuration.getInstance().getProperty("plan.SinPlan"))
+						);
+						
+						TipoProducto tipoProductoANTEL = new TipoProducto();
+						tipoProductoANTEL.setId(
+							Long.decode(Configuration.getInstance().getProperty("tipoProducto.ANTEL"))
+						);
+						
+						Marca marcaSinMarca = new Marca();
+						marcaSinMarca.setId(
+							Long.decode(Configuration.getInstance().getProperty("marca.SinMarca"))
+						);
+						
+						Modelo modeloSinModelo = new Modelo();
+						modeloSinModelo.setId(
+							Long.decode(Configuration.getInstance().getProperty("modelo.SinEquipo"))
+						);
+						
+						Producto productoEquipoX = new Producto();
+						productoEquipoX.setId(
+							Long.decode(Configuration.getInstance().getProperty("producto.SinEquipo"))
+						);
+						
+						Moneda monedaPesosUruguayos = new Moneda();
+						monedaPesosUruguayos.setId(
+							Long.decode(Configuration.getInstance().getProperty("moneda.PesosUruguayos"))
+						);
+						
+						MotivoCambioPlan motivoCambioPlanRenovacion = new MotivoCambioPlan();
+						motivoCambioPlanRenovacion.setId(
+							Long.decode(Configuration.getInstance().getProperty("motivoCambioPlan.Renovacion"))
+						);
+						
+						FormaPago formaPagoSinPago = new FormaPago();
+						formaPagoSinPago.setId(
+							Long.decode(Configuration.getInstance().getProperty("formaPago.SinPago"))
+						);
+						
+						GregorianCalendar gregorianCalendarDefault = new GregorianCalendar();
+						gregorianCalendarDefault.set(GregorianCalendar.YEAR, 1950);
+						gregorianCalendarDefault.set(GregorianCalendar.MONTH, 1);
+						gregorianCalendarDefault.set(GregorianCalendar.DAY_OF_MONTH, 1);
+						
+						Date fechaNacimientoDefault = gregorianCalendarDefault.getTime();
+						
+						Sexo sexoMasculino = new Sexo();
+						sexoMasculino.setId(
+							Long.decode(Configuration.getInstance().getProperty("sexo.Masculino"))
+						);
+						
+						contrato.setModalidadVenta(modalidadVentaTelemarketing);
+						contrato.setNuevoPlan(planSinPlan);
+						contrato.setTipoProducto(tipoProductoANTEL);
+						contrato.setMarca(marcaSinMarca);
+						contrato.setModelo(modeloSinModelo);
+						contrato.setProducto(productoEquipoX);
+						contrato.setCostoEnvio(Double.valueOf(0));
+						contrato.setMoneda(monedaPesosUruguayos);
+						contrato.setMotivoCambioPlan(motivoCambioPlanRenovacion);
+						contrato.setFormaPago(formaPagoSinPago);
+						contrato.setFechaNacimiento(fechaNacimientoDefault);
+						contrato.setSexo(sexoMasculino);
+						contrato.setEmail("-");
+						contrato.setNumeroFactura("1");
+						contrato.setNumeroSerie("1");
+						contrato.setNumeroChip("1");
+					}
+				}
+				
+				if (!omitirControlVendidos) {
+					List<Contrato> resultListCallCenter = queryCallCenter.getResultList();
+				
+					if (resultListCallCenter.size() > 0) {
+						Contrato contratoAnterior = resultListCallCenter.get(0);
+						
+						contrato.setId(contratoAnterior.getId());
+						contrato.setNumeroTramite(contratoAnterior.getNumeroTramite());
+					}
 				}
 				
 				contrato.setFact(hoy);
-				contrato.setTerm(new Long(1));
+				contrato.setTerm(Long.valueOf(1));
 				contrato.setUact(loggedUsuarioId);
 				
 				Contrato contratoManaged = this.update(contrato);
@@ -2184,22 +2328,23 @@ public class ContratoBean implements IContratoBean {
 				contratoRoutingHistoryNew.setFecha(hoy);
 				contratoRoutingHistoryNew.setRol(rolSupervisorCallCenter);
 				
-				if (empresaId.equals(empresaANBELId)) {
+				if (empresaId.equals(empresaANBELId) 
+					|| empresaId.equals(empresaANTELPolo1Id) 
+					|| empresaId.equals(empresaANTELPolo2Id)
+					|| empresaId.equals(empresaROCHEId)) {
 					contratoRoutingHistoryNew.setRol(rolVendedor);
 					contratoRoutingHistoryNew.setUsuario(uact);
 				}
 				
 				contratoRoutingHistoryNew.setFcre(hoy);
 				contratoRoutingHistoryNew.setFact(hoy);
-				contratoRoutingHistoryNew.setTerm(new Long(1));
+				contratoRoutingHistoryNew.setTerm(Long.valueOf(1));
 				contratoRoutingHistoryNew.setUact(loggedUsuarioId);
 				contratoRoutingHistoryNew.setUcre(loggedUsuarioId);
 				
 				entityManager.persist(contratoRoutingHistoryNew);
 				
-				result = "Operación exitosa.";
-			} else {
-				result = "El MID ya fue vendido. No se puede asignar.";
+				result = contratoManaged.getId() + ";Operación exitosa.";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2301,7 +2446,7 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -2311,7 +2456,7 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -2440,7 +2585,7 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -2450,7 +2595,7 @@ public class ContratoBean implements IContratoBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -2512,7 +2657,7 @@ public class ContratoBean implements IContratoBean {
 					}
 				}
 			} else {
-				metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+				metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 				
 				for (Object object : this.list(metadataConsulta, loggedUsuarioId).getRegistrosMuestra()) {
 					resultList.add((Contrato) object);
@@ -2522,36 +2667,58 @@ public class ContratoBean implements IContratoBean {
 			Date currentDate = GregorianCalendar.getInstance().getTime();
 			
 			Long rolDistribuidorId = 
-				new Long(Configuration.getInstance().getProperty("rol.Distribuidor"));
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Distribuidor"));
 			
 			Long estadoRecoordinarId = 
-				new Long(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
 			
 			Long estadoFaltaDocumentacionId =
-				new Long(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
 			
 			Long estadoVendidoPorOtraEmpresaId =
-				new Long(Configuration.getInstance().getProperty("estado.VENDIDOPOROTRAEMPRESA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDOPOROTRAEMPRESA"));
 			
+			Long empresaANTELPolo1Id = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ANTELPolo1")
+				);
+			Long empresaANTELPolo2Id = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ANTELPolo2")
+				);
+			
+			Long empresaXiaomiId = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.Xiaomi")
+				);
+				
 			Random random = new Random();
 			
 			for (Contrato contrato : resultList) {
+				boolean omitirControlVendidos = 
+					contrato.getEmpresa().getId().equals(empresaANTELPolo1Id) 
+					|| contrato.getEmpresa().getId().equals(empresaANTELPolo2Id)
+					|| contrato.getEmpresa().getId().equals(empresaXiaomiId);
+				
 				Long diffInMilliseconds = 
 					contrato.getFechaRechazo() != null ? (currentDate.getTime() - contrato.getFechaRechazo().getTime()) : 
 						contrato.getFact() != null ? (currentDate.getTime() - contrato.getFact().getTime()) :
 							null;
 				
 				Long cantidadDiasVendidoPorOtraEmpresa = 
-					new Long(Configuration.getInstance().getProperty("cantidadDiasRetencionVendidoPorOtraEmpresa"));
-				Long milisegundosSegundo = new Long(1000);
-				Long segundosMinuto = new Long(60);
-				Long minutosHora = new Long(60);
-				Long horasDia = new Long(24);
+					Long.parseLong(Configuration.getInstance().getProperty("cantidadDiasRetencionVendidoPorOtraEmpresa"));
+				Long milisegundosSegundo = Long.valueOf(1000);
+				Long segundosMinuto = Long.valueOf(60);
+				Long minutosHora = Long.valueOf(60);
+				Long horasDia = Long.valueOf(24);
 				Long milisegundosDia = milisegundosSegundo * segundosMinuto * minutosHora * horasDia;
 						
-				if (estadoVendidoPorOtraEmpresaId.equals(contrato.getEstado().getId()) 
-					&& diffInMilliseconds != null
-					&& (diffInMilliseconds / milisegundosDia < cantidadDiasVendidoPorOtraEmpresa)) {
+				if (!omitirControlVendidos
+					&& (estadoVendidoPorOtraEmpresaId.equals(contrato.getEstado().getId()) 
+						&& diffInMilliseconds != null
+						&& (diffInMilliseconds / milisegundosDia < cantidadDiasVendidoPorOtraEmpresa)
+					)
+				) {
 					// No asignar contratos vendidos por otra empresa en menos de 30 días.
 				} else {
 					if (!estadoFaltaDocumentacionId.equals(contrato.getEstado().getId())
@@ -2563,9 +2730,9 @@ public class ContratoBean implements IContratoBean {
 					contrato.setUsuario(usuario);
 					
 					contrato.setFact(currentDate);
-					contrato.setTerm(new Long(1));
+					contrato.setTerm(Long.valueOf(1));
 					contrato.setUact(loggedUsuarioId);
-					contrato.setRandom(new Long(random.nextInt(1000000)));
+					contrato.setRandom(Long.valueOf(random.nextInt(1000000)));
 					
 					if (rol.getId().equals(rolDistribuidorId)) {
 						contrato.setFechaEntregaDistribuidor(currentDate);
@@ -2582,7 +2749,7 @@ public class ContratoBean implements IContratoBean {
 					contratoRoutingHistoryNew.setUsuario(usuario);
 					
 					contratoRoutingHistoryNew.setFact(currentDate);
-					contratoRoutingHistoryNew.setTerm(new Long(1));
+					contratoRoutingHistoryNew.setTerm(Long.valueOf(1));
 					contratoRoutingHistoryNew.setUact(loggedUsuarioId);
 					
 					entityManager.persist(contratoRoutingHistoryNew);
@@ -2608,7 +2775,7 @@ public class ContratoBean implements IContratoBean {
 			Random random = new Random();
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
-			contratoManaged.setRandom(new Long(random.nextInt(1000000)));
+			contratoManaged.setRandom(Long.valueOf(random.nextInt(1000000)));
 			
 			ContratoRoutingHistory contratoRoutingHistoryNew = new ContratoRoutingHistory();
 			
@@ -2621,7 +2788,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoRoutingHistoryNew.setFcre(date);
 			contratoRoutingHistoryNew.setFact(date);
-			contratoRoutingHistoryNew.setTerm(new Long(1));
+			contratoRoutingHistoryNew.setTerm(Long.valueOf(1));
 			contratoRoutingHistoryNew.setUact(loggedUsuarioId);
 			contratoRoutingHistoryNew.setUcre(loggedUsuarioId);
 			
@@ -2641,12 +2808,12 @@ public class ContratoBean implements IContratoBean {
 	public void asignarVentas(Usuario usuario, MetadataConsulta metadataConsulta, Long loggedUsuarioid) {
 		Rol rolVendedor = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Vendedor")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Vendedor")),
 				false
 			);
 		
 		Estado estadoLlamar = 
-			iEstadoBean.getById(new Long(Configuration.getInstance().getProperty("estado.LLAMAR")));
+			iEstadoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estado.LLAMAR")));
 		
 		this.asignar(usuario, rolVendedor, estadoLlamar, metadataConsulta, loggedUsuarioid);
 	}
@@ -2661,12 +2828,12 @@ public class ContratoBean implements IContratoBean {
 	public void asignarBackoffice(Usuario usuario, MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
 		Rol rolBackoffice = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Backoffice")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Backoffice")),
 				false
 			);
 		
 		Estado estadoVendido = 
-			iEstadoBean.getById(new Long(Configuration.getInstance().getProperty("estado.VENDIDO")));
+			iEstadoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDO")));
 		
 		this.asignar(usuario, rolBackoffice, estadoVendido, metadataConsulta, loggedUsuarioId);
 	}
@@ -2681,12 +2848,12 @@ public class ContratoBean implements IContratoBean {
 	public void asignarDistribuidor(Usuario usuario, MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
 		Rol rolBackoffice = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Distribuidor")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Distribuidor")),
 				false
 			);
 		
 		Estado estadoDistribuir = 
-			iEstadoBean.getById(new Long(Configuration.getInstance().getProperty("estado.DISTRIBUIR")));
+			iEstadoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estado.DISTRIBUIR")));
 		
 		this.asignar(usuario, rolBackoffice, estadoDistribuir, metadataConsulta, loggedUsuarioId);
 	}
@@ -2701,12 +2868,12 @@ public class ContratoBean implements IContratoBean {
 	public void asignarActivador(Usuario usuario, MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
 		Rol rolBackoffice = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.Activador")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.Activador")),
 				false
 			);
 		
 		Estado estadoActivar = 
-			iEstadoBean.getById(new Long(Configuration.getInstance().getProperty("estado.ACTIVAR")));
+			iEstadoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estado.ACTIVAR")));
 		
 		this.asignar(usuario, rolBackoffice, estadoActivar, metadataConsulta, loggedUsuarioId);
 	}
@@ -2721,37 +2888,46 @@ public class ContratoBean implements IContratoBean {
 		boolean result = false;
 		
 		try {
+			Long empresaANTELPolo1Id = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ANTELPolo1")
+				);
+			Long empresaANTELPolo2Id = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ANTELPolo2")
+				);
+			
 			GregorianCalendar gregorianCalendar = new GregorianCalendar();
 			
-			gregorianCalendar.add(GregorianCalendar.MONTH, -1 * new Integer(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta")));
+			gregorianCalendar.add(GregorianCalendar.MONTH, -1 * Integer.parseInt(Configuration.getInstance().getProperty("cantidadMesesRetencionVenta")));
 			
 			// Se admite volver a vender contratos transcurridos 6 meses de la última venta. 
 			Date fechaVentaLimite = gregorianCalendar.getTime();
 			
 			Long estadoVendidoId = 
-				new Long(Configuration.getInstance().getProperty("estado.VENDIDO"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDO"));
 			Long estadoDistribuirId =
-				new Long(Configuration.getInstance().getProperty("estado.DISTRIBUIR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.DISTRIBUIR"));
 			Long estadoActivarId =
-				new Long(Configuration.getInstance().getProperty("estado.ACTIVAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACTIVAR"));
 			Long estadoFaltaDocumentacionId =
-				new Long(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"));
 			Long estadoRecoordinarId =
-				new Long(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.RECOORDINAR"));
 			Long estadoActDocVentaId =
-				new Long(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"));
 			Long estadoRedistribuirId =
-				new Long(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"));
 			Long estadoControlAntelId =
-				new Long(Configuration.getInstance().getProperty("estado.CONTROLANTEL"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.CONTROLANTEL"));
 			Long estadoACMId =
-				new Long(Configuration.getInstance().getProperty("estado.ACM"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.ACM"));
 			Long estadoReagendarId =
-				new Long(Configuration.getInstance().getProperty("estado.REAGENDAR"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.REAGENDAR"));
 			Long estadoNoFirmaId =
-				new Long(Configuration.getInstance().getProperty("estado.NOFIRMA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.NOFIRMA"));
 			Long estadoFacturaImpagaId =
-				new Long(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"));
+				Long.parseLong(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"));
 			
 			TypedQuery<Contrato> queryVendidos = 
 				entityManager.createQuery(
@@ -2783,7 +2959,9 @@ public class ContratoBean implements IContratoBean {
 			queryVendidos.setParameter("fechaVentaLimite", fechaVentaLimite);
 			queryVendidos.setParameter("id", contrato.getId());
 			
-			result = queryVendidos.getResultList().isEmpty();
+			result = contrato.getEmpresa().getId().equals(empresaANTELPolo1Id) 
+				|| contrato.getEmpresa().getId().equals(empresaANTELPolo2Id)
+				|| queryVendidos.getResultList().isEmpty();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2803,16 +2981,35 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.VENDIDO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDO"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorBackOffice")),
 					false
 				);
 			
 			Usuario uact = iUsuarioBean.getById(contrato.getUact(), false);
+			
+			Long empresaANTELPolo1Id = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ANTELPolo1")
+				);
+			Long empresaANTELPolo2Id = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.ANTELPolo2")
+				);
+			
+			Long empresaXiaomiId = 
+				Long.parseLong(
+					Configuration.getInstance().getProperty("empresa.Xiaomi")
+				);
+			
+			boolean omitirControlVendidos = 
+				contrato.getEmpresa().getId().equals(empresaANTELPolo1Id) 
+				|| contrato.getEmpresa().getId().equals(empresaANTELPolo2Id)
+				|| contrato.getEmpresa().getId().equals(empresaXiaomiId);
 			
 			contrato.setFechaVenta(date);
 			contrato.setVendedor(uact);
@@ -2821,16 +3018,16 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			Contrato contratoManaged = this.update(contrato);
 			
 			StockTipoMovimiento stockTipoMovimiento = iStockTipoMovimientoBean.getById(
-				new Long(Configuration.getInstance().getProperty("stockTipoMovimiento.Venta"))
+				Long.parseLong(Configuration.getInstance().getProperty("stockTipoMovimiento.Venta"))
 			);
 			
 			StockMovimiento stockMovimiento = new StockMovimiento();
-			stockMovimiento.setCantidad(new Long(1) * stockTipoMovimiento.getSigno());
+			stockMovimiento.setCantidad(Long.valueOf(1) * stockTipoMovimiento.getSigno());
 			stockMovimiento.setDocumentoId(contrato.getId());
 			stockMovimiento.setFecha(date);
 			
@@ -2842,7 +3039,7 @@ public class ContratoBean implements IContratoBean {
 			
 			stockMovimiento.setFcre(date);
 			stockMovimiento.setFact(date);
-			stockMovimiento.setTerm(new Long(1));
+			stockMovimiento.setTerm(Long.valueOf(1));
 			stockMovimiento.setUact(uact.getId());
 			stockMovimiento.setUcre(uact.getId());
 			
@@ -2856,27 +3053,29 @@ public class ContratoBean implements IContratoBean {
 					+ " FROM Contrato c"
 					+ " WHERE c.estado IN ( :estadoLlamar, :estadoRellamar, :estadoRechazado, :estadoRenovado )"
 					+ " AND c.empresa <> :empresa"
+					+ " AND c.empresa.id <> :empresaANTELPolo1Id"
+					+ " AND c.empresa.id <> :empresaANTELPolo2Id"
 					+ " AND c.mid = :mid", 
 					Contrato.class);
 			
 			Estado estadoLlamar = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.LLAMAR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.LLAMAR"))
 				);
 			
 			Estado estadoRellamar = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.RELLAMAR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.RELLAMAR"))
 				);
 			
 			Estado estadoRechazado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.RECHAZADO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.RECHAZADO"))
 				);
 			
 			Estado estadoRenovado =
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.RENOVADO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.RENOVADO"))
 				);
 			
 			queryOtrasEmpresas.setParameter("estadoLlamar", estadoLlamar);
@@ -2885,31 +3084,35 @@ public class ContratoBean implements IContratoBean {
 			queryOtrasEmpresas.setParameter("estadoRenovado", estadoRenovado);
 			queryOtrasEmpresas.setParameter("empresa", contrato.getEmpresa());
 			queryOtrasEmpresas.setParameter("mid", contrato.getMid());
+			queryOtrasEmpresas.setParameter("empresaANTELPolo1Id", empresaANTELPolo1Id);
+			queryOtrasEmpresas.setParameter("empresaANTELPolo2Id", empresaANTELPolo2Id);
 			
-			Estado estadoVendidoPorOtraEmpresa = 
-				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.VENDIDOPOROTRAEMPRESA"))
-				);
-			
-			Rol rolGerenteDeEmpresa =
-				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.GerenteDeEmpresa")),
-					false
-				);
-			
-			for (Contrato contratoOtraEmpresa : queryOtrasEmpresas.getResultList()) {
-				contratoOtraEmpresa.setEstado(estadoVendidoPorOtraEmpresa);
-				contratoOtraEmpresa.setRol(rolGerenteDeEmpresa);
-				contratoOtraEmpresa.setUsuario(null);
-				contratoOtraEmpresa.setFechaRechazo(date);
+			if (!omitirControlVendidos) {
+				Estado estadoVendidoPorOtraEmpresa = 
+					iEstadoBean.getById(
+						Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDOPOROTRAEMPRESA"))
+					);
 				
-				contratoOtraEmpresa.setFact(date);
-				contratoOtraEmpresa.setTerm(new Long(1));
-				contratoOtraEmpresa.setUact(uact.getId());
+				Rol rolGerenteDeEmpresa =
+					iRolBean.getById(
+						Long.parseLong(Configuration.getInstance().getProperty("rol.GerenteDeEmpresa")),
+						false
+					);
 				
-				Contrato contratoOtraEmpresaManaged = this.update(contratoOtraEmpresa);
-				
-				this.asignar(null, rolGerenteDeEmpresa, contratoOtraEmpresaManaged, uact.getId());
+				for (Contrato contratoOtraEmpresa : queryOtrasEmpresas.getResultList()) {
+					contratoOtraEmpresa.setEstado(estadoVendidoPorOtraEmpresa);
+					contratoOtraEmpresa.setRol(rolGerenteDeEmpresa);
+					contratoOtraEmpresa.setUsuario(null);
+					contratoOtraEmpresa.setFechaRechazo(date);
+					
+					contratoOtraEmpresa.setFact(date);
+					contratoOtraEmpresa.setTerm(Long.valueOf(1));
+					contratoOtraEmpresa.setUact(uact.getId());
+					
+					Contrato contratoOtraEmpresaManaged = this.update(contratoOtraEmpresa);
+					
+					this.asignar(null, rolGerenteDeEmpresa, contratoOtraEmpresaManaged, uact.getId());
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2927,18 +3130,18 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.RECHAZADO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.RECHAZADO"))
 				);
 			
 			Rol rolSupervisorCallCenter = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
 			Rol rolSupervisorBackoffice = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorBackOffice")),
 					false
 				);
 			
@@ -2946,13 +3149,13 @@ public class ContratoBean implements IContratoBean {
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
-			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
+			if (contratoManaged.getRol().getId().equals(Long.parseLong(Configuration.getInstance().getProperty("rol.Vendedor")))) {
 				// Si estaba asignado a un Vendedor lo dejamos en la "bandeja" de Supervisores de Call-center.
 				
 				contrato.setRol(rolSupervisorCallCenter);
 				
 				contrato.setVendedor(contrato.getUsuario());
-			} else if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Backoffice")))) {
+			} else if (contratoManaged.getRol().getId().equals(Long.parseLong(Configuration.getInstance().getProperty("rol.Backoffice")))) {
 				// Si estaba asignado a un Back-office lo dejamos en la "bandeja" de Supervisores de Back-office.
 				
 				contrato.setRol(rolSupervisorBackoffice);
@@ -2978,7 +3181,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -2999,7 +3202,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.RELLAMAR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.RELLAMAR"))
 				);
 			
 			Usuario uact = iUsuarioBean.getById(contrato.getUact(), false);
@@ -3007,7 +3210,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			Contrato contratoManaged = this.update(contrato);
 			
@@ -3028,12 +3231,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.DISTRIBUIR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.DISTRIBUIR"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorDistribucion")),
 					false
 				);
 			
@@ -3051,7 +3254,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3072,12 +3275,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.REDISTRIBUIR"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorDistribucion")),
 					false
 				);
 			
@@ -3102,7 +3305,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaActivarEn(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3123,18 +3326,18 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.TELELINK"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.TELELINK"))
 				);
 			
 			Rol rolSupervisorCallCenter = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
 			Rol rolSupervisorBackoffice = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorBackOffice")),
 					false
 				);
 			
@@ -3142,13 +3345,13 @@ public class ContratoBean implements IContratoBean {
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
-			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
+			if (contrato.getRol().getId().equals(Long.parseLong(Configuration.getInstance().getProperty("rol.Vendedor")))) {
 				// Si estaba asignado a un Vendedor lo dejamos en la "bandeja" de Supervisores de Call-center.
 				
 				contrato.setRol(rolSupervisorCallCenter);
 				
 				contrato.setVendedor(uact);
-			} else if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Backoffice")))) {
+			} else if (contrato.getRol().getId().equals(Long.parseLong(Configuration.getInstance().getProperty("rol.Backoffice")))) {
 				// Si estaba asignado a un Back-office lo dejamos en la "bandeja" de Supervisores de Back-office.
 				
 				contrato.setRol(rolSupervisorBackoffice);
@@ -3164,7 +3367,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3185,18 +3388,18 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.RENOVADO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.RENOVADO"))
 				);
 			
 			Rol rolSupervisorCallCenter = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
 			Rol rolSupervisorBackoffice = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorBackOffice")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorBackOffice")),
 					false
 				);
 			
@@ -3204,13 +3407,13 @@ public class ContratoBean implements IContratoBean {
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
 			
-			if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Vendedor")))) {
+			if (contrato.getRol().getId().equals(Long.parseLong(Configuration.getInstance().getProperty("rol.Vendedor")))) {
 				// Si estaba asignado a un Vendedor lo dejamos en la "bandeja" de Supervisores de Call-center.
 				
 				contrato.setRol(rolSupervisorCallCenter);
 				
 				contrato.setVendedor(uact);
-			} else if (contrato.getRol().getId().equals(new Long(Configuration.getInstance().getProperty("rol.Backoffice")))) {
+			} else if (contrato.getRol().getId().equals(Long.parseLong(Configuration.getInstance().getProperty("rol.Backoffice")))) {
 				// Si estaba asignado a un Back-office lo dejamos en la "bandeja" de Supervisores de Back-office.
 				
 				contrato.setRol(rolSupervisorBackoffice);
@@ -3236,7 +3439,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3259,7 +3462,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.REAGENDAR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.REAGENDAR"))
 				);
 			
 			Usuario uact = iUsuarioBean.getById(contrato.getUact(), false);
@@ -3276,7 +3479,7 @@ public class ContratoBean implements IContratoBean {
 					ContratoRoutingHistory.class
 				);
 			query.setParameter("contratoId", contrato.getId());
-			query.setParameter("rolId", new Long(Configuration.getInstance().getProperty("rol.Vendedor")));
+			query.setParameter("rolId", Long.parseLong(Configuration.getInstance().getProperty("rol.Vendedor")));
 			
 			query.setMaxResults(1);
 			
@@ -3295,7 +3498,7 @@ public class ContratoBean implements IContratoBean {
 				
 				contratoRoutingHistoryReagendar.setFcre(date);
 				contratoRoutingHistoryReagendar.setFact(date);
-				contratoRoutingHistoryReagendar.setTerm(new Long(1));
+				contratoRoutingHistoryReagendar.setTerm(Long.valueOf(1));
 				contratoRoutingHistoryReagendar.setUact(contrato.getUact());
 				contratoRoutingHistoryReagendar.setUcre(contrato.getUact());
 				
@@ -3310,7 +3513,7 @@ public class ContratoBean implements IContratoBean {
 				contrato.setUsuario(contratoRoutingHistoryVendedor.getUsuario());
 				
 				contrato.setFact(date);
-				contrato.setTerm(new Long(1));
+				contrato.setTerm(Long.valueOf(1));
 				
 				this.update(contrato);
 			}
@@ -3330,12 +3533,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.ACTIVAR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.ACTIVAR"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorActivacion")),
 					false
 				);
 			
@@ -3348,6 +3551,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setBackoffice(contratoManaged.getBackoffice());
 			contrato.setFechaBackoffice(contratoManaged.getFechaBackoffice());
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			
 			contrato.setFechaDevolucionDistribuidor(date);
 			contrato.setDistribuidor(contratoManaged.getUsuario());
@@ -3356,7 +3561,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3378,7 +3583,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.NOFIRMA"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.NOFIRMA"))
 				);
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
@@ -3388,6 +3593,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setBackoffice(contratoManaged.getBackoffice());
 			contrato.setFechaBackoffice(contratoManaged.getFechaBackoffice());
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			
 			contrato.setFechaDevolucionDistribuidor(date);
 			contrato.setDistribuidor(contratoManaged.getUsuario());
@@ -3396,7 +3603,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(contrato.getUsuario());
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 			
@@ -3417,12 +3624,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.RECOORDINAR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.RECOORDINAR"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
@@ -3443,7 +3650,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3464,12 +3671,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.ACTDOCVENTA"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.Activador")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.Activador")),
 					false
 				);
 			
@@ -3484,11 +3691,13 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			
 			contrato.setFechaEnvioAntel(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contrato.setEstado(estado);
 			
@@ -3511,7 +3720,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.CONTROLANTEL"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.CONTROLANTEL"))
 				);
 			
 			Usuario uact = iUsuarioBean.getById(contrato.getUact(), false);
@@ -3525,13 +3734,15 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			
 			contrato.setFechaEnvioAntel(date);
 			contrato.setActivador(uact);
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 		} catch (Exception e) {
@@ -3550,7 +3761,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.ACM"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.ACM"))
 				);
 			
 			Usuario uact = iUsuarioBean.getById(contrato.getUact(), false);
@@ -3564,6 +3775,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
 			
 			contrato.setFechaActivacion(date);
@@ -3571,7 +3784,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 		} catch (Exception e) {
@@ -3590,12 +3803,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.FALTADOCUMENTACION"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 					false
 				);
 			
@@ -3618,7 +3831,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3639,12 +3852,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.ACTIVAR"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.ACTIVAR"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.Activador")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.Activador")),
 					false
 				);
 			
@@ -3659,6 +3872,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			contrato.setActivador(contratoManaged.getActivador());
 			
 			contrato.setCoordinador(uact);
@@ -3668,7 +3883,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(contratoManaged.getActivador());
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3689,12 +3904,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.NORECOORDINA"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.NORECOORDINA"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorDistribucion")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorDistribucion")),
 					false
 				);
 			
@@ -3709,6 +3924,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			contrato.setActivador(contratoManaged.getActivador());
 			
 			contrato.setCoordinador(uact);
@@ -3718,7 +3935,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3739,12 +3956,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.CERRADO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.CERRADO"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorActivacion")),
 					false
 				);
 			
@@ -3759,6 +3976,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
 			contrato.setActivador(contratoManaged.getActivador());
 			contrato.setCoordinador(contratoManaged.getCoordinador());
@@ -3768,7 +3987,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(null);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3789,12 +4008,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.GESTIONINTERNA"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.GESTIONINTERNA"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorActivacion")),
 					false
 				);
 			
@@ -3809,12 +4028,14 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			
 			contrato.setActivador(null);
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 			
@@ -3835,12 +4056,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.GESTIONDISTRIBUCION"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.GESTIONDISTRIBUCION"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.Distribuidor")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.Distribuidor")),
 					false
 				);
 			
@@ -3861,7 +4082,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setUsuario(contratoManaged.getUsuario());
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			contratoManaged = this.update(contrato);
 			
@@ -3882,12 +4103,12 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.EQUIPOPERDIDO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.EQUIPOPERDIDO"))
 				);
 			
 			Rol rol = 
 				iRolBean.getById(
-					new Long(Configuration.getInstance().getProperty("rol.SupervisorActivacion")),
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorActivacion")),
 					false
 				);
 			
@@ -3902,12 +4123,14 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			
 			contrato.setActivador(null);
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 			
@@ -3928,7 +4151,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.FACTURAIMPAGA"))
 				);
 			
 			Usuario uact = iUsuarioBean.getById(contrato.getUact(), false);
@@ -3942,11 +4165,13 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			
 			contrato.setEstado(estado);
 			
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 			
@@ -3973,7 +4198,7 @@ public class ContratoBean implements IContratoBean {
 			
 			contratoManaged.setUact(uact.getId());
 			contratoManaged.setFact(date);
-			contratoManaged.setTerm(new Long(1));
+			contratoManaged.setTerm(Long.valueOf(1));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3990,7 +4215,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.CANCELADOPORCLIENTE"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.CANCELADOPORCLIENTE"))
 				);
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
@@ -4002,6 +4227,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
 			
 			contrato.setFechaRechazo(date);
@@ -4010,7 +4237,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFcre(contratoManaged.getFcre());
 			contrato.setUcre(contratoManaged.getUcre());
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 		} catch (Exception e) {
@@ -4029,7 +4256,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.EQUIPOSPAGOS"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.EQUIPOSPAGOS"))
 				);
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
@@ -4041,6 +4268,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
 			
 			contrato.setEstado(estado);
@@ -4048,7 +4277,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFcre(contratoManaged.getFcre());
 			contrato.setUcre(contratoManaged.getUcre());
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 		} catch (Exception e) {
@@ -4067,7 +4296,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.EQUIPODEVUELTO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.EQUIPODEVUELTO"))
 				);
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
@@ -4079,6 +4308,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
 			
 			contrato.setEstado(estado);
@@ -4086,7 +4317,7 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFcre(contratoManaged.getFcre());
 			contrato.setUcre(contratoManaged.getUcre());
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
 		} catch (Exception e) {
@@ -4105,7 +4336,7 @@ public class ContratoBean implements IContratoBean {
 			
 			Estado estado = 
 				iEstadoBean.getById(
-					new Long(Configuration.getInstance().getProperty("estado.NORECUPERADO"))
+					Long.parseLong(Configuration.getInstance().getProperty("estado.NORECUPERADO"))
 				);
 			
 			Contrato contratoManaged = entityManager.find(Contrato.class, contrato.getId());
@@ -4117,6 +4348,8 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFechaEntregaDistribuidor(contratoManaged.getFechaEntregaDistribuidor());
 			contrato.setDistribuidor(contratoManaged.getDistribuidor());
 			contrato.setFechaDevolucionDistribuidor(contratoManaged.getFechaDevolucionDistribuidor());
+			contrato.setFechaPickUp(contratoManaged.getFechaPickUp());
+			contrato.setResultadoEntregaDistribucionFecha(contratoManaged.getResultadoEntregaDistribucionFecha());
 			contrato.setFechaEnvioAntel(contratoManaged.getFechaEnvioAntel());
 			
 			contrato.setEstado(estado);
@@ -4124,9 +4357,69 @@ public class ContratoBean implements IContratoBean {
 			contrato.setFcre(contratoManaged.getFcre());
 			contrato.setUcre(contratoManaged.getUcre());
 			contrato.setFact(date);
-			contrato.setTerm(new Long(1));
+			contrato.setTerm(Long.valueOf(1));
 			
 			this.update(contrato);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Registra el evento de Pick-Up del contrato.
+	 * 
+	 * @param id a actualizar.
+	 * @param observaciones a registrar.
+	 * @param loggedUsuarioId identificador del usuario con sesión iniciada.
+	 */
+	public void pickUp(Long id, String observaciones, Long loggedUsuarioId) {
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			Contrato contratoManaged = entityManager.find(Contrato.class, id);
+			
+			contratoManaged.setFechaPickUp(date);
+			contratoManaged.setFact(date);
+			contratoManaged.setUact(loggedUsuarioId);
+			contratoManaged.setTerm(Long.valueOf(1));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Cancela el trámite.
+	 * 
+	 * @param id a actualizar.
+	 * @param loggedUsuarioId identificador del usuario con sesión iniciada.
+	 */
+	public void cancelarTramite(Long id, Long loggedUsuarioId) {
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			Estado estado = 
+				iEstadoBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty("estado.TRAMITECANCELADO"))
+				);
+			
+			Rol rolSupervisorCallCenter = 
+				iRolBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+					false
+				);
+			
+			Contrato contratoManaged = entityManager.find(Contrato.class, id);
+			
+			contratoManaged.setEstado(estado);
+			contratoManaged.setFechaRechazo(date);
+			contratoManaged.setRol(rolSupervisorCallCenter);
+			contratoManaged.setUsuario(null);
+			
+			contratoManaged.setFact(date);
+			contratoManaged.setUact(loggedUsuarioId);
+			contratoManaged.setTerm(Long.valueOf(1));
+			
+			this.asignar(null, contratoManaged.getRol(), contratoManaged, loggedUsuarioId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -4168,7 +4461,7 @@ public class ContratoBean implements IContratoBean {
 			procesoExportacion.setFechaInicio(date);
 			procesoExportacion.setNombreArchivo(fileName);
 			procesoExportacion.setObservaciones(metadataConsulta.asJSONString());
-			procesoExportacion.setTerm(new Long(1));
+			procesoExportacion.setTerm(Long.valueOf(1));
 			procesoExportacion.setUact(loggedUsuarioId);
 			procesoExportacion.setUcre(loggedUsuarioId);
 			procesoExportacion.setUrlOrigen("");
@@ -4214,6 +4507,8 @@ public class ContratoBean implements IContratoBean {
 				+ ";Costo de envío"
 				+ ";Número de serie"
 				+ ";Observaciones"
+				+ ";Fecha de creación"
+				+ ";Fecha de pick-up"
 				+ ";Fecha de venta"
 				+ ";Fecha de back-office"
 				+ ";Fecha de entrega a Distribuidor"
@@ -4241,7 +4536,7 @@ public class ContratoBean implements IContratoBean {
 				+ ";Observaciones entrega"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -4367,6 +4662,12 @@ public class ContratoBean implements IContratoBean {
 						contrato.getObservaciones()
 							.replaceAll(";", ".")
 							.replaceAll("\"", "")
+						: "")
+					+ ";" + (contrato.getFcre() != null ?
+						format.format(contrato.getFcre())
+						: "")
+					+ ";" + (contrato.getFechaPickUp() != null ?
+						format.format(contrato.getFechaPickUp())
 						: "")
 					+ ";" + (contrato.getFechaVenta() != null ?
 						format.format(contrato.getFechaVenta())
@@ -4494,25 +4795,25 @@ public class ContratoBean implements IContratoBean {
 				+ ".csv";
 			
 			Map<Long, Long> codigosDepartamentos = new HashMap<Long, Long>();
-			codigosDepartamentos.put(new Long(1), new Long(11)); //"MONTEVIDEO"
-			codigosDepartamentos.put(new Long(2), new Long(90)); //"CANELONES"
-			codigosDepartamentos.put(new Long(3), new Long(55)); //"ARTIGAS"
-			codigosDepartamentos.put(new Long(4), new Long(50)); //"SALTO"
-			codigosDepartamentos.put(new Long(5), new Long(60)); //"PAYSANDU"
-			codigosDepartamentos.put(new Long(6), new Long(65)); //"RIO NEGRO"
-			codigosDepartamentos.put(new Long(7), new Long(75)); //"SORIANO"
-			codigosDepartamentos.put(new Long(8), new Long(70)); //"COLONIA"
-			codigosDepartamentos.put(new Long(9), new Long(85)); //"FLORES"
-			codigosDepartamentos.put(new Long(10), new Long(94)); //"FLORIDA"
-			codigosDepartamentos.put(new Long(11), new Long(97)); //"DURAZNO"
-			codigosDepartamentos.put(new Long(12), new Long(30)); //"LAVALLEJA"
-			codigosDepartamentos.put(new Long(13), new Long(20)); //"MALDONADO"
-			codigosDepartamentos.put(new Long(14), new Long(27)); //"ROCHA"
-			codigosDepartamentos.put(new Long(15), new Long(33)); //"TREINTA Y TRES"
-			codigosDepartamentos.put(new Long(16), new Long(37)); //"CERRO LARGO"
-			codigosDepartamentos.put(new Long(17), new Long(40)); //"RIVERA"
-			codigosDepartamentos.put(new Long(18), new Long(45)); //"TACUAREMBO"
-			codigosDepartamentos.put(new Long(19), new Long(80)); //"SAN JOSE"
+			codigosDepartamentos.put(Long.valueOf(1), Long.valueOf(11)); //"MONTEVIDEO"
+			codigosDepartamentos.put(Long.valueOf(2), Long.valueOf(90)); //"CANELONES"
+			codigosDepartamentos.put(Long.valueOf(3), Long.valueOf(55)); //"ARTIGAS"
+			codigosDepartamentos.put(Long.valueOf(4), Long.valueOf(50)); //"SALTO"
+			codigosDepartamentos.put(Long.valueOf(5), Long.valueOf(60)); //"PAYSANDU"
+			codigosDepartamentos.put(Long.valueOf(6), Long.valueOf(65)); //"RIO NEGRO"
+			codigosDepartamentos.put(Long.valueOf(7), Long.valueOf(75)); //"SORIANO"
+			codigosDepartamentos.put(Long.valueOf(8), Long.valueOf(70)); //"COLONIA"
+			codigosDepartamentos.put(Long.valueOf(9), Long.valueOf(85)); //"FLORES"
+			codigosDepartamentos.put(Long.valueOf(10), Long.valueOf(94)); //"FLORIDA"
+			codigosDepartamentos.put(Long.valueOf(11), Long.valueOf(97)); //"DURAZNO"
+			codigosDepartamentos.put(Long.valueOf(12), Long.valueOf(30)); //"LAVALLEJA"
+			codigosDepartamentos.put(Long.valueOf(13), Long.valueOf(20)); //"MALDONADO"
+			codigosDepartamentos.put(Long.valueOf(14), Long.valueOf(27)); //"ROCHA"
+			codigosDepartamentos.put(Long.valueOf(15), Long.valueOf(33)); //"TREINTA Y TRES"
+			codigosDepartamentos.put(Long.valueOf(16), Long.valueOf(37)); //"CERRO LARGO"
+			codigosDepartamentos.put(Long.valueOf(17), Long.valueOf(40)); //"RIVERA"
+			codigosDepartamentos.put(Long.valueOf(18), Long.valueOf(45)); //"TACUAREMBO"
+			codigosDepartamentos.put(Long.valueOf(19), Long.valueOf(80)); //"SAN JOSE"
 
 			
 			PrintWriter printWriter = 
@@ -4579,7 +4880,7 @@ public class ContratoBean implements IContratoBean {
 //				+ ";Empresa"
 //			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			String valorNoDisponible = Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.formatoArchivoNucleo.valorNoDisponible");
 			String productoComun = Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.formatoArchivoNucleo.productoComun");
@@ -4712,7 +5013,7 @@ public class ContratoBean implements IContratoBean {
 				+ ";Estado"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -4810,7 +5111,7 @@ public class ContratoBean implements IContratoBean {
 				+ ";Observaciones"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -5021,6 +5322,8 @@ public class ContratoBean implements IContratoBean {
 		try {
 			Random random = new Random();
 			
+			Date date = GregorianCalendar.getInstance().getTime();
+			
 			if (contrato.getId() == null) {
 				Query query = 
 					entityManager.createNativeQuery(
@@ -5030,20 +5333,20 @@ public class ContratoBean implements IContratoBean {
 				Long maxNumeroTramite = ((BigInteger) query.getSingleResult()).longValue();
 				
 				contrato.setNumeroTramite(maxNumeroTramite);
-				contrato.setRandom(new Long(random.nextInt(1000000)));
+				contrato.setRandom(Long.valueOf(random.nextInt(1000000)));
 				
-				contrato.setFcre(GregorianCalendar.getInstance().getTime());
-				contrato.setFact(GregorianCalendar.getInstance().getTime());
-				contrato.setTerm(new Long(1));
+				contrato.setFcre(date);
+				contrato.setFact(date);
+				contrato.setTerm(Long.valueOf(1));
 				contrato.setUcre(contrato.getUact());
 				
 				entityManager.persist(contrato);
 			} else {
 				Long estadoVendidoId = 
-					new Long(Configuration.getInstance().getProperty("estado.VENDIDO"));
+					Long.parseLong(Configuration.getInstance().getProperty("estado.VENDIDO"));
 				
 				Long formaPagoNuestroCreditoId = 
-					new Long(Configuration.getInstance().getProperty("formaPago.NuestroCredito"));
+					Long.parseLong(Configuration.getInstance().getProperty("formaPago.NuestroCredito"));
 				
 				if (contrato.getEstado().getId().equals(estadoVendidoId) &&
 					contrato.getFormaPago() != null && 
@@ -5064,7 +5367,13 @@ public class ContratoBean implements IContratoBean {
 				contrato.setFcre(contratoManaged.getFcre());
 				contrato.setUcre(contratoManaged.getUcre());
 				
-				contrato.setRandom(new Long(random.nextInt(1000000)));
+				contrato.setRandom(Long.valueOf(random.nextInt(1000000)));
+				
+				if (contratoManaged.getResultadoEntregaDistribucion() == null
+					&& contratoManaged.getResultadoEntregaDistribucionFecha() == null
+					&& contrato.getResultadoEntregaDistribucion() != null) {
+					contrato.setResultadoEntregaDistribucionFecha(date);
+				}
 				
 				entityManager.merge(contrato);
 			}

@@ -5,6 +5,7 @@ public class Constants {
 	public static String __METADATA_CONDICION_OPERADOR_NOT_IGUAL = "neq";
 	public static String __METADATA_CONDICION_OPERADOR_IGUAL = "eq";
 	public static String __METADATA_CONDICION_OPERADOR_CLAVE_IGUAL = "keq";
+	public static String __METADATA_CONDICION_OPERADOR_CLAVE_NOT_IGUAL = "kneq";
 	public static String __METADATA_CONDICION_OPERADOR_LIKE = "like";
 	public static String __METADATA_CONDICION_OPERADOR_NOT_LIKE = "nlike";
 	public static String __METADATA_CONDICION_OPERADOR_MAYOR = "gt";

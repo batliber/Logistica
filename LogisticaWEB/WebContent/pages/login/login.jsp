@@ -1,23 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="/includes/header.jsp" %>
 	<title>Login</title>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
-	<script type="text/javascript" src="./login.js"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
-	<link rel="stylesheet" type="text/css" href="./login.css"/>
+	<script type="text/javascript">
+		var requestedPage = "<%= request.getAttribute("requested_page") != null ? (String)request.getAttribute("requested_page") : "" %>";
+	</script>
+	<script type="text/javascript" src="/LogisticaWEB/pages/login/login.js"></script>
+	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/login/login.css"/>
 </head>
 <body>
-	<div class="divMainWindow">
+	<div class="divLoginMainWindow">
 		<div class="divLoginForm">
-			<div class="divTitleBar">
+			<div class="divLoginTitleBar">
 				<div class="divTitleBarText">Iniciar sesi&oacute;n</div>
 			</div>
 			<div class="divForm">
@@ -34,10 +28,19 @@
 					<div id="divError">&nbsp;</div>
 				</div>
 			</div>
-			<div class="divVersionBar">
-				<div class="divVersionBarText">Versi&oacute;n 0.97.0 - 08/05/2018</div>
+			<div class="divLoginVersionBar">
+				<div class="divLoginVersionBarText">&nbsp;</div>
 			</div>
 		</div>
 	</div>
+<!-- 
+<script type="text/javascript"> //<![CDATA[
+  var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.trust-provider.com/" : "http://www.trustlogo.com/");
+  document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
+//]]></script>
+<script language="JavaScript" type="text/javascript">
+  TrustLogo("https://www.positivessl.com/images/seals/positivessl_trust_seal_lg_222x54.png", "POSDV", "none");
+</script>
+ -->
 </body>
 </html>

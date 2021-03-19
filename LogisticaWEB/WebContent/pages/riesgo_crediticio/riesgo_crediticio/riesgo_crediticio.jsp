@@ -1,33 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="/includes/header.jsp" %>
 	<title>Riesgo crediticio</title>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/RiesgoCrediticioDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoRiesgoCrediticioDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/CalificacionRiesgoCrediticioAntelDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/CalificacionRiesgoCrediticioBCUDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/TipoControlRiesgoCrediticioDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/jquery-ui.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/menu.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/filtros_dinamicos.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/grid.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/pages/riesgo_crediticio/riesgo_crediticio/riesgo_crediticio.js"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/menu.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/filtros_dinamicos.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/grid.css"/>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/riesgo_crediticio/riesgo_crediticio/riesgo_crediticio.css"/>
+	<script type="text/javascript" src="./riesgo_crediticio.js"></script>
+	<link rel="stylesheet" type="text/css" href="./riesgo_crediticio.css"/>
 </head>
 <body>
 	<div class="divMenuBarContainer">
@@ -38,9 +14,8 @@
 			<div class="divButtonBar">
 				<div class="divButton"><input type="submit" id="inputActualizar" value="Actualizar" onclick="javascript:inputActualizarOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonSubirArchivo"><input type="submit" id="inputSubirArchivo" value="Subir archivo" onclick="javascript:inputSubirArchivoOnClick(event, this)"/></div>
-				<div class="divButton" id="divButtonExportarAExcel">
-					<form method="post" id="formExportarAExcel" action="#"><input type="submit" id="inputExportarAExcel" value="Exporta a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></form>
-				</div>
+				<form method="post" id="formExportarAExcel" action="#"></form>
+				<div class="divButton" id="divButtonExportarAExcel"><input type="submit" id="inputExportarAExcel" value="Exporta a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divButtonTitleBar">

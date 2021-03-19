@@ -13,6 +13,8 @@ public interface IRolBean {
 
 	public Collection<Rol> list();
 	
+	public Collection<Rol> listMinimal();
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
@@ -21,7 +23,7 @@ public interface IRolBean {
 	
 	public Rol getByNombre(String nombre, boolean initializeCollections);
 	
-	public void save(Rol rol);
+	public Rol save(Rol rol);
 	
 	public void remove(Rol rol);
 	

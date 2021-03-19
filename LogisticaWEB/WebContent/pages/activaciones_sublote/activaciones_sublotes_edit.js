@@ -14,142 +14,145 @@ $(document).ready(init);
 function init() {
 	refinarForm();
 	
-	UsuarioRolEmpresaDWR.listDistribuidoresByContextMinimal(
-		{
-			callback: function(data) {
-				if (data != null) {
-					var html =
-						"<option id='0' value='0'>Seleccione...</option>";
-					
-					for (var i=0; i<data.length; i++) {
-						html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-					}
-					
-					$("#selectDistribuidor").append(html);
-				}
-			}, async: false
-		}
-	);
-	
-	DepartamentoDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					var html =
-						"<option id='0' value='0'>Seleccione...</option>";
-					
-					for (var i=0; i<data.length; i++) {
-						html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-					}
-					
-					$("#selectPuntoVentaDepartamento").append(html);
-				}
-			}, async: false
-		}
-	);
-	
-	BarrioDWR.listMinimal(
-		{
-			callback: function(data) {
-				if (data != null) {
-					var html =
-						"<option id='0' value='0'>Seleccione...</option>";
-					
-					for (var i=0; i<data.length; i++) {
-						html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-					}
-					
-					$("#selectPuntoVentaBarrio").append(html);
-				}
-			}, async: false
-		}
-	);
-	
-	PuntoVentaDWR.listMinimal(
-		{
-			callback: function(data) {
-				if (data != null) {
-					var html =
-						"<option id='0' value='0'>Seleccione...</option>";
-					
-					for (var i=0; i<data.length; i++) {
-						html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-					}
-					
-					$("#selectPuntoVenta").append(html);
-				}
-			}, async: false
-		}
-	);
-	
-	grid = new Grid(
-		document.getElementById("divTableActivaciones"),
-		{
-			tdMID: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO, ancho: 90 },
-			tdChip: { campo: "chip", descripcion: "Chip", abreviacion: "Chip", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
-			tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
-			tdEstado: { campo: "estadoActivacion.nombre", clave: "estadoActivacion.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoActivaciones, clave: "id", valor: "nombre" }, ancho: 150 },
-			tdTipo: { campo: "tipoActivacion.descripcion", clave: "tipoActivacion.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoActivaciones, clave: "id", valor: "descripcion" }, ancho: 150 },
-		},
-		false,
-		reloadGrid,
-		trActivacionOnClick,
-		null,
-		13
-	);
-	
-	grid.rebuild();
-	
-	if (id != null) {
-		ActivacionSubloteDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#divNumero").text(data.numero);
-					$("#inputDescripcion").val(data.descripcion);
-
-					if (data.fechaAsignacionDistribuidor != null) {
-						$("#divFechaAsignacionDistribuidor").text(formatLongDate(data.fechaAsignacionDistribuidor));
-						$("#divFechaAsignacionDistribuidor").attr("d", data.fechaAsignacionDistribuidor.getTime());
-					}
-					
-					if (data.fechaAsignacionPuntoVenta != null) {
-						$("#divFechaAsignacionPuntoVenta").text(formatLongDate(data.fechaAsignacionPuntoVenta));
-						$("#divFechaAsignacionPuntoVenta").attr("d", data.fechaAsignacionPuntoVenta.getTime());
-					}
-					
-					if (data.empresa != null) {
-						$("#divEmpresa").text(data.empresa.nombre);
-						$("#divEmpresa").attr("eid", data.empresa.id);
-					}
-					
-					if (data.distribuidor != null) {
-						$("#selectDistribuidor").val(data.distribuidor.id);
-					}
-					
-					if (data.puntoVenta != null) {
-						if (data.puntoVenta.departamento != null) {
-							$("#selectPuntoVentaDepartamento").val(data.puntoVenta.departamento.id);
-						}
-						if (data.puntoVenta.barrio != null) {
-							$("#selectPuntoVentaBarrio").val(data.puntoVenta.barrio.id);
-							
-							selectPuntoVentaBarrioOnChange();
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listDistribuidoresByContextMinimal"
+    }).then(function(data) {
+    	fillSelect(
+    		"selectDistribuidor", 
+    		data, 
+    		"id", 
+    		"nombre"
+    	);
+    }).then(function(data) {
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/DepartamentoREST/list"
+	    }).then(function(data) {
+	    	fillSelect(
+	    		"selectPuntoVentaDepartamento", 
+	    		data, 
+	    		"id", 
+	    		"nombre"
+	    	);
+	    }).then(function(data) {
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/BarrioREST/listMinimal"
+		    }).then(function(data) {
+		    	fillSelect(
+		    		"selectPuntoVentaBarrio", 
+		    		data, 
+		    		"id", 
+		    		"nombre"
+		    	);
+		    }).then(function(data) {
+				/*
+				$.ajax({
+			        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
+			    }).then(function(data) { 
+			    	fillSelect(
+			    		"selectPuntoVenta", 
+			    		data, 
+			    		"id", 
+			    		"nombre"
+			    	);
+			    });
+				*/
+				
+				grid = new Grid(
+					document.getElementById("divTableActivaciones"),
+					{
+						tdMID: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO, ancho: 90 },
+						tdChip: { campo: "chip", descripcion: "Chip", abreviacion: "Chip", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
+						tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
+						tdEstado: { campo: "estadoActivacion.nombre", clave: "estadoActivacion.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstadoActivaciones, clave: "id", valor: "nombre" }, ancho: 150 },
+						tdTipo: { campo: "tipoActivacion.descripcion", clave: "tipoActivacion.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoActivaciones, clave: "id", valor: "descripcion" }, ancho: 150 },
+					},
+					false,
+					reloadGrid,
+					trActivacionOnClick,
+					null,
+					13
+				);
+				
+				grid.rebuild();
+				
+				if (id != null) {
+					$.ajax({
+				        url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/getById/" + id
+				    }).then(function(data) {
+						$("#divNumero").text(data.numero);
+						$("#inputDescripcion").val(data.descripcion);
+			
+						if (data.fechaAsignacionDistribuidor != null) {
+							$("#divFechaAsignacionDistribuidor").text(formatLongDate(data.fechaAsignacionDistribuidor));
+							$("#divFechaAsignacionDistribuidor").attr("d", data.fechaAsignacionDistribuidor);
 						}
 						
-						$("#selectPuntoVenta").val(data.puntoVenta.id);
-					}
-					
-					chips.cantidadRegistros = data.activaciones.length;
-					for (var i=0; i<data.activaciones.length; i++) {
-						chips.registrosMuestra[chips.registrosMuestra.length] = data.activaciones[i];
-					}
-					
-					reloadGrid();
-				}, async: false
-			}
-		);
-	}
+						if (data.fechaAsignacionPuntoVenta != null) {
+							$("#divFechaAsignacionPuntoVenta").text(formatLongDate(data.fechaAsignacionPuntoVenta));
+							$("#divFechaAsignacionPuntoVenta").attr("d", data.fechaAsignacionPuntoVenta);
+						}
+						
+						if (data.empresa != null) {
+							$("#divEmpresa").text(data.empresa.nombre);
+							$("#divEmpresa").attr("eid", data.empresa.id);
+						}
+						
+						if (data.distribuidor != null) {
+							fillSelect(
+								"selectDistribuidor", 
+								[data.distribuidor], 
+								"id", 
+								"nombre", 
+								null, null, null, null, 
+								true
+							);
+							
+							$("#selectDistribuidor").val(data.distribuidor.id);
+						}
+						
+						if (data.puntoVenta != null) {
+							if (data.puntoVenta.departamento != null) {
+								$("#selectPuntoVentaDepartamento").val(data.puntoVenta.departamento.id);
+							}
+							if (data.puntoVenta.barrio != null) {
+								fillSelect(
+									"selectPuntoVentaBarrio", 
+									[data.puntoVenta.barrio], 
+									"id", 
+									"nombre", 
+									null, null, null, null, 
+									true
+								);
+								
+								$("#selectPuntoVentaBarrio").val(data.puntoVenta.barrio.id);
+							}
+							
+							fillSelect(
+								"selectPuntoVenta", 
+								[data.puntoVenta], 
+								"id", 
+								"nombre", 
+								null, null, null, null, 
+								true
+							);
+							
+							$("#selectPuntoVenta").val(data.puntoVenta.id);
+						}
+						
+						chips.cantidadRegistros = data.activaciones.length;
+						for (var i=0; i<data.activaciones.length; i++) {
+							chips.registrosMuestra[chips.registrosMuestra.length] = data.activaciones[i];
+						}
+						
+						reloadGrid();
+						
+						$("#divButtonImprimir").show();
+						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				    });
+				}
+		    });
+	    });
+    });
 }
 
 function refinarForm() {
@@ -161,150 +164,81 @@ function refinarForm() {
 		
 	}
 	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES) {
-						hideField("puntoVentaDepartamento");
-						hideField("puntoVentaBarrio");
-						hideField("puntoVenta");
-						hideField("fechaAsignacionPuntoVenta");
-						
-						break;
-					}
-				}
-			}, async: false
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+    }).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES) {
+				hideField("puntoVentaDepartamento");
+				hideField("puntoVentaBarrio");
+				hideField("puntoVenta");
+				hideField("fechaAsignacionPuntoVenta");
+				
+				break;
+			}
 		}
-	);
-	
-	$("#divButtonImprimir").show();
-	$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-}
-
-function hideField(elementId) {
-	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, elementId.length);
-	
-	$("#divLabel" + elementSuffix).hide();
-	$("#div" + elementSuffix).hide();
-}
-
-function showField(elementId) {
-	var elementSuffix = elementId.substring(0, 1).toUpperCase() + elementId.substring(1, elementId.length);
-	
-	$("#divLabel" + elementSuffix).show();
-	$("#div" + elementSuffix).show();
-}
-
-function listEmpresas() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listEstadoActivaciones() {
-	EstadoActivacionDWR.list(
-		{
-			callback: function(data) {
-				return data;
-			}, async: false
-		}
-	);
-}
-
-function listTipoActivaciones() {
-	TipoActivacionDWR.list(
-		{
-			callback: function(data) {
-				return data;
-			}, async: false
-		}
-	);
+	});
 }
 
 function selectPuntoVentaDepartamentoOnChange(event, element) {
-	$("#selectPuntoVentaBarrio > option:gt(0)").remove();
-	$("#selectPuntoVenta > option:gt(0)").remove();
+	fillSelect("selectPuntoVentaBarrio", [], "id", "nombre");
+	fillSelect("selectPuntoVenta", [], "id", "nombre");
 	
 	if ($("#selectPuntoVentaDepartamento").val() != "0") {
-		BarrioDWR.listMinimalByDepartamentoId(
-			$("#selectPuntoVentaDepartamento").val(),
-			{
-				callback: function(data) {
-					if (data != null) {
-						var html = "";
-						
-						for (var i=0; i<data.length; i++) {
-							html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-						}
-						
-						$("#selectPuntoVentaBarrio").append(html);
-					}
-					
-					selectPuntoVentaBarrioOnChange();
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/BarrioREST/listMinimalByDepartamentoId/"
+	        	+ $("#selectPuntoVentaDepartamento").val()
+	    }).then(function(data) { 
+	    	fillSelect(
+	    		"selectPuntoVentaBarrio", 
+	    		data, 
+	    		"id", 
+	    		"nombre"
+	    	);
+	    	
+	    	selectPuntoVentaBarrioOnChange();
+	    });
 	}
 }
 
 function selectPuntoVentaBarrioOnChange(event, element) {
-	$("#selectPuntoVenta > option:gt(0)").remove();
+	fillSelect("selectPuntoVenta", [], "id", "nombre");
 	
 	if ($("#selectPuntoVentaBarrio").val() != "0") {
-		PuntoVentaDWR.listMinimalByBarrioId(
-			$("#selectPuntoVentaBarrio > option:selected").val(),
-			{
-				callback: function(data) {
-					var html = "";
-					
-					for (var i=0; i<data.length; i++) {
-						html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-					}
-					
-					$("#selectPuntoVenta").append(html);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimalByBarrioId/"
+	        	+ $("#selectPuntoVentaBarrio").val()
+	    }).then(function(data) {
+	    	fillSelect(
+	    		"selectPuntoVenta", 
+	    		data, 
+	    		"id", 
+	    		"nombre"
+	    	);
+	    });
 	} else if ($("#selectPuntoVentaDepartamento").val() != "0") {
-		PuntoVentaDWR.listMinimalByDepartamentoId(
-			$("#selectPuntoVentaDepartamento > option:selected").val(),
-			{
-				callback: function(data) {
-					var html = "";
-					
-					for (var i=0; i<data.length; i++) {
-						html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-					}
-					
-					$("#selectPuntoVenta").append(html);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimalByDepartamentoId/"
+	        	+ $("#selectPuntoVentaDepartamento").val()
+	    }).then(function(data) {
+	    	fillSelect(
+	    		"selectPuntoVenta", 
+	    		data, 
+	    		"id", 
+	    		"nombre"
+	    	);
+	    });
 	} else {
-		PuntoVentaDWR.listMinimal(
-			{
-				callback: function(data) {
-					var html = "";
-					
-					for (var i=0; i<data.length; i++) {
-						html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-					}
-					
-					$("#selectPuntoVenta").append(html);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
+	    }).then(function(data) {
+	    	fillSelect(
+	    		"selectPuntoVenta",
+	    		data, 
+	    		"id", 
+	    		"nombre"
+	    	);
+	    });
 	}
 }
 
@@ -390,39 +324,36 @@ function inputChipOnChange(event, element) {
 			}
 		}
 		
-		ActivacionDWR.getLastByChip(
-			val,
-			{
-				callback: function(data) {
-					if (data != null) {
-						if (chips.cantidadRegistros > 0 
-							&& chips.registrosMuestra[0].empresa.id != data.empresa.id
-						) {
-							alert("El chip ingresado fue activado por otra Empresa");
-						} else {
-							$("#divEmpresa").text(data.empresa.nombre);
-							$("#divEmpresa").attr("eid", data.empresa.id);
-							
-							chips.cantidadRegistros = chips.cantidadRegistros + 1;
-							chips.registrosMuestra[chips.registrosMuestra.length] = {
-								id: data.id,
-								mid: data.mid,
-								chip: data.chip,
-								empresa: data.empresa,
-								tipoActivacion: data.tipoActivacion,
-								estadoActivacion: data.estadoActivacion
-							};
-							
-							reloadGrid();
-						}
-					} else {
-						alert("No se encuentra el Chip ingresado.")
-					}
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ActivacionREST/getLastByChip/" + val
+	    }).then(function(data) {
+			if (data != null) {
+				if (chips.cantidadRegistros > 0 
+					&& chips.registrosMuestra[0].empresa.id != data.empresa.id
+				) {
+					alert("El chip ingresado fue activado por otra Empresa");
+				} else {
+					$("#divEmpresa").text(data.empresa.nombre);
+					$("#divEmpresa").attr("eid", data.empresa.id);
 					
-					$("#inputChip").val(null);
-				}, async: false
+					chips.cantidadRegistros = chips.cantidadRegistros + 1;
+					chips.registrosMuestra[chips.registrosMuestra.length] = {
+						id: data.id,
+						mid: data.mid,
+						chip: data.chip,
+						empresa: data.empresa,
+						tipoActivacion: data.tipoActivacion,
+						estadoActivacion: data.estadoActivacion
+					};
+					
+					reloadGrid();
+				}
+			} else {
+				alert("No se encuentra el Chip ingresado.")
 			}
-		);
+			
+			$("#inputChip").val(null);
+		});
 	}
 }
 
@@ -488,32 +419,33 @@ function inputGuardarOnClick(event) {
 			activacionSublote.fechaAsignacionPuntoVenta = fechaAsignacionPuntoVenta;
 		}
 		
-		ActivacionSubloteDWR.update(
-			activacionSublote,
-			{
-				callback: function(data) {
-					alert("Operación exitosa.");
-					
-					window.parent.closeDialog();
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(activacionSublote)
+	    }).then(function(data) {
+	    	alert("Operación exitosa");
+	    	
+	    	window.parent.closeDialog();
+	    });
 	} else {
-		ActivacionSubloteDWR.add(
-			activacionSublote,
-			{
-				callback: function(data) {
-					if (data == null) {
-						alert("No se ha podido completar la operación.");
-						return;
-					}
-					
-					alert("Se ha creado el sub-lote nro: " + data);
-					
-					window.parent.closeDialog();
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(activacionSublote)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operación exitosa");
+	    	
+				alert("Se ha creado el sub-lote nro: " + data.numero);
+				
+				window.parent.closeDialog();
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+	    });
 	}
 }
 

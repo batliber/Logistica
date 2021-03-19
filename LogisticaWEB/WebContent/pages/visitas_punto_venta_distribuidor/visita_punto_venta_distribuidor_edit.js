@@ -1,57 +1,71 @@
 $(document).ready(init);
 
 function init() {
-	UsuarioRolEmpresaDWR.listDistribuidoresChipsByContext(
-		{
-			callback: fillSelectDistribuidorChip, async: false
-		}
-	);
-	
-	EstadoVisitaPuntoVentaDistribuidorDWR.list(
-		{
-			callback: fillSelectEstadoVisitaPuntoVentaDistribuidor, async: false
-		}
-	);
-	
-	PuntoVentaDWR.listMinimal(
-		{
-			callback: fillSelectPuntoVenta, async: false
-		}
-	);
-	
 	refinarForm();
 	
 	$("#divEliminarVisitaPuntoVentaDistribuidor").hide();
 	
-	if (id != null) {
-		VisitaPuntoVentaDistribuidorDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputFechaAsignacion").val(formatShortDate(data.fechaAsignacion));
-					$("#inputFechaVisita").val(formatShortDate(data.fechaVisita));
-					$("#textareaObservaciones").val(data.observaciones);
-					
-					if (data.puntoVenta != null) {
-						$("#selectPuntoVenta").val(data.puntoVenta.id);
-					}
-					
-					if (data.estadoVisitaPuntoVentaDistribuidor != null) {
-						$("#selectEstadoVisitaPuntoVentaDistribuidor").val(data.estadoVisitaPuntoVentaDistribuidor.id);
-					}
-					
-					if (data.distribuidor != null) {
-						$("#selectDistribuidor").val(data.distribuidor.id);
-					}
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarVisitaPuntoVentaDistribuidor").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
-			}
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
+	}).then(function(data) {
+		fillSelect(
+			"selectPuntoVenta", 
+			data,
+			"id", 
+			"nombre"
 		);
-	}
+	}).then(function(data) {
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listDistribuidoresChipsByContextMinimal"
+		}).then(function(data) {
+			fillSelect(
+				"selectDistribuidor", 
+				data,
+				"id", 
+				"nombre"
+			);
+		}).then(function(data) {
+			$.ajax({
+				url: "/LogisticaWEB/RESTFacade/EstadoVisitaPuntoVentaDistribuidorREST/list"
+			}).then(function(data) {
+				fillSelect(
+					"selectEstadoVisitaPuntoVentaDistribuidor", 
+					data,
+					"id", 
+					"nombre"
+				);
+			}).then(function(data) {
+				if (id != null) {
+					$.ajax({
+						url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/getById/" + id
+					}).then(function(data) {
+						$("#inputFechaAsignacion").val(formatShortDate(data.fechaAsignacion));
+						$("#inputFechaVisita").val(formatShortDate(data.fechaVisita));
+						$("#textareaObservaciones").val(data.observaciones);
+						
+						if (data.puntoVenta != null) {
+							$("#selectPuntoVenta").val(data.puntoVenta.id);
+						}
+						
+						if (data.estadoVisitaPuntoVentaDistribuidor != null) {
+							$("#selectEstadoVisitaPuntoVentaDistribuidor").val(
+								data.estadoVisitaPuntoVentaDistribuidor.id
+							);
+						}
+						
+						if (data.distribuidor != null) {
+							$("#selectDistribuidor").val(data.distribuidor.id);
+						}
+						
+						if (mode == __FORM_MODE_ADMIN) {
+							$("#divEliminarVisitaPuntoVentaDistribuidor").show();
+							$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+						}
+					});
+				}
+			});
+		});
+	});
 }
 
 function refinarForm() {
@@ -60,47 +74,6 @@ function refinarForm() {
 	} else if (mode == __FORM_MODE_USER) {
 		
 	}
-}
-
-function fillSelectDistribuidorChip(data) {
-	$("#selectDistribuidor > option").remove();
-	
-	var html =
-		"<option id='0' value='0'>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectDistribuidor").append(html);
-}
-
-function fillSelectEstadoVisitaPuntoVentaDistribuidor(data) {
-	$("#selectEstadoVisitaPuntoVentaDistribuidor > option").remove();
-	
-	html =
-		"<option value='0'>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectEstadoVisitaPuntoVentaDistribuidor").append(html);
-}
-
-function fillSelectPuntoVenta(data) {
-	$("#selectPuntoVenta > option").remove();
-	
-	html =
-		"<option value=0>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectPuntoVenta").append(html);
 }
 
 function inputGuardarOnClick(event) {
@@ -140,25 +113,29 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		visitaPuntoVentaDistribuidor.id = id;
 		
-		VisitaPuntoVentaDistribuidorDWR.update(
-			visitaPuntoVentaDistribuidor,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/update",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(visitaPuntoVentaDistribuidor)
+		}).then(function(data) {
+			alert("Operación exitosa");
+		});
 	} else {
-		VisitaPuntoVentaDistribuidorDWR.add(
-			visitaPuntoVentaDistribuidor,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarVisitaPuntoVentaDistribuidor").prop("disabled", false);
-				}, async: false
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/add",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(visitaPuntoVentaDistribuidor)
+		}).then(function(data) {
+			if (data != null) {
+				alert("Operación exitosa");
+				
+				$("#inputEliminarVisitaPuntoVentaDistribuidor").prop("disabled", false);
+			} else {
+				alert("Error en la operación");
 			}
-		);
+		});
 	}
 }
 
@@ -168,13 +145,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		VisitaPuntoVentaDistribuidorDWR.remove(
-			visitaPuntoVentaDistribuidor,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/remove",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(visitaPuntoVentaDistribuidor)
+		}).then(function(data) { 
+			alert("Operación exitosa");
+		});
 	}
 }

@@ -98,7 +98,7 @@ public class CalculoPorcentajeActivacionPuntoVentaBean implements ICalculoPorcen
 				+ ";Fecha de último cambio de estado de la visita"
 			);
 			
-			metadataConsulta.setTamanoMuestra(new Long(Integer.MAX_VALUE));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			for (Object object : this.list(metadataConsulta).getRegistrosMuestra()) {

@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="ObtenerPersona">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="IdTipoDoc" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="IdPaisDoc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="NroDoc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="cod_institucion" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPersonaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerPersonaResult" type="tns:Persona" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Persona">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="SectorEconomico" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdPersona" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Documentos" type="tns:ArrayOfDocumento" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoPersona" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PrimerNombre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SegundoNombre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PrimerApellido" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SegundoApellido" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RazonSocial" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreCompleto" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaNacimiento" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="EstadoCivil" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Genero" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Direcciones" type="tns:ArrayOfDireccion" />
+          <s:element minOccurs="0" maxOccurs="1" name="Departamente" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaConsulta" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="ConsolidadoActivo" type="tns:ArrayOfDeudaActiva" />
+          <s:element minOccurs="0" maxOccurs="1" name="ConsolidadoCancelado" type="tns:DeudaCancelada" />
+          <s:element minOccurs="0" maxOccurs="1" name="OperacionesActivasDeLaPersona" type="tns:ArrayOfOperacionActivaDeLaPersona" />
+          <s:element minOccurs="0" maxOccurs="1" name="OperacionesCanceladasDeLaPersona" type="tns:ArrayOfOperacionCanceladaDeLaPersona" />
+          <s:element minOccurs="0" maxOccurs="1" name="TrabajosDeLaPersona" type="tns:ArrayOfTrabajoDeLaPersona" />
+          <s:element minOccurs="0" maxOccurs="1" name="Tarjetas" type="tns:ArrayOfTarjeta" />
+          <s:element minOccurs="0" maxOccurs="1" name="DetallesTrazasBusquedas" type="tns:ArrayOfDetalleTrazaBusqueda" />
+          <s:element minOccurs="0" maxOccurs="1" name="PDF" type="s:base64Binary" />
+          <s:element minOccurs="0" maxOccurs="1" name="PDF_Resumido" type="s:base64Binary" />
+          <s:element minOccurs="0" maxOccurs="1" name="LInfoFuncionarioPublico" type="tns:ArrayOfInfoFuncionarioPublico" />
+          <s:element minOccurs="0" maxOccurs="1" name="LInfoAdicional" type="tns:ArrayOfInfoAdicional" />
+          <s:element minOccurs="0" maxOccurs="1" name="MarcasAlertas" type="tns:ArrayOfAlertaNaranja" />
+          <s:element minOccurs="1" maxOccurs="1" name="MarcaBusqueda" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDocumento">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Documento" nillable="true" type="tns:Documento" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Documento">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="IdPaisDoc" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdTipoDoc" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoDoc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NroDoc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PaisDoc" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaVencimiento" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="VersionDocumento" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDireccion">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Direccion" nillable="true" type="tns:Direccion" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Direccion">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdDireccion" type="s:long" />
+          <s:element minOccurs="0" maxOccurs="1" name="Direccion_Libre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Calle" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NroPuerta" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NroApartamento" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Edificio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoPostal" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ciudad" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Barrio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Telefono" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaRegistrada" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDeudaActiva">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DeudaActiva" nillable="true" type="tns:DeudaActiva" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DeudaActiva">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="FechaCorte" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="Max_Dias_Atraso" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="PromedioPagos" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="SaldoConsolidado" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoCuota_Consolidado" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoCuota_Vencido" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="MayorPlazoCredito" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MenorPlazoCredito" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MaximoCuotasPendientes" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MinimoCuotasPendientes" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="CuentaConOpR" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="EntidadesAportantesTotal" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="EntidadesAportantesLibranza" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="EntidadesAportantesConsumo" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="CantConsultasRealizadas" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoGarantiaBCP" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="CantChequesRechazadosTotal" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontosChequesRechazadosTotal" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="CantChequesRechazadosFormal" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoChequesRechazadosFormal" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="CantChequesRechazadosInformal" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoCheqyesRechazadosInformal" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DeudaCancelada">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="PromedioDiasAtraso" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MaximoDiasAtraso" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoOriginal" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoCuota" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="PlazoOriginal" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaOriginacion" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaCancelacion" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="CuentaConOpR" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Institucion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoGarantiaBCP" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfOperacionActivaDeLaPersona">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OperacionActivaDeLaPersona" nillable="true" type="tns:OperacionActivaDeLaPersona" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OperacionActivaDeLaPersona">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Institucion" type="tns:Institucion" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdPersona" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoOperacion" type="tns:TipoOperacion" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdOperacionActiva" type="s:long" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaOperacion" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroOperacion" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="CapitalOriginal" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="InteresOriginal" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="CapitalAdeudadoActual" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="InteresPendienteDeDevengar" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="CapitalAtrasado" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="InteresAtrasado" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MoraPendienteDePago" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MoraPaga" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="PlazoTotalEnPeriodos" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="PlazoRemanenteEnPeriodos" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="PeriodoPrestamo" type="tns:Periodo" />
+          <s:element minOccurs="1" maxOccurs="1" name="DiasAtraso" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Moneda" type="tns:Moneda" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoTitular" type="tns:TipoTitular" />
+          <s:element minOccurs="1" maxOccurs="1" name="ValorCuota" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="DiasAtrasoPromedio" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="DiasAtrasoMaximo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="OperacionConsolidada" type="tns:ArrayOfOperacionActiva_Consolidada" />
+          <s:element minOccurs="0" maxOccurs="1" name="Relacionado_TipoDoc" type="tns:TipoDocumento" />
+          <s:element minOccurs="0" maxOccurs="1" name="Relacionado_PaisDoc" type="tns:Pais" />
+          <s:element minOccurs="0" maxOccurs="1" name="Relacionado_NroDoc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Relacionado_NombreCompleto" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoRelacion" type="tns:TipoRelacion" />
+          <s:element minOccurs="1" maxOccurs="1" name="Vencimiento" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nro_Cheque" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Banco" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ComoCodeudor" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Titular_TipoDoc" type="tns:TipoDocumento" />
+          <s:element minOccurs="0" maxOccurs="1" name="Titular_PaisDoc" type="tns:Pais" />
+          <s:element minOccurs="0" maxOccurs="1" name="Titular_NroDoc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Titular_NombreCompleto" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Institucion">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdInstitucion" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nombre" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TipoOperacion">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdTipoOperacion" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Periodo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdPeriodo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ValorEnDias" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Moneda">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="IdMoneda" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TipoTitular">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdTipoTitular" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfOperacionActiva_Consolidada">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OperacionActiva_Consolidada" nillable="true" type="tns:OperacionActiva_Consolidada" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OperacionActiva_Consolidada">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdCarga" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="FechaCorte" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="CuotaMes" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Refuerzo_Mes" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Cuotas_Vencidas" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Compromiso_Mes" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Saldo_Total" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Cuotas_Pendientes" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="DiasAtraso" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Fecha_Informe" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TipoDocumento">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdTipoDoc" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Pais">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="IdPais" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TipoRelacion">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdTipoRelacion" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfOperacionCanceladaDeLaPersona">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OperacionCanceladaDeLaPersona" nillable="true" type="tns:OperacionCanceladaDeLaPersona" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OperacionCanceladaDeLaPersona">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroOperacion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Moneda" type="tns:Moneda" />
+          <s:element minOccurs="0" maxOccurs="1" name="Institucion" type="tns:Institucion" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoOperacion" type="tns:TipoOperacion" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoCancelacion" type="tns:TipoCancelacion" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdOperacion" type="s:long" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaOperacion" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="CapitalOriginal" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoMoraGenerada" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoQuitaMora" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoQuitaInteres" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoQuitaCapital" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoInteresGenerado" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="DiasAtrasoMaximo" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="DiasAtrasoPromedio" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TipoCancelacion">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdTipoCancelacion" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfTrabajoDeLaPersona">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="TrabajoDeLaPersona" nillable="true" type="tns:TrabajoDeLaPersona" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TrabajoDeLaPersona">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="LugarDeTrabajo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ComprobanteIngreso" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdTrabajo" type="s:long" />
+          <s:element minOccurs="1" maxOccurs="1" name="EsDependiente" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="CargoTrabajo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Salario" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaInformado" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfTarjeta">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Tarjeta" nillable="true" type="tns:Tarjeta" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Tarjeta">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdTarjeta" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="IdPersona" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="LineaTotal" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="LineaUtilizada" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="PagoMinimo" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MontoAtrasado" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="Moneda" type="tns:Moneda" />
+          <s:element minOccurs="0" maxOccurs="1" name="Institucion" type="tns:Institucion" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDetalleTrazaBusqueda">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DetalleTrazaBusqueda" nillable="true" type="tns:DetalleTrazaBusqueda" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetalleTrazaBusqueda">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="TipoConsultaProducto" type="tns:TipoConsultaProducto" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreInstitucionBusqueda" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UsuarioBusqueda" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaHoraBusqueda" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TipoConsultaProducto">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdTipoConsultaProducto" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfInfoFuncionarioPublico">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="InfoFuncionarioPublico" nillable="true" type="tns:InfoFuncionarioPublico" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="InfoFuncionarioPublico">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Anho" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Mes" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Cedula" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nombres" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Entidad" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Categoria" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Vinculo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ObjetoGasto" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Monto" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfInfoAdicional">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="InfoAdicional" nillable="true" type="tns:InfoAdicional" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="InfoAdicional">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Barrio_Ciudad" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombrePadre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreMadre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreConyuge" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sexo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EstadoCivil" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FechaImp" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Domicilio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoDoc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CI" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nombres" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Apellidos" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FechaNac" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="LugarNacimiento" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfAlertaNaranja">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="AlertaNaranja" nillable="true" type="tns:AlertaNaranja" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="AlertaNaranja">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Usuario" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Institucion_Desc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Fecha" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InfoContacto" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ListadoTipoDocumentos">
+        <s:complexType />
+      </s:element>
+      <s:element name="ListadoTipoDocumentosResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ListadoTipoDocumentosResult" type="tns:ArrayOfTipoDocumento" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfTipoDocumento">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="TipoDocumento" nillable="true" type="tns:TipoDocumento" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ListadoPaises">
+        <s:complexType />
+      </s:element>
+      <s:element name="ListadoPaisesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ListadoPaisesResult" type="tns:ArrayOfPais" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPais">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Pais" nillable="true" type="tns:Pais" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ObtenerPersona_PDF">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="IdTipoDoc" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="IdPaisDoc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="NroDoc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="cod_institucion" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPersona_PDFResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerPersona_PDFResult" type="tns:Persona" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ObtenerPersonaSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerPersona" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPersonaSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerPersonaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ListadoTipoDocumentosSoapIn">
+    <wsdl:part name="parameters" element="tns:ListadoTipoDocumentos" />
+  </wsdl:message>
+  <wsdl:message name="ListadoTipoDocumentosSoapOut">
+    <wsdl:part name="parameters" element="tns:ListadoTipoDocumentosResponse" />
+  </wsdl:message>
+  <wsdl:message name="ListadoPaisesSoapIn">
+    <wsdl:part name="parameters" element="tns:ListadoPaises" />
+  </wsdl:message>
+  <wsdl:message name="ListadoPaisesSoapOut">
+    <wsdl:part name="parameters" element="tns:ListadoPaisesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPersona_PDFSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerPersona_PDF" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPersona_PDFSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerPersona_PDFResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ConsultaSoap">
+    <wsdl:operation name="ObtenerPersona">
+      <wsdl:input message="tns:ObtenerPersonaSoapIn" />
+      <wsdl:output message="tns:ObtenerPersonaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ListadoTipoDocumentos">
+      <wsdl:input message="tns:ListadoTipoDocumentosSoapIn" />
+      <wsdl:output message="tns:ListadoTipoDocumentosSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ListadoPaises">
+      <wsdl:input message="tns:ListadoPaisesSoapIn" />
+      <wsdl:output message="tns:ListadoPaisesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPersona_PDF">
+      <wsdl:input message="tns:ObtenerPersona_PDFSoapIn" />
+      <wsdl:output message="tns:ObtenerPersona_PDFSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ConsultaSoap" type="tns:ConsultaSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ObtenerPersona">
+      <soap:operation soapAction="http://tempuri.org/ObtenerPersona" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListadoTipoDocumentos">
+      <soap:operation soapAction="http://tempuri.org/ListadoTipoDocumentos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListadoPaises">
+      <soap:operation soapAction="http://tempuri.org/ListadoPaises" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPersona_PDF">
+      <soap:operation soapAction="http://tempuri.org/ObtenerPersona_PDF" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ConsultaSoap12" type="tns:ConsultaSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ObtenerPersona">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerPersona" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListadoTipoDocumentos">
+      <soap12:operation soapAction="http://tempuri.org/ListadoTipoDocumentos" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListadoPaises">
+      <soap12:operation soapAction="http://tempuri.org/ListadoPaises" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPersona_PDF">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerPersona_PDF" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Consulta">
+    <wsdl:port name="ConsultaSoap" binding="tns:ConsultaSoap">
+      <soap:address location="http://carga.bicsa.com.py/WS_Consulta_V2_2/Consulta.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ConsultaSoap12" binding="tns:ConsultaSoap12">
+      <soap12:address location="http://carga.bicsa.com.py/WS_Consulta_V2_2/Consulta.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

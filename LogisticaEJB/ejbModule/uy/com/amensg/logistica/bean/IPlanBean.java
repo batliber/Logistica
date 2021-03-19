@@ -15,13 +15,17 @@ public interface IPlanBean {
 	
 	public Collection<Plan> listVigentes();
 	
+	public Collection<Plan> listMinimal();
+	
+	public Collection<Plan> listVigentesMinimal();
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Plan getById(Long id);
 	
-	public void save(Plan plan);
+	public Plan save(Plan plan);
 	
 	public void remove(Plan plan);
 	

@@ -17,6 +17,8 @@ public interface IContratoBean {
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 	
+	public MetadataConsultaResultado listDetached(MetadataConsulta metadataConsulta, Long usuarioId);
+	
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Contrato getById(Long id, boolean initializeCollections);
@@ -110,6 +112,10 @@ public interface IContratoBean {
 	public void equipoDevuelto(Contrato contrato);
 	
 	public void noRecuperado(Contrato contrato);
+	
+	public void pickUp(Long id, String observaciones, Long loggedUsuarioId);
+	
+	public void cancelarTramite(Long id, Long loggedUsuarioId);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	

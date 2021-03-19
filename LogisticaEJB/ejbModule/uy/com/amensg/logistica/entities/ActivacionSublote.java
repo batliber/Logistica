@@ -23,6 +23,9 @@ public class ActivacionSublote extends BaseEntity {
 	@Column(name = "descripcion")
 	private String descripcion;
 	
+	@Column(name = "fecha_vencimiento_chip_mas_viejo")
+	private Date fechaVencimientoChipMasViejo;
+	
 	@Column(name = "fecha_asignacion_distribuidor")
 	private Date fechaAsignacionDistribuidor;
 	
@@ -77,6 +80,14 @@ public class ActivacionSublote extends BaseEntity {
 
 	public void setFechaAsignacionPuntoVenta(Date fechaAsignacionPuntoVenta) {
 		this.fechaAsignacionPuntoVenta = fechaAsignacionPuntoVenta;
+	}
+
+	public Date getFechaVencimientoChipMasViejo() {
+		return fechaVencimientoChipMasViejo;
+	}
+
+	public void setFechaVencimientoChipMasViejo(Date fechaVencimientoChipMasViejo) {
+		this.fechaVencimientoChipMasViejo = fechaVencimientoChipMasViejo;
 	}
 
 	public Double getPorcentajeActivacion() {

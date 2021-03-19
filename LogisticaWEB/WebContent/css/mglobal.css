@@ -122,7 +122,8 @@ table tfoot tr td {
 
 #divMenuContent {
 	width: 50%;
-	height: 500px; 
+	height: auto;
+	overflow: hidden; 
 	background-color: #CFCFCF;
 	border-top: solid 1px #AAAAAA;
 	border-right: solid 1px #AAAAAA; 

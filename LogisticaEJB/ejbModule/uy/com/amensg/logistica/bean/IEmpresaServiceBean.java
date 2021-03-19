@@ -19,7 +19,7 @@ public interface IEmpresaServiceBean {
 	
 	public EmpresaService getById(Long id);
 	
-	public void save(EmpresaService empresaService);
+	public EmpresaService save(EmpresaService empresaService);
 	
 	public void remove(EmpresaService empresaService);
 	

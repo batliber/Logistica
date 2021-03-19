@@ -2,9 +2,6 @@ package uy.com.amensg.logistica.entities;
 
 import java.util.Date;
 
-import org.directwebremoting.annotations.DataTransferObject;
-
-@DataTransferObject
 public class BaseTO {
 
 	private Long id;

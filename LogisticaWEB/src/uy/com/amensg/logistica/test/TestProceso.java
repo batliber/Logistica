@@ -81,8 +81,8 @@ public class TestProceso {
 			metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 			
 			metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-			metadataConsulta.setTamanoMuestra(new Long(1));
-			metadataConsulta.setTamanoSubconjunto(new Long(1));
+			metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+			metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 			
 			MetadataConsultaResultado metadataConsultaResultado = iContratoBean.list(metadataConsulta, supervisorCallCenterELARED.getId());
 			
@@ -94,7 +94,7 @@ public class TestProceso {
 			System.out.println("MID - " + contrato.getMid() + ". Trámite - " + contrato.getNumeroTramite() + ". Estado - " + contrato.getEstado().getNombre());
 			
 			// Asignación a empresa ANBEL
-			Empresa empresaANBEL = iEmpresaBean.getById(new Long(3), false);
+			Empresa empresaANBEL = iEmpresaBean.getById(Long.valueOf(3), false);
 			Usuario supervisorCallCenterANBEL = iUsuarioBean.getByLogin("sccANBEL1", false);
 			String resultadoAsignacion = this.asignarManualmenteAOtraEmpresa(empresaANBEL, supervisorCallCenterANBEL, contrato.getMid());
 			
@@ -114,7 +114,7 @@ public class TestProceso {
 			System.out.println("MID - " + contrato.getMid() + " rechazado.");
 			
 			// Asignación a empresa RELPONT
-			Empresa empresaRELPONT = iEmpresaBean.getById(new Long(2), false);
+			Empresa empresaRELPONT = iEmpresaBean.getById(Long.valueOf(2), false);
 			Usuario supervisorCallCenterRELPONT = iUsuarioBean.getByLogin("sccRELPONT1", false); 
 			resultadoAsignacion = this.asignarManualmenteAOtraEmpresa(empresaRELPONT, supervisorCallCenterRELPONT, contrato.getMid());
 			
@@ -194,7 +194,7 @@ public class TestProceso {
 	private String asignarManualmenteAOtraEmpresa(Empresa empresa, Usuario supervisorCallCenter, Long mid) {
 		Rol rolSupervisorCallCenter = 
 			iRolBean.getById(
-				new Long(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
+				Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")),
 				false
 			);
 		
@@ -234,8 +234,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		iContratoBean.asignarVentas(vendedor, metadataConsulta, supervisorCallCenter.getId());
 	}
@@ -258,8 +258,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		MetadataConsultaResultado metadataConsultaResultado = iContratoBean.list(metadataConsulta, vendedor.getId());
 		
@@ -277,9 +277,9 @@ public class TestProceso {
 		contrato.setFechaEntrega(GregorianCalendar.getInstance().getTime());
 		contrato.setFechaNacimiento(GregorianCalendar.getInstance().getTime());
 //		contrato.setNuevoPlan("NUEVO PLAN");
-		contrato.setNumeroContrato(new Long(1));
+		contrato.setNumeroContrato(Long.valueOf(1));
 		contrato.setObservaciones("VENTA");
-		contrato.setPrecio(new Double(1.0));
+		contrato.setPrecio(Double.valueOf(1.0));
 		
 		UsuarioRolEmpresa usuarioRolEmpresa = vendedor.getUsuarioRolEmpresas().toArray(new UsuarioRolEmpresa[] {})[0];
 		
@@ -323,8 +323,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		MetadataConsultaResultado metadataConsultaResultado = iContratoBean.list(metadataConsulta, vendedor.getId());
 		
@@ -354,8 +354,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		MetadataConsultaResultado metadataConsultaResultado = iContratoBean.list(metadataConsulta, vendedor.getId());
 		
@@ -395,8 +395,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		iContratoBean.asignarBackoffice(backoffice, metadataConsulta, supervisorBackoffice.getId());
 	}
@@ -419,8 +419,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		MetadataConsultaResultado metadataConsultaResultado = iContratoBean.list(metadataConsulta, backoffice.getId());
 		
@@ -463,8 +463,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		iContratoBean.asignarDistribuidor(distribuidor, metadataConsulta, supervisorDistribucion.getId());
 	}
@@ -487,8 +487,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		MetadataConsultaResultado metadataConsultaResultado = iContratoBean.list(metadataConsulta, supervisorDistribucion.getId());
 		
@@ -528,8 +528,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		iContratoBean.asignarActivador(activador, metadataConsulta, supervisorActivacion.getId());
 	}
@@ -552,8 +552,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		MetadataConsultaResultado metadataConsultaResultado = iContratoBean.list(metadataConsulta, activador.getId());
 		
@@ -583,8 +583,8 @@ public class TestProceso {
 		metadataConsulta.setMetadataCondiciones(metadataCondiciones);
 		
 		metadataConsulta.setMetadataOrdenaciones(new LinkedList<MetadataOrdenacion>());
-		metadataConsulta.setTamanoMuestra(new Long(1));
-		metadataConsulta.setTamanoSubconjunto(new Long(1));
+		metadataConsulta.setTamanoMuestra(Long.valueOf(1));
+		metadataConsulta.setTamanoSubconjunto(Long.valueOf(1));
 		
 		MetadataConsultaResultado metadataConsultaResultado = iContratoBean.list(metadataConsulta, activador.getId());
 		

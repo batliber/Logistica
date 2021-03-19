@@ -5,63 +5,48 @@ function init() {
 	
 	$("#divEliminarModelo").hide();
 	
-	EmpresaServiceDWR.list(
-		{
-			callback: function(data) {
-				$("#selectModeloEmpresaService option").remove();
-				
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectModeloEmpresaService").append(html);
-			}, async: false
-		}
-	);
-	
-	MarcaDWR.list(
-		{
-			callback: function(data) {
-				$("#selectModeloMarca option").remove();
-				
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectModeloMarca").append(html);
-			}, async: false
-		}
-	);
-	
-	if (id != null) {
-		ModeloDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputModeloDescripcion").val(data.descripcion);
-					
-					if (data.empresaService != null) {
-						$("#selectModeloEmpresaService").val(data.empresaService.id);
-					}
-					
-					if (data.marca != null) {
-						$("#selectModeloMarca").val(data.marca.id);
-					}
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarModelo").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
-			}
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/EmpresaServiceREST/list"
+    }).then(function(data) {
+		fillSelect(
+			"selectModeloEmpresaService", 
+			data,
+			"id", 
+			"nombre"
 		);
-	}
+    }).then(function(data) {
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MarcaREST/list"
+	    }).then(function(data) { 
+			fillSelect(
+				"selectModeloMarca", 
+				data,
+				"id",
+				"nombre"
+			);
+		});
+    }).then(function(data) {
+		if (id != null) {
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/ModeloREST/getById/" + id
+		    }).then(function(data) {
+				$("#inputModeloDescripcion").val(data.descripcion);
+				
+				if (data.empresaService != null) {
+					$("#selectModeloEmpresaService").val(data.empresaService.id);
+				}
+				
+				if (data.marca != null) {
+					$("#selectModeloMarca").val(data.marca.id);
+				}
+				
+				if (mode == __FORM_MODE_ADMIN) {
+					$("#divEliminarModelo").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				}
+			});
+		}
+    });
 }
 
 function refinarForm() {
@@ -104,25 +89,29 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		modelo.id = id;
 		
-		ModeloDWR.update(
-			modelo,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ModeloREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(modelo)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	} else {
-		ModeloDWR.add(
-			modelo,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarModelo").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ModeloREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(modelo)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operación exitosa");
+				
+				$("#inputEliminarModelo").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+	    });
 	}
 }
 
@@ -132,13 +121,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		ModeloDWR.remove(
-			modelo,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/ModeloREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(modelo)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	}
 }

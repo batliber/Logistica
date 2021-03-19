@@ -8,26 +8,23 @@ function init() {
 	$("#divEliminarUnidadIndexada").hide();
 	
 	if (id != null) {
-		UnidadIndexadaDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputUnidadIndexadaVigenciaHasta").val(formatLongDate(data.fechaVigenciaHasta));
-					$("#inputUnidadIndexadaValor").val(formatDecimal(data.valor, 4));
-					
-					$("#inputUnidadIndexadaValor").prop("disabled", true);
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						if (data.fechaVigenciaHasta == null) {
-							$("#divEliminarUnidadIndexada").show();
-							$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-						} else {
-							$("#inputGuardar").prop("disabled", true);
-						}
-					}
-				}, async: false
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/UnidadIndexadaREST/getById/" + id
+	    }).then(function(data) { 
+			$("#inputUnidadIndexadaVigenciaHasta").val(formatLongDate(data.fechaVigenciaHasta));
+			$("#inputUnidadIndexadaValor").val(formatDecimal(data.valor, 4));
+			
+			$("#inputUnidadIndexadaValor").prop("disabled", true);
+			
+			if (mode == __FORM_MODE_ADMIN) {
+				if (data.fechaVigenciaHasta == null) {
+					$("#divEliminarUnidadIndexada").show();
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				} else {
+					$("#inputGuardar").prop("disabled", true);
+				}
 			}
-		);
+	    });
 	}
 }
 
@@ -53,16 +50,20 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		unidadIndexada.id = id;
 	} else {
-		UnidadIndexadaDWR.add(
-			unidadIndexada,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarUnidadIndexada").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/UnidadIndexadaREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(unidadIndexada)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operación exitosa");
+			
+				$("#inputEliminarUnidadIndexada").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+		});
 	}
 }
 
@@ -72,13 +73,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		UnidadIndexadaDWR.remove(
-			unidadIndexada,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/UnidadIndexadaREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(unidadIndexada)
+	    }).then(function(data) { 
+			alert("Operación exitosa");
+		});
 	}
 }

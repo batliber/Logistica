@@ -44,17 +44,17 @@ public class SeguridadBean implements ISeguridadBean {
 		Date date = GregorianCalendar.getInstance().getTime();
 		
 		if (usuario == null) {
-			throw new UsuarioNoExisteException();
+			throw new UsuarioNoExisteException("El usuario no existe.");
 		} else if (usuario.getBloqueado() != null && usuario.getBloqueado()) {
-			throw new UsuarioBloqueadoException();
+			throw new UsuarioBloqueadoException("Usuario bloqueado.");
 		} else if (usuario.getContrasena().equals(MD5Utils.stringToMD5(contrasena))) {
 			if (usuario.getIntentosFallidosLogin() != null 
-				&& !usuario.getIntentosFallidosLogin().equals(new Long(0))) {
-				usuario.setIntentosFallidosLogin(new Long(0));
+				&& !usuario.getIntentosFallidosLogin().equals(Long.valueOf(0))) {
+				usuario.setIntentosFallidosLogin(Long.valueOf(0));
 				
 				usuario.setFact(date);
-				usuario.setUact(new Long(1));
-				usuario.setTerm(new Long(1));
+				usuario.setUact(Long.valueOf(1));
+				usuario.setTerm(Long.valueOf(1));
 				
 				iUsuarioBean.update(usuario);
 			}
@@ -64,7 +64,7 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
 			seguridadTipoEvento.setId(
-				new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.Login"))
+				Long.parseLong(Configuration.getInstance().getProperty("seguridadTipoEvento.Login"))
 			);
 			
 			seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
@@ -73,7 +73,7 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			seguridadAuditoria.setFcre(date);
 			seguridadAuditoria.setFact(date);
-			seguridadAuditoria.setTerm(new Long(1));
+			seguridadAuditoria.setTerm(Long.valueOf(1));
 			seguridadAuditoria.setUact(usuario.getId());
 			seguridadAuditoria.setUcre(usuario.getId());
 			
@@ -84,15 +84,15 @@ public class SeguridadBean implements ISeguridadBean {
 			if (usuario.getIntentosFallidosLogin() != null) {
 				usuario.setIntentosFallidosLogin(usuario.getIntentosFallidosLogin() + 1);
 			} else {
-				usuario.setIntentosFallidosLogin(new Long(1));
+				usuario.setIntentosFallidosLogin(Long.valueOf(1));
 			}
 			
 			usuario.setFact(date);
-			usuario.setUact(new Long(1));
-			usuario.setTerm(new Long(1));
+			usuario.setUact(Long.valueOf(1));
+			usuario.setTerm(Long.valueOf(1));
 			
 			if (usuario.getIntentosFallidosLogin().equals(
-				new Long(Configuration.getInstance().getProperty("seguridad.maximaCantidadIntentosFallidosLogin"))
+				Long.parseLong(Configuration.getInstance().getProperty("seguridad.maximaCantidadIntentosFallidosLogin"))
 			)) {
 				usuario.setBloqueado(true);
 				
@@ -103,7 +103,7 @@ public class SeguridadBean implements ISeguridadBean {
 				
 				SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
 				seguridadTipoEvento.setId(
-					new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.BloqueoUsuario"))
+					Long.parseLong(Configuration.getInstance().getProperty("seguridadTipoEvento.BloqueoUsuario"))
 				);
 				
 				seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
@@ -112,17 +112,17 @@ public class SeguridadBean implements ISeguridadBean {
 				
 				seguridadAuditoria.setFcre(date);
 				seguridadAuditoria.setFact(date);
-				seguridadAuditoria.setTerm(new Long(1));
+				seguridadAuditoria.setTerm(Long.valueOf(1));
 				seguridadAuditoria.setUact(usuario.getId());
 				seguridadAuditoria.setUcre(usuario.getId());
 				
 				entityManager.persist(seguridadAuditoria);
 				
-				throw new UsuarioBloqueadoException();
+				throw new UsuarioBloqueadoException("Usuario bloqueado.");
 			} else {
 				iUsuarioBean.update(usuario);
 				
-				throw new UsuarioContrasenaIncorrectaException();
+				throw new UsuarioContrasenaIncorrectaException("Usuario o contraseña incorrecta.");
 			}
 		}
 	}
@@ -138,7 +138,7 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
 			seguridadTipoEvento.setId(
-				new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.Logout"))
+				Long.parseLong(Configuration.getInstance().getProperty("seguridadTipoEvento.Logout"))
 			);
 			
 			seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
@@ -147,7 +147,7 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			seguridadAuditoria.setFcre(date);
 			seguridadAuditoria.setFact(date);
-			seguridadAuditoria.setTerm(new Long(1));
+			seguridadAuditoria.setTerm(Long.valueOf(1));
 			seguridadAuditoria.setUact(usuario.getId());
 			seguridadAuditoria.setUcre(usuario.getId());
 			
@@ -168,7 +168,7 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			SeguridadTipoEvento seguridadTipoEvento = new SeguridadTipoEvento();
 			seguridadTipoEvento.setId(
-				new Long(Configuration.getInstance().getProperty("seguridadTipoEvento.Timeout"))
+				Long.parseLong(Configuration.getInstance().getProperty("seguridadTipoEvento.Timeout"))
 			);
 			
 			seguridadAuditoria.setSeguridadTipoEvento(seguridadTipoEvento);
@@ -177,7 +177,7 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			seguridadAuditoria.setFcre(date);
 			seguridadAuditoria.setFact(date);
-			seguridadAuditoria.setTerm(new Long(1));
+			seguridadAuditoria.setTerm(Long.valueOf(1));
 			seguridadAuditoria.setUact(usuario.getId());
 			seguridadAuditoria.setUcre(usuario.getId());
 			

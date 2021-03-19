@@ -4,44 +4,69 @@ var marker = null;
 $(document).ready(init);
 
 function init() {
-	EstadoPuntoVentaDWR.list(
-		{
-			callback: fillSelectPuntoVentaEstado, async: false
-		}
-	);
-	
-	DepartamentoDWR.list(
-		{
-			callback: fillSelectDepartamento, async: false
-		}
-	);
-	
-	fillSelectBarrio([]);
-	
+	initTabbedPanel();
+
 	refinarForm();
 	
 	$("#divEliminarPuntoVenta").hide();
 	
-	initMap();
-	
-	if (id != null) {
-		PuntoVentaDWR.getById(
-			id,
-			{
-				callback: function(data) {
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/EstadoPuntoVentaREST/list"
+	}).then(function(data) {
+		fillSelect(
+			"selectPuntoVentaEstado", 
+			data,
+			"id", 
+			"nombre"
+		);
+	}).then(function(data) {
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/DepartamentoREST/list"
+		}).then(function(data) {
+			fillSelect(
+				"selectPuntoVentaDepartamento",
+				data,
+				"id", 
+				"nombre"
+			);
+		});
+	}).then(function(data) {
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/BarrioREST/listMinimal"
+		}).then(function(data) {
+			fillSelect(
+				"selectPuntoVentaBarrio",
+				data,
+				"id", 
+				"nombre"
+			);
+		}).then(function(data) {
+			initMap();
+			
+			if (id != null) {
+				$.ajax({
+					url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/getById/" + id
+				}).then(function(data) {
 					$("#inputPuntoVentaNombre").val(data.nombre);
 					$("#inputPuntoVentaDireccion").val(data.direccion);
 					$("#inputPuntoVentaTelefono").val(data.telefono);
 					$("#inputPuntoVentaContacto").val(data.contacto);
 					$("#inputPuntoVentaDocumento").val(data.documento);
-					$("#divPuntoVentaFechaAsignacionDistribuidor").text(formatRawDate(data.fechaAsignacionDistribuidor));
-					$("#divPuntoVentaFechaVisitaDistribuidor").text(formatRawDate(data.fechaVisitaDistribuidor));
-					$("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").text(formatRawDate(data.fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor));
+					$("#divPuntoVentaFechaAsignacionDistribuidor").text(
+						formatRawDate(data.fechaAsignacionDistribuidor)
+					);
+					$("#divPuntoVentaFechaVisitaDistribuidor").text(
+						formatRawDate(data.fechaVisitaDistribuidor)
+					);
+					$("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").text(
+						formatRawDate(data.fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor)
+					);
+					$("#divPuntoVentaFechaVencimientoChipMasViejo").text(
+						formatRawDate(data.fechaVencimientoChipMasViejo)
+					);
 					
 					if (data.departamento != null) {
 						$("#selectPuntoVentaDepartamento").val(data.departamento.id);
-						
-						selectDepartamentoOnChange();
 					}
 					
 					if (data.barrio != null) {
@@ -53,7 +78,9 @@ function init() {
 					}
 					
 					if (data.estadoVisitaPuntoVentaDistribuidor != null) {
-						$("#divPuntoVentaEstadoVisitaPuntoVentaDistribuidor").attr("eid", data.estadoVisitaPuntoVentaDistribuidor.id);
+						$("#divPuntoVentaEstadoVisitaPuntoVentaDistribuidor").attr(
+							"eid", data.estadoVisitaPuntoVentaDistribuidor.id
+						);
 					}
 					
 					if (data.distribuidor != null) {
@@ -73,14 +100,50 @@ function init() {
 						}
 					}
 					
+					if (data.recargaPuntoVentaCota != null) {
+						$("#inputCotaTopeAlarmaSaldo").val(data.recargaPuntoVentaCota.topeAlarmaSaldo);
+						$("#inputCotaRecargaTotalDia").val(data.recargaPuntoVentaCota.topeTotalPorDia);
+						$("#inputCotaRecargaTotalMes").val(data.recargaPuntoVentaCota.topeTotalPorMes);
+						$("#inputCotaRecargaTopeMid").val(data.recargaPuntoVentaCota.topePorMid);
+						$("#inputCotaRecargaTopeDescuento").val(data.recargaPuntoVentaCota.topePorcentajeDescuento);
+					} else {
+						$("#inputCotaTopeAlarmaSaldo").val(null);
+						$("#inputCotaRecargaTotalDia").val(null);
+						$("#inputCotaRecargaTotalMes").val(null);
+						$("#inputCotaRecargaTopeMid").val(null);
+						$("#inputCotaRecargaTopeDescuento").val(null);
+					}
+					
 					if (mode == __FORM_MODE_ADMIN) {
 						$("#divEliminarPuntoVenta").show();
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 					}
-				}, async: false
+				});
 			}
-		);
-	}
+		});
+	});
+}
+
+function initTabbedPanel() {
+	$("#divTab2").hide();
+	
+	$(".divTabHeader > div").click(function(eventObject) {
+		var element = $(eventObject.currentTarget);
+		var index = element.attr("id").substring(element.attr("id").length - 1);
+		
+		if (element.attr("class") != "divTabTitleFiller") {
+			var tabs = $(".divTabbedPanel > .divTab");
+			for (var i=0; i<tabs.length; i++) {
+				if ((i + 1) == index) {
+					$("#divTab" + (i + 1)).show();
+					$("#divTabTitle" + (i + 1)).attr("class", "divTabTitleSelected");
+				} else {
+					$("#divTab" + (i + 1)).hide();
+					$("#divTabTitle" + (i + 1)).attr("class", "divTabTitle");
+				}
+			}
+		}
+	});
 }
 
 function refinarForm() {
@@ -98,6 +161,8 @@ function refinarForm() {
 	$("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").hide();
 	$("#divLabelEstadoVisitaPuntoVentaDistribuidor").hide();
 	$("#divPuntoVentaEstadoVisitaPuntoVentaDistribuidor").hide();
+	$("#divLabelFechaVencimientoChipMasViejo").hide();
+	$("#divPuntoVentaFechaVencimientoChipMasViejo").hide();
 	
 	if (mode == __FORM_MODE_ADMIN) {
 		
@@ -170,60 +235,24 @@ function initMap() {
 	});
 }
 
-function fillSelectPuntoVentaEstado(data) {
-	$("#selectDepartamento > option").remove();
-	
-	var html =
-		"<option id='0' value='0'>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectPuntoVentaEstado").append(html);
-}
-
-function fillSelectDepartamento(data) {
-	$("#selectPuntoVentaDepartamento > option").remove();
-	
-	html =
-		"<option value='0'>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectPuntoVentaDepartamento").append(html);
-}
-
-function fillSelectBarrio(data) {
-	$("#selectPuntoVentaBarrio > option").remove();
-	
-	html =
-		"<option value=0>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectPuntoVentaBarrio").append(html);
-}
-
 function selectDepartamentoOnChange(event, element) {
-	var departamentoId = $("#selectPuntoVentaDepartamento").val();
+	fillSelect(
+		"selectPuntoVentaBarrio",
+		[],
+		"id",
+		"nombre"
+	);
 	
-	fillSelectBarrio([]);
-	
-	if (departamentoId != 0) {
-		BarrioDWR.listByDepartamentoId(
-			$("#selectPuntoVentaDepartamento").val(),
-			{
-				callback: fillSelectBarrio, async: false
-			}
-		);
-	}
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/BarrioREST/listMinimalByDepartamentoId/" + $("#selectPuntoVentaDepartamento").val()
+    }).then(function(data) { 
+		fillSelect(
+			"selectPuntoVentaBarrio",
+			data,
+			"id",
+			"nombre"
+		);		
+    });
 }
 
 function inputGuardarOnClick(event) {
@@ -235,15 +264,19 @@ function inputGuardarOnClick(event) {
 		documento: $("#inputPuntoVentaDocumento").val(),
 		fechaAsignacionDistribuidor: 
 			($("#divPuntoVentaFechaAsignacionDistribuidor").text().trim() != "" ?
-				new Date(parseInt($("#divPuntoVentaFechaAsignacionDistribuidor").text()))
+				parseInt($("#divPuntoVentaFechaAsignacionDistribuidor").text())
 				: null),
 		fechaVisitaDistribuidor: 
 			($("#divPuntoVentaFechaVisitaDistribuidor").text().trim() != "" ?
-				new Date(parseInt($("#divPuntoVentaFechaVisitaDistribuidor").text()))
+				parseInt($("#divPuntoVentaFechaVisitaDistribuidor").text())
 				: null),
 		fechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor: 
 			($("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").text().trim() != "" ?
-				new Date(parseInt($("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").text()))
+				parseInt($("#divPuntoVentaFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor").text())
+				: null),
+		fechaVencimientoChipMasViejo: 
+			($("#divPuntoVentaFechaVencimientoChipMasViejo").text().trim() != "" ?
+				parseInt($("#divPuntoVentaFechaVencimientoChipMasViejo").text())
 				: null),
 		latitud: marker.getPosition().lat(),
 		longitud: marker.getPosition().lng(),
@@ -297,28 +330,57 @@ function inputGuardarOnClick(event) {
 		return;
 	}
 	
+	var topeAlarmaSaldo = $("#inputCotaTopeAlarmaSaldo").val();
+	var topeTotalPorDia = $("#inputCotaRecargaTotalDia").val();
+	var topePorcentajeDescuento = $("#inputCotaRecargaTotalMes").val();
+	var topePorMid = $("#inputCotaRecargaTopeMid").val();
+	var topeTotalPorMes = $("#inputCotaRecargaTopeDescuento").val();
+	
+	if (
+		(topeAlarmaSaldo != null && topeAlarmaSaldo != "")
+		|| (topeTotalPorDia != null && topeTotalPorDia != "")
+		|| (topePorcentajeDescuento != null && topePorcentajeDescuento != "")
+		|| (topePorMid != null && topePorMid != "")
+		|| (topeTotalPorMes != null && topeTotalPorMes != "") 
+	) {
+		puntoVenta.recargaPuntoVentaCota = {
+			topeAlarmaSaldo: topeAlarmaSaldo,
+			topeTotalPorDia: topeTotalPorDia,
+			topePorcentajeDescuento: topePorcentajeDescuento,
+			topePorMid: topePorMid,
+			topeTotalPorMes: topeTotalPorMes,
+			pùntoVenta: {
+				id: id
+			}
+		};
+	}
+	
 	if (id != null) {
 		puntoVenta.id = id;
 		
-		PuntoVentaDWR.update(
-			puntoVenta,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(puntoVenta)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	} else {
-		PuntoVentaDWR.add(
-			puntoVenta,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarPuntoVenta").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(puntoVenta)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operación exitosa");
+				
+				$("#inputEliminarPuntoVenta").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+	    });
 	}
 }
 
@@ -328,13 +390,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		PuntoVentaDWR.remove(
-			puntoVenta,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(puntoVenta)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	}
 }

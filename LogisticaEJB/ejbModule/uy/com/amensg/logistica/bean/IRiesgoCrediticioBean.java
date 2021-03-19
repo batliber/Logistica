@@ -1,5 +1,7 @@
 package uy.com.amensg.logistica.bean;
 
+import java.util.List;
+
 import javax.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceRiesgoCrediticio;
@@ -9,6 +11,7 @@ import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.RiesgoCrediticio;
+import uy.com.amensg.logistica.webservices.external.tablero.BCUBCUItem;
 
 @Remote
 public interface IRiesgoCrediticioBean {
@@ -56,4 +59,6 @@ public interface IRiesgoCrediticioBean {
 	public void controlarRiesgoBCU(String documento);
 	
 	public void controlarRiesgoBCUOnline(String documento);
+
+	public List<BCUBCUItem> listPendientesRiesgoOnLine();
 }

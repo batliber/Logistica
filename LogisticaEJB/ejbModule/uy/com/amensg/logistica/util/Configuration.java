@@ -10,17 +10,8 @@ import uy.com.amensg.logistica.bean.IConfiguracionBean;
 public class Configuration {
 
 	private static Configuration instance = null;
-	
-//	private Properties properties = null;
-	
+		
 	private Configuration() {
-//		try {
-//			properties = new Properties();
-//			
-//			properties.load(getClass().getClassLoader().getResourceAsStream("logisticaEJB.properties"));
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 		
 	}
 	
@@ -32,8 +23,6 @@ public class Configuration {
 	}
 	
 	public String getProperty(String name) {
-//		return properties.getProperty(name);
-		
 		String result = null;
 		
 		try {

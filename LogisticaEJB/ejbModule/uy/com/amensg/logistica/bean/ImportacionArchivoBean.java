@@ -3,7 +3,6 @@ package uy.com.amensg.logistica.bean;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,10 +18,11 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.type.LongType;
 import org.hibernate.type.TimestampType;
 
@@ -71,12 +71,12 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 			
 			EstadoProcesoImportacion estadoProcesoImportacionInicio = 
 				iEstadoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio"))
 				);
 			
 			TipoProcesoImportacion tipoProcesoImportacion =
 				iTipoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("tipoProcesoImportacion.Liquidaciones"))
+					Long.parseLong(Configuration.getInstance().getProperty("tipoProcesoImportacion.Liquidaciones"))
 				);
 			
 			Usuario usuario =
@@ -91,7 +91,7 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 			
 			procesoImportacion.setFcre(hoy);
 			procesoImportacion.setFact(hoy);
-			procesoImportacion.setTerm(new Long(1));
+			procesoImportacion.setTerm(Long.valueOf(1));
 			procesoImportacion.setUact(loggedUsuarioId);
 			procesoImportacion.setUcre(loggedUsuarioId);
 			
@@ -132,12 +132,12 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoOK = 
 				iEstadoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK"))
 				);		
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoConErrores = 
 				iEstadoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores"))
 				);
 			
 			ProcesoImportacion procesoImportacionManaged = 
@@ -147,9 +147,9 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 			
 			Transaction transaction = hibernateSession.beginTransaction();
 			
-			SQLQuery selectId = 
-				hibernateSession.createSQLQuery(
-					"SELECT nextval('hibernate_sequence')"
+			NativeQuery<Tuple> selectId = 
+				hibernateSession.createNativeQuery(
+					"SELECT nextval('hibernate_sequence')", Tuple.class
 				);
 			
 			String insertQueryStringColumns = 
@@ -198,7 +198,7 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 //				+ " )"
 //			);
 			
-			SQLQuery insert = hibernateSession.createSQLQuery(
+			NativeQuery<?> insert = hibernateSession.createNativeQuery(
 				"INSERT INTO " + formatoImportacionArchivo.getNombreTablaDestino() + " ("
 					+ insertQueryStringColumns
 				+ " ) VALUES ("
@@ -206,11 +206,11 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 				+ " )"
 			);
 			
-			insert.setParameter(0, loggedUsuarioId, LongType.INSTANCE);
-			insert.setParameter(1, hoy, TimestampType.INSTANCE);
-			insert.setParameter(2, loggedUsuarioId, LongType.INSTANCE);
-			insert.setParameter(3, hoy, TimestampType.INSTANCE);
-			insert.setParameter(4, new Long(1), LongType.INSTANCE);
+			insert.setParameter(1, loggedUsuarioId, LongType.INSTANCE);
+			insert.setParameter(2, hoy, TimestampType.INSTANCE);
+			insert.setParameter(3, loggedUsuarioId, LongType.INSTANCE);
+			insert.setParameter(4, hoy, TimestampType.INSTANCE);
+			insert.setParameter(5, Long.valueOf(1), LongType.INSTANCE);
 			
 			String line = null;
 			long lineNumber = 0;
@@ -242,24 +242,24 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 						if (!ok) {
 							errors++;
 						} else {
-//							select.setParameter(0, idField);
+//							select.setParameter(1, idField);
 //							
 //							List<?> list = select.list();
 //							if (list.size() > 0) {
 //								// Si el registro ya existe, omito.
 //							} else {
-								Long id = new Long(((BigInteger) selectId.list().get(0)).longValue());
+								Long id = (Long) selectId.list().get(0).get(0);
 								
-								insert.setParameter(5, id);
+								insert.setParameter(6, id);
 								
-								int parameterNumber = 6;
+								int parameterNumber = 7;
 								fieldIndex = 0;
 								for (FormatoImportacionArchivoColumna formatoImportacionArchivoColumna : toOrder) {
 									switch (formatoImportacionArchivoColumna.getTipoDato().getId().intValue()) {
 										case Constants.__TIPO_DATO_INTEGER:
 											insert.setParameter(
 												parameterNumber,
-												new Long(fields[fieldIndex])
+												Long.valueOf(fields[fieldIndex])
 											);
 											
 											break;
@@ -273,7 +273,7 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 										case Constants.__TIPO_DATO_DOUBLE_PRECISION:
 											insert.setParameter(
 												parameterNumber,
-												new Double(fields[fieldIndex])
+												Double.valueOf(fields[fieldIndex])
 											);
 											
 											break;

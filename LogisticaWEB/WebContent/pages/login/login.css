@@ -1,15 +1,16 @@
-.divLoginForm {
-	position: relative;
+.divLoginMainWindow {
 	margin: auto;
-	top: 100px;
 	width: 275px;
+}
+
+.divLoginForm {
+	width: 100%;
+	margin-top: 100px;
 	height: 275px;
 	border: solid 1px black;
 }
 
 .divForm {
-	position: absolute;
-	top: 21px;
 	width: 100%;
 }
 
@@ -22,6 +23,13 @@
 
 .divLogo img {
 	width: 75px;
+}
+
+.divLoginTitleBar {
+	width: 100%;
+	height: 20px;
+	border-bottom: solid 1px black;
+	background-color: black;
 }
 
 .divLoginForm .divFormLabel {
@@ -63,9 +71,7 @@
 	text-align: right;
 }
 
-.divVersionBar {
-	position: absolute;
-	top: 255px;
+.divLoginVersionBar {
 	float: left;
 	width: 100%;
 	height: 20px;
@@ -73,7 +79,7 @@
 	text-align: right;
 }
 
-.divVersionBarText {
+.divLoginVersionBarText {
 	padding-top: 2px;
 	padding-right: 2px;
 	color: white;

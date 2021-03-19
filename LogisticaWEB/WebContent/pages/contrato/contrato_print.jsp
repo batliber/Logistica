@@ -1,22 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="/includes/header.jsp" %>
 	<title>Contrato</title>
 	<script type="text/javascript">
 		var mode = <%= request.getParameter("m") != null ? request.getParameter("m") : "0" %>;
 		var id = <%= request.getParameter("cid") != null ? request.getParameter("cid") : "null" %>;
 	</script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
 	<script type="text/javascript" src="./contrato_print.js"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
 	<link rel="stylesheet" type="text/css" href="./contrato_print.css"/>
 </head>
 <body>
@@ -34,7 +24,7 @@
 					-->
 					
 					<div class="divFormLabelExtendedPrint" id="divLabelNumeroTramite">Tr&aacute;mite:</div><div id="divNumeroTramite" class="divFormValuePrint">&nbsp;</div>
-					<div class="divFormLabelExtendedPrint" id="divLabelNumeroTramiteBarCode">C&oacute;digo de barras:</div><div class="divFormValuePrint"><div id="divNumeroTramiteBarCode" class="divBarCode">&nbsp;</div></div>
+					<div class="divFormLabelExtendedPrint" id="divLabelNumeroTramiteBarCode">C&oacute;digo de barras:</div><div class="divFormValuePrint"><img id="imgNumeroTramiteBarCode" src="about:blank"></img><!-- <div id="divNumeroTramiteBarCode" class="divBarCode">&nbsp;</div> --></div>
 					<div class="divFormLabelExtendedPrint" id="divLabelDepartamento">Departamento:</div><div class="divFormValuePrint divDepartamento">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelZona">Zona:</div><div class="divFormValuePrint divZona">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelBarrio">Barrio:</div><div class="divFormValuePrint divBarrio">&nbsp;</div>
@@ -60,7 +50,7 @@
 				</div>
 				<div class="divColumn">
 					<div class="divFormLabelExtendedPrint" id="divLabelMid">MID:</div><div id="divMid" class="divFormValuePrint">&nbsp;</div>
-					<div class="divFormLabelExtendedPrint" id="divLabelMidBarCode">C&oacute;digo de barras:</div><div class="divFormValuePrint"><div id="divMidBarCode" class="divBarCode">&nbsp;</div></div>
+					<div class="divFormLabelExtendedPrint" id="divLabelMidBarCode">C&oacute;digo de barras:</div><div class="divFormValuePrint"><img id="imgMidBarCode" src="about:blank"></img><!-- <div id="divMidBarCode" class="divBarCode">&nbsp;</div> --></div>
 					<div class="divFormLabelExtendedPrint" id="divLabelNombre">Nombre:</div><div id="divNombre" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelTelefonoContacto">Tel&eacute;fono contacto:</div><div id="divTelefonoContacto" class="divFormValuePrint">&nbsp;</div>
 					<div class="divFormLabelExtendedPrint" id="divLabelCostoEnvio">Costo de env&iacute;o:</div><div id="divCostoEnvio" class="divFormValuePrint">&nbsp;</div>

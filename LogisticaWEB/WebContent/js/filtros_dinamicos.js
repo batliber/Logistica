@@ -8,244 +8,371 @@ function FiltroDinamico(grid, campos, reloadListener) {
 	this.filtros = 0;
 	this.ordenes = {};
 	this.reloadListener = reloadListener;
+	this.preventReload = false;
 	
 	/**
 	 * Construye el espacio para filtros dinámicos asociados a la tabla grid.
 	 */
-	this.rebuild = function(width) {
-		html = 
-			"<div class='divFiltrosHandle'>"
-				+ "<div class='divFiltrosHandleLeft' style='width: " + ((width - 100) / 2) + "px;'>"
-					+ "<div class='divFiltrosHandleLeftTop'>&nbsp;</div>"
-					+ "<div class='divFiltrosHandleLeftBottom'>&nbsp;</div>"
-				+ "</div>"
-				+ "<div class='divFiltrosHandleCenter'>"
-					+ "<div class='divFiltrosHandleCenterTop'>"
-						+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
-						+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
-						+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
-					+ "</div>"
-					+ "<div class='divFiltrosHandleCenterBottom'>&nbsp;</div>"
-				+ "</div>"
-				+ "<div class='divFiltrosHandleRight' style='width: " + ((width - 100) / 2) + "px;'>"
-					+ "<div class='divFiltrosHandleRightTop'>&nbsp;</div>"
-					+ "<div class='divFiltrosHandleRightBottom'>&nbsp;</div>"
-				+ "</div>"
-			+ "</div>"
-			+ "<div class='divFiltros'>"
-				+ "<div class='divLabelTamanoMuestra'>Muestra:</div>"
-				+ "<div class='divTamanoMuestra'>"
-					+ "<input type='text' class='inputTamanoMuestra' value='" + this.tamanoMuestra + "'/>"
-				+ "</div>"
-				+ "<div class='divLabelTamanoSubconjunto'>Subconj.:</div>"
-				+ "<div class='divTamanoSubconjunto'>"
-					+ "<input type='text' class='inputTamanoSubconjunto' value='" + this.tamanoSubconjunto + "'/>"
-				+ "</div>"
-				+ "<div class='divAgregarFiltroContainer'>"
-					+ "<div class='divLabelFiltros'>Filtros:</div>"
-					+ "<div class='divAgregarFiltro'>"
-						+ "<input type='submit' value='' class='inputAgregarFiltro'/>"
-					+ "</div>"
-//					+ "<div class='divFormLabelExtended'>Limpiar filtros:</div>"
-					+ "<div class='divLimpiarFiltros'>"
-						+ "<input type='submit' value='' class='inputLimpiarFiltros'/>"
-					+ "</div>"
-//					+ "<div class='divFormLabelExtended'>Seleccionar columnas:</div>"
-					+ "<div class='divSeleccionarColumnas'>"
-						+ "<input type='submit' value='' class='inputSeleccionarColumnas'/>"
-						+ "<div class='divIFrameSeleccionColumnas'>"
-							+ "<div class='divTitleBar'>"
-								+ "<div class='divTitleBarText'>Columnas</div>"
-								+ "<div class='divTitleBarCloseButton' onclick='javascript:closePopUp(event, this.parentNode.parentNode)'>&nbsp;</div>"
-							+ "</div>"
-							+ "<div class='divSeleccionColumnas'>"
-								+ "<div class='divPopupWindow'>"
-									+ "<div class='divSeleccionColumnasLista'>&nbsp;</div>"
-									+ "<div class='divSeleccionColumnasBotonera'>"
-										+ "<input type='submit' class='inputSeleccionColumnasAceptar' value=''/>"
-									+ "</div>"
-								+ "</div>"
-							+ "</div>"
-						+ "</div>"
-					+ "</div>"
-				+ "</div>"
-			+ "</div>";
-			
-		$(this.grid.element).html(html);
-		
-		var divFiltros = $(this.grid.element).children(".divFiltros");
-		var divFiltrosHandle = $(this.grid.element).children(".divFiltrosHandle");
-		
-		divFiltros.css("width", width - 6);
-		
-		divFiltros.find(".inputTamanoMuestra").change(this.tamanoMuestraOnChange.bind(this));
-		divFiltros.find(".inputTamanoSubconjunto").change(this.tamanoSubconjuntoOnChange.bind(this));
-		divFiltros.find(".inputSeleccionarColumnas").click(this.seleccionarColumnas.bind(this));
-		divFiltros.find(".inputSeleccionColumnasAceptar").click(this.actualizarColumnas.bind(this));
-		divFiltros.find(".inputAgregarFiltro").click(this.agregarFiltro.bind(this));
-		divFiltros.find(".inputLimpiarFiltros").click(this.limpiarFiltros.bind(this));
-		divFiltrosHandle.find(".divFiltrosHandleCenterTop").click(this.mostrarOcultarFiltros.bind(this));
-		divFiltrosHandle.find(".divFiltrosHandleCenterTopLine").click(this.mostrarOcultarFiltros.bind(this));
-		divFiltrosHandle.find(".divFiltrosHandleCenterBottom").click(this.mostrarOcultarFiltros.bind(this));
-	},
+	this.rebuild = _rebuild,
 	
 	/**
 	 * Listener del evento "change" del input de selección del tamaño de la muestra.
 	 */
 	this.tamanoMuestraOnChange = function(eventObject) {
-		this.tamanoMuestra = $(eventObject.target).val();
-		
-		this.reloadListener();
+		return _tamanoMuestraOnChange.bind(this)(eventObject);
 	},
 	
 	/**
 	 * Listener del evento "change" del input de selección del tamaño del subconjunto.
 	 */
 	this.tamanoSubconjuntoOnChange = function(eventObject) {
-		this.tamanoSubconjunto = $(eventObject.target).val();
-		
-		this.reloadListener();
+		return _tamanoSubconjuntoOnChange.bind(this)(eventObject);
 	},
 	
 	/**
 	 * Listener del evento "click" del input que abre la ventana de selección de columnas.
 	 */
-	this.seleccionarColumnas = function(eventObject) {
-		$(this.grid.element).find(".divSeleccionColumna").remove();
-		
-		var html = "";
-		var i=0;
-		for (var campo in this.campos) {
-			html += 
-				"<div id='divSeleccionColumna" + i + "' class='divSeleccionColumna'>" 
-					+ "<div class='divSeleccionColumnasCampo'>" + this.campos[campo].descripcion + "</div>"
-					+ "<div class='divSeleccionColumnasCampoCheck'>"
-						+ "<input type='checkbox' class='checkboxSeleccionCampos'"
-							+ " cid='" + campo + "'" + (this.campos[campo] == null || !this.campos[campo].oculto ? " checked='checked'" : "") 
-						+ "'/>"
-					+ "</div>"
-				+ "</div>";
-			i++;
-		}
-		
-		$(this.grid.element).find(".divSeleccionColumnasLista").html(html);
-		$(this.grid.element).find(".divIFrameSeleccionColumnas").show();
-		$(this.grid.element).find(".divIFrameSeleccionColumnas").draggable();
-	}
+	this.seleccionarColumnasOnClick = function(eventObject) {
+		return _seleccionarColumnasOnClick.bind(this)(eventObject);
+	},
 	
 	/**
 	 * Listener del evento "click" del input que confirma la selección de columnas.
 	 */
-	this.actualizarColumnas = function(event, element) {
-		var checkboxes = $(this.grid.element).find(".checkboxSeleccionCampos");
-		
-		for (var i=0; i < checkboxes.length; i++) {
-			this.campos[$(checkboxes[i]).attr("cid")].oculto = !$(checkboxes[i]).prop("checked");
-		}
-		
-		var condiciones = this.calcularCondiciones();
-		
-		this.grid.rebuild();
-		
-		for (var i=0; i<condiciones.length; i++) {
-			this.agregarFiltroManual(condiciones[i], condiciones[i].fijo);
-		}
-		
-		this.reloadListener();
-		
-		closePopUp(event, element.parentNode.parentNode.parentNode.parentNode);
+	this.actualizarColumnasOnClick = function(eventObject) {
+		return _actualizarColumnasOnClick.bind(this)(eventObject);
 	},
 	
 	/**
 	 * Listener del evento "click" del input que elimina los filtros definidos.
 	 */
-	this.limpiarFiltros = function(event, element) {
-		var divFiltros = $(this.grid.element).children(".divFiltros").find(".divFiltro");
-		
-		for (var i=0; i<divFiltros.length; i++) {
-			var divFiltro = $(divFiltros[i]);
-			var selectCampo = divFiltro.find(".selectCampo");
-			
-			if (!selectCampo.prop("disabled")) {
-				divFiltro.remove();
-			}
-		}
-		
-		this.reloadListener();
+	this.limpiarFiltrosOnClick = function(eventObject) {
+		return _limpiarFiltrosOnClick.bind(this)(eventObject);
 	},
 	
 	this.agregarFiltroManual = function(filtro, fijo) {
-		var divFiltros = $(this.grid.element).children(".divFiltros");
-		
-		this.agregarFiltro(null, fijo);
-		
-		var divFiltro = divFiltros.children(".divFiltro:last");
-		
-		var selectCampo = divFiltro.find(".selectCampo");
-		selectCampo.val(filtro.campo);
-		
-		selectCampo.trigger("change");
-		
-		var selectCondicion = divFiltro.find(".selectCondicion");
-		selectCondicion.val(filtro.operador);
-		if (fijo != null && fijo) {
-			selectCondicion.prop("disabled", "disabled");
-		}
-		
-		selectCondicion.trigger("change");
-		
-		if (filtro.valores.length > 0) {
-			var selectValor = divFiltro.find(".selectValor");
-			selectValor.val(filtro.valores[0]);
-			
-			if (fijo != null && fijo) {
-				selectValor.prop("disabled", "disabled");
-			}
-			
-			selectValor.trigger("change");
-		}
-	}
+		return _agregarFiltroManual.bind(this)(filtro, fijo);
+	},
 	
 	this.agregarFiltrosManuales = function(filtros, fijo) {
-		for (var i=0; i<filtros.length; i++) {
-			var filtro = filtros[i];
-			
-			var divFiltros = $(this.grid.element).children(".divFiltros");
-			
-			this.agregarFiltro(null, fijo);
-			
-			var divFiltro = divFiltros.children(".divFiltro:last");
-			
-			var selectCampo = divFiltro.find(".selectCampo");
-			selectCampo.val(filtro.campo);
-			
-			selectCampo.trigger("change");
-			
-			var selectCondicion = divFiltro.find(".selectCondicion");
-			selectCondicion.val(filtro.operador);
-			if (fijo != null && fijo) {
-				selectCondicion.prop("disabled", "disabled");
-			}
-			
-			selectCondicion.trigger("change");
-			
-			if (filtro.valores.length > 0) {
-				var selectValor = divFiltro.find(".selectValor");
-				selectValor.val(filtro.valores[0]);
-				
-				if (fijo != null && fijo) {
-					selectValor.prop("disabled", "disabled");
-				}
-			}
-		}
-		
-		this.reloadListener();
-	}
+		return _agregarFiltrosManuales.bind(this)(filtros, fijo);
+	},
 	
 	/**
 	 * Listener del evento "click" del input que agrega un filtro sobre los datos de la tabla grid.
 	 */
-	this.agregarFiltro = function(eventObject, fijo) {
+	this.agregarFiltroOnClick = function(eventObject) {
+		return _agregarFiltro.bind(this)(false);
+	},
+	
+	/**
+	 * Listener del evento "click" del input que elimina un filtro definido.
+	 */
+	this.quitarFiltroOnClick = function(eventObject) {
+		return _quitarFiltro.bind(this)(eventObject);
+	},
+	
+	/**
+	 * Listener del evento "change" del select que contiene la lista de campos para definir un filtro.
+	 */
+	this.campoOnChange = function(eventObject) {
+		return _campoOnChange.bind(this)(eventObject);
+	},
+	
+	/**
+	 * Listener del evento "change" del select que contiene la lista de condiciones para definir un filtro.
+	 */
+	this.condicionOnChange = function(eventObject) {
+		return _condicionOnChange.bind(this)(eventObject);
+	},
+	
+	/**
+	 * Listener del evento "change" de los controles que contienen los valores para definir un filtro.
+	 */
+	this.valorOnChange = function(eventObject) {
+		return _valorOnChange.bind(this)(eventObject);
+	},
+	
+	/**
+	 * Listener del evento "change" del select que contiene los valores múltiples para definir un filtro de tipo INCLUIDO EN. 
+	 */
+	this.valorMultipleOnChange = function(eventObject) {
+		return _valorMultipleOnChange.bind(this)(eventObject);
+	},
+	
+	/**
+	 * Listener del evento "click" de los div que contienen los valores múltiples para definir un filtro de tipo INCLUIDO EN.
+	 */
+	this.valorMultipleOnClick = function(eventObject) {
+		return _valorMultipleOnClick.bind(this)(eventObject);
+	},
+	
+	/**
+	 * Función que calcula las condiciones que representan el filtro definido en pantalla.
+	 */
+	this.calcularCondiciones = _calcularCondiciones,
+	
+	/**
+	 * Listener del evento "click" de los encabezados de las columnas de la tabla grid.
+	 * Generan ordenaciones de los datos en función de la columna seleccionada.
+	 * 
+	 * Nota: los elementos de los encabezados tienen el formato: "divTableHeaderCell divTableHeaderCellXXX"
+	 * donde XXX denota el tipo de ordenación (NOO, ASC, DES).
+	 * Siempre se mantiene el prefijo divTableHeaderCell.
+	 */
+	this.agregarOrdenOnClick = function(eventObject) {
+		return _agregarOrden.bind(this)(eventObject);
+	},
+	
+	this.agregarOrdenManual = function(orden) {
+		return _agregarOrdenManual.bind(this)(orden);
+	},
+	
+	/**
+	 * Función que calcula las ordenaciones que representan el filtro definido en pantalla.
+	 */
+	this.calcularOrdenaciones = _calcularOrdenaciones,
+	
+	/**
+	 * Función que calcula la entidad que representa el filtro definido en pantalla.
+	 */
+	this.calcularMetadataConsulta = _calcularMetadataConsulta,
+	
+	/**
+	 * Listener del evento "click" de los div que permiten mostrar el menú de acciones sobre una columna.
+	 */
+	this.showMenu = _showMenu,
+	
+	/**
+	 * Listener del evento "click" del div que muestra/oculta los filtros.
+	 */
+	this.mostrarOcultarFiltrosOnClick = function(eventObject) {
+		return _mostrarOcultarFiltros.bind(this)(eventObject);
+	}
+}
+
+function _rebuild(width) {
+	html = 
+		"<div class='divFiltrosHandle'>"
+			+ "<div class='divFiltrosHandleLeft' style='width: " + ((width - 100) / 2) + "px;'>"
+				+ "<div class='divFiltrosHandleLeftTop'>&nbsp;</div>"
+				+ "<div class='divFiltrosHandleLeftBottom'>&nbsp;</div>"
+			+ "</div>"
+			+ "<div class='divFiltrosHandleCenter'>"
+				+ "<div class='divFiltrosHandleCenterTop'>"
+					+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
+					+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
+					+ "<div class='divFiltrosHandleCenterTopLine'>&nbsp;</div>"
+				+ "</div>"
+				+ "<div class='divFiltrosHandleCenterBottom'>&nbsp;</div>"
+			+ "</div>"
+			+ "<div class='divFiltrosHandleRight' style='width: " + ((width - 100) / 2) + "px;'>"
+				+ "<div class='divFiltrosHandleRightTop'>&nbsp;</div>"
+				+ "<div class='divFiltrosHandleRightBottom'>&nbsp;</div>"
+			+ "</div>"
+		+ "</div>"
+		+ "<div class='divFiltros'>"
+			+ "<div class='divLabelTamanoMuestra'>Muestra:</div>"
+			+ "<div class='divTamanoMuestra'>"
+				+ "<input type='text' class='inputTamanoMuestra' value='" + this.tamanoMuestra + "'/>"
+			+ "</div>"
+			+ "<div class='divLabelTamanoSubconjunto'>Subconj.:</div>"
+			+ "<div class='divTamanoSubconjunto'>"
+				+ "<input type='text' class='inputTamanoSubconjunto' value='" + this.tamanoSubconjunto + "'/>"
+			+ "</div>"
+			+ "<div class='divAgregarFiltroContainer'>"
+				+ "<div class='divLabelFiltros'>Filtros:</div>"
+				+ "<div class='divAgregarFiltro'>"
+					+ "<input type='submit' value='' class='inputAgregarFiltro'/>"
+				+ "</div>"
+//				+ "<div class='divFormLabelExtended'>Limpiar filtros:</div>"
+				+ "<div class='divLimpiarFiltros'>"
+					+ "<input type='submit' value='' class='inputLimpiarFiltros'/>"
+				+ "</div>"
+//				+ "<div class='divFormLabelExtended'>Seleccionar columnas:</div>"
+				+ "<div class='divSeleccionarColumnas'>"
+					+ "<input type='submit' value='' class='inputSeleccionarColumnas'/>"
+					+ "<div class='divIFrameSeleccionColumnas'>"
+						+ "<div class='divTitleBar'>"
+							+ "<div class='divTitleBarText'>Columnas</div>"
+							+ "<div class='divTitleBarCloseButton' onclick='javascript:closePopUp(event, this.parentNode.parentNode)'>&nbsp;</div>"
+						+ "</div>"
+						+ "<div class='divSeleccionColumnas'>"
+							+ "<div class='divPopupWindow'>"
+								+ "<div class='divSeleccionColumnasLista'>&nbsp;</div>"
+								+ "<div class='divSeleccionColumnasBotonera'>"
+									+ "<input type='submit' class='inputSeleccionColumnasAceptar' value=''/>"
+								+ "</div>"
+							+ "</div>"
+						+ "</div>"
+					+ "</div>"
+				+ "</div>"
+			+ "</div>"
+		+ "</div>";
+		
+	$(this.grid.element).html(html);
+	
+	var divFiltros = $(this.grid.element).children(".divFiltros");
+	var divFiltrosHandle = $(this.grid.element).children(".divFiltrosHandle");
+	
+	divFiltros.css("width", width - 6);
+	
+	divFiltros.find(".inputTamanoMuestra").change(this.tamanoMuestraOnChange.bind(this));
+	divFiltros.find(".inputTamanoSubconjunto").change(this.tamanoSubconjuntoOnChange.bind(this));
+	divFiltros.find(".inputSeleccionarColumnas").click(this.seleccionarColumnasOnClick.bind(this));
+	divFiltros.find(".inputSeleccionColumnasAceptar").click(this.actualizarColumnasOnClick.bind(this));
+	divFiltros.find(".inputAgregarFiltro").click(this.agregarFiltroOnClick.bind(this));
+	divFiltros.find(".inputLimpiarFiltros").click(this.limpiarFiltrosOnClick.bind(this));
+	divFiltrosHandle.find(".divFiltrosHandleCenterTop").click(this.mostrarOcultarFiltrosOnClick.bind(this));
+	divFiltrosHandle.find(".divFiltrosHandleCenterTopLine").click(this.mostrarOcultarFiltrosOnClick.bind(this));
+	divFiltrosHandle.find(".divFiltrosHandleCenterBottom").click(this.mostrarOcultarFiltrosOnClick.bind(this));
+}
+
+function _tamanoMuestraOnChange(eventObject) {
+	this.tamanoMuestra = $(eventObject.target).val();
+	
+	if (!this.preventReload) {
+		this.reloadListener();
+	}
+}
+
+function _tamanoSubconjuntoOnChange(eventObject) {
+	this.tamanoSubconjunto = $(eventObject.target).val();
+	
+	if (!this.preventReload) {
+		this.reloadListener();
+	}
+}
+
+function _seleccionarColumnasOnClick() {
+	$(this.grid.element).find(".divSeleccionColumna").remove();
+	
+	var html = "";
+	var i=0;
+	for (var campo in this.campos) {
+		html += 
+			"<div id='divSeleccionColumna" + i + "' class='divSeleccionColumna'>" 
+				+ "<div class='divSeleccionColumnasCampo'>" + this.campos[campo].descripcion + "</div>"
+				+ "<div class='divSeleccionColumnasCampoCheck'>"
+					+ "<input type='checkbox' class='checkboxSeleccionCampos'"
+						+ " cid='" + campo + "'" 
+							+ (this.campos[campo] == null || !this.campos[campo].oculto ? 
+								" checked='checked'" 
+								: "") 
+					+ "'/>"
+				+ "</div>"
+			+ "</div>";
+		i++;
+	}
+	
+	$(this.grid.element).find(".divSeleccionColumnasLista").html(html);
+	$(this.grid.element).find(".divIFrameSeleccionColumnas").show();
+	$(this.grid.element).find(".divIFrameSeleccionColumnas").draggable();
+}
+
+function _actualizarColumnasOnClick(eventObject) {
+	var checkboxes = $(this.grid.element).find(".checkboxSeleccionCampos");
+	
+	for (var i=0; i < checkboxes.length; i++) {
+		this.campos[$(checkboxes[i]).attr("cid")].oculto = !$(checkboxes[i]).prop("checked");
+	}
+	
+	var condiciones = this.calcularCondiciones();
+	
+	this.grid.rebuild();
+	
+	if (condiciones.length > 0) {
+		var functionThen = function(eventObject) {
+			this.preventReload = false;
+			
+			if (!this.preventReload) {
+				this.reloadListener();
+			}
+			
+			closePopUp(eventObject, eventObject.target.parentNode.parentNode.parentNode.parentNode);
+		};
+		
+		this.agregarFiltrosManuales(condiciones, condiciones[0].fijo)
+			.then(functionThen.bind(this, eventObject));
+	} else {
+		this.reloadListener();
+	}
+}
+
+function _limpiarFiltrosOnClick(eventObject) {
+	var divFiltros = $(this.grid.element).children(".divFiltros").find(".divFiltro");
+	
+	for (var i=0; i<divFiltros.length; i++) {
+		var divFiltro = $(divFiltros[i]);
+		var selectCampo = divFiltro.find(".selectCampo");
+		
+		if (!selectCampo.prop("disabled")) {
+			divFiltro.remove();
+		}
+	}
+	
+	if (!this.preventReload) {
+		this.reloadListener();
+	}
+}
+
+function _agregarFiltroManual(filtro, fijo) {
+	var divFiltros = $(this.grid.element).children(".divFiltros");
+	
+	var functionThen = function(divFiltro) {
+		var selectCampo = divFiltro.find(".selectCampo");
+		selectCampo.val(filtro.campo);
+		
+		if (fijo != null && fijo) {
+			selectCampo.prop("disabled", "disabled");
+		}
+		
+		var functionThen = function(divCondicion) {
+			var selectCondicion = divCondicion.find(".selectCondicion");
+			
+			selectCondicion.val(filtro.operador);
+			
+			if (fijo != null && fijo) {
+				selectCondicion.prop("disabled", "disabled");
+			}
+			
+			var functionThen = function(divCondicionValores) {
+				if (filtro.valores.length > 0) {
+					var selectValor = divCondicionValores.find(".selectValor");
+					selectValor.val(filtro.valores[0]);
+					
+					if (fijo != null && fijo) {
+						selectValor.prop("disabled", "disabled");
+					}
+				}
+			};
+			
+			return _condicionOnChange.bind(this)({ target: selectCondicion })
+				.then(functionThen.bind(this));
+		};
+		
+		return _campoOnChange.bind(this)({ target: selectCampo })
+			.then(functionThen.bind(this));
+	};
+		
+	return _agregarFiltro.bind(this)(fijo)
+		.then(functionThen.bind(this));
+}
+
+function _agregarFiltrosManuales(filtros, fijo) {
+	var promises = [];
+	
+	for (var i=0; i<filtros.length; i++) {
+		var filtro = filtros[i];
+		
+		promises[promises.length] = _agregarFiltroManual.bind(this)(filtro, fijo);
+	}
+	
+	return Promise.all(promises);
+}
+
+function _agregarFiltro(fijo) {
+	var promiseFunction = function(resolve, reject) {
 		this.filtros++;
 		
 		var html = 
@@ -254,20 +381,26 @@ function FiltroDinamico(grid, campos, reloadListener) {
 					+ "<input type='submit' value='' ";
 		
 		if (fijo != null && fijo) {
-				html += "class='inputQuitarFiltroDisabled' disabled='disabled'";
+			html += 
+						"class='inputQuitarFiltroDisabled' disabled='disabled'";
 		} else {
-				html += "class='inputQuitarFiltro'";
+			html += 
+						"class='inputQuitarFiltro'";
 		}
+		
 		html +=  
 						"/>"
 				+ "</div>"
 				+ "<div class='divLabelCampo'>Campo:</div>"
 				+ "<div class='divCampo'>"
-					+ "<select class='selectCampo'";
+					+ "<select class='selectCampo' id='selectCampo" + this.filtros + "'";
 		if (fijo != null && fijo) {
-			html += " disabled='disabled'>";
+			html += 
+						" disabled='disabled'"
+					+ ">";
 		} else {
-			html += ">";
+			html += 
+					">";
 		}
 		
 		html += 
@@ -290,27 +423,35 @@ function FiltroDinamico(grid, campos, reloadListener) {
 				+ "<div class='divCondicion'>&nbsp;</div>"
 			+ "</div>";
 		
-		$(this.grid.element).children(".divFiltros").append(html);
+		var divFiltro = 
+			$(this.grid.element)
+				.children(".divFiltros")
+				.append(html)
+				.children(".divFiltro:last");
 		
-		var divFiltro = $(this.grid.element).children(".divFiltros").children(".divFiltro:last");
-		
-		divFiltro.find(".inputQuitarFiltro").click(this.quitarFiltro.bind(this));
+		divFiltro.find(".inputQuitarFiltro").click(this.quitarFiltroOnClick.bind(this));
 		divFiltro.find(".selectCampo").change(this.campoOnChange.bind(this));
-	},
+		
+		resolve(divFiltro);
+	}
 	
-	/**
-	 * Listener del evento "click" del input que elimina un filtro definido.
-	 */
-	this.quitarFiltro = function(eventObject) {
+	return new Promise(promiseFunction.bind(this));
+}
+
+function _quitarFiltro(eventObject) {
+	var promiseFunction = function(resolve, reject) {
 		$(eventObject.target).parent().parent().remove();
 		
-		this.reloadListener();
-	},
+		if (!this.preventReload) {
+			this.reloadListener();
+		}
+	};
 	
-	/**
-	 * Listener del evento "change" del select que contiene la lista de campos para definir un filtro.
-	 */
-	this.campoOnChange = function(eventObject) {
+	return new Promise(promiseFunction.bind(this));
+}
+
+function _campoOnChange(eventObject) {
+	var promiseFunction = function(resolve, reject) {
 		var selectCampo = $(eventObject.target);
 		var divCampo = selectCampo.parent();
 		var divCondicion = divCampo.siblings(".divCondicion");
@@ -334,7 +475,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 		}
 		
 		var html = 
-			"<select class='selectCondicion'>"
+			"<select class='selectCondicion' id='selectCondicion " + this.filtros + "'>"
 				+ "<option value=''>Seleccione...</option>";
 		
 		if (tipoCampo == __TIPO_CAMPO_NUMERICO) {
@@ -426,17 +567,19 @@ function FiltroDinamico(grid, campos, reloadListener) {
 		html +=
 			"</select>";
 		
-		divCondicion.append(html);
+		divCondicion
+			.append(html)
+			.find(".selectCondicion")
+			.change(this.condicionOnChange.bind(this));
 		
-		divCondicion.find(".selectCondicion").change(this.condicionOnChange.bind(this));
-		
-//		this.reloadListener();
-	},
+		resolve(divCondicion);
+	};
 	
-	/**
-	 * Listener del evento "change" del select que contiene la lista de condiciones para definir un filtro.
-	 */
-	this.condicionOnChange = function(eventObject) {
+	return new Promise(promiseFunction.bind(this));
+}
+
+function _condicionOnChange(eventObject) {
+	var promiseFunction = function(resolve, reject) {
 		var selectCondicion = $(eventObject.target);
 		var divCondicion = selectCondicion.parent();
 		var divFiltro = divCondicion.parent();
@@ -449,9 +592,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 			divCondicionValoresAnterior.remove();
 		}
 		
-		var html = "<div class='divCondicionValores'>";
-		
-//		divFiltro.css("height", "22px");
+		var html = "<div class='divCondicionValores' id='divCondicionValores" + this.filtros + "'>";
 		
 		switch (selectCondicion.val()) {
 			case "btw":
@@ -467,12 +608,12 @@ function FiltroDinamico(grid, campos, reloadListener) {
 				break;
 			case "nl":
 			case "nnl":
-				this.reloadListener();
+				if (!this.preventReload) {
+					this.reloadListener();
+				}
 				
 				break;
 			case "in":
-				divFiltro.css("height", "78px");
-				
 				var campo = null;
 				for (campo in this.campos) {
 					if (this.campos[campo].campo == selectedFieldValue) {
@@ -480,58 +621,78 @@ function FiltroDinamico(grid, campos, reloadListener) {
 					}
 				}
 				
-				html += 
-						"<div class='divLabelCondicionValor'>Valor:</div>"
-							+ "<div class='divValor'>"
-								+ "<select class='selectValoresMultiples'>"
-									+ "<option value=''>Seleccione...</option>"
-									+ "<option value='Todos'>Todos</option>"
-									+ "<option value='Ninguno'>Ninguno</option>";
-				
-				var values = this.campos[campo].dataSource.funcion();
-				for (var i=0; i<values.length; i++) {
-					var keyValue = null;
-					var value = null;
-					
-					try {
-						keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
-						value = eval("values[i]." + this.campos[campo].dataSource.valor);
-					} catch (e) {
-						keyValue = null;
-						value = null;
-					}
-					
-					if (keyValue != null) {
-						html += 
-									"<option value='" + keyValue + "'>" + value + "</option>";
-					}
-				}
-				
-				html +=
-								"</select>"
-							+ "</div>"
-							+ "<div class='divValoresMultiples'>";
-					
-				for (var i=0; i<values.length; i++) {
-					keyValue = null;
-					value = null;
-					
-					try {
-						keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
-						value = eval("values[i]." + this.campos[campo].dataSource.valor);
-					} catch (e) {
-						keyValue = null;
-						value = null;
-					}
+				var callbackDataSource = function(values) {
+					divFiltro.css("height", "78px");
 					
 					html += 
-								"<div class='divValorMultiple'>"
-									+ value
+						"<div class='divLabelCondicionValor'>Valor:</div>"
+						+ "<div class='divValor'>"
+							+ "<select class='selectValoresMultiples'>"
+								+ "<option value=''>Seleccione...</option>"
+								+ "<option value='Todos'>Todos</option>"
+								+ "<option value='Ninguno'>Ninguno</option>";
+					
+					for (var i=0; i<values.length; i++) {
+						var keyValue = null;
+						var value = null;
+						
+						try {
+							keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
+							value = eval("values[i]." + this.campos[campo].dataSource.valor);
+						} catch (e) {
+							keyValue = null;
+							value = null;
+						}
+						
+						if (keyValue != null) {
+							html += 
+								"<option value='" + keyValue + "'>" + value + "</option>";
+						}
+					}
+					
+					html +=
+							"</select>"
+						+ "</div>"
+						+ "<div class='divValoresMultiples'>";
+						
+					for (var i=0; i<values.length; i++) {
+						keyValue = null;
+						value = null;
+						
+						try {
+							keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
+							value = eval("values[i]." + this.campos[campo].dataSource.valor);
+						} catch (e) {
+							keyValue = null;
+							value = null;
+						}
+						
+						html += 
+									"<div class='divValorMultiple'>"
+										+ value
 									+ "</div>";
-				}
+					}
+					
+					html +=
+								"</div>"
+						+ "</div>";
+					
+					divFiltro
+						.append(html)
+						.children()
+						.last()
+						.find(".selectValoresMultiples")
+						.change(this.valorMultipleOnChange.bind(this))
+					
+					divFiltro
+						.children()
+						.last()
+						.find(".divValorMultiple")
+						.click(this.valorMultipleOnClick.bind(this));
+				};
 				
-				html +=
-							"</div>";
+				this.campos[campo].dataSource.funcion()
+					.then(callbackDataSource.bind(this));
 				
 				break;
 			case "keq":
@@ -542,34 +703,83 @@ function FiltroDinamico(grid, campos, reloadListener) {
 					}
 				}
 				
-				html += 
-					"<div class='divLabelCondicionValor'>Valor:</div>"
-					+ "<div class='divValor'>"
-						+ "<select class='selectValor'>"
-							+ "<option value=''>Seleccione...</option>";
+				var funcionThen = this.campos[campo].dataSource.funcion().then;
 				
-				var values = this.campos[campo].dataSource.funcion();
-				for (var i=0; i<values.length; i++) {
-					var keyValue = null;
-					var value = null;
-					
-					try {
-						keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
-						value = eval("values[i]." + this.campos[campo].dataSource.valor);
-					} catch (e) {
-						keyValue = null;
-						value = null;
-					}
-					
-					if (keyValue != null) {
+				if (typeof funcionThen == 'function') {
+					var callbackDataSource = function(values) {
 						html += 
-							"<option value='" + keyValue + "'>" + value + "</option>";
+							"<div class='divLabelCondicionValor'>Valor:</div>"
+							+ "<div class='divValor'>"
+								+ "<select class='selectValor'>"
+									+ "<option value=''>Seleccione...</option>";
+						
+						for (var i=0; i<values.length; i++) {
+							var keyValue = null;
+							var value = null;
+							
+							try {
+								keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
+								value = eval("values[i]." + this.campos[campo].dataSource.valor);
+							} catch (e) {
+								keyValue = null;
+								value = null;
+							}
+							
+							if (keyValue != null) {
+								html += 
+									"<option value='" + keyValue + "'>" + value + "</option>";
+							}
+						}
+						
+						html +=
+								"</select>"
+							+ "</div>";
+						
+						var divCondicionValor =
+							divFiltro
+								.append(html)
+								.children();
+						
+						
+						divCondicionValor
+							.find(".selectValor")
+							.change(this.valorOnChange.bind(this))
+						
+						resolve(divCondicionValor);
+					};
+					
+					this.campos[campo].dataSource.funcion()
+						.then(callbackDataSource.bind(this));
+				} else {
+					html += 
+						"<div class='divLabelCondicionValor'>Valor:</div>"
+						+ "<div class='divValor'>"
+							+ "<select class='selectValor'>"
+								+ "<option value=''>Seleccione...</option>";
+					
+					var values = this.campos[campo].dataSource.funcion();
+					for (var i=0; i<values.length; i++) {
+						var keyValue = null;
+						var value = null;
+						
+						try {
+							keyValue = eval("values[i]." + this.campos[campo].dataSource.clave);
+							value = eval("values[i]." + this.campos[campo].dataSource.valor);
+						} catch (e) {
+							keyValue = null;
+							value = null;
+						}
+						
+						if (keyValue != null) {
+							html += 
+								"<option value='" + keyValue + "'>" + value + "</option>";
+						}
 					}
+					
+					html +=
+							"</select>"
+						+ "</div>";
 				}
-				
-				html +=
-						"</select>"
-					+ "</div>";
 				
 				break;
 			case "gt":
@@ -614,34 +824,50 @@ function FiltroDinamico(grid, campos, reloadListener) {
 							+ "<input type='text' class='inputValor'/>"
 						+ "</div>";
 				}
-
+	
 				break;
 		}
 		
-		html +=
-			"</div>";
+		if (selectCondicion.val() != "in" && typeof funcionThen != 'function') {
+			html +=
+				"</div>";
 		
-		divFiltro.append(html);
+			divCondicionValores = 
+				divFiltro
+					.append(html)
+					.children()
+			
+			divCondicionValores.find(".inputValor").change(this.valorOnChange.bind(this));
+			divCondicionValores.find(".inputValor").change(this.valorOnChange.bind(this));
+			divCondicionValores.find(".selectValor").change(this.valorOnChange.bind(this));
+			divCondicionValores.find(".inputValorMin").change(this.valorOnChange.bind(this));
+			divCondicionValores.find(".inputValorMax").change(this.valorOnChange.bind(this));
+			
+			resolve(divCondicionValores);
+		}
 		
-		var divCondicionValores = divFiltro.children(".divCondicionValores");
-		divCondicionValores.find(".inputValor").change(this.valorOnChange.bind(this));
-		divCondicionValores.find(".selectValor").change(this.valorOnChange.bind(this));
-		divCondicionValores.find(".inputValorMin").change(this.valorOnChange.bind(this));
-		divCondicionValores.find(".inputValorMax").change(this.valorOnChange.bind(this));
-		divCondicionValores.find(".selectValoresMultiples").change(this.valorMultipleOnChange.bind(this));
-	},
+		if (typeof funcionThen == 'function') {
+			return this.campos[campo].dataSource.funcion;
+		}
+	};
 	
-	/**
-	 * Listener del evento "change" de los controles que contienen los valores para definir un filtro.
-	 */
-	this.valorOnChange = function(eventObject) {
-		this.reloadListener();
-	},
+	return new Promise(promiseFunction.bind(this));
+}
+
+function _valorOnChange(eventObject) {
+	var promiseFunction = function(resolve, reject) {
+		if (!this.preventReload) {
+			this.reloadListener();
+		}
+		
+		resolve("Ok");
+	};
 	
-	/**
-	 * Listener del evento "change" del select que contiene los valores múltiples para definir un filtro de tipo INCLUIDO EN. 
-	 */
-	this.valorMultipleOnChange = function(eventObject) {
+	return new Promise(promiseFunction.bind(this));
+}
+
+function _valorMultipleOnChange(eventObject) {
+	var promiseFunction = function(resolve, reject) {
 		var selectValoresMultiples = $(eventObject.target);
 		var divValor = selectValoresMultiples.parent();
 		var divValoresMultiples = divValor.next();
@@ -668,205 +894,220 @@ function FiltroDinamico(grid, campos, reloadListener) {
 			);
 		}
 		
-		this.reloadListener();
-		
+		if (!this.preventReload) {
+			this.reloadListener();
+		}
 		
 		divValoresMultiples.find(".divValorMultiple").click(this.valorMultipleOnClick.bind(this));
-	},
+		
+		resolve("Ok");
+	};
 	
-	/**
-	 * Listener del evento "click" de los div que contienen los valores múltiples para definir un filtro de tipo INCLUIDO EN.
-	 */
-	this.valorMultipleOnClick = function(eventObject) {
+	return new Promise(promiseFunction.bind(this));
+}
+
+function _valorMultipleOnClick(eventObject) {
+	var promiseFunction = function(resolve, reject) {
 		$(eventObject.target).remove();
 		
-		this.reloadListener();
-	},
-	
-	/**
-	 * Función que calcula las condiciones que representan el filtro definido en pantalla.
-	 */
-	this.calcularCondiciones = function() {
-		var result = [];
+		if (!this.preventReload) {
+			this.reloadListener();
+		}
 		
-		var filtros = $(this.grid.element).find(".divFiltro");
-		for (var i=0; i<filtros.length; i++) {
-			var divFiltro = $(filtros[i]);
-			var selectCampo = divFiltro.find(".selectCampo");
-			var valCampo = selectCampo.val();
-			var selectCondicion = divFiltro.find(".selectCondicion");
-			var valCondicion = selectCondicion.val();
-			var fijo = divFiltro.find(".selectCampo").prop("disabled");
-			
-			if (valCampo != "" && valCondicion != "") {
-				var metadataCondicion = {
-					operador: valCondicion,
-					fijo: fijo
-				};
-				
-				var filtroValido = false;
-				switch (valCondicion) {
-					case "btw":
-						metadataCondicion.campo = valCampo;
-						
-						var valorMin = divFiltro.find(".inputValorMin").val();
-						var valorMax = divFiltro.find(".inputValorMax").val();
-						
-						metadataCondicion.valores = [valorMin, valorMax];
-						
-						filtroValido = 
-							metadataCondicion.valores[0] != "" 
-								&& metadataCondicion.valores[1] != "";
-						
-						break;
-					case "nl":
-					case "nnl":
-						metadataCondicion.campo = valCampo;
-						
-						metadataCondicion.valores = [];
-						
-						filtroValido = true;
-						
-						break;
-					case "in":
-						metadataCondicion.campo = valCampo;
-						
-						var valoresMultiples = divFiltro.find(".divValorMultiple");
-						
-						metadataCondicion.valores = [];
-						for (var j=0; j<valoresMultiples.length; j++) {
-							metadataCondicion.valores[metadataCondicion.valores.length] = 
-								valoresMultiples[j].innerHTML;
-						}
-						
-						filtroValido = true;
-						
-						break;
-					case "keq":
-						metadataCondicion.campo = selectCampo.find("option:selected").attr("key");
-						
-						metadataCondicion.valores = [divFiltro.find(".selectValor").val()];
+		resolve("Ok");
+	};
+	
+	return new Promise(promiseFunction.bind(this));
+}
 
-						filtroValido = metadataCondicion.valores[0] != "";
-						
-						break;
-					case "gt":
-					case "lt":
-					case "like":
-					case "nlike":
-					case "eq": 
-					default:
-						metadataCondicion.campo = valCampo;
+function _calcularCondiciones() {
+	var result = [];
+	
+	var filtros = $(this.grid.element).find(".divFiltro");
+	for (var i=0; i<filtros.length; i++) {
+		var divFiltro = $(filtros[i]);
+		var selectCampo = divFiltro.find(".selectCampo");
+		var valCampo = selectCampo.val();
+		var selectCondicion = divFiltro.find(".selectCondicion");
+		var valCondicion = selectCondicion.val();
+		var fijo = divFiltro.find(".selectCampo").prop("disabled");
+		
+		if (valCampo != "" && valCondicion != "") {
+			var metadataCondicion = {
+				"operador": valCondicion,
+				"fijo": fijo
+			};
+			
+			var filtroValido = false;
+			switch (valCondicion) {
+				case "btw":
+					metadataCondicion.campo = valCampo;
 					
-						var elementValor = divFiltro.find(".inputValor");
-						if (elementValor.length > 0) {
-							metadataCondicion.valores = [elementValor.val()];
-						} else {
-							elementValor = divFiltro.find(".selectValor");
-							
-							metadataCondicion.valores = [elementValor.val()];
-						}
-						
-						filtroValido = metadataCondicion.valores[0] != "";
+					var valorMin = divFiltro.find(".inputValorMin").val();
+					var valorMax = divFiltro.find(".inputValorMax").val();
 					
-						break;
-				}
-				
-				if (filtroValido) {
-					if (metadataCondicion.valores != null) {
-						for (var k = 0; k < metadataCondicion.valores.length; k++) {
-							if (typeof(metadataCondicion.valores[k]) == "string"
-								&& metadataCondicion.valores[k].indexOf("/") > 0) {
-								metadataCondicion.valores[k] = 
-									(metadataCondicion.valores[k] + " 00:00")
-										.substring(0, 16);
-							}
-						}
+					metadataCondicion.valores = [valorMin, valorMax];
+					
+					filtroValido = 
+						metadataCondicion.valores[0] != "" 
+							&& metadataCondicion.valores[1] != "";
+					
+					break;
+				case "nl":
+				case "nnl":
+					metadataCondicion.campo = valCampo;
+					
+					metadataCondicion.valores = [];
+					
+					filtroValido = true;
+					
+					break;
+				case "in":
+					metadataCondicion.campo = valCampo;
+					
+					var valoresMultiples = divFiltro.find(".divValorMultiple");
+					
+					metadataCondicion.valores = [];
+					for (var j=0; j<valoresMultiples.length; j++) {
+						metadataCondicion.valores[metadataCondicion.valores.length] = 
+							valoresMultiples[j].innerHTML;
 					}
 					
-					result[result.length] = metadataCondicion;
+					filtroValido = true;
+					
+					break;
+				case "keq":
+					metadataCondicion.campo = selectCampo.find("option:selected").attr("key");
+					
+					metadataCondicion.valores = [divFiltro.find(".selectValor").val()];
+					filtroValido = 
+						metadataCondicion.valores[0] != null
+						&& metadataCondicion.valores[0] != "";
+					
+					break;
+				case "gt":
+				case "lt":
+				case "like":
+				case "nlike":
+				case "eq": 
+				default:
+					metadataCondicion.campo = valCampo;
+				
+					var elementValor = divFiltro.find(".inputValor");
+					if (elementValor.length > 0) {
+						metadataCondicion.valores = [elementValor.val()];
+					} else {
+						elementValor = divFiltro.find(".selectValor");
+						
+						metadataCondicion.valores = [elementValor.val()];
+					}
+					
+					filtroValido = metadataCondicion.valores[0] != "";
+				
+					break;
+			}
+			
+			if (filtroValido) {
+				if (metadataCondicion.valores != null) {
+					for (var k = 0; k < metadataCondicion.valores.length; k++) {
+						if (typeof(metadataCondicion.valores[k]) == "string"
+							&& metadataCondicion.valores[k].indexOf("/") > 0) {
+							metadataCondicion.valores[k] = 
+								(metadataCondicion.valores[k] + " 00:00")
+									.substring(0, 16);
+						}
+					}
 				}
+				
+				result[result.length] = metadataCondicion;
 			}
 		}
-		
-		return result;
-	},
+	}
 	
-	/**
-	 * Listener del evento "click" de los encabezados de las columnas de la tabla grid.
-	 * Generan ordenaciones de los datos en función de la columna seleccionada.
-	 * 
-	 * Nota: los elementos de los encabezados tienen el formato: "divTableHeaderCell divTableHeaderCellXXX"
-	 * donde XXX denota el tipo de ordenación (NOO, ASC, DES).
-	 * Siempre se mantiene el prefijo divTableHeaderCell.
-	 */
-	this.agregarOrden = function(eventObject) {
-		var element = $(eventObject.target).closest(".divTableHeaderCell");
-		var className = element.attr("class");
+	return result;
+}
+
+function _agregarOrdenManual(orden) {
+	var promiseFunction = function(resolve, reject) {
+		var campo = orden.campo;
+		var ascendente = orden.ascendente;
 		
-		var id = element.attr("id");
+		this.ordenes[campo] = ascendente ? 1 : 2;
+		
+		var element = $("#" + orden.campo).closest(".divTableHeaderCell");
+		var className = element.attr("class");
 		className = className.substring(0, className.length - 3);
 		
-		if (this.ordenes[id] != null) {
-			this.ordenes[id] = (this.ordenes[id] + 1) % ordenSufijos.length;
-		} else {
-			this.ordenes[id] = 1;
+		element.attr("class", className + ordenSufijos[this.ordenes[campo]]);
+		
+		if (!this.preventReload) {
+			this.reloadListener();
 		}
 		
-		element.attr("class", className + ordenSufijos[this.ordenes[id]]);
-		
-		if (this.ordenes[id] == 0) {
-			this.ordenes[id] = null;
-		}
-		
+		resolve();
+	};
+	
+	return new Promise(promiseFunction.bind(this));
+}
+
+function _agregarOrden(eventObject) {
+	var element = $(eventObject.target).closest(".divTableHeaderCell");
+	var className = element.attr("class");
+	
+	var id = element.attr("id");
+	className = className.substring(0, className.length - 3);
+	
+	if (this.ordenes[id] != null) {
+		this.ordenes[id] = (this.ordenes[id] + 1) % ordenSufijos.length;
+	} else {
+		this.ordenes[id] = 1;
+	}
+	
+	element.attr("class", className + ordenSufijos[this.ordenes[id]]);
+	
+	if (this.ordenes[id] == 0) {
+		this.ordenes[id] = null;
+	}
+	
+	if (!this.preventReload) {
 		this.reloadListener();
-	},
+	}
+}
+
+function _calcularOrdenaciones() {
+	var result = [];
 	
-	/**
-	 * Función que calcula las ordenaciones que representan el filtro definido en pantalla.
-	 */
-	this.calcularOrdenaciones = function calcularOrdenaciones() {
-		var result = [];
-		
-		for (var campo in this.ordenes) {
-			if (this.ordenes[campo] > 0) {
-				result[result.length] = {
-					campo: this.campos[campo].campo,
-					ascendente: (this.ordenes[campo] == 1)
-				};
-			}
+	for (var campo in this.ordenes) {
+		if (this.ordenes[campo] > 0) {
+			result[result.length] = {
+				"campo": this.campos[campo].campo,
+				"ascendente": (this.ordenes[campo] == 1)
+			};
 		}
-		
-		return result;
-	},
+	}
 	
-	/**
-	 * Función que calcula la entidad que representa el filtro definido en pantalla.
-	 */
-	this.calcularMetadataConsulta = function() {
-		var metadataConsulta = {
-			tamanoMuestra: this.tamanoMuestra,
-			tamanoSubconjunto: this.tamanoSubconjunto,
-			metadataOrdenaciones: this.calcularOrdenaciones(),
-			metadataCondiciones: this.calcularCondiciones()
-		};
-		
-		return metadataConsulta;
-	},
+	return result;
+}
+
+function _calcularMetadataConsulta() {
+	var metadataConsulta = {
+		"tamanoMuestra": this.tamanoMuestra,
+		"tamanoSubconjunto": this.tamanoSubconjunto,
+		"metadataOrdenaciones": this.calcularOrdenaciones(),
+		"metadataCondiciones": this.calcularCondiciones()
+	};
 	
-	/**
-	 * Listener del evento "click" de los div que permiten mostrar el menú de acciones sobre una columna.
-	 */
-	this.showMenu = function(event, element) {
-		var divMenu = $(".divTableHeaderMenu");
-		divMenu.show();
-		divMenu.offset({ top: divMenu.offset().top, left: $(element).position().left });
-	},
-	
-	/**
-	 * Listener del evento "click" del div que muestra/oculta los filtros.
-	 */
-	this.mostrarOcultarFiltros = function(eventObject) {
+	return metadataConsulta;
+}
+
+function _showMenu(event, element) {
+	var divMenu = $(".divTableHeaderMenu");
+	divMenu.show();
+	divMenu.offset({ top: divMenu.offset().top, left: $(element).position().left });
+}
+
+function _mostrarOcultarFiltros(eventObject) {
+	var promiseFunction = function(resolve, reject) {
 		var target = $(eventObject.target);
 		
 		if (target.hasClass("divFiltrosHandleCenterTopLine")) {
@@ -881,7 +1122,7 @@ function FiltroDinamico(grid, campos, reloadListener) {
 		} else {
 			divFiltros.show();
 		}
-		
-		return false;
-	}
+	};
+	
+	return new Promise(promiseFunction.bind(this));
 }

@@ -4,13 +4,9 @@
 		var id = <%= request.getParameter("sid") != null ? request.getParameter("sid") : "null" %>;
 		var numeroSublote = <%= request.getParameter("code") != null ? request.getParameter("code") : "null" %>;
 	</script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/DepartamentoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/BarrioDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PuntoVentaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ActivacionSubloteDWR.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb6ZHkQPu3YqYlFLsBAGZ-79aVjSXwEig"></script>
-	<script type="text/javascript" src="/LogisticaWEB/pages/mobile/mactivacion_sublotes/masignacion_sublote_punto_venta.js"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/mobile/mactivacion_sublotes/masignacion_sublote_punto_venta.css"/>
+	<script type="text/javascript" src="./masignacion_sublote_punto_venta.js"></script>
+	<link rel="stylesheet" type="text/css" href="./masignacion_sublote_punto_venta.css"/>
 </head>
 <body>
 <%@ include file="../mincludes/mtitle.jsp" %>
@@ -27,9 +23,9 @@
 						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
 					</a>
 				</div>
-				<div class="divFormLabel">Departamento:</div><div class="divFormValue" id="divDepartamento"><select id="selectDepartamento" onchange="javascript:selectDepartamentoOnChange(event, this)"></select></div>
-				<div class="divFormLabel">Barrio:</div><div class="divFormValue" id="divBarrio"><select id="selectBarrio" onchange="javascript:selectBarrioOnChange(event, this)"></select></div>
-				<div class="divFormLabel">Pto. de venta:</div><div class="divFormValue" id="divPuntoVenta"><select id="selectPuntoVenta" onchange="javascript:selectPuntoVentaOnChange(event, this)"></select></div>
+				<div class="divFormLabel">Departamento:</div><div class="divFormValue" id="divDepartamento"><select id="selectDepartamento"></select></div>
+				<div class="divFormLabel">Barrio:</div><div class="divFormValue" id="divBarrio"><select id="selectBarrio"></select></div>
+				<div class="divFormLabel">Pto. de venta:</div><div class="divFormValue" id="divPuntoVenta"><select id="selectPuntoVenta"></select></div>
 				<div class="divFormLabel" style="display: none;">Posici&oacute;n:</div>
 				<input type="hidden" name="caller" value="/pages/mobile/mactivacion_sublotes/masignacion_sublote_punto_venta.jsp"/>
 				<div class="divFormLabel">&nbsp;</div><div class="divFormValue">

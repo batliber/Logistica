@@ -1,30 +1,33 @@
-<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="javax.naming.InitialContext" %>
+<%@ page import="uy.com.amensg.logistica.bean.IContratoBean" %>
+<%@ page import="uy.com.amensg.logistica.bean.ContratoBean" %>
+<%@ page import="uy.com.amensg.logistica.entities.Contrato" %>
+<%@ page import="uy.com.amensg.logistica.util.Configuration" %>
 
-<%@ page import="uy.com.amensg.logistica.dwr.*" %>
-<%@ page import="uy.com.amensg.logistica.util.*" %>
-<%@ page import="uy.com.amensg.logistica.entities.ContratoTO" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<%@ include file="/includes/header.jsp" %>
 	<title>Contrato</title>
 	<script type="text/javascript">
 		var id = <%= request.getParameter("cid") != null ? request.getParameter("cid") : "null" %>;
 	</script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/engine.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/SeguridadDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EmpresaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/util.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/js/global.js"></script>
 	<script type="text/javascript" src="./contrato_preimpreso_print.js"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/css/global.css"/>
 	<link rel="stylesheet" type="text/css" href="./contrato_preimpreso_print.css"/>
 </head>
 <%
-	ContratoTO contratoTO = new ContratoDWR().getById(new Long(request.getParameter("cid")));
+	String prefix = "java:jboss/exported/";
+	String EARName = "Logistica";
+	String appName = "LogisticaEJB";
+	String beanName = ContratoBean.class.getSimpleName();
+	String remoteInterfaceName = IContratoBean.class.getName();
+	String lookupName = 
+		prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
+
+	javax.naming.Context context = new InitialContext();
+		
+	IContratoBean iContratoBean = (IContratoBean)context.lookup(lookupName);
+
+	Contrato contrato = iContratoBean.getById(Long.parseLong(request.getParameter("cid")), false);
 %>
 <body>
 	<div class="divPrintingButtonBar">
@@ -207,7 +210,7 @@
 					Administraci&oacute;n Nacional de Telecomunicaciones. Guatemala 1075 (C.P. 11827) Montevideo R.U.T. 211003420017
 				</div>
 <%
-		if (contratoTO.getMotivoCambioPlan() != null) {
+		if (contrato.getMotivoCambioPlan() != null) {
 %>
 				<div class="" style="float: left;width: 100%;"><input type="text" class="inputMotivosCambioPlan"/></div>
 <%		
@@ -331,9 +334,10 @@
 	}
 	
 	boolean conLimite = 
-		contratoTO.getNuevoPlan().getTipoPlan() != null 
-		&& contratoTO.getNuevoPlan().getTipoPlan().getId().equals(
-			new Long(Configuration.getInstance().getProperty("tipoPlan.ConLimite"))
+		contrato.getNuevoPlan() != null
+		&& contrato.getNuevoPlan().getTipoPlan() != null 
+		&& contrato.getNuevoPlan().getTipoPlan().getId().equals(
+			Long.parseLong(Configuration.getInstance().getProperty("tipoPlan.ConLimite"))
 		);
 	
 	vias = 2;
@@ -369,8 +373,9 @@
 						<div class="divColumnaHalfFiller" style="width: 542px;">$<input type="text" class="inputEspecificacionesConsumoMinimo"/></div>
 					</div>
 <%
-		if (contratoTO.getNuevoPlan() != null && 
-			contratoTO.getNuevoPlan().getBeneficioIncluidoEnLlamadas()) {
+		if (contrato.getNuevoPlan() != null
+			&& contrato.getNuevoPlan().getBeneficioIncluidoEnLlamadas() != null
+			&& contrato.getNuevoPlan().getBeneficioIncluidoEnLlamadas()) {
 %>
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 						<div class="divColumnaQuarter" style="width: 108px;height: 18px;">Llamadas</div>
@@ -429,9 +434,9 @@
 <!-- 
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 <%
-		if (contratoTO.getNuevoPlan() != null && 
-			(contratoTO.getNuevoPlan().getDescripcion().startsWith("1155")
-			|| contratoTO.getNuevoPlan().getDescripcion().startsWith("2385"))
+		if (contrato.getNuevoPlan() != null && 
+			(contrato.getNuevoPlan().getDescripcion().startsWith("1155")
+			|| contrato.getNuevoPlan().getDescripcion().startsWith("2385"))
 		) {
 %>
 						<div class="divColumnaThird" style="width: 108px;height: 18px;">&nbsp;</div>
@@ -514,7 +519,9 @@
 					Este plan permite realizar recargas de saldo y promocionales, servicios de valor agregado y contratar paquetes de roaming a pagar en factura. Verificar los topes del plan en www.antel.com.uy.
 				</div>
 <%
-			if (contratoTO.getNuevoPlan() != null && contratoTO.getNuevoPlan().getBeneficioIncluidoEnLlamadas()) {
+			if (contrato.getNuevoPlan() != null 
+				&& contrato.getNuevoPlan().getBeneficioIncluidoEnLlamadas() != null
+				&& contrato.getNuevoPlan().getBeneficioIncluidoEnLlamadas()) {
 %>
 				<div class=""><span style="font-weight: bold">Rendimiento:</span><sup>(1)</sup></div>
 				<div class="">- El rendimiento detallado es el m&aacute;ximo, utilizando la totalidad del importe mensual en dicho tipo de tr&aacute;fico.</div>
@@ -532,40 +539,11 @@
 		}
 %>			
 				<div class="" style="font-weight: bold;">Llamadas:</div>
-<!-- 
-<%
-		if (contratoTO.getNuevoPlan() != null && 
-			(contratoTO.getNuevoPlan().getDescripcion().startsWith("1155")
-			|| contratoTO.getNuevoPlan().getDescripcion().startsWith("2385"))
-		) {
-%>
-				<div class="">Beneficio destinos gratis:</div>
-				<div class="">Antel le regala todos los meses minutos de comunicaci&oacute;n y mensajes de texto, no acumulables mes a mes.</div>
-				<div class="">(****) Los minutos incluidos por mes corresponden a la m&aacute;xima cantidad de minutos de comunicaci&oacute;n a cualquier n&uacute;mero destino Antel. Los minutos que pudieren superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa del minuto de comunicaci&oacute;n correspondiente al Plan aqu&iacute; detallado.</div>
-				<div class="">(*****) Los sms inclu&iacute;dos son para enviar a <input type="text" class="inputEspecificacionesSMSGratisCantidadCelulares"/> n&uacute;mero M&oacute;vil de Antel. Los sms que pudieran superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa correspondiente al Plan aqu&iacute; detallado.</div>
-				<div class="">Dichos beneficios operan exclusivamente dentro del territorio nacional. Por m&aacute;s informaci&oacute;n sobre los beneficios del plan contratado, consulte la Web de Antel: www.antel.com.uy. El Reglamento de Servicios de ANTEL y las Condiciones de Contrataci&oacute;n puede consultarse en la Web de ANTEL www.antel.com.uy, o en los Centros Comerciales y/o Tiendas a trav&eacute;s de los Terminales de Autogesti&oacute;n.</div>
-<%
-		} else {
-%>
-				<div class="" style="font-weight: bold;">Beneficio n&uacute;meros amigos:</div>
-				<div class="">-<sup>(2)</sup> Puede elegir 5 amigos que tengan celulares de Antel, para comunicarse a una tarifa preferencial. Los n&uacute;meros amigos se pueden modificar cada 30 d&iacute;as.</div>
-				<div class="" style="font-weight: bold;">Beneficio destinos gratis:</div>
-				<div class="">Antel le regala todos los meses minutos de comunicaci&oacute;n, no acumulables mes a mes. Por este plan Ud. tiene los siguientes destinos gratis:</div>
-				<div class="">-<sup>(3)</sup> 5 n&uacute;mero/s M&oacute;viles de Antel.</div>
-				<div class="">-<sup>(4)</sup> 5 n&uacute;mero/s de tel&eacute;fono fijo.</div>
-				<div class="">Una vez superados los minutos gratis, se facturar&aacute; a la tarifa corresondiente al plan aqu&iacute; detallado. Los clientes con documento RUT no pueden acceder a este benficio, excepto las empresas unipersonales. Los destinos gratis se pueden modificar cada 3 meses.</div>
-				<!-- 
-				<div class="">(*****) Los sms inclu&iacute;dos son para enviar a <input type="text" class="inputEspecificacionesSMSGratisCantidadCelulares"/> n&uacute;mero M&oacute;vil de Antel. Los sms que pudieran superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa correspondiente al Plan aqu&iacute; detallado.</div>
-				<div class="">Los mismos los puede seleccionar v&iacute;a Web en www.antel.com.uy. Cada destino seleccionado puede modificarse cada tres meses. Los clientes con documento RUT no pueden acceder a los Nros Gratis, excepto las empresas unipersonales. Dichos beneficios operan exclusivamente dentro del territorio nacional. Por m&aacute;s informaci&oacute;n sobre los beneficios del plan contratado, consulte la Web de Antel: www.antel.com.uy. El Reglamento de Servicios de ANTEL y las Condiciones de Contrataci&oacute;n puede consultarse en la Web de ANTEL www.antel.com.uy, o en los Centros Comerciales y/o Tiendas a trav&eacute;s de los Terminales de Autogesti&oacute;n.</div>
-				 -->
-<% 
-		}
-%>	
--->
 
 <%
-		if (contratoTO.getNuevoPlan() != null && 
-			contratoTO.getNuevoPlan().getBeneficioIncluidoEnLlamadas()) {
+		if (contrato.getNuevoPlan() != null
+			&& contrato.getNuevoPlan().getBeneficioIncluidoEnLlamadas() != null
+			&& contrato.getNuevoPlan().getBeneficioIncluidoEnLlamadas()) {
 %>
 				<div class="">Antel le regala todos los meses minutos de comunicaci&oacute;n. Superado el l&iacute;mite referido se facturar&aacute;n a la tarifa correspondiente al plan aqu&iacute; detallado.</div>
 				<div class="">-<sup>(4)</sup> Llamadas incluidas para comunicarse a cualquier n&uacute;mero m&oacute;vil o fijo de Antel, no acumulables mes a mes.</div>
@@ -576,8 +554,8 @@
 				<div class="">-<sup>(2)</sup> Puede elegir 5 amigos que tengan celulares de Antel, para comunicarse a una tarifa preferencial. Los n&uacute;meros amigos se pueden modificar cada 30 d&iacute;as.</div>
 				<div class="" style="font-weight: bold;">Beneficio destinos gratis:</div>
 				<div class="">Antel le regala todos los meses minutos de comunicaci&oacute;n, no acumulables mes a mes. Por este plan Ud. tiene los siguientes destinos gratis:</div>
-				<div class="">-<sup>(3)</sup> 5 n&uacute;mero/s M&oacute;viles de Antel.</div>
-				<div class="">-<sup>(4)</sup> 5 n&uacute;mero/s de tel&eacute;fono fijo.</div>
+				<div class="">-<sup>(3)</sup> <input type="text" class="inputEspecificacionesMinutosGratisCantidadCelulares"/> n&uacute;mero/s M&oacute;viles de Antel.</div>
+				<div class="">-<sup>(4)</sup> <input type="text" class="inputEspecificacionesMinutosGratisCantidadFijos"/> n&uacute;mero/s de tel&eacute;fono fijo.</div>
 				<div class="">Una vez superados los minutos gratis, se facturar&aacute; a la tarifa corresondiente al plan aqu&iacute; detallado. Los clientes con documento RUT no pueden acceder a este benficio, excepto las empresas unipersonales. Los destinos gratis se pueden modificar cada 3 meses.</div>
 				<!-- 
 				<div class="">(*****) Los sms inclu&iacute;dos son para enviar a <input type="text" class="inputEspecificacionesSMSGratisCantidadCelulares"/> n&uacute;mero M&oacute;vil de Antel. Los sms que pudieran superar el l&iacute;mite antes referido se facturar&aacute;n a la tarifa correspondiente al Plan aqu&iacute; detallado.</div>
@@ -619,7 +597,8 @@
 				<div class="">En las contrataciones no presenciales el consumidor podr&aacute; ejercer el derecho consagrado en el art&iacute; 16 de la Ley 17.250, dentro de los cinco d&iacute;as h&aacute;biles siguientes a la contrataci&oacute;n del servicio o entrega del producto, cumpliendo en todo, con las condiciones establecidas en dicha norma.</div>
 				<div class="">El Reglamento de Servicios de ANTEL y las Condiciones de Contrataci&oacute;n forman parte de este documento y puden consultarse en la Web de ANTEL www.antel.com.uy, en los Locales Comerciales y/o Tiendas.</div>
 				<div class="">Los cargos mensuales establecidos en el contrato ser&aacute;n modificados autom&aacute;ticamente de conformidad con lo dispuesto en el Art. 12 del Decreto de Ley Nº 14.235 de 25 de julio de 1974 en la redacci&oacute;n dada por el Art. 13 de la Ley Nº 16.211 del 1 de octubre de 1991.</div>
-				<div class="">El documento original es entregado al cliente en el mismo acto de su suscripci&oacute;n. Se guarda copia fiel del original.</div>
+				<!-- <div class="">El documento original es entregado al cliente en el mismo acto de su suscripci&oacute;n. Se guarda copia fiel del original.</div> -->
+				<div class="">Cuando el documento es firmado electr&oacute;nicamente se le env&iacute;a a la direcci&oacute;n de correo electr&oacute;nico declarado por el cliente; si se firma de forma manuscrita se entrega el original al cliente en el mismo acto de su suscripci&oacute;n y se guarda copia fiel del original.</div>
 				<br/>
 				<div class="">
 					Observaciones:
@@ -633,17 +612,16 @@
 				<div style="float: left;width: 30%;">
 					<div style="width: 75%;border-bottom: dotted 1px black;height: 20px;">&nbsp;</div>
 				</div>
-				<div style="float: left;width: 30%;height: 20px;">Firma del cliente</div>
+				<div style="float: left;width: 30%;height: 40px;" class="divEspecificacionesSelloANTEL">
+					<div style="float: left;width: 75%;height: 100%;border-bottom: dotted 1px black;">Firma del cliente</div>
+				</div>
 				<div style="float: left;width: 30%;height: 20px;">Aclaraci&oacute;n de firma</div>
 				<div style="float: left;width: 30%;height: 20px;">Documento</div>
 				<div style="float: left;width: 30%;">
-					<div style="width: 75%;border-bottom: dotted 1px black;height: 20px;">&nbsp;</div>
+					<div style="width: 75%;border-bottom: dotted 1px black;height: 20px;text-align: center;">ANTEL</div>
 				</div>
 				<div style="float: left;width: 30%;">
-					<div style="width: 75%;border-bottom: dotted 1px black;height: 20px;">&nbsp;</div>
-				</div>
-				<div style="float: left;width: 30%;">
-					<div style="width: 75%;border-bottom: dotted 1px black;height: 20px;">&nbsp;</div>
+					<div style="width: 75%;border-bottom: dotted 1px black;height: 20px;text-align: center;">211003420017</div>
 				</div>
 				<div style="float: left;width: 30%;height: 20px;">Firma por Antel</div>
 				<div style="float: left;width: 30%;height: 20px;">Aclaraci&oacute;n de firma</div>
@@ -654,8 +632,10 @@
 <%
 	}
 
-	if (!contratoTO.getModelo().getId().equals(
-		new Long(Configuration.getInstance().getProperty("modelo.SinEquipo")))
+	if (contrato.getModelo() == null
+		|| !contrato.getModelo().getId().equals(
+			Long.parseLong(Configuration.getInstance().getProperty("modelo.SinEquipo"))
+		)
 	) {
 		
 		vias = 2;
@@ -709,7 +689,7 @@
 		}
 	}
 
-	if (contratoTO.getMotivoCambioPlan() != null) {
+	if (contrato.getMotivoCambioPlan() != null) {
 	
 		vias = 2;
 		for (int i=0; i<vias; i++) {

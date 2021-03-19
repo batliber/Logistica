@@ -17,7 +17,11 @@ public interface IModeloBean {
 	
 	public Collection<Modelo> listByMarcaId(Long marcaId);
 	
+	public Collection<Modelo> listMinimalByMarcaId(Long marcaId);
+	
 	public Collection<Modelo> listVigentesByMarcaId(Long marcaId);
+	
+	public Collection<Modelo> listVigentesMinimalByMarcaId(Long marcaId);
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 	
@@ -25,7 +29,7 @@ public interface IModeloBean {
 	
 	public Modelo getById(Long id);
 	
-	public void save(Modelo modelo);
+	public Modelo save(Modelo modelo);
 	
 	public void remove(Modelo modelo);
 	

@@ -7,25 +7,18 @@ $(document).ready(init);
 function init() {
 	$("#divTitle").append("Visita");
 	
-	EstadoVisitaPuntoVentaDistribuidorDWR.list(
-		{
-			callback: function(data) {
-				$("#selectEstadoVisitaPuntoVentaDistribuidor > option").remove();
-				
-				html =
-					"<option value=0>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectEstadoVisitaPuntoVentaDistribuidor").append(html);
-			}, async: false
-		}
-	);
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/EstadoVisitaPuntoVentaDistribuidorREST/list"
+	}).then(function(data) {
+		fillSelect(
+			"selectEstadoVisitaPuntoVentaDistribuidor", 
+			data,
+			"id", 
+			"nombre"
+		);
 
-	initMap();
+		initMap();
+	});
 }
 
 function center(data) {
@@ -37,10 +30,10 @@ function center(data) {
 	$("#inputPrecision").val(crd.accuracy);
 	
 	new google.maps.InfoWindow({
-        map: map,
-        position: new google.maps.LatLng(crd.latitude, crd.longitude),
-        content: "Ubicación actual"
-    });
+		map: map,
+		position: new google.maps.LatLng(crd.latitude, crd.longitude),
+		content: "Ubicación actual"
+	});
 }
 
 function positionError(data) {
@@ -54,50 +47,56 @@ function initMap() {
 		divMap, {
 			center: {lat: 0, lng: 0},
 			zoom: 15
-    	}
+		}
 	);
 	
 	if (id != null) {
-		VisitaPuntoVentaDistribuidorDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					if (data != null) {
-						$("#divDistribuidor").text(data.distribuidor.nombre);
-						$("#divDistribuidor").attr("did", data.distribuidor.id);
-						$("#divDepartamento").text(data.puntoVenta.departamento.nombre);
-						$("#divDepartamento").attr("did", data.puntoVenta.departamento.id);
-						$("#divPuntoVenta").text(data.puntoVenta.nombre);
-						$("#divPuntoVenta").attr("pvid", data.puntoVenta.id);
-						$("#divPuntoVentaBarrio").html(
-							data.puntoVenta.barrio != null ? data.puntoVenta.barrio.nombre : "&nbsp;"
-						);
-						$("#divPuntoVentaDireccion").html(
-							data.puntoVenta.direccion != null ? data.puntoVenta.direccion : "&nbsp;"
-						);
-						$("#divPuntoVentaTelefono").html(
-							data.puntoVenta.telefono != null ? data.puntoVenta.telefono : "&nbsp;"
-						);
-						$("#divPuntoVentaContacto").html(
-							data.puntoVenta.contacto != null ? data.puntoVenta.contacto : "&nbsp;"
-						);
-						$("#divFechaAsignacion").text(formatLongDate(data.fechaAsignacion));
-						$("#divFechaAsignacion").attr("fa", formatRawDate(data.fechaAsignacion));
-						
-						if (data.estadoVisitaPuntoVentaDistribuidor != null) {
-							$("#selectEstadoVisitaPuntoVentaDistribuidor").val(data.estadoVisitaPuntoVentaDistribuidor.id);
-						}
-						if (data.observaciones != null) {
-							$("#textareaObservaciones").text(data.observaciones);
-						}
-						
-						if (data.puntoVenta != null) {
-							fillMap([data.puntoVenta]);
-						}
-					}
-				}, async: false
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/getById/" + id
+		}).then(function(data) {
+			if (data != null) {
+				$("#divDistribuidor").text(data.distribuidor.nombre);
+				$("#divDistribuidor").attr("did", data.distribuidor.id);
+				$("#divDepartamento").text(data.puntoVenta.departamento.nombre);
+				$("#divDepartamento").attr("did", data.puntoVenta.departamento.id);
+				$("#divPuntoVenta").text(data.puntoVenta.nombre);
+				$("#divPuntoVenta").attr("pvid", data.puntoVenta.id);
+				$("#divPuntoVentaBarrio").html(
+					data.puntoVenta.barrio != null ? data.puntoVenta.barrio.nombre : "&nbsp;"
+				);
+				$("#divPuntoVentaDireccion").html(
+					(data.puntoVenta.direccion != null 
+					&& data.puntoVenta.direccion != "") ? 
+						data.puntoVenta.direccion 
+						: "&nbsp;"
+				);
+				$("#divPuntoVentaTelefono").html(
+					(data.puntoVenta.telefono != null 
+					&& data.puntoVenta.telefono != "") ? 
+						data.puntoVenta.telefono 
+						: "&nbsp;"
+				);
+				$("#divPuntoVentaContacto").html(
+					(data.puntoVenta.contacto != null 
+					&& data.puntoVenta.contacto != "") ? 
+						data.puntoVenta.contacto 
+						: "&nbsp;"
+				);
+				$("#divFechaAsignacion").text(formatLongDate(data.fechaAsignacion));
+				$("#divFechaAsignacion").attr("fa", data.fechaAsignacion);
+				
+				if (data.estadoVisitaPuntoVentaDistribuidor != null) {
+					$("#selectEstadoVisitaPuntoVentaDistribuidor").val(data.estadoVisitaPuntoVentaDistribuidor.id);
+				}
+				if (data.observaciones != null) {
+					$("#textareaObservaciones").text(data.observaciones);
+				}
+				
+				if (data.puntoVenta != null) {
+					fillMap([data.puntoVenta]);
+				}
 			}
-		);
+		});
 	} else {
 		navigator.geolocation.getCurrentPosition(
 			center, 
@@ -172,8 +171,8 @@ function inputLimpiarOnClick(event, element) {
 
 function inputSubmitOnClick(event, element) {
 	var visitaPuntoVentaDistribuidor = {
-		fechaAsignacion: new Date(parseInt($("#divFechaAsignacion").attr("fa"))),
-		fechaVisita: new Date(),
+		fechaAsignacion: parseInt($("#divFechaAsignacion").attr("fa")),
+		fechaVisita: new Date().getTime(),
 		observaciones: $("#textareaObservaciones").val() != "" ? $("#textareaObservaciones").val() : null,
 		distribuidor: {
 			id: $("#divDistribuidor").attr("did")
@@ -189,13 +188,13 @@ function inputSubmitOnClick(event, element) {
 	if (id != null) {
 		visitaPuntoVentaDistribuidor.id = id;
 		
-		VisitaPuntoVentaDistribuidorDWR.update(
-			visitaPuntoVentaDistribuidor,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/update",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(visitaPuntoVentaDistribuidor)
+		}).then(function(data) {
+			alert("Operación exitosa");
+		});
 	}
 }

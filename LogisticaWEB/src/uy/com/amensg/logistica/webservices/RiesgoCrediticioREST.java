@@ -1,5 +1,8 @@
 package uy.com.amensg.logistica.webservices;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -25,16 +28,33 @@ public class RiesgoCrediticioREST {
 		try {
 			IRiesgoCrediticioBean iRiesgoCrediticioBean = lookupRiesgoCrediticioBean();
 			
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			Integer maximoTiempoProcesadoDias = Integer.parseInt(
+				Configuration.getInstance().getProperty("riesgoCrediticio.maximoTiempoProcesadoDias")
+			);
+			
+			gregorianCalendar.add(
+				GregorianCalendar.DATE, 
+				-1 * maximoTiempoProcesadoDias
+			);
+			
+			Date fechaMaximaVigencia = gregorianCalendar.getTime(); 
 			RiesgoCrediticio riesgoCrediticio = iRiesgoCrediticioBean.getLastByDocumento(documento);
 			if (riesgoCrediticio != null) {
 				if (riesgoCrediticio.getEstadoRiesgoCrediticio().getId().equals(
-						new Long(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.Procesado"))
+						Long.parseLong(Configuration.getInstance().getProperty("estadoRiesgoCrediticio.Procesado"))
 					)
 					&& !riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-						new Long(
+						Long.parseLong(
 							Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDETERMINAR")
 						)
-					)) {
+					)
+					&& (
+						riesgoCrediticio.getFechaVigenciaDesde() == null
+						|| riesgoCrediticio.getFechaVigenciaDesde().after(fechaMaximaVigencia)
+					)
+				) {
 					result = 
 						"{"
 							+ " \"documento\": \"" + documento + "\","

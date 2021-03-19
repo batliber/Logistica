@@ -1,0 +1,84 @@
+body {
+	margin: 0px;
+	background-color: white;
+}
+
+.divSheet {
+	font-size: 10pt;
+	width: 95mm;
+	height: 120mm;
+	/* background-color: red; */
+	/* border: solid 1px black; */
+}
+
+.divSheetContent {
+	margin-top: 5mm;
+	margin-left: 5mm;
+	width: 80mm;
+}
+
+.divHeader {
+	width: 100%;
+	text-align: center;
+	font-size: 14pt;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.divRow {
+	float: left;
+	width: 100%;
+}
+
+.divColumn {
+	float: left;
+	width: 100%;
+	margin-top: 15px;
+}
+
+.divFormLabelPrint {
+	font-size: 9pt;
+	font-weight: bold;
+	float: left;
+	width: 80px;
+	text-align: left;
+	margin-left: 2px;
+}
+
+.divFormValuePrint {
+	font-size: 9pt;
+	float: left;
+	width: 220px;
+	text-align: left;
+	margin-top: 2px;
+}
+
+.divBarCode {
+	float: left;
+	width: 200px;
+	height: 80px;
+	background-position: -5px 0px;
+	background-repeat: no-repeat;
+}
+
+#imgNumeroTramiteBarCode {
+	height: 100%;
+}
+
+#imgMidBarCode {
+	height: 100%;
+}
+
+.divObservaciones {
+	height: 45px;
+	overflow: hidden;
+}
+
+.divDireccionEntregaObservaciones {
+	height: 45px;
+	overflow: hidden;
+}
+
+.divFormaPago {
+	height: 161px;
+}

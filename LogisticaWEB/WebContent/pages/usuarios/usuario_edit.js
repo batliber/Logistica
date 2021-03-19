@@ -20,6 +20,76 @@ function init() {
 	$("#inputUsuarioContrasena").prop("disabled", true);
 	$("#inputCambiarContrasena").prop("checked", false);
 	
+	initGridEmpresas();
+	initGridRoles();
+	
+	initPuntosVenta()
+		.then(initEmpresas)
+		.then(initRoles)
+		.then(function(odata) {
+			if (id != null) {
+				$.ajax({
+			        url: "/LogisticaWEB/RESTFacade/RecargaPuntoVentaUsuarioREST/getPuntoVentaByUsuarioId/" + id
+			   	}).then(function(data) {
+					if (data != null) {
+						$("#selectUsuarioPuntoVenta").val(data.id);
+					}
+				}).then(function(data) {
+					$.ajax({
+				        url: "/LogisticaWEB/RESTFacade/UsuarioREST/getById/" + id
+				    }).then(function(data) {
+						$("#inputUsuarioLogin").val(data.login);
+						$("#inputUsuarioNombre").val(data.nombre);
+						$("#inputUsuarioDocumento").val(data.documento);
+						$("#inputUsuarioBloqueado").prop("checked", data.bloqueado);
+						
+						for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+							var usuarioRolEmpresa = data.usuarioRolEmpresas[i];
+							
+							var found = false;
+							for (var j=0; j<empresas.registrosMuestra.length; j++) {
+								if (empresas.registrosMuestra[j].id == usuarioRolEmpresa.empresa.id) {
+									found = true;
+								}
+							}
+							
+							if (!found) {
+								empresas.registrosMuestra[empresas.registrosMuestra.length] = usuarioRolEmpresa.empresa;
+								empresas.cantidadRegistros++;
+							}
+							
+							found = false;
+							for (var j=0; j<roles.registrosMuestra.length; j++) {
+								if (roles.registrosMuestra[j].id == usuarioRolEmpresa.rol.id) {
+									found = true;
+								}
+							}
+							
+							if (!found) {
+								roles.registrosMuestra[roles.registrosMuestra.length] = usuarioRolEmpresa.rol;
+								roles.cantidadRegistros++;
+							}
+						}
+						
+						reloadEmpresas();
+						reloadRoles();
+					
+						if (mode == __FORM_MODE_ADMIN) {
+							$("#divEliminarUsuario").show();
+							$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+						} else {
+							
+						}
+					});
+				});
+			} else {
+				$("#inputUsuarioContrasena").prop("disabled", false);
+				$("#inputCambiarContrasena").prop("checked", true);
+			}
+		});
+}
+
+function initGridEmpresas() {
 	gridEmpresas = new Grid(
 		document.getElementById("divTableEmpresas"),
 		{
@@ -33,7 +103,9 @@ function init() {
 	);
 	
 	gridEmpresas.rebuild();
-	
+}
+
+function initGridRoles() {
 	gridRoles = new Grid(
 		document.getElementById("divTableRoles"),
 		{
@@ -47,93 +119,45 @@ function init() {
 	);
 	
 	gridRoles.rebuild();
-	
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				var html = 
-					"<option value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectEmpresa").html(html);
-			}, async: false
-		}
-	);
-	
-	RolDWR.list(
-		{
-			callback: function(data) {
-				var html = 
-					"<option value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html +=
-						"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectRol").html(html);
-			}, async: false
-		}
-	);
-	
-	if (id != null) {
-		UsuarioDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputUsuarioLogin").val(data.login);
-					$("#inputUsuarioNombre").val(data.nombre);
-					$("#inputUsuarioDocumento").val(data.documento);
-					$("#inputUsuarioBloqueado").prop("checked", data.bloqueado);
-					
-					for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-						var usuarioRolEmpresa = data.usuarioRolEmpresas[i];
-						
-						var found = false;
-						for (var j=0; j<empresas.registrosMuestra.length; j++) {
-							if (empresas.registrosMuestra[j].id == usuarioRolEmpresa.empresa.id) {
-								found = true;
-							}
-						}
-						
-						if (!found) {
-							empresas.registrosMuestra[empresas.registrosMuestra.length] = usuarioRolEmpresa.empresa;
-							empresas.cantidadRegistros++;
-						}
-						
-						found = false;
-						for (var j=0; j<roles.registrosMuestra.length; j++) {
-							if (roles.registrosMuestra[j].id == usuarioRolEmpresa.rol.id) {
-								found = true;
-							}
-						}
-						
-						if (!found) {
-							roles.registrosMuestra[roles.registrosMuestra.length] = usuarioRolEmpresa.rol;
-							roles.cantidadRegistros++;
-						}
-					}
-					
-					reloadEmpresas();
-					reloadRoles();
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarUsuario").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					} else {
-						
-					}
-				}, async: false
-			}
-		);
-	} else {
-		$("#inputUsuarioContrasena").prop("disabled", false);
-		$("#inputCambiarContrasena").prop("checked", true);
-	}
+}
+
+function initPuntosVenta() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
+	}).then(function(data) {
+		fillSelect(
+	    	"selectUsuarioPuntoVenta", 
+	    	data,
+	   		"id", 
+	   		"nombre"
+	   	);
+	}); 
+}
+
+function initEmpresas() {
+    return $.ajax({
+        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+    }).then(function(data) {
+	    fillSelect(
+	    	"selectEmpresa", 
+	    	data,
+	   		"id", 
+	   		"nombre"
+	   	);
+	});
+}
+
+function initRoles() {
+	return $.ajax({
+        url: "/LogisticaWEB/RESTFacade/RolREST/listMinimal"
+	}).then(function(data) {
+	  	fillSelect(
+	       	"selectRol", 
+	       	data,
+	       	"id", 
+	       	"nombre"
+	       );
+	});
 }
 
 function reloadEmpresas() {
@@ -165,17 +189,14 @@ function inputAgregarEmpresaOnClick(event, element) {
 		}
 		
 		if (!found) {
-			EmpresaDWR.getById(
-				empresaId,
-				{
-					callback: function(data) {
-						empresas.cantidadRegistros = empresas.cantidadRegistros + 1;
-						empresas.registrosMuestra[empresas.registrosMuestra.length] = data;
-						
-						reloadEmpresas();
-					}, async: false
-				}
-			);
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/EmpresaREST/getById/" + empresaId
+		    }).then(function(data) {
+				empresas.cantidadRegistros = empresas.cantidadRegistros + 1;
+				empresas.registrosMuestra[empresas.registrosMuestra.length] = data;
+				
+				reloadEmpresas();
+			});
 		}
 	} else {
 		alert("Debe seleccionar una empresa.");
@@ -194,17 +215,14 @@ function inputAgregarRolOnClick(event, element) {
 		}
 		
 		if (!found) {
-			RolDWR.getById(
-				rolId,
-				{
-					callback: function(data) {
-						roles.cantidadRegistros = roles.cantidadRegistros + 1;
-						roles.registrosMuestra[roles.registrosMuestra.length] = data;
-						
-						reloadRoles();
-					}, async: false
-				}
-			);
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/RolREST/getById/" + rolId
+		    }).then(function(data) {
+				roles.cantidadRegistros = roles.cantidadRegistros + 1;
+				roles.registrosMuestra[roles.registrosMuestra.length] = data;
+				
+				reloadRoles();
+			});
 		}
 	} else {
 		alert("Debe seleccionar un rol.");
@@ -306,38 +324,85 @@ function inputGuardarOnClick(event) {
 			usuario.cambioContrasenaProximoLogin = true;
 		}
 		
-		UsuarioDWR.update(
-			usuario,
-			{
-				callback: function(data) {
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/UsuarioREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(usuario)
+	    }).then(function(data) {
+			if (data != null) {
+				var puntoVentaId = $("#selectUsuarioPuntoVenta").val();
+						
+				var recargaPuntoVentaUsuario = {
+					usuario: {
+						id: id
+					}
+				};
+				if (puntoVentaId > 0) {
+					recargaPuntoVentaUsuario.puntoVenta = {
+						id: puntoVentaId
+					}
+				}
+				
+				$.ajax({
+					url: "/LogisticaWEB/RESTFacade/RecargaPuntoVentaUsuarioREST/update",
+				    method: "POST",
+				    contentType: 'application/json',
+				    data: JSON.stringify(recargaPuntoVentaUsuario)
+				}).then(function(data) {
 					alert("Operación exitosa");
-				}, async: false
+				});
+			} else {
+				alert("No se pudo completar la operación.")
 			}
-		);
+		});
 	} else {
 		usuario.contrasena = $("#inputUsuarioContrasena").val();
 		
-		UsuarioDWR.getByLogin(
-			usuario.login,
-			{
-				callback: function(data) {
-					if (data == null) {
-						UsuarioDWR.add(
-							usuario,
-							{
-								callback: function(data) {
-									alert("Operación exitosa");
-									
-									$("#inputEliminarUsuario").prop("disabled", false);
-								}, async: false
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/UsuarioREST/getByLogin/" + usuario.login
+	    }).then(function(data) {
+			if (data == null) {
+				$.ajax({
+			        url: "/LogisticaWEB/RESTFacade/UsuarioREST/add",
+			        method: "POST",
+			        contentType: 'application/json',
+			        data: JSON.stringify(usuario)
+			    }).then(function(data) {
+			    	if (data != null) {
+						id = data.id;
+						
+						var puntoVentaId = $("#selectUsuarioPuntoVenta").val();
+						
+						var recargaPuntoVentaUsuario = {
+							usuario: {
+								id: id
 							}
-						);
-					} else {
-						alert("Ya existe un usuario con ese login.");
-					}
-				}, async: false
+						};
+						if (puntoVentaId > 0) {
+							recargaPuntoVentaUsuario.puntoVenta = {
+								id: puntoVentaId
+							}
+						}
+						
+						$.ajax({
+					        url: "/LogisticaWEB/RESTFacade/RecargaPuntoVentaUsuarioREST/update",
+					        method: "POST",
+					        contentType: 'application/json',
+					        data: JSON.stringify(recargaPuntoVentaUsuario)
+					    }).then(function(data) {
+							alert("Operación exitosa");
+					
+			    			$("#inputEliminarUsuario").prop("disabled", false);
+						});
+			    	} else {
+			    		alert("Error en la operación");
+			    	}
+				});
+			} else {
+				alert("Ya existe un usuario con ese login.");
 			}
-		);
+		});
 	}
 }
 
@@ -347,13 +412,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		UsuarioDWR.remove(
-			usuario,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/UsuarioREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(usuario)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	}
 }

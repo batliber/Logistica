@@ -9,96 +9,62 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN) {
-						mode = __FORM_MODE_ADMIN;
-						
-						grid = new Grid(
-							document.getElementById("divTableBarrios"),
-							{
-								tdBarrioNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 350 },
-								tdBarrioZona: { campo: "zona.nombre", clave: "zona.id", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listZonas, clave: "id", valor: "nombre" }, ancho: 250 },
-								tdBarrioDepartamento: { campo: "departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre" }, ancho: 150 }
-							}, 
-							true,
-							reloadData,
-							trBarrioOnClick
-						);
-						
-						grid.rebuild();
-						
-						$("#divButtonNew").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-						
-						break;
-					}
-				}
-			}, async: false
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+    }).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN) {
+				mode = __FORM_MODE_ADMIN;
+				
+				grid = new Grid(
+					document.getElementById("divTableBarrios"),
+					{
+						tdBarrioNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 350 },
+						tdBarrioZona: { campo: "zona.nombre", clave: "zona.id", descripcion: "Zona", abreviacion: "Zona", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listZonas, clave: "id", valor: "nombre" }, ancho: 250 },
+						tdBarrioDepartamento: { campo: "departamento.nombre", clave: "departamento.id", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre" }, ancho: 150 }
+					}, 
+					true,
+					reloadData,
+					trBarrioOnClick
+				);
+				
+				grid.rebuild();
+				
+				$("#divButtonNew").show();
+				$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				
+				break;
+			}
 		}
-	);
-	
-	reloadData();
-	
-	$("#divIFrameBarrio").draggable();
-}
-
-function listZonas() {
-	var result = [];
-	
-	ZonaDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listDepartamentos() {
-	var result = [];
-	
-	DepartamentoDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
+		
+		reloadData();
+		
+		$("#divIFrameBarrio").draggable();
+	});
 }
 
 function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
-	BarrioDWR.listContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.reload(data);
-			}, async: false
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/BarrioREST/listContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.reload(data);
+    });
 	
-	BarrioDWR.countContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.setCount(data);
-			}
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/BarrioREST/countContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) { 
+    	grid.setCount(data);
+    });
 }
 
 function trBarrioOnClick(eventObject) {

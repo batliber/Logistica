@@ -7,59 +7,57 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
-						mode = __FORM_MODE_ADMIN;
-						
-						grid = new Grid(
-							document.getElementById("divTableRoles"),
-							{
-								tdRolNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
-							}, 
-							false,
-							reloadData,
-							trRolOnClick
-						);
-						
-						grid.rebuild();
-							
-						$("#divButtonNew").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-						break;
-					}
-				}
-			}, async: false
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+    }).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+				mode = __FORM_MODE_ADMIN;
+				
+				grid = new Grid(
+					document.getElementById("divTableRoles"),
+					{
+						tdRolNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 }
+					}, 
+					false,
+					reloadData,
+					trRolOnClick
+				);
+				
+				grid.rebuild();
+					
+				$("#divButtonNew").show();
+				$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				break;
+			}
 		}
-	);
-	
-	reloadData();
-	
-	$("#divIFrameRol").draggable();
+		
+		reloadData();
+		
+		$("#divIFrameRol").draggable();
+	});
 }
 
 function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
-	RolDWR.listContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.reload(data);
-			}, async: false
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/RolREST/listContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.reload(data);
+    });
 	
-	RolDWR.countContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.setCount(data);
-			}
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/RolREST/countContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.setCount(data);
+    });
 }
 
 function trRolOnClick(eventObject) {

@@ -78,15 +78,21 @@ public class EmpresaServiceBean implements IEmpresaServiceBean {
 		return result;
 	}
 	
-	public void save(EmpresaService empresaService) {
+	public EmpresaService save(EmpresaService empresaService) {
+		EmpresaService result = null;
+		
 		try {
 			empresaService.setFcre(empresaService.getFact());
 			empresaService.setUcre(empresaService.getUact());
 			
 			entityManager.persist(empresaService);
+			
+			result = empresaService;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(EmpresaService empresaService) {

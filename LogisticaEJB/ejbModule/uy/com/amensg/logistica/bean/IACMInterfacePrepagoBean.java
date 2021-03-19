@@ -19,9 +19,9 @@ public interface IACMInterfacePrepagoBean {
 	
 	public Long count(MetadataConsulta metadataConsulta);
 
-	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
+	public String preprocesarAsignacion(MetadataConsulta metadataConsulta, Empresa empresa);
 
-	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
+	public String asignar(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	

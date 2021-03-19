@@ -68,6 +68,7 @@ public class SeguridadFilter implements Filter {
 				|| requestedPage.endsWith("Upload")
 				|| requestedPage.contains("Download")
 				|| requestedPage.contains("Stream")
+				|| requestedPage.contains("JobInitializer")
 				|| requestedPage.contains("login.jsp")
 				|| allowedFileTypes.contains(ext)) {
 				filterChain.doFilter(request, response);
@@ -78,10 +79,15 @@ public class SeguridadFilter implements Filter {
 			// Recursos que requieren inicio de sesión.
 			if ((httpSession == null) || (httpSession.getAttribute("sesion") == null)) {
 				// Si la sesión no está iniciada, redirijo a la página de login.
+//				System.out.println(requestedPage);
+				httpServletRequest.setAttribute("requested_page", requestedPage);
+				
 				if (userAgent.toLowerCase().contains("mobile")) {
-					httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/mobile/mlogin/mlogin.jsp");
+					httpServletRequest.getRequestDispatcher("/pages/mobile/mlogin/mlogin.jsp")
+						.forward(httpServletRequest, httpServletResponse);
 				} else {
-					httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/login/login.jsp");
+					httpServletRequest.getRequestDispatcher("/pages/login/login.jsp")
+						.forward(httpServletRequest, httpServletResponse);
 				}
 				
 				return;
@@ -101,12 +107,16 @@ public class SeguridadFilter implements Filter {
 				if (usuarioTO.getCambioContrasenaProximoLogin() != null 
 					&& usuarioTO.getCambioContrasenaProximoLogin()
 					&& !pageName.contains("cambio_password_forced.jsp")) {
-					if (userAgent.toLowerCase().contains("mobile")) {
-						httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/mobile/mcambio_password_forced/mcambio_password_forced.jsp");
-					} else {
-						httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/pages/cambio_password_forced/cambio_password_forced.jsp");
-					}
 					
+					httpServletRequest.setAttribute("requested_page", requestedPage);
+					
+					if (userAgent.toLowerCase().contains("mobile")) {
+						httpServletRequest.getRequestDispatcher("/pages/cambio_password_forced/cambio_password_forced.jsp")
+							.forward(httpServletRequest, httpServletResponse);
+					} else {
+						httpServletRequest.getRequestDispatcher("/pages/cambio_password_forced/cambio_password_forced.jsp")
+							.forward(httpServletRequest, httpServletResponse);
+					}
 					return;
 				}
 				

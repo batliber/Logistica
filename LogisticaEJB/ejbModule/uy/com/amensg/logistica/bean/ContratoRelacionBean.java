@@ -144,7 +144,7 @@ public class ContratoRelacionBean implements IContratoRelacionBean {
 							} else if (field.getJavaType().equals(Long.class)) {
 								query.setParameter(
 									"p" + i,
-									new Long(valor)
+									Long.parseLong(valor)
 								);
 							} else if (field.getJavaType().equals(String.class)) {
 								query.setParameter(
@@ -154,7 +154,7 @@ public class ContratoRelacionBean implements IContratoRelacionBean {
 							} else if (field.getJavaType().equals(Double.class)) {
 								query.setParameter(
 									"p" + i,
-									new Double(valor)
+									Double.parseDouble(valor)
 								);
 							}
 						} catch (Exception e) {
@@ -178,14 +178,20 @@ public class ContratoRelacionBean implements IContratoRelacionBean {
 		return result;
 	}
 	
-	public void save(ContratoRelacion contratoRelacion) {
+	public ContratoRelacion save(ContratoRelacion contratoRelacion) {
+		ContratoRelacion result = null;
+		
 		try {
 			contratoRelacion.setFcre(contratoRelacion.getFact());
 			contratoRelacion.setUcre(contratoRelacion.getUact());
 			
 			entityManager.persist(contratoRelacion);
+			
+			result = contratoRelacion;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 }

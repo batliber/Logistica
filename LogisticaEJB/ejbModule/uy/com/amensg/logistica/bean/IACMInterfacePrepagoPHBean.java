@@ -11,11 +11,13 @@ public interface IACMInterfacePrepagoPHBean {
 
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta);
 	
-	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	public Long count(MetadataConsulta metadataConsulta);
 	
-	public String preprocesarExportacion(MetadataConsulta metadataConsulta, Empresa empresa);
+	public String preprocesarAsignacion(MetadataConsulta metadataConsulta, Empresa empresa);
 	
-	public String exportarAExcel(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
+	public String asignar(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
 	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
+	
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 }

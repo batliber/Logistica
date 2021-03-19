@@ -1,3 +1,8 @@
+var __ESTADO_VISITA_PENDIENTE_ID = 1;
+var __ESTADO_VISITA_VISITADO_ID = 2;
+var __ESTADO_VISITA_PERMANENTE_ID = 6;
+var __ESTADO_VISITA_AUTOR_ID = 7;
+
 var map = null;
 var infoWindow = null;
 var markers = [];
@@ -7,28 +12,27 @@ $(document).ready(init);
 function init() {
 	$("#divTitle").append("Entregar sub-lote");
 	
-	DepartamentoDWR.list(
-		{
-			callback: fillSelectDepartamento, async: false
-		}
-	);
+	$("#selectDepartamento").change(reloadPuntosVenta);
+	$("#selectBarrio").change(reloadPuntosVenta);
+	$("#selectPuntoVenta").change(reloadPuntosVenta);
 	
-	fillSelectBarrio([]);
-	fillSelectPuntoVenta([]);
+	fillSelect("selectDepartamento", [], "id", "nombre");
+	fillSelect("selectBarrio", [], "id", "nombre");
+	fillSelect("selectPuntoVenta", [], "id", "nombre");
 	
 	initMap();
 	
-	/*
-	PuntoVentaDWR.listMinimalContextAndLocationAware(
-		{
-			callback: function(data) {
-				fillSelectPuntoVenta(data);
-				fillMap(data);
-			}
-			, async: false
-		}
-	);
-	*/
+	reloadPuntosVenta();
+	
+	if (numeroSublote != null) {
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/getByNumero/" + numeroSublote
+		}).then(showSubloteData);
+	} else if (id != null) {
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/getById/" + id
+		}).then(showSubloteData);
+	}
 }
 
 function initMap() {
@@ -38,29 +42,13 @@ function initMap() {
 		divMap, {
 			center: {lat: 0, lng: 0},
 			zoom: 15
-    	}
+		}
 	);
 	
-	if (numeroSublote != null) {
-		ActivacionSubloteDWR.getByNumero(
-			numeroSublote,
-			{
-				callback: showSubloteData, async: false
-			}
-		);
-	} else if (id != null) {
-		ActivacionSubloteDWR.getById(
-			id,
-			{
-				callback: showSubloteData, async: false
-			}
-		);
-	} else {
-		navigator.geolocation.getCurrentPosition(
-			center, 
-			positionError
-		);
-	}
+	navigator.geolocation.getCurrentPosition(
+		center, 
+		positionError
+	);
 }
 
 function showSubloteData(data) {
@@ -78,7 +66,7 @@ function showSubloteData(data) {
 		if (data.distribuidor != null) {
 			$("#divDistribuidor").attr("did", data.distribuidor.id);
 			$("#divDistribuidor").html(data.distribuidor.nombre);
-			$("#divFechaAsignacionDistribuidor").attr("d", data.fechaAsignacionDistribuidor.getTime());
+			$("#divFechaAsignacionDistribuidor").attr("d", data.fechaAsignacionDistribuidor);
 			$("#divFechaAsignacionDistribuidor").html(formatLongDate(data.fechaAsignacionDistribuidor));
 		} else {
 			$("#divDistribuidor").attr("did", null);
@@ -89,22 +77,46 @@ function showSubloteData(data) {
 		
 		$("#inputNumeroSublote").val(data.numero);
 		if (data.puntoVenta != null) {
+			fillSelect(
+				"selectDepartamento",
+				[data.puntoVenta.departamento],
+				"id",
+				"nombre"
+			);
+			fillSelect(
+				"selectBarrio",
+				[data.puntoVenta.barrio],
+				"id",
+				"nombre"
+			);
+			fillSelect(
+				"selectPuntoVenta",
+				[data.puntoVenta],
+				"id",
+				"nombre"
+			);
+			
 			$("#selectDepartamento").val(data.puntoVenta.departamento.id);
-			
-			fillSelectBarrio([data.puntoVenta.barrio]);
 			$("#selectBarrio").val(data.puntoVenta.barrio.id);
-			
-			fillSelectPuntoVenta([data.puntoVenta]);
 			$("#selectPuntoVenta").val(data.puntoVenta.id);
 			
 			fillMap([data.puntoVenta]);
 		} else {
 			$("#selectDepartamento").val(0);
 			
-			fillSelectBarrio([]);
+			fillSelect(
+				"selectBarrio",
+				[],
+				"id",
+				"nombre"
+			);
+			fillSelect(
+				"selectPuntoVenta",
+				[],
+				"id",
+				"nombre"
+			);
 			$("#selectBarrio").val(0);
-			
-			fillSelectPuntoVenta([]);
 			$("#selectPuntoVenta").val(0);
 					
 			fillMap([]);
@@ -127,10 +139,10 @@ function center(data) {
 	
 	if (infoWindow == null) {
 		infoWindow = new google.maps.InfoWindow({
-	        map: map,
-	        position: latlng,
-	        content: "Ubicación actual"
-	    });
+			map: map,
+			position: latlng,
+			content: "Ubicación actual"
+		});
 	} else {
 		infoWindow.position = latlng;
 	}
@@ -142,63 +154,36 @@ function positionError() {
 	$("#divPosicion").text("No se puede determinar la posición.");
 }
 
-function fillSelectDepartamento(data) {
-	$("#selectDepartamento > option").remove();
-	
-	html =
-		"<option value='0'>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectDepartamento").append(html);
-}
-
-function fillSelectBarrio(data) {
-	$("#selectBarrio > option").remove();
-	
-	html =
-		"<option value=0>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectBarrio").append(html);
-}
-
-function fillSelectPuntoVenta(data) {
-	$("#selectPuntoVenta > option").remove();
-	
-	html =
-		"<option value=0>Seleccione...</option>";
-	
-	for (var i=0; i<data.length; i++) {
-		html +=
-			"<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-	}
-	
-	$("#selectPuntoVenta").append(html);
-}
-
 function fillMap(data) {
 	clearMarkers();
 	
 	var markerBounds = new google.maps.LatLngBounds();
 	
 	for (var i=0; i<data.length; i++) {
-		if (data[i].latitud != null && data[i].longitud != null) {
+		var puntoVenta = data[i];
+		if (puntoVenta.latitud != null && puntoVenta.longitud != null) {
 			var latlng = {
-				lat: data[i].latitud, lng: data[i].longitud
+				lat: puntoVenta.latitud, lng: puntoVenta.longitud
 			};
+			
+			var icon = {
+				url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+			};
+			if (puntoVenta.estadoVisitaPuntoVentaDistribuidor != null) {
+				if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_PENDIENTE_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_VISITADO_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/green-dot.png";
+				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_PERMANENTE_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
+				}
+			}
 			
 			var marker = new google.maps.Marker({
 				position: latlng,
 				map: map,
-				title: data[i].nombre
+				title: puntoVenta.nombre,
+				icon: icon
 			});
 			
 			markers.push(marker);
@@ -226,85 +211,11 @@ function inputNumeroSubloteOnChange(event, element) {
 	var numeroSublote = $("#inputNumeroSublote").val();
 	
 	if (numeroSublote != null && numeroSublote != "") {
-		ActivacionSubloteDWR.getByNumeroContextAware(
-			numeroSublote,
-			{
-				callback: showSubloteData, async: false
-			}
-		);
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/getByNumero/" + numeroSublote
+		}).then(showSubloteData);
 	} else {
 		inputLimpiarOnClick();
-	}
-}
-
-function selectDepartamentoOnChange(event, element) {
-	var departamentoId = $("#selectDepartamento").val();
-	
-	fillSelectBarrio([]);
-	fillSelectPuntoVenta([]);
-	fillMap([]);
-	
-	if (departamentoId != 0) {
-		BarrioDWR.listByDepartamentoId(
-			departamentoId,
-			{
-				callback: function(data) {
-					fillSelectBarrio(data);
-				}, async: false
-			}
-		);
-		
-		PuntoVentaDWR.listByDepartamentoIdContextAndLocationAware(
-			departamentoId,
-			$("#inputLatitud").val(),
-			$("#inputLongitud").val(),
-			{
-				callback: function(data) {
-					fillSelectPuntoVenta(data);
-					fillMap(data);
-				}, async: false
-			}
-		);
-	}
-}
-
-function selectBarrioOnChange(event, element) {
-	var barrioId = $("#selectBarrio").val();
-	
-	fillSelectPuntoVenta([]);
-	fillMap([]);
-	
-	if (barrioId != 0) {
-		PuntoVentaDWR.listByBarrioIdContextAndLocationAware(
-			barrioId,
-			$("#inputLatitud").val(),
-			$("#inputLongitud").val(),
-			{
-				callback: function(data) {
-					fillSelectPuntoVenta(data);
-					fillMap(data);
-				}, async: false
-			}
-		);
-	}
-}
-
-function selectPuntoVentaOnChange(event, element) {
-	var puntoVentaId = $("#selectPuntoVenta").val();
-	
-	if (puntoVentaId != 0) {
-		PuntoVentaDWR.getById(
-			puntoVentaId,
-			{
-				callback: function(data) {
-					if (data != null) {
-						fillMap([data]);
-					}
-				}, async: false
-			}
-		);
-	} else {
-		fillMap([]);
 	}
 }
 
@@ -359,20 +270,99 @@ function inputSubmitOnClick(event) {
 			activacionSublote.fechaAsignacionDistribuidor = fechaAsignacionDistribuidor;
 		}
 		
-		activacionSublote.fechaAsignacionPuntoVenta = new Date();
+		activacionSublote.fechaAsignacionPuntoVenta = new Date().getTime();
 		
-		ActivacionSubloteDWR.asignarAPuntoVentaContextAware(
-			activacionSublote,
-			activacionSublote.puntoVenta,
-			{
-				callback: function(data) {
-					alert("Operación exitosa.");
-					
-					inputLimpiarOnClick();
-				}, async: false
-			}
-		);
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/asignarAPuntoVenta",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(activacionSublote)
+		}).then(function(data) {
+			alert("Operación exitosa.");
+			
+			inputLimpiarOnClick();
+		});
 	} else {
 		alert("Debe seleccionar un sub-lote.")
 	}
+}
+
+function reloadPuntosVenta(eventObject) {
+	var targetId = eventObject != null ? $(eventObject.currentTarget).attr("id") : "";
+	
+	var listTO = {
+		"latitud": ($("#inputLatitud").val() != null && $("#inputLatitud").val() != "") ? $("#inputLatitud").val() : -34.9017,
+		"longitud": ($("#inputLongitud").val() != null && $("#inputLongitud").val() != "") ? $("#inputLongitud").val() : -56.1634
+	};
+	
+	if (targetId.includes("Departamento")) {
+		$("#selectBarrio").val(0);
+		$("#selectPuntoVenta").val(0);
+	} else if (targetId.includes("Barrio")) {
+		$("#selectPuntoVenta").val(0);
+	}
+	
+	if ($("#selectDepartamento").val() != "0") {
+		listTO.departamentoId = $("#selectDepartamento").val();
+	} else {
+		/*fillSelect("selectBarrio", [], "id", "nombre");
+		fillSelect("selectPuntoVenta", [], "id", "nombre");
+		fillMap([]);*/
+	}
+	
+	if ($("#selectBarrio").val() != "0") {
+		listTO.barrioId = $("#selectBarrio").val();
+	}
+	
+	if ($("#selectPuntoVenta").val() != "0") {
+		listTO.puntoVentaId = $("#selectPuntoVenta").val();
+	}
+	
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimalCreatedORAssignedContextAndLocationAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(listTO)
+	}).then(function(data) {
+		var departamentos = [];
+		var barrios = [];
+		var puntosVenta = [];
+		
+		for (var i=0; i<data.length; i++) {
+			if (data[i].departamento != null) {
+				departamentos[departamentos.length] = {
+					id: data[i].departamento.id,
+					nombre: data[i].departamento.nombre
+				};
+			}
+			
+			if (data[i].barrio != null) {
+				barrios[barrios.length] = {
+					id: data[i].barrio.id,
+					nombre: data[i].barrio.nombre
+				};
+			}
+			
+			puntosVenta[puntosVenta.length] = {
+				id: data[i].id,
+				nombre: data[i].nombre,
+				latitud: data[i].latitud,
+				longitud: data[i].longitud
+			};
+		}
+		
+		if ($("#selectDepartamento").val() == "0") {
+			fillSelect("selectDepartamento", departamentos, "id", "nombre");
+		}
+		
+		if ($("#selectBarrio").val() == "0") {
+			fillSelect("selectBarrio", barrios, "id", "nombre");
+		}
+		
+		if ($("#selectPuntoVenta").val() == "0") {
+			fillSelect("selectPuntoVenta", puntosVenta, "id", "nombre");
+		}
+		
+		fillMap(data);
+	});
 }

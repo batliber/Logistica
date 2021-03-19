@@ -13,7 +13,7 @@ public interface IMenuBean {
 	
 	public Menu getById(Long id);
 	
-	public void save(Menu menu);
+	public Menu save(Menu menu);
 	
 	public void remove(Menu menu);
 	

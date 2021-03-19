@@ -160,7 +160,7 @@ public class ACMInterfaceMidPHBean implements IACMInterfaceMidPHBean {
 					} else if (campo.getJavaType().equals(Long.class)) {
 						query.setParameter(
 							"p" + i,
-							new Long(valor)
+							Long.parseLong(valor)
 						);
 					} else if (campo.getJavaType().equals(String.class)) {
 						query.setParameter(
@@ -170,7 +170,7 @@ public class ACMInterfaceMidPHBean implements IACMInterfaceMidPHBean {
 					} else if (campo.getJavaType().equals(Double.class)) {
 						query.setParameter(
 							"p" + i,
-							new Double(valor)
+							Double.parseDouble(valor)
 						);
 					}
 				} catch (Exception e) {
@@ -193,7 +193,7 @@ public class ACMInterfaceMidPHBean implements IACMInterfaceMidPHBean {
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
-		// Setear los parámetros según las condiciones del filtro
+		// Setear los parï¿½metros segï¿½n las condiciones del filtro
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
 			if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
@@ -225,7 +225,7 @@ public class ACMInterfaceMidPHBean implements IACMInterfaceMidPHBean {
 						} else if (field.getJavaType().equals(Long.class)) {
 							query.setParameter(
 								"p" + i,
-								new Long(valor)
+								Long.parseLong(valor)
 							);
 						} else if (field.getJavaType().equals(String.class)) {
 							query.setParameter(
@@ -235,7 +235,7 @@ public class ACMInterfaceMidPHBean implements IACMInterfaceMidPHBean {
 						} else if (field.getJavaType().equals(Double.class)) {
 							query.setParameter(
 								"p" + i,
-								new Double(valor)
+								Double.parseDouble(valor)
 							);
 						}
 					} catch (Exception e) {

@@ -28,23 +28,23 @@ function init() {
 function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
-	ACMInterfaceProcesoDWR.listEstadisticas(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.reload(data);
-			}
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/ACMInterfaceProcesoREST/listEstadisticas",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.reload(data);
+    });
 	
-	ACMInterfaceProcesoDWR.countEstadisticas(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.setCount(data);
-			}
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/ACMInterfaceProcesoREST/countEstadisticas",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.setCount(data);
+    });
 }
 
 function trProcesoOnClick() {

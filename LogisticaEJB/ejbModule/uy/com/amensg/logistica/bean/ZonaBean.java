@@ -41,6 +41,60 @@ public class ZonaBean implements IZonaBean {
 		return result;
 	}
 
+	public Collection<Zona> listMinimal() {
+		Collection<Zona> result = new LinkedList<Zona>();
+		
+		try {
+			TypedQuery<Object[]> query =
+				entityManager.createQuery(
+					"SELECT z.id, z.nombre"
+					+ " FROM Zona z"
+					+ " ORDER BY z.nombre", 
+					Object[].class
+				);
+			
+			for (Object[] zona : query.getResultList()) {
+				Zona zonaMinimal = new Zona();
+				zonaMinimal.setId((Long)zona[0]);
+				zonaMinimal.setNombre((String)zona[1]);
+				
+				result.add(zonaMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<Zona> listMinimalByDepartamentoId(Long departamentoId) {
+		Collection<Zona> result = new LinkedList<Zona>();
+		
+		try {
+			TypedQuery<Object[]> query =
+				entityManager.createQuery(
+					"SELECT z.id, z.nombre"
+					+ " FROM Zona z"
+					+ " WHERE z.departamento.id = :departamentoId"
+					+ " ORDER BY z.nombre", 
+					Object[].class
+				);
+			query.setParameter("departamentoId", departamentoId);
+			
+			for (Object[] zona : query.getResultList()) {
+				Zona zonaMinimal = new Zona();
+				zonaMinimal.setId((Long)zona[0]);
+				zonaMinimal.setNombre((String)zona[1]);
+				
+				result.add(zonaMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<Zona> listByDepartamentoId(Long departamentoId) {
 		Collection<Zona> result = new LinkedList<Zona>();
 		

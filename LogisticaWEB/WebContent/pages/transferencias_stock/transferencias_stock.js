@@ -8,52 +8,49 @@ var imeis = {
 
 var grid = null;
 
-$(document).ready(function() {
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
+$(document).ready(init);
+
+function init() {
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+    }).then(function(data) {
+    	fillSelect(
+    		"selectEmpresaDestino",
+    		data,
+    		"id",
+    		"nombre"
+    	);
+    });
+	
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+    }).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION) {
+				mode = __FORM_MODE_ADMIN;
 				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
+				grid = new Grid(
+					document.getElementById("divTableIMEIs"),
+					{
+						tdIMEI: { campo: "imei", descripcion: "IMEI", abreviacion: "IMEI", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
+						tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
+						tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 150 },
+						tdModelo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Modelo", abreviacion: "Modelo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 150 },
+						tdTipoProducto: { campo: "tipoProducto.descripcion", clave: "tipoProducto.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listTipoProductos, clave: "id", valor: "descripcion" }, ancho: 150 }
+					},
+					false,
+					reloadGrid,
+					trIMEIOnClick
+				);
 				
-				$("#selectEmpresaDestino").append(html);
-			}, async: false
+				grid.rebuild();
+				
+				break;
+			}
 		}
-	);
-	
-	grid = new Grid(
-		document.getElementById("divTableIMEIs"),
-		{
-			tdIMEI: { campo: "imei", descripcion: "IMEI", abreviacion: "IMEI", tipo: __TIPO_CAMPO_STRING, ancho: 150 },
-			tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 150 },
-			tdMarca: { campo: "marca.nombre", clave: "marca.id", descripcion: "Marca", abreviacion: "Marca", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listMarcas, clave: "id", valor: "nombre" }, ancho: 150 },
-			tdModelo: { campo: "modelo.descripcion", clave: "modelo.id", descripcion: "Modelo", abreviacion: "Modelo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listModelos, clave: "id", valor: "descripcion" }, ancho: 150 },
-		},
-		false,
-		reloadGrid,
-		trIMEIOnClick
-	);
-	
-	grid.rebuild();
-	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION) {
-						mode = __FORM_MODE_ADMIN;
-						
-						break;
-					}
-				}
-			}, async: false
-		}
-	);
-});
+	});
+}
 
 function refinarForm() {
 	if (mode == __FORM_MODE_ADMIN) {
@@ -61,42 +58,6 @@ function refinarForm() {
 	} else if (mode == __FORM_MODE_USER) {
 		
 	}
-}
-
-function listEmpresas() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listMarcas() {
-	MarcaDWR.list(
-		{
-			callback: function(data) {
-				return data;
-			}, async: false
-		}
-	);
-}
-
-function listModelos() {
-	ModeloDWR.list(
-		{
-			callback: function(data) {
-				return data;
-			}, async: false
-		}
-	);
 }
 
 function reloadGrid() {
@@ -146,7 +107,8 @@ function reloadGrid() {
 			imei: ordered[i].imei,
 			empresa: ordered[i].empresa,
 			marca: ordered[i].marca,
-			modelo: ordered[i].modelo
+			modelo: ordered[i].modelo,
+			tipoProducto: ordered[i].tipoProducto
 		};
 	}
 	
@@ -186,29 +148,27 @@ function inputIMEIOnChange(event, element) {
 			}
 		}
 		
-		StockMovimientoDWR.getLastByIMEI(
-			val,
-			{
-				callback: function(data) {
-					if (data != null) {
-						imeis.cantidadRegistros = imeis.cantidadRegistros + 1;
-						imeis.registrosMuestra[imeis.registrosMuestra.length] = {
-							imei: val,
-							marca: data.marca,
-							modelo: data.modelo,
-							empresa: data.empresa,
-							producto: data.producto
-						};
-						
-						reloadGrid();
-					} else {
-						alert("No se encuentra el IMEI ingresado.")
-					}
-					
-					$("#inputIMEI").val(null);
-				}, async: false
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/StockMovimientoREST/getLastByIMEI/" + val
+	    }).then(function(data) {
+			if (data != null) {
+				imeis.cantidadRegistros = imeis.cantidadRegistros + 1;
+				imeis.registrosMuestra[imeis.registrosMuestra.length] = {
+					imei: val,
+					marca: data.marca,
+					modelo: data.modelo,
+					empresa: data.empresa,
+					producto: data.producto,
+					tipoProducto: data.tipoProducto
+				};
+				
+				reloadGrid();
+			} else {
+				alert("No se encuentra el IMEI ingresado.")
 			}
-		);
+			
+			$("#inputIMEI").val(null);
+		});
 	}
 }
 
@@ -231,25 +191,28 @@ function inputGuardarOnClick(event) {
 			marca: imeis.registrosMuestra[i].marca,
 			modelo: imeis.registrosMuestra[i].modelo,
 			producto: imeis.registrosMuestra[i].producto,
+			tipoProducto: imeis.registrosMuestra[i].tipoProducto,
 			cantidad: 1
 		}
 	}
 	
-	StockMovimientoDWR.transferir(
-		stockMovimientos,
-		empresaDestinoId,
-		{
-			callback: function(data) {
-				alert("Operación exitosa");
-				
-				$("#selectEmpresaDestino").val(0);
-				imeis = {
-					cantidadRegistros: 0,
-					registrosMuestra: []
-				};
-				
-				reloadGrid();
-			}, async: false
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/StockMovimientoREST/transferir",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify({
+        	"empresaDestinoId": empresaDestinoId,
+        	"stockMovimientos": stockMovimientos
+		})
+    }).then(function(data) {
+    	alert("Operación exitosa");
+		
+		$("#selectEmpresaDestino").val(0);
+		imeis = {
+			cantidadRegistros: 0,
+			registrosMuestra: []
+		};
+		
+		reloadGrid();
+    });
 }

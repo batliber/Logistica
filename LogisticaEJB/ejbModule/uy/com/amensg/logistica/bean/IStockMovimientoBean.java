@@ -27,7 +27,7 @@ public interface IStockMovimientoBean {
 	
 	public StockMovimiento getLastByIMEI(String imei);
 	
-	public void save(StockMovimiento stockMovimiento);
+	public StockMovimiento save(StockMovimiento stockMovimiento);
 	
 	public void save(Collection<StockMovimiento> stockMovimientos);
 	

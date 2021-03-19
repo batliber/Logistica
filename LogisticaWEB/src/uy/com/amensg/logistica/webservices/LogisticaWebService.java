@@ -59,7 +59,7 @@ public class LogisticaWebService {
 	}
 	
 	@WebMethod
-    public void actualizarDatosMidContrato(
+	public void actualizarDatosMidContrato(
 		String direccion, 
 		String documentoTipo, 
 		String documento,
@@ -97,7 +97,7 @@ public class LogisticaWebService {
 				acmInterfaceContrato.setDocumento(documento);
 			}
 			if (documentoTipo != null) {
-				acmInterfaceContrato.setDocumentoTipo(new Long(documentoTipo));
+				acmInterfaceContrato.setDocumentoTipo(Long.parseLong(documentoTipo));
 			}
 			if (equipo != null && !equipo.trim().isEmpty()) {
 				acmInterfaceContrato.setEquipo(equipo);
@@ -112,18 +112,18 @@ public class LogisticaWebService {
 				acmInterfaceContrato.setLocalidad(localidad);
 			}
 			if (mid != null) {
-				acmInterfaceContrato.setMid(new Long(mid));
+				acmInterfaceContrato.setMid(Long.parseLong(mid));
 			}
 			if (nombre != null && !nombre.trim().isEmpty()) {
 				acmInterfaceContrato.setNombre(nombre);
 			}
 			if (numeroCliente != null) {
-				acmInterfaceContrato.setNumeroCliente(new Long(numeroCliente));
+				acmInterfaceContrato.setNumeroCliente(Long.parseLong(numeroCliente));
 			}
 			if (numeroContrato != null) {
-				acmInterfaceContrato.setNumeroContrato(new Long(numeroContrato));
+				acmInterfaceContrato.setNumeroContrato(Long.parseLong(numeroContrato));
 			}
-			acmInterfaceContrato.setRandom(new Long(random.nextInt()));
+			acmInterfaceContrato.setRandom(Long.valueOf(random.nextInt()));
 			if (tipoContratoCodigo != null && !tipoContratoCodigo.trim().isEmpty()) {
 				acmInterfaceContrato.setTipoContratoCodigo(tipoContratoCodigo);
 			}
@@ -132,8 +132,8 @@ public class LogisticaWebService {
 			}
 			
 			acmInterfaceContrato.setFact(fact);
-			acmInterfaceContrato.setTerm(new Long(1));
-			acmInterfaceContrato.setUact(new Long(1));
+			acmInterfaceContrato.setTerm(Long.valueOf(1));
+			acmInterfaceContrato.setUact(Long.valueOf(1));
 
 			iACMInterfaceBean.update(acmInterfaceContrato);
 		} catch (Exception e) {
@@ -142,7 +142,7 @@ public class LogisticaWebService {
 	}
 	
 	@WebMethod
-    public void actualizarDatosMidPrepago(
+	public void actualizarDatosMidPrepago(
 		String mesAno, 
 		String mid, 
 		String montoMesActual, 
@@ -159,18 +159,18 @@ public class LogisticaWebService {
 			Date fact = GregorianCalendar.getInstance().getTime();
 			
 			Date mesAnoDate = null;
-			Double montoMesActualDouble = new Double(-1);
-			Double montoMesAnterior1Double = new Double(-1);
-			Double montoMesAnterior2Double = new Double(-1);
-			Double montoPromedio = new Double(-1);
+			Double montoMesActualDouble = Double.valueOf(-1);
+			Double montoMesAnterior1Double = Double.valueOf(-1);
+			Double montoMesAnterior2Double = Double.valueOf(-1);
+			Double montoPromedio = Double.valueOf(-1);
 			Date fechaActivacionKitDate = null;
 			
 			try {
 				// Parsear los parámetros tipados.
 				mesAnoDate = format.parse("01/" + mesAno);
-				montoMesActualDouble = new Double(montoMesActual);
-				montoMesAnterior1Double = new Double(montoMesAnterior1);
-				montoMesAnterior2Double = new Double(montoMesAnterior2);
+				montoMesActualDouble = Double.valueOf(montoMesActual);
+				montoMesAnterior1Double = Double.valueOf(montoMesAnterior1);
+				montoMesAnterior2Double = Double.valueOf(montoMesAnterior2);
 				montoPromedio = 
 					(montoMesActualDouble + montoMesAnterior1Double + montoMesAnterior2Double) / 3;
 				fechaActivacionKitDate = format.parse(fechaActivacionKit);
@@ -185,17 +185,17 @@ public class LogisticaWebService {
 			acmInterfacePrepago.setFechaActivacionKit(fechaActivacionKitDate);
 			acmInterfacePrepago.setMesAno(mesAnoDate);
 			if (mid != null) {
-				acmInterfacePrepago.setMid(new Long(mid));
+				acmInterfacePrepago.setMid(Long.parseLong(mid));
 			}
 			acmInterfacePrepago.setMontoMesActual(montoMesActualDouble);
 			acmInterfacePrepago.setMontoMesAnterior1(montoMesAnterior1Double);
 			acmInterfacePrepago.setMontoMesAnterior2(montoMesAnterior2Double);
 			acmInterfacePrepago.setMontoPromedio(montoPromedio);
-			acmInterfacePrepago.setRandom(new Long(random.nextInt()));
+			acmInterfacePrepago.setRandom(Long.valueOf(random.nextInt()));
 			
 			acmInterfacePrepago.setFact(fact);
-			acmInterfacePrepago.setTerm(new Long(1));
-			acmInterfacePrepago.setUact(new Long(1));
+			acmInterfacePrepago.setTerm(Long.valueOf(1));
+			acmInterfacePrepago.setUact(Long.valueOf(1));
 			
 			iACMInterfaceBean.update(acmInterfacePrepago);
 		} catch (Exception e) {
@@ -204,29 +204,29 @@ public class LogisticaWebService {
 	}
 
 	@WebMethod
-    public void actualizarDatosMidListaVacia(String mid) {
+	public void actualizarDatosMidListaVacia(String mid) {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupACMInterfaceBean();
 			
-			iACMInterfaceBean.actualizarDatosMidListaVacia(new Long(mid));
+			iACMInterfaceBean.actualizarDatosMidListaVacia(Long.parseLong(mid));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@WebMethod
-    public void actualizarDatosNumeroContratoListaVacia(String numeroContrato) {
+	public void actualizarDatosNumeroContratoListaVacia(String numeroContrato) {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupACMInterfaceBean();
 			
-			iACMInterfaceBean.actualizarDatosNumeroContratoListaVacia(new Long(numeroContrato));
+			iACMInterfaceBean.actualizarDatosNumeroContratoListaVacia(Long.parseLong(numeroContrato));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@WebMethod
-    public void actualizarDatosPersona(
+	public void actualizarDatosPersona(
 		String idCliente, 
 		String mid, 
 		String pais, 
@@ -347,12 +347,12 @@ public class LogisticaWebService {
 			
 			acmInterfacePersona.setFact(fact);
 			acmInterfacePersona.setFcre(fact);
-			acmInterfacePersona.setTerm(new Long(1));
-			acmInterfacePersona.setUact(new Long(1));
-			acmInterfacePersona.setUcre(new Long(1));
+			acmInterfacePersona.setTerm(Long.valueOf(1));
+			acmInterfacePersona.setUact(Long.valueOf(1));
+			acmInterfacePersona.setUcre(Long.valueOf(1));
 			
 			if (mid != null) {
-				iACMInterfaceBean.update(acmInterfacePersona, new Long(mid));
+				iACMInterfaceBean.update(acmInterfacePersona, Long.parseLong(mid));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

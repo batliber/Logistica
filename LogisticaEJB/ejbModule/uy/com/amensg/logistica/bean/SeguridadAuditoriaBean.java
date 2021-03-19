@@ -9,13 +9,40 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.SeguridadAuditoria;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class SeguridadAuditoriaBean implements ISeguridadAuditoriaBean {
 
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
 	private EntityManager entityManager;
+	
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<SeguridadAuditoria>().list(entityManager, metadataConsulta, new SeguridadAuditoria());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	public Long count(MetadataConsulta metadataConsulta) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<SeguridadAuditoria>().count(entityManager, metadataConsulta, new SeguridadAuditoria());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
 	public Collection<SeguridadAuditoria> list(Date fechaDesde, Date fechaHasta) {
 		Collection<SeguridadAuditoria> result = new LinkedList<SeguridadAuditoria>();

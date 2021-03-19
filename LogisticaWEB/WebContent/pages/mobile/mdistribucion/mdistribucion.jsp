@@ -4,11 +4,9 @@
 		var id = <%= request.getParameter("cid") != null ? request.getParameter("cid") : "null" %>;
 		var numeroTramite = <%= request.getParameter("code") != null ? request.getParameter("code") : "null" %>;
 	</script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ResultadoEntregaDistribucionDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/ContratoDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/pages/mobile/mdistribucion/mdistribucion.js"></script>
+	<script type="text/javascript" src="./mdistribucion.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb6ZHkQPu3YqYlFLsBAGZ-79aVjSXwEig"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/mobile/mdistribucion/mdistribucion.css"/>
+	<link rel="stylesheet" type="text/css" href="./mdistribucion.css"/>
 </head>
 <body>
 <%@ include file="../mincludes/mtitle.jsp" %>

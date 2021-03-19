@@ -48,15 +48,21 @@ public class MenuBean implements IMenuBean {
 		return result;
 	}
 	
-	public void save(Menu menu) {
+	public Menu save(Menu menu) {
+		Menu result = null;
+		
 		try {
 			menu.setFcre(menu.getFact());
 			menu.setUcre(menu.getUact());
 			
 			entityManager.persist(menu);
+			
+			result = menu;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Menu menu) {

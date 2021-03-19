@@ -9,94 +9,92 @@ $(document).ready(init);
 function init() {
 	$("#divButtonNew").hide();
 	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
-						mode = __FORM_MODE_ADMIN;
-						
-						$("#divButtonNew").show();
-						
-						grid = new Grid(
-							document.getElementById("divTableEmpresas"),
-							{
-								tdEmpresaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 } 
-							}, 
-							false,
-							reloadData,
-							trEmpresaOnClick
-						);
-						
-						grid.rebuild();
-							
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-						break;
-					}
-				}
-			}, async: false
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+    }).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+				mode = __FORM_MODE_ADMIN;
+				
+				$("#divButtonNew").show();
+				
+				grid = new Grid(
+					document.getElementById("divTableEmpresas"),
+					{
+						tdEmpresaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 } 
+					}, 
+					false,
+					reloadData,
+					trEmpresaOnClick
+				);
+				
+				grid.rebuild();
+					
+				$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+				break;
+			}
 		}
-	);
-	
-	reloadData();
-	
-	$("#divIFrameEmpresa").draggable();
+		
+		reloadData();
+				
+		$("#divIFrameEmpresa").draggable();
+	});
 }
 
 function reloadData() {
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				var registros = {
-					cantidadRegistros: data.length,
-					registrosMuestra: []
-				};
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+	}).then(function(data) {
+		var registros = {
+			cantidadRegistros: data.length,
+			registrosMuestra: []
+		};
+		
+		var ordered = data;
+		
+		var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
+		if (ordenaciones.length > 0 && data != null) {
+			ordered = data.sort(function(a, b) {
+				var result = 0;
 				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
+				for (var i=0; i<ordenaciones.length; i++) {
+					var aValue = null;
+					try {
+						aValue = eval("a." + ordenaciones[i].campo);
+				    } catch(e) {
+				        aValue = null;
+				    }
+				    
+				    var bValue = null;
+				    try {
+						bValue = eval("b." + ordenaciones[i].campo);
+				    } catch(e) {
+				        bValue = null;
+				    }
+					
+					if (aValue < bValue) {
+						result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
 						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
+						break;
+					} else if (aValue > bValue) {
+						result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
 						
-						return result;
-					});
+						break;
+					}
 				}
 				
-				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
-				}
-				
-				grid.reload(registros);
-			}, async: false
+				return result;
+			});
 		}
-	);
+		
+		for (var i=0; i<ordered.length; i++) {
+			registros.registrosMuestra[registros.registrosMuestra.length] = ordered[i];
+		}
+		
+		grid.reload(registros);
+	});
 }
 
 function trEmpresaOnClick(eventObject) {

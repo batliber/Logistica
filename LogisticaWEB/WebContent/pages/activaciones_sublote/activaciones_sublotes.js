@@ -4,82 +4,66 @@ var __ROL_SUPERVISOR_DISTRIBUCION_CHIPS = 18;
 var __ROL_DEMO = 21;
 
 var grid = null;
-		
+
 $(document).ready(init)
 
 function init() {
-	$("#divButtonAsignarVisitas").hide();
-	$("#divButtonRecalcularPorcentajes").hide();
 	$("#divButtonNuevo").hide();
+	$("#divButtonRecalcularPorcentajes").hide();
+	$("#divButtonRecalcularFechasVencimientoChipMasViejo").hide();
+	$("#divButtonAsignarVisitas").hide();
 	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION_CHIPS
-						|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO) {
-						$("#divButtonNuevo").show();
-						$("#divButtonAsignarVisitas").show();
-						$("#divButtonRecalcularPorcentajes").show();
-						
-						grid = new Grid(
-							document.getElementById("divTableActivacionesSublotes"),
-							{
-								tdNumero: { campo: "numero", descripcion: "Número", abreviacion: "Número", tipo: __TIPO_CAMPO_NUMERICO },
-								tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
-								tdDescripcion: { campo: "descripcion", abreviacion: "Descripción", descripcion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 250 },
-								tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 200 },
-								tdFechaAsignacionDistribuidor: { campo: "fechaAsignacionDistribuidor", abreviacion: "F. Asign. Distr.", descripcion: "Fecha de asign. Distribuidor", tipo: __TIPO_CAMPO_FECHA_HORA },
-								tdPuntoVenta: { campo: "puntoVenta.nombre", clave: "puntoVenta.id", descripcion: "Punto de venta", abreviacion: "Pto. venta", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPuntoVentas, clave: "id", valor: "nombre" }, ancho: 200 },
-								tdFechaAsignacionPuntoVenta: { campo: "fechaAsignacionPuntoVenta", abreviacion: "F. Asign. P.V.", descripcion: "Fecha de asign. Pto. venta", tipo: __TIPO_CAMPO_FECHA_HORA },
-								tdPorcentajeActivacion: { campo: "porcentajeActivacion", descripcion: "Porcentaje activación", abreviacion: "% act.", tipo: __TIPO_CAMPO_PORCENTAJE, decimales: 1 },
-							}, 
-							true,
-							reloadData,
-							trActivacionSubloteOnClick
-						);
-						
-						grid.rebuild();
-						
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleFourfoldSize");
-						break;
-					}
-				}
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+	}).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO) {
+				$("#divButtonNuevo").show();
+				$("#divButtonRecalcularPorcentajes").show();
+				$("#divButtonRecalcularFechasVencimientoChipMasViejo").show();
+				$("#divButtonAsignarVisitas").show();
 				
-				if (grid == null) {
-					for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-						if (data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES) {
-							$("#divButtonNuevo").show();
-							
-							grid = new Grid(
-								document.getElementById("divTableActivacionesSublotes"),
-								{
-									tdNumero: { campo: "numero", descripcion: "Número", abreviacion: "Número", tipo: __TIPO_CAMPO_NUMERICO },
-									tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
-									tdDescripcion: { campo: "descripcion", abreviacion: "Descripción", descripcion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 250 },
-									tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 200 },
-									tdFechaAsignacionDistribuidor: { campo: "fechaAsignacionDistribuidor", abreviacion: "F. Asign. Distr.", descripcion: "Fecha de asign. Distribuidor", tipo: __TIPO_CAMPO_FECHA_HORA }
-								}, 
-								true,
-								reloadData,
-								trActivacionSubloteOnClick
-							);
-							
-							grid.rebuild();
-							
-							$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-							
-							break;
-						}
-					}
-				}
+				grid = new Grid(
+					document.getElementById("divTableActivacionesSublotes"),
+					{
+						tdNumero: { campo: "numero", descripcion: "Número", abreviacion: "Número", tipo: __TIPO_CAMPO_NUMERICO, ancho: 70 },
+						tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
+						tdDescripcion: { campo: "descripcion", abreviacion: "Descripción", descripcion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 250 },
+						tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 200 },
+						tdFechaAsignacionDistribuidor: { campo: "fechaAsignacionDistribuidor", abreviacion: "F. Asign. Dis.", descripcion: "Fecha de asign. Distribuidor", tipo: __TIPO_CAMPO_FECHA_HORA },
+						tdFechaVencimientoChipMasViejo: { campo: "fechaVencimientoChipMasViejo", abreviacion: "F. Venc. Chip. más viejo", descripcion: "Fecha de vencimiento de chip más viejo", tipo: __TIPO_CAMPO_FECHA, ancho: 100 },
+						tdPuntoVenta: { campo: "puntoVenta.nombre", clave: "puntoVenta.id", descripcion: "Punto de venta", abreviacion: "Pto. venta", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPuntoVentas, clave: "id", valor: "nombre" }, ancho: 200 },
+						tdFechaAsignacionPuntoVenta: { campo: "fechaAsignacionPuntoVenta", abreviacion: "F. Asign. P.V.", descripcion: "Fecha de asign. Pto. venta", tipo: __TIPO_CAMPO_FECHA_HORA },
+						tdPorcentajeActivacion: { campo: "porcentajeActivacion", descripcion: "Porcentaje activación", abreviacion: "% act.", tipo: __TIPO_CAMPO_PORCENTAJE, decimales: 1 },
+					}, 
+					true,
+					reloadData,
+					trActivacionSubloteOnClick
+				);
 				
-				if (grid == null) {
+				grid.rebuild();
+				
+				$("#divButtonTitleSingleSize").attr("id", "divButtonTitleQuintupleSize");
+				break;
+			}
+		}
+		
+		if (grid == null) {
+			for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+				if (data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES
+					|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION_CHIPS) {
+					$("#divButtonNuevo").show();
+					
 					grid = new Grid(
 						document.getElementById("divTableActivacionesSublotes"),
 						{
-							tdMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+							tdNumero: { campo: "numero", descripcion: "Número", abreviacion: "Número", tipo: __TIPO_CAMPO_NUMERICO },
+							tdEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 200 },
+							tdDescripcion: { campo: "descripcion", abreviacion: "Descripción", descripcion: "Descripción", tipo: __TIPO_CAMPO_STRING, ancho: 250 },
+							tdDistribuidor: { campo: "distribuidor.nombre", clave: "distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 200 },
+							tdFechaAsignacionDistribuidor: { campo: "fechaAsignacionDistribuidor", abreviacion: "F. Asign. Distr.", descripcion: "Fecha de asign. Distribuidor", tipo: __TIPO_CAMPO_FECHA_HORA },
+							tdFechaVencimiento: { campo: "fechaVencimiento", abreviacion: "F. Venc.", descripcion: "Fecha de vencimiento", tipo: __TIPO_CAMPO_FECHA_HORA }
 						}, 
 						true,
 						reloadData,
@@ -87,84 +71,54 @@ function init() {
 					);
 					
 					grid.rebuild();
+					
+					$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
+					
+					break;
 				}
-			}, async: false
+			}
 		}
-	);
-	
-	reloadData();
-
-	$("#divIFrameActivacionSublote").draggable();
-}
-
-function listEmpresas() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
+		
+		if (grid == null) {
+			grid = new Grid(
+				document.getElementById("divTableActivacionesSublotes"),
+				{
+					tdMid: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
+				}, 
+				true,
+				reloadData,
+				trActivacionSubloteOnClick
+			);
+			
+			grid.rebuild();
 		}
-	);
-	
-	return result;
-}
+		
+		reloadData();
 
-function listDistribuidores() {
-	var result = [];
-	
-	UsuarioRolEmpresaDWR.listDistribuidoresByContext(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listPuntoVentas() {
-	var result = [];
-	
-	PuntoVentaDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
+		$("#divIFrameActivacionSublote").draggable();
+	});
 }
 
 function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
-	ActivacionSubloteDWR.listContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.reload(data);
-			}
-		}
-	);
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/listContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.reload(data);
+	});
 	
-	ActivacionSubloteDWR.countContextAware(
-		grid.filtroDinamico.calcularMetadataConsulta(),
-		{
-			callback: function(data) {
-				grid.setCount(data);
-			}
-		}
-	);
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/countContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.setCount(data);
+	});
 }
 
 function inputActualizarOnClick(event, element) {
@@ -176,7 +130,10 @@ function trActivacionSubloteOnClick(eventObject) {
 	
 	var formMode = __FORM_MODE_ADMIN;
 	
-	document.getElementById("iFrameActivacionSublote").src = "/LogisticaWEB/pages/activaciones_sublote/activaciones_sublotes_edit.jsp?m=" + formMode + "&id=" + $(target).attr("id");
+	document.getElementById("iFrameActivacionSublote").src = 
+		"/LogisticaWEB/pages/activaciones_sublote/activaciones_sublotes_edit.jsp?m=" 
+		+ formMode + "&id=" + $(target).attr("id");
+	
 	showPopUp(document.getElementById("divIFrameActivacionSublote"));
 }
 
@@ -204,24 +161,17 @@ function inputAsignarVisitasOnClick() {
 		metadataConsulta.tamanoSubconjunto = grid.getCount();
 	}
 	
-	$("#selectDistribuidor > option").remove();
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listDistribuidoresChipsByContextMinimal"
+	}).then(function(data) {
+		fillSelect(
+			"selectDistribuidor",
+			data,
+			"id",
+			"nombre"
+		);
+	});
 	
-	$("#selectDistribuidor").append("<option value='0'>Seleccione...</option>");
-	
-	UsuarioRolEmpresaDWR.listDistribuidoresChipsByContext(
-		{
-			callback: function(data) {
-				var html = "";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectDistribuidor").append(html);
-			}, async: false
-		}
-	);
-
 	showPopUp(document.getElementById("divIFrameSeleccionDistribuidor"));
 }
 
@@ -235,45 +185,57 @@ function inputCancelarOnClick(event, element) {
 }
 
 function inputAceptarOnClick(event, element) {
-	if ($("#selectDistribuidor").val() != "0") {
-		var distribuidor = {
-			id: $("#selectDistribuidor").val()
-		};
-		
-		var observaciones = $("#textareaObservaciones").val();
-		
-		metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
-		if (metadataConsulta.tamanoSubconjunto > grid.getCount()) {
-			metadataConsulta.tamanoSubconjunto = grid.getCount();
-		}
-		
-		if (confirm("Se asignarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
-			VisitaPuntoVentaDistribuidorDWR.crearVisitasPorSubLotes(
-				distribuidor,
-				observaciones,
-				metadataConsulta,
-				{
-					callback: function(data) {
-						alert("Operación exitosa.");
-						
-						reloadData();
-					}, async: false
-				}
-			);
-		}
-	} else {
+	if ($("#selectDistribuidor").val() == "0") {
 		alert("Debe seleccionar un distribuidor.");
+		
+		return;
+	}
+		
+	var distribuidor = {
+		id: $("#selectDistribuidor").val()
+	};
+	
+	var observaciones = $("#textareaObservaciones").val();
+	
+	metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	if (metadataConsulta.tamanoSubconjunto > grid.getCount()) {
+		metadataConsulta.tamanoSubconjunto = grid.getCount();
+	}
+	
+	if (confirm("Se asignarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/VisitaPuntoVentaDistribuidorREST/crearVisitasPorSubLotes",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify({
+				"distribuidorId": distribuidor.id,
+				"observaciones": observaciones,
+				"metadataConsulta": metadataConsulta
+			})
+		}).then(function(data) {
+			alert("Operación exitosa.");
+			
+			reloadData();
+		});
 	}
 }
 
 function inputRecalcularPorcentajesOnClick() {
-	LiquidacionDWR.calcularPorcentajeActivacionSubLotes(
-		{
-			callback: function(data) {
-				alert("Operación exitosa");
-				
-				reloadData();
-			}, async: false
-		}
-	);
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/LiquidacionREST/calcularPorcentajeActivacionSubLotes",
+	}).then(function(data) {
+		alert("Operación exitosa");
+		
+		reloadData();
+	});
+}
+
+function inputRecalcularFechasVencimientoChipMasViejoOnClick(event, element) {
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/calcularFechasVencimientoChipMasViejo",
+	}).then(function(data) {
+		alert("Operación exitosa");
+		
+		reloadData();
+	});
 }

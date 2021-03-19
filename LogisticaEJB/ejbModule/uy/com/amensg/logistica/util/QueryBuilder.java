@@ -76,7 +76,7 @@ public class QueryBuilder<T> {
 			Predicate where = this.construirWhere(criteriaBuilder, metadataConsulta, rootCount);
 			
 			criteriaQueryCount
-				.select(criteriaBuilder.count(rootCount.get("id")))
+				.select(criteriaBuilder.count(rootCount))
 				.where(where);
 			
 			Query queryCount = this.setearParameters(entityManager, criteriaQueryCount, metadataConsulta, rootCount);
@@ -89,7 +89,9 @@ public class QueryBuilder<T> {
 		return result;
 	}
 
-	private Predicate construirWhere(CriteriaBuilder criteriaBuilder, MetadataConsulta metadataConsulta, Root<T> root) {
+	private Predicate construirWhere(
+		CriteriaBuilder criteriaBuilder, MetadataConsulta metadataConsulta, Root<T> root
+	) {
 		Predicate where = criteriaBuilder.conjunction();
 		
 		int i = 0;
@@ -129,6 +131,14 @@ public class QueryBuilder<T> {
 					criteriaBuilder.equal(campo, parameterExpression)
 				);
 			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_IGUAL)) {
+				ParameterExpression<?> parameterExpression = 
+					criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
+				
+				where = criteriaBuilder.and(
+					where, 
+					criteriaBuilder.notEqual(campo, parameterExpression)
+				);
+			} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_CLAVE_NOT_IGUAL)) {
 				ParameterExpression<?> parameterExpression = 
 					criteriaBuilder.parameter(campo.getJavaType(), "p" + i);
 				
@@ -309,7 +319,9 @@ public class QueryBuilder<T> {
 		return where;
 	}
 
-	private List<Order> construirOrderBy(CriteriaBuilder criteriaBuilder, MetadataConsulta metadataConsulta, Root<T> root) {
+	private List<Order> construirOrderBy(
+		CriteriaBuilder criteriaBuilder, MetadataConsulta metadataConsulta, Root<T> root
+	) {
 		List<Order> result = new LinkedList<Order>();
 		
 		for (MetadataOrdenacion metadataOrdenacion : metadataConsulta.getMetadataOrdenaciones()) {
@@ -342,10 +354,16 @@ public class QueryBuilder<T> {
 		return result;
 	}
 
-	private Query setearParameters(EntityManager entityManager, CriteriaQuery<?> criteriaQuery, MetadataConsulta metadataConsulta, Root<T> root) {
+	private Query setearParameters(
+		EntityManager entityManager, 
+		CriteriaQuery<?> criteriaQuery, 
+		MetadataConsulta metadataConsulta, Root<T> root
+	) {
 		Query result = entityManager.createQuery(criteriaQuery);
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+//		System.out.println(metadataConsulta.asJSONString());
 		
 		int i = 0;
 		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
@@ -378,7 +396,7 @@ public class QueryBuilder<T> {
 						} else if (field.getJavaType().equals(Long.class)) {
 							result.setParameter(
 								"p" + i,
-								new Long(valor)
+								Long.parseLong(valor)
 							);
 						} else if (field.getJavaType().equals(String.class)) {
 							result.setParameter(
@@ -388,12 +406,12 @@ public class QueryBuilder<T> {
 						} else if (field.getJavaType().equals(Double.class)) {
 							result.setParameter(
 								"p" + i,
-								new Double(valor)
+								Double.parseDouble(valor)
 							);
 						} else if (field.getJavaType().equals(Boolean.class)) {
 							result.setParameter(
 								"p" + i,
-								new Boolean(valor)
+								Boolean.parseBoolean(valor)
 							);
 						}
 					} catch (Exception e) {

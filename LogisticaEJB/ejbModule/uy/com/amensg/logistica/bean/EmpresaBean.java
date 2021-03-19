@@ -95,6 +95,7 @@ public class EmpresaBean implements IEmpresaBean {
 			
 			if (!resultList.isEmpty()) {
 				result = resultList.get(0);
+				
 				entityManager.detach(result);
 				
 				if (initializeCollections) {
@@ -107,6 +108,10 @@ public class EmpresaBean implements IEmpresaBean {
 					
 					Set<Usuario> empresaUsuarioContratos = new HashSet<Usuario>();
 					for (Usuario usuario : queryEmpresaUsuarioContratos.getResultList()) {
+						entityManager.detach(usuario);
+						
+						usuario.setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+						
 						empresaUsuarioContratos.add(usuario);
 					}
 					
@@ -209,7 +214,7 @@ public class EmpresaBean implements IEmpresaBean {
 			
 			iDisponibilidadEntregaEmpresaZonaTurnoBean.generarDisponibilidadParaEmpresa(empresa);
 			
-			Rol rol = iRolBean.getById(new Long(Configuration.getInstance().getProperty("rol.Administrador")), false);
+			Rol rol = iRolBean.getById(Long.parseLong(Configuration.getInstance().getProperty("rol.Administrador")), false);
 			
 			Usuario usuario = iUsuarioBean.getById(empresa.getUact(), false);
 			
@@ -220,7 +225,7 @@ public class EmpresaBean implements IEmpresaBean {
 			
 			usuarioRolEmpresa.setFact(empresa.getFact());
 			usuarioRolEmpresa.setFcre(empresa.getFact());
-			usuarioRolEmpresa.setTerm(new Long(1));
+			usuarioRolEmpresa.setTerm(Long.valueOf(1));
 			usuarioRolEmpresa.setUact(empresa.getUact());
 			usuarioRolEmpresa.setUcre(empresa.getUact());
 			

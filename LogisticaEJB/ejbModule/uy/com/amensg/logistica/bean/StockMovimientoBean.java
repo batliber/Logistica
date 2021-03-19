@@ -241,15 +241,21 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 		return result;
 	}
 	
-	public void save(StockMovimiento stockMovimiento) {
+	public StockMovimiento save(StockMovimiento stockMovimiento) {
+		StockMovimiento result = null;
+		
 		try {
 			stockMovimiento.setFcre(stockMovimiento.getFact());
 			stockMovimiento.setUcre(stockMovimiento.getUact());
 			
 			entityManager.persist(stockMovimiento);
+			
+			result = stockMovimiento;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void save(Collection<StockMovimiento> stockMovimientos) {
@@ -275,18 +281,18 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 	public void transferir(Collection<StockMovimiento> stockMovimientos, Long empresaDestinoId) {
 		try {
 			StockTipoMovimiento stockTipoMovimientoBaja =
-				iStockTipoMovimientoBean.getById(new Long(Configuration.getInstance().getProperty("stockTipoMovimiento.BajaPorTransferencia")));
+				iStockTipoMovimientoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("stockTipoMovimiento.BajaPorTransferencia")));
 			
 			StockTipoMovimiento stockTipoMovimientoAlta =
-				iStockTipoMovimientoBean.getById(new Long(Configuration.getInstance().getProperty("stockTipoMovimiento.AltaPorTransferencia")));
+				iStockTipoMovimientoBean.getById(Long.parseLong(Configuration.getInstance().getProperty("stockTipoMovimiento.AltaPorTransferencia")));
 			
 			Empresa empresaDestino = 
 				iEmpresaBean.getById(empresaDestinoId, false);
 			
 			for (StockMovimiento stockMovimiento : stockMovimientos) {
 				StockMovimiento stockMovimientoBaja = new StockMovimiento();
-				stockMovimientoBaja.setCantidad(new Long(1) * stockTipoMovimientoBaja.getSigno());
-				stockMovimientoBaja.setDocumentoId(new Long(-1));
+				stockMovimientoBaja.setCantidad(Long.valueOf(1) * stockTipoMovimientoBaja.getSigno());
+				stockMovimientoBaja.setDocumentoId(Long.valueOf(-1));
 				stockMovimientoBaja.setEmpresa(stockMovimiento.getEmpresa());
 				stockMovimientoBaja.setFecha(stockMovimiento.getFact());
 				stockMovimientoBaja.setMarca(stockMovimiento.getMarca());
@@ -304,8 +310,8 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 				entityManager.persist(stockMovimientoBaja);
 				
 				StockMovimiento stockMovimientoAlta = new StockMovimiento();
-				stockMovimientoAlta.setCantidad(new Long(1) * stockTipoMovimientoAlta.getSigno());
-				stockMovimientoAlta.setDocumentoId(new Long(1));
+				stockMovimientoAlta.setCantidad(Long.valueOf(1) * stockTipoMovimientoAlta.getSigno());
+				stockMovimientoAlta.setDocumentoId(Long.valueOf(1));
 				stockMovimientoAlta.setEmpresa(empresaDestino);
 				stockMovimientoAlta.setFecha(stockMovimiento.getFact());
 				stockMovimientoAlta.setMarca(stockMovimiento.getMarca());

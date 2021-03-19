@@ -3,105 +3,84 @@ $(document).ready(init);
 function init() {
 	refinarForm();
 	
-	UsuarioRolEmpresaDWR.listEmpresasByContext(
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectEmpresa").append(html);
-			}, async: false
-		}
-	);
-	
-	TipoProductoDWR.list(
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
-				}
-				
-				$("#selectTipoProducto").append(html);
-			}, async: false
-		}
-	);
-	
-	MarcaDWR.list(
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectMarca").append(html);
-			}, async: false
-		}
-	);
-	
-	MonedaDWR.list(
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].nombre + "</option>";
-				}
-				
-				$("#selectMoneda").append(html);
-			}, async: false
-		}
-	);
-	
-	$("#selectModelo").append("<option id='0' value='0'>Seleccione...</option>");
-	
-	if (id != null) {
-		$("#selectEmpresa").prop("disabled", true);
-		$("#selectTipoProducto").prop("disabled", true);
-		$("#selectMarca").prop("disabled", true);
-		$("#selectModelo").prop("disabled", true);
-		$("#selectMoneda").prop("disabled", true);
-		$("#inputCuotas").prop("disabled", true);
-		
-		PrecioDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#selectModelo").append(
-						"<option id='" + data.modelo.id + "' value='" + data.modelo.id + "'>" + data.modelo.descripcion + "</option>"
-					);
-					
-					$("#selectEmpresa").val(data.empresa.id);
-					$("#selectTipoProducto").val(data.tipoProducto.id);
-					$("#selectMarca").val(data.marca.id);
-					$("#selectModelo").val(data.modelo.id);
-					$("#selectMoneda").val(data.moneda.id);
-					$("#inputCuotas").val(data.cuotas);
-					$("#inputPrecio").val(data.precio);
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						
-					} else {
-						
-					}
-				}, async: false
-			}
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+    }).then(function(data) {
+		fillSelect(
+			"selectEmpresa", 
+			data,
+			"id", 
+			"nombre"
 		);
-	}
+	}).then(function(data) {
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/TipoProductoREST/list"
+	    }).then(function(data) { 
+			fillSelect(
+				"selectTipoProducto", 
+				data,
+				"id", 
+				"descripcion"
+			);
+		});
+	}).then(function(data) {
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MarcaREST/list"
+	    }).then(function(data) { 
+			fillSelect(
+				"selectMarca", 
+				data,
+				"id",
+				"nombre"
+			);
+		});
+	}).then(function(data) {
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MonedaREST/list"
+	    }).then(function(data) { 
+			fillSelect(
+				"selectMoneda", 
+				data,
+				"id",
+				"nombre"
+			);
+		});
+	}).then(function(data) {
+		if (id != null) {
+			$("#selectEmpresa").prop("disabled", true);
+			$("#selectTipoProducto").prop("disabled", true);
+			$("#selectMarca").prop("disabled", true);
+			$("#selectModelo").prop("disabled", true);
+			$("#selectMoneda").prop("disabled", true);
+			$("#inputCuotas").prop("disabled", true);
+			
+			$.ajax({
+		        url: "/LogisticaWEB/RESTFacade/PrecioREST/getById/" + id
+		    }).then(function(data) {
+				$("#selectModelo").append(
+					"<option id='" + data.modelo.id + "' value='" + data.modelo.id + "'>" 
+						+ data.modelo.descripcion 
+					+ "</option>"
+				);
+				
+				$("#selectEmpresa").val(data.empresa.id);
+				$("#selectTipoProducto").val(data.tipoProducto.id);
+				$("#selectMarca").val(data.marca.id);
+				$("#selectModelo").val(data.modelo.id);
+				$("#selectMoneda").val(data.moneda.id);
+				$("#inputCuotas").val(data.cuotas);
+				$("#inputPrecio").val(data.precio);
+			});
+		}
+	});
 }
 
 function refinarForm() {
-	
+	if (mode == __FORM_MODE_ADMIN) {
+		
+	} else if (mode == __FORM_MODE_USER) {
+		
+	}
 }
 
 function selectTipoProductoOnChange() {
@@ -109,23 +88,16 @@ function selectTipoProductoOnChange() {
 }
 
 function selectMarcaOnChange() {
-	$("#selectModelo > option:gt(0)").remove();
-	
-	ModeloDWR.listByMarcaId(
-		$("#selectMarca").val(), 
-		{
-			callback: function(data) {
-				var html =
-					"<option id='0' value='0'>Seleccione...</option>";
-				
-				for (var i=0; i<data.length; i++) {
-					html += "<option value='" + data[i].id + "'>" + data[i].descripcion + "</option>";
-				}
-				
-				$("#selectModelo").html(html);
-			}, async: false
-		}
-	);
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/ModeloREST/listMinimalByMarcaId/" + $("#selectMarca").val()
+    }).then(function(data) { 
+		fillSelect(
+			"selectModelo",
+			data,
+			"id",
+			"descripcion"
+		);		
+    });
 }
 
 function inputGuardarOnClick(event) {
@@ -201,22 +173,26 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		precio.id = id;
 		
-		PrecioDWR.update(
-			precio,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PrecioREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(precio)
+	    }).then(function(data) {
+			alert("Operación exitosa");
+		});
 	} else {
-		PrecioDWR.add(	
-			precio,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/PrecioREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(precio)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operación exitosa");
+			} else {
+	    		alert("Error en la operación");
+	    	}
+	    });
 	}
 }

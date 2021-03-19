@@ -87,6 +87,34 @@ public class ModeloBean implements IModeloBean {
 		return result;
 	}
 	
+	public Collection<Modelo> listMinimalByMarcaId(Long marcaId) {
+		Collection<Modelo> result = new LinkedList<Modelo>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT m.id, m.descripcion"
+					+ " FROM Modelo m"
+					+ " WHERE m.marca.id = :marcaId"
+					+ " ORDER BY m.descripcion",
+					Object[].class
+				);
+			query.setParameter("marcaId", marcaId);
+			
+			for (Object[] modelo : query.getResultList()) {
+				Modelo modeloMinimal = new Modelo();
+				modeloMinimal.setId((Long)modelo[0]);
+				modeloMinimal.setDescripcion((String)modelo[1]);
+				
+				result.add(modeloMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Collection<Modelo> listVigentesByMarcaId(Long marcaId) {
 		Collection<Modelo> result = new LinkedList<Modelo>();
 		
@@ -111,6 +139,35 @@ public class ModeloBean implements IModeloBean {
 		return result;
 	}
 
+	public Collection<Modelo> listVigentesMinimalByMarcaId(Long marcaId) {
+		Collection<Modelo> result = new LinkedList<Modelo>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT m.id, m.descripcion"
+					+ " FROM Modelo m"
+					+ " WHERE m.marca.id = :marcaId"
+					+ " AND m.fechaBaja IS NULL"
+					+ " ORDER BY m.descripcion",
+					Object[].class
+				);
+			query.setParameter("marcaId", marcaId);
+			
+			for (Object[] modelo : query.getResultList()) {
+				Modelo modeloMinimal = new Modelo();
+				modeloMinimal.setId((Long)modelo[0]);
+				modeloMinimal.setDescripcion((String)modelo[1]);
+				
+				result.add(modeloMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
@@ -147,15 +204,21 @@ public class ModeloBean implements IModeloBean {
 		return result;
 	}
 	
-	public void save(Modelo modelo) {
+	public Modelo save(Modelo modelo) {
+		Modelo result = null;
+		
 		try {
 			modelo.setFcre(modelo.getFact());
 			modelo.setUcre(modelo.getUact());
 			
 			entityManager.persist(modelo);
+			
+			result = modelo;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Modelo modelo) {

@@ -2,152 +2,60 @@ var __ROL_ADMINISTRADOR = 1;
 
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	$("#divButtonNew").hide();
 	
-	grid = new Grid(
-		document.getElementById("divTableSeguridadAuditoria"),
-		{
-			tdFecha: { campo: "fecha", descripcion: "Fecha", abreviacion: "Fecha", tipo: __TIPO_CAMPO_FECHA_HORA },
-			tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 200 },
-			tdSeguridadTipoEvento: { campo: "seguridadTipoEvento.descripcion", clave: "seguridadTipoEvento.id", descripcion: "Fecha", abreviacion: "Fecha", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listSeguridadTipoEventos, clave: "id", valor: "descripcion" } }
-		}, 
-		false,
-		reloadData,
-		trSeguridadAuditoriaOnClick
-	);
-	
-	grid.rebuild();
-	
-	SeguridadDWR.getActiveUserData(
-		{
-			callback: function(data) {
-				for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-					if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
-						mode = __FORM_MODE_ADMIN;
-						
-						break;
-					}
-				}
-			}, async: false
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+    }).then(function(data) {
+		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+				mode = __FORM_MODE_ADMIN;
+				
+				grid = new Grid(
+					document.getElementById("divTableSeguridadAuditoria"),
+					{
+						tdFecha: { campo: "fecha", descripcion: "Fecha", abreviacion: "Fecha", tipo: __TIPO_CAMPO_FECHA_HORA },
+						tdUsuario: { campo: "usuario.nombre", clave: "usuario.id", descripcion: "Usuario", abreviacion: "Usuario", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listUsuarios, clave: "id", valor: "nombre" }, ancho: 200 },
+						tdSeguridadTipoEvento: { campo: "seguridadTipoEvento.descripcion", clave: "seguridadTipoEvento.id", descripcion: "Tipo", abreviacion: "Tipo", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listSeguridadTipoEventos, clave: "id", valor: "descripcion" }, ancho: 200 }
+					}, 
+					true,
+					reloadData,
+					trSeguridadAuditoriaOnClick
+				);
+					
+				grid.rebuild();
+					
+				break;
+			}
 		}
-	);
-	
-	var hoy = new Date();
-	var manana = new Date();
-	manana.setDate(hoy.getDate() + 1);
-	
-	$("#inputFechaDesde").val(formatShortDate(hoy));
-	$("#inputFechaHasta").val(formatShortDate(manana));
-	
-	reloadData();
-});
-
-function listUsuarios() {
-	var result = [];
-	
-	UsuarioDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function listSeguridadTipoEventos() {
-	var result = [];
-	
-	SeguridadTipoEventoDWR.list(
-		{
-			callback: function(data) {
-				if (data != null) {
-					result = data;
-				}
-			}, async: false
-		}
-	);
-	
-	return result;
-}
-
-function inputFechaDesdeOnChange() {
-	if ($("#inputFechaDesde").val() != null && $("#inputFechaDesde").val() != "") {
+		
 		reloadData();
-	}
-}
-
-function inputFechaHastaOnChange() {
-	if ($("#inputFechaHasta").val() != null && $("#inputFechaHasta").val() != "") {
-		reloadData();
-	}
+	});
 }
 
 function reloadData() {
-	SeguridadAuditoriaDWR.list(
-		parseShortDate($("#inputFechaDesde").val()),
-		parseShortDate($("#inputFechaHasta").val()),
-		{
-			callback: function(data) {
-				var registros = {
-					cantidadRegistros: data.length,
-					registrosMuestra: []
-				};
-				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
-						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
-						
-						return result;
-					});
-				}
-				
-				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						fecha: ordered[i].fecha,
-						seguridadTipoEvento: ordered[i].seguridadTipoEvento,
-						usuario: ordered[i].usuario
-					};
-				}
-				
-				grid.reload(registros);
-			}, async: false
-		}
-	);
+	grid.setStatus(grid.__STATUS_LOADING);
+	
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadAuditoriaREST/listContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) {
+    	grid.reload(data);
+    });
+	
+	$.ajax({
+        url: "/LogisticaWEB/RESTFacade/SeguridadAuditoriaREST/countContextAware",
+        method: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+    }).then(function(data) { 
+    	grid.setCount(data);
+    });
 }
 
 function trSeguridadAuditoriaOnClick(eventObject) {

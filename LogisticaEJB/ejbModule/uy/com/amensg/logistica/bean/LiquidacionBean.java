@@ -19,10 +19,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.LongType;
 import org.hibernate.type.StringType;
@@ -147,7 +148,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 					String[] fields = line.split(";");
 					
 					try {
-						ids.add(new Long(fields[0].trim()));
+						ids.add(Long.parseLong(fields[0].trim()));
 					} catch (Exception e) {
 						errorFatal = true;
 						
@@ -161,9 +162,9 @@ public class LiquidacionBean implements ILiquidacionBean {
 			
 			Map<Long, Integer> map = this.preprocesarConjunto(ids);
 			
-			Long importar = new Long(0);
-			Long sobreescribir = new Long(0);
-			Long omitir = new Long(0);
+			Long importar = Long.valueOf(0);
+			Long sobreescribir = Long.valueOf(0);
+			Long omitir = Long.valueOf(0);
 			for (Entry<Long, Integer> entry : map.entrySet()) {
 				switch (entry.getValue()) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
@@ -262,34 +263,34 @@ public class LiquidacionBean implements ILiquidacionBean {
 			
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
-			SimpleDateFormat formatFecha = new SimpleDateFormat("dd/MM/yyyy"); 
-			SimpleDateFormat formatFechaHora = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa", Locale.getDefault());
+//			SimpleDateFormat formatFecha = new SimpleDateFormat("dd/MM/yyyy"); 
+			SimpleDateFormat formatFechaHora = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault());
 			
 			TipoProcesoImportacion tipoProcesoImportacion =
 				iTipoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("tipoProcesoImportacion.Liquidaciones"))
+					Long.parseLong(Configuration.getInstance().getProperty("tipoProcesoImportacion.Liquidaciones"))
 				);
 			
 			EstadoProcesoImportacion estadoProcesoImportacionInicio = 
 				iEstadoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio"))
 				);
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoOK = 
 				iEstadoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK"))
 				);		
 			
 			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoConErrores = 
 				iEstadoProcesoImportacionBean.getById(
-					new Long(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores"))
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores"))
 				);
 			
 			Long idConceptoPrepagoNoKitActivado =
-				new Long(Configuration.getInstance().getProperty("Liquidacion.idConceptoPrepagoNoKitActivado"));
+				Long.parseLong(Configuration.getInstance().getProperty("Liquidacion.idConceptoPrepagoNoKitActivado"));
 			
 			Long monedaPesosUruguayosId = 
-				new Long(Configuration.getInstance().getProperty("moneda.PesosUruguayos"));
+				Long.parseLong(Configuration.getInstance().getProperty("moneda.PesosUruguayos"));
 			
 			Usuario usuario =
 				iUsuarioBean.getById(loggedUsuarioId, false);
@@ -303,7 +304,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 			
 			procesoImportacion.setFcre(hoy);
 			procesoImportacion.setFact(hoy);
-			procesoImportacion.setTerm(new Long(1));
+			procesoImportacion.setTerm(Long.valueOf(1));
 			procesoImportacion.setUact(loggedUsuarioId);
 			procesoImportacion.setUcre(loggedUsuarioId);
 			
@@ -311,12 +312,12 @@ public class LiquidacionBean implements ILiquidacionBean {
 			
 			Session hibernateSession = entityManager.unwrap(Session.class);
 			
-			SQLQuery selectId = 
-				hibernateSession.createSQLQuery(
-					"SELECT nextval('hibernate_sequence')"
+			NativeQuery<Tuple> selectId = 
+				hibernateSession.createNativeQuery(
+					"SELECT nextval('hibernate_sequence')", Tuple.class
 				);
 			
-			SQLQuery insertLiquidacion = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertLiquidacion = hibernateSession.createNativeQuery(
 				"INSERT INTO liquidacion("
 					+ " ucre,"
 					+ " fcre,"
@@ -325,28 +326,27 @@ public class LiquidacionBean implements ILiquidacionBean {
 					+ " term,"
 					
 					+ " id,"
-					+ " id_registro,"
+//					+ " id_registro,"
 					+ " empresa_id,"
-					+ " rlid,"
-					+ " numero_contrato,"
-					+ " fecha, "
+//					+ " rlid,"
+//					+ " numero_contrato,"
+//					+ " fecha, "
 					+ " plan,"
 					+ " mid,"
-					+ " said,"
-					+ " serie,"
-					+ " dc,"
+//					+ " said,"
+//					+ " serie,"
+//					+ " dc,"
 					+ " moneda_id,"
 					+ " importe,"
-					+ " cant,"
+//					+ " cant,"
 					+ " fecha_liquidacion,"
 					+ " id_concepto,"
-					+ " nombre_concepto,"
-					+ " modelo,"
-					+ " fabricante,"
-					+ " id_clase_concepto,"
-					+ " nom_clase_concepto"
+					+ " nombre_concepto"
+//					+ " modelo,"
+//					+ " fabricante,"
+//					+ " id_clase_concepto,"
+//					+ " nom_clase_concepto"
 				+ " ) VALUES ("
-					+ " ?,"
 					+ " ?,"
 					+ " ?,"
 					+ " ?,"
@@ -354,38 +354,45 @@ public class LiquidacionBean implements ILiquidacionBean {
 					+ " ?,"
 					
 					+ " ?,"
+//					+ " ?,"
+					+ " ?,"
+//					+ " ?,"
+//					+ " ?,"
+//					+ " ?,"
 					+ " ?,"
 					+ " ?,"
+//					+ " ?,"
+//					+ " ?,"
+//					+ " ?,"
 					+ " ?,"
 					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
-					+ " ?,"
+//					+ " ?,"
 					+ " ?,"
 					+ " ?,"
 					+ " ?"
+//					+ " ?,"
+//					+ " ?,"
+//					+ " ?,"
+//					+ " ?"
 				+ " )"
 			);
 			
-			insertLiquidacion.setParameter(0, loggedUsuarioId, LongType.INSTANCE);
-			insertLiquidacion.setParameter(1, hoy, TimestampType.INSTANCE);
-			insertLiquidacion.setParameter(2, loggedUsuarioId, LongType.INSTANCE);
-			insertLiquidacion.setParameter(3, hoy, TimestampType.INSTANCE);
-			insertLiquidacion.setParameter(4, new Long(1), LongType.INSTANCE);
+			insertLiquidacion.setParameter(1, loggedUsuarioId, LongType.INSTANCE);
+			insertLiquidacion.setParameter(2, hoy, TimestampType.INSTANCE);
+			insertLiquidacion.setParameter(3, loggedUsuarioId, LongType.INSTANCE);
+			insertLiquidacion.setParameter(4, hoy, TimestampType.INSTANCE);
+			insertLiquidacion.setParameter(5, Long.valueOf(1), LongType.INSTANCE);
 			
-			SQLQuery selectLiquidacion = hibernateSession.createSQLQuery(
+			NativeQuery<Tuple> selectLiquidacion = hibernateSession.createNativeQuery(
+//				"SELECT id"
+//				+ " FROM liquidacion"
+//				+ " WHERE id_registro = ?",
 				"SELECT id"
 				+ " FROM liquidacion"
-				+ " WHERE id_registro = ?"
+				+ " WHERE empresa_id = ?"
+				+ " AND mid = ?"
+				+ " AND fecha_liquidacion = ?",
+				Tuple.class
 			);
 			
 			String line = null;
@@ -398,7 +405,8 @@ public class LiquidacionBean implements ILiquidacionBean {
 				if (lineNumber > 1) {
 					String[] fields = line.split(";", -1);
 					
-					if (fields.length < 22) {
+					//if (fields.length < 22) {
+					if (fields.length < 10) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
 							+ " Formato de línea " + lineNumber + " incompatible."
@@ -408,200 +416,229 @@ public class LiquidacionBean implements ILiquidacionBean {
 					} else {
 						boolean ok = true;
 						
-						Long idRegistro = null;
+						int field = 0;
+						
+						Long nroProveedor = null;
 						try {
-							idRegistro = new Long(fields[0].trim());
+							nroProveedor = Long.parseLong(fields[field++].trim());
 						} catch (NumberFormatException pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo id_registro incorrecto -> " + fields[0].trim());
+								+ " Campo id_registro incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
+						
+//						Long idRegistro = null;
+//						try {
+//							idRegistro = Long.parseLong(fields[field++].trim());
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo id_registro incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
 						
 						Long idAgente = null;
 						Long empresaId = null;
 						try {
-							idAgente = new Long(fields[1].trim());
+							idAgente = Long.parseLong(fields[field++].trim());
 							empresaId = iEmpresaBean.getByIdAgente(idAgente, false).getId();
 						} catch (Exception pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo id_agente incorrecto -> " + fields[1].trim());
+								+ " Campo id_agente incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
-//						String nomAgente = null;
+						String nomAgente = null;
+						try {
+							nomAgente = fields[field++].trim();
+						} catch (NumberFormatException pe) {
+							System.err.println(
+								"Error al procesar archivo: " + fileName + "."
+								+ " Formato de línea " + lineNumber + " incompatible."
+								+ " Campo nom_agente incorrecto -> " + fields[field].trim());
+							ok = false;
+						}
+						
+//						Long rlid = null;
 //						try {
-//							nomAgente = fields[2].trim();
+//							if (fields[field].trim() != null && !fields[field].trim().isEmpty()) {
+//								rlid = Long.parseLong(fields[field].trim());
+//							}
+//							field++;
 //						} catch (NumberFormatException pe) {
 //							System.err.println(
 //								"Error al procesar archivo: " + fileName + "."
 //								+ " Formato de línea " + lineNumber + " incompatible."
-//								+ " Campo nom_agente incorrecto -> " + fields[2].trim());
+//								+ " Campo rlid incorrecto -> " + fields[field].trim());
 //							ok = false;
 //						}
 						
-						Long rlid = null;
-						try {
-							if (fields[3].trim() != null && !fields[3].trim().isEmpty()) {
-								rlid = new Long(fields[3].trim());
-							}
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo rlid incorrecto -> " + fields[3].trim());
-							ok = false;
-						}
+//						Long contrato = null;
+//						try {
+//							contrato = Long.parseLong(fields[field++].trim());
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo contrato incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
 						
-						Long contrato = null;
-						try {
-							contrato = new Long(fields[4].trim());
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo contrato incorrecto -> " + fields[4].trim());
-							ok = false;
-						}
-						
-						Date fecha = null;
-						try {
-							fecha = formatFecha.parse(fields[5].trim());
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo fecha incorrecto -> " + fields[5].trim());
-							ok = false;
-						}
+//						Date fecha = null;
+//						try {
+//							fecha = formatFecha.parse(fields[field++].trim());
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo fecha incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
 						
 						String plan = null;
 						try {
-							plan = fields[6].trim();
+							plan = fields[field++].trim();
 						} catch (NumberFormatException pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo plan incorrecto -> " + fields[6].trim());
+								+ " Campo plan incorrecto -> " + fields[field].trim());
+							ok = false;
+						}
+						
+						String planOrigen = null;
+						try {
+							planOrigen = fields[field++].trim();
+						} catch (NumberFormatException pe) {
+							System.err.println(
+								"Error al procesar archivo: " + fileName + "."
+								+ " Formato de línea " + lineNumber + " incompatible."
+								+ " Campo plan origen incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
 						Long mid = null;
 						try {
-							if (fields[7] != null && !fields[7].isEmpty()) {
-								mid = new Long(fields[7].trim());
+							if (fields[field] != null && !fields[field].isEmpty()) {
+								mid = Long.parseLong(fields[field].trim());
 							}
+							field++;
 						} catch (NumberFormatException pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo mid incorrecto -> " + fields[7].trim());
+								+ " Campo mid incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
-						Long said = null;
-						try {
-							if (fields[8] != null && !fields[8].isEmpty()) {
-								said = new Long(fields[8].trim());
-							}
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo said incorrecto -> " + fields[8].trim());
-							ok = false;
-						}
+//						Long said = null;
+//						try {
+//							if (fields[field] != null && !fields[field].isEmpty()) {
+//								said = Long.parseLong(fields[field].trim());
+//							}
+//							field++;
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo said incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
 						
-						String serie = null;
-						try {
-							serie = fields[9].trim();
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo serie incorrecto -> " + fields[9].trim());
-							ok = false;
-						}
+//						String serie = null;
+//						try {
+//							serie = fields[field++].trim();
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo serie incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
 						
-						String dc = null;
-						try {
-							dc = fields[10].trim();
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo dc incorrecto -> " + fields[10].trim());
-							ok = false;
-						}
+//						String dc = null;
+//						try {
+//							dc = fields[field++].trim();
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo dc incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
 						
 						String moneda = null;
 						Long monedaId = monedaPesosUruguayosId;
 						try {
-							if (fields[11] != null && !fields[11].isEmpty()) {
-								moneda = fields[11].trim();
+							if (fields[field] != null && !fields[field].isEmpty()) {
+								moneda = fields[field].trim();
 								Moneda monedaManaged = iMonedaBean.getBySimbolo(moneda);
 								if (monedaManaged != null) {
 									monedaId = monedaManaged.getId();
 								}
 							}
+							field++;
 						} catch (Exception pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo moneda incorrecto -> " + fields[11].trim());
+								+ " Campo moneda incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
 						Double importe = null;
 						try {
-							if (fields[12] != null && !fields[12].trim().isEmpty()) {
-								String importeString = fields[12].trim();
+							if (fields[field] != null && !fields[field].trim().isEmpty()) {
+								String importeString = fields[field].trim();
 								importeString = importeString.replace(".", "");
 								importeString = importeString.replace(",", ".");
 								
-								importe = new Double(importeString);
+								importe = Double.valueOf(importeString);
 							}
+							field++;
 						} catch (NumberFormatException pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo importe incorrecto -> " + fields[12].trim());
+								+ " Campo importe incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
-						Long cant = null;
-						try {
-							cant = new Long(fields[13].trim());
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo cant incorrecto -> " + fields[13].trim());
-							ok = false;
-						}
+//						Long cant = null;
+//						try {
+//							cant = Long.parseLong(fields[field++].trim());
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo cant incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
 						
 						String fechaLiquidacionString = null;
 						try {
-							fechaLiquidacionString = fields[14].trim();
+							fechaLiquidacionString = fields[field++].trim();
 						} catch (NumberFormatException pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo fecha_liquidacion incorrecto -> " + fields[14].trim());
+								+ " Campo fecha_liquidacion incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
 						String horaLiquidacionString = null;
 						try {
-							horaLiquidacionString = fields[15].trim().replace(".", "");
+							horaLiquidacionString = fields[field++].trim().replace(".", "");
 						} catch (Exception pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo hora_liquidacion incorrecto -> " + fields[15].trim());
+								+ " Campo hora_liquidacion incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
@@ -610,7 +647,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 							if (horaLiquidacionString != null && horaLiquidacionString.length() == 11) { 
 								fechaHoraLiquidacion = formatFechaHora.parse(fechaLiquidacionString + " " + horaLiquidacionString);
 							} else {
-								fechaHoraLiquidacion = formatFechaHora.parse(fechaLiquidacionString + " 00:00:00 am");
+								fechaHoraLiquidacion = formatFechaHora.parse(fechaLiquidacionString + " 00:00:00");
 							}
 						} catch (ParseException pe) {
 							System.err.println(
@@ -622,102 +659,106 @@ public class LiquidacionBean implements ILiquidacionBean {
 						
 						Long idConcepto = null;
 						try {
-							idConcepto = new Long(fields[16].trim());
+							idConcepto = Long.parseLong(fields[field++].trim());
 						} catch (NumberFormatException pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo id_concepto incorrecto -> " + fields[16].trim());
+								+ " Campo id_concepto incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
 						String nomConcepto = null;
 						try {
-							nomConcepto = fields[17].trim();
+							nomConcepto = fields[field++].trim();
 						} catch (NumberFormatException pe) {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo nom_concepto incorrecto -> " + fields[17].trim());
+								+ " Campo nom_concepto incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
-						String modelo = null;
-						try {
-							modelo = fields[18].trim();
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo modelo incorrecto -> " + fields[18].trim());
-							ok = false;
-						}
-						
-						String fabricante = null;
-						try {
-							fabricante = fields[19].trim();
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo fabricante incorrecto -> " + fields[19].trim());
-							ok = false;
-						}
-						
-						Long idClaseConcepto = null;
-						try {
-							idClaseConcepto = new Long(fields[20].trim());
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo id_clase_concepto incorrecto -> " + fields[20].trim());
-							ok = false;
-						}
-						
-						String nomClaseConcepto = null;
-						try {
-							nomClaseConcepto = fields[21].trim();
-						} catch (NumberFormatException pe) {
-							System.err.println(
-								"Error al procesar archivo: " + fileName + "."
-								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo nom_clase_concepto incorrecto -> " + fields[21].trim());
-							ok = false;
-						}
+//						String modelo = null;
+//						try {
+//							modelo = fields[field++].trim();
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo modelo incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
+//						
+//						String fabricante = null;
+//						try {
+//							fabricante = fields[field++].trim();
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo fabricante incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
+//						
+//						Long idClaseConcepto = null;
+//						try {
+//							idClaseConcepto = Long.parseLong(fields[20].trim());
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo id_clase_concepto incorrecto -> " + fields[20].trim());
+//							ok = false;
+//						}
+//						
+//						String nomClaseConcepto = null;
+//						try {
+//							nomClaseConcepto = fields[field++].trim();
+//						} catch (NumberFormatException pe) {
+//							System.err.println(
+//								"Error al procesar archivo: " + fileName + "."
+//								+ " Formato de línea " + lineNumber + " incompatible."
+//								+ " Campo nom_clase_concepto incorrecto -> " + fields[field].trim());
+//							ok = false;
+//						}
 						
 						if (!ok) {
 							errors++;
 						} else {
-							selectLiquidacion.setParameter(0, idRegistro, LongType.INSTANCE);
+//							selectLiquidacion.setParameter(1, idRegistro, LongType.INSTANCE);
+							selectLiquidacion.setParameter(1, empresaId, LongType.INSTANCE);
+							selectLiquidacion.setParameter(2, mid, LongType.INSTANCE);
+							selectLiquidacion.setParameter(3, fechaHoraLiquidacion, TimestampType.INSTANCE);
 							
-							List<?> listLiquidacion = selectLiquidacion.list();
+							List<Tuple> listLiquidacion = selectLiquidacion.list();
 							if (listLiquidacion.size() > 0) {
 								// Si ya existe, omito.
 							} else {
-								Long id = new Long(((BigInteger) selectId.list().get(0)).longValue());
+								Long id = ((BigInteger) selectId.list().get(0).get(0)).longValue();
 								
-								insertLiquidacion.setParameter(5, id, LongType.INSTANCE);
-								insertLiquidacion.setParameter(6, idRegistro, LongType.INSTANCE);
-								insertLiquidacion.setParameter(7, empresaId, LongType.INSTANCE);
-								insertLiquidacion.setParameter(8, rlid, LongType.INSTANCE);
-								insertLiquidacion.setParameter(9, contrato, LongType.INSTANCE);
-								insertLiquidacion.setParameter(10, fecha, TimestampType.INSTANCE);
-								insertLiquidacion.setParameter(11, plan, StringType.INSTANCE);
-								insertLiquidacion.setParameter(12, mid, LongType.INSTANCE);
-								insertLiquidacion.setParameter(13, said, LongType.INSTANCE);
-								insertLiquidacion.setParameter(14, serie, StringType.INSTANCE);
-								insertLiquidacion.setParameter(15, dc, StringType.INSTANCE);
-								insertLiquidacion.setParameter(16, monedaId, LongType.INSTANCE);
-								insertLiquidacion.setParameter(17, importe, DoubleType.INSTANCE);
-								insertLiquidacion.setParameter(18, cant, LongType.INSTANCE);
-								insertLiquidacion.setParameter(19, fechaHoraLiquidacion, TimestampType.INSTANCE);
-								insertLiquidacion.setParameter(20, idConcepto, LongType.INSTANCE);
-								insertLiquidacion.setParameter(21, nomConcepto, StringType.INSTANCE);
-								insertLiquidacion.setParameter(22, modelo, StringType.INSTANCE);
-								insertLiquidacion.setParameter(23, fabricante, StringType.INSTANCE);
-								insertLiquidacion.setParameter(24, idClaseConcepto, LongType.INSTANCE);
-								insertLiquidacion.setParameter(25, nomClaseConcepto, StringType.INSTANCE);
+								field = 6;
+								insertLiquidacion.setParameter(field++, id, LongType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, idRegistro, LongType.INSTANCE);
+								insertLiquidacion.setParameter(field++, empresaId, LongType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, rlid, LongType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, contrato, LongType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, fecha, TimestampType.INSTANCE);
+								insertLiquidacion.setParameter(field++, plan, StringType.INSTANCE);
+								insertLiquidacion.setParameter(field++, mid, LongType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, said, LongType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, serie, StringType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, dc, StringType.INSTANCE);
+								insertLiquidacion.setParameter(field++, monedaId, LongType.INSTANCE);
+								insertLiquidacion.setParameter(field++, importe, DoubleType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, cant, LongType.INSTANCE);
+								insertLiquidacion.setParameter(field++, fechaHoraLiquidacion, TimestampType.INSTANCE);
+								insertLiquidacion.setParameter(field++, idConcepto, LongType.INSTANCE);
+								insertLiquidacion.setParameter(field++, nomConcepto, StringType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, modelo, StringType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, fabricante, StringType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, idClaseConcepto, LongType.INSTANCE);
+//								insertLiquidacion.setParameter(field++, nomClaseConcepto, StringType.INSTANCE);
 								
 								insertLiquidacion.executeUpdate();
 								
@@ -784,7 +825,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 			
 			Session hibernateSession = entityManager.unwrap(Session.class);
 			
-			SQLQuery insertCalculoPorcentajeActivacionPuntoVenta = hibernateSession.createSQLQuery(
+			NativeQuery<?> insertCalculoPorcentajeActivacionPuntoVenta = hibernateSession.createNativeQuery(
 				"INSERT INTO calculo_porcentaje_activacion_punto_venta("
 					+ " id,"
 					+ " fecha_calculo,"
@@ -823,12 +864,12 @@ public class LiquidacionBean implements ILiquidacionBean {
 				+ " ) l ON l.punto_venta_id = pv.id"
 			);
 			
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(0, hoy, TimestampType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(1, loggedUsuarioId, LongType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(2, hoy, TimestampType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(3, loggedUsuarioId, LongType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(4, hoy, TimestampType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(5, new Long(1), LongType.INSTANCE);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(1, hoy, TimestampType.INSTANCE);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(2, loggedUsuarioId, LongType.INSTANCE);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(3, hoy, TimestampType.INSTANCE);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(4, loggedUsuarioId, LongType.INSTANCE);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(5, hoy, TimestampType.INSTANCE);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(6, Long.valueOf(1), LongType.INSTANCE);
 			
 			insertCalculoPorcentajeActivacionPuntoVenta.executeUpdate();
 		} catch (Exception e) {
@@ -842,7 +883,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 			
 			Session hibernateSession = entityManager.unwrap(Session.class);
 			
-			SQLQuery updatePorcentajeActivacionSubLote = hibernateSession.createSQLQuery(
+			NativeQuery<?> updatePorcentajeActivacionSubLote = hibernateSession.createNativeQuery(
 				"UPDATE activacion_sublote"
 				+ " SET porcentaje_activacion = COALESCE(l.cantidad, 0) * 1.0 / t.cantidad,"
 				+ " fact = ?,"
@@ -865,8 +906,8 @@ public class LiquidacionBean implements ILiquidacionBean {
 				+ " ) l ON l.activacion_sublote_id = t.activacion_sublote_id"
 				+ " WHERE activacion_sublote.id = t.activacion_sublote_id"
 			);
-			updatePorcentajeActivacionSubLote.setParameter(0, hoy, TimestampType.INSTANCE);
-			updatePorcentajeActivacionSubLote.setParameter(1, loggedUsuarioId, LongType.INSTANCE);
+			updatePorcentajeActivacionSubLote.setParameter(1, hoy, TimestampType.INSTANCE);
+			updatePorcentajeActivacionSubLote.setParameter(2, loggedUsuarioId, LongType.INSTANCE);
 			
 			updatePorcentajeActivacionSubLote.executeUpdate();
 		} catch (Exception e) {

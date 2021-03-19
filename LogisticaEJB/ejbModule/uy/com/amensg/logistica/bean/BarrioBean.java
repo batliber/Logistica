@@ -154,15 +154,21 @@ public class BarrioBean implements IBarrioBean {
 		return result;
 	}
 
-	public void save(Barrio barrio) {
+	public Barrio save(Barrio barrio) {
+		Barrio result = null;
+		
 		try {
 			barrio.setFcre(barrio.getFact());
 			barrio.setUcre(barrio.getUact());
 			
 			entityManager.persist(barrio);
+			
+			result = barrio;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Barrio barrio) {

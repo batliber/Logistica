@@ -101,7 +101,7 @@ public class PrecioBean implements IPrecioBean {
 			metadataCondicion = new MetadataCondicion();
 			metadataCondicion.setCampo("fechaHasta");
 			metadataCondicion.setOperador(Constants.__METADATA_CONDICION_OPERADOR_NULL);
-			metadataCondicion.setValores(new LinkedList<String>() {});
+			metadataCondicion.setValores(new LinkedList<String>());
 			
 			metadataConsulta.getMetadataCondiciones().add(metadataCondicion);
 			
@@ -136,7 +136,7 @@ public class PrecioBean implements IPrecioBean {
 			metadataCondicion = new MetadataCondicion();
 			metadataCondicion.setCampo("fechaHasta");
 			metadataCondicion.setOperador(Constants.__METADATA_CONDICION_OPERADOR_NULL);
-			metadataCondicion.setValores(new LinkedList<String>() {});
+			metadataCondicion.setValores(new LinkedList<String>());
 			
 			metadataConsulta.getMetadataCondiciones().add(metadataCondicion);
 			
@@ -201,15 +201,21 @@ public class PrecioBean implements IPrecioBean {
 		return result;
 	}
 	
-	public void save(Precio precio) {
+	public Precio save(Precio precio) {
+		Precio result = null;
+		
 		try {
 			precio.setFcre(precio.getFact());
 			precio.setUcre(precio.getUact());
 			
 			entityManager.persist(precio);
+			
+			result = precio;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 	
 	public void update(Precio precio) {

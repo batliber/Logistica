@@ -24,6 +24,34 @@
 	height: 22px;
 }
 
+.closedMenuBarParentItem {
+	float: left;
+	width: 100%;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_right.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+.closedMenuBarParentItem div {
+	width: 98%;
+	border-left: solid 1px #F0F0F0;
+	border-right: solid 1px #F0F0F0;
+}
+
+.openMenuBarParentItem {
+	float: left;
+	width: 100%;
+	background-image: url('/LogisticaWEB/images/bullet_arrow_down.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+.openMenuBarParentItem div {
+	width: 98%;
+	border-left: solid 1px #F0F0F0;
+	border-right: solid 1px #F0F0F0;
+}
+
 .inactiveMenuBarItem {
 	float: left;
 	width: 100%;
@@ -89,4 +117,41 @@
 	width: 16px;
 	background-image: url("/LogisticaWEB/images/logout.png");
 	background-repeat: no-repeat;
+}
+
+.divMenuIcons {
+	float: left;
+	width: 480px;
+	height: 850px;
+	padding: 10px;
+}
+
+.divMenuItemIcon {
+	float: left;
+	width: 50px;
+	height: 65px;
+	padding: 10px;
+}
+
+.divMenuItemIconImage {
+	float: left;
+	width: 100%;
+	height: 80%;
+}
+
+.imgMenuItemIcon {
+	width: 100%;
+	height: 100%;
+	/* border: solid 1px white; */
+	/* background-color: white; */
+}
+
+.divMenuItemIconText {
+	float: left;
+	width: 100%;
+	height: 20%;
+	font-size: 7pt;
+	color: white;
+	text-align: center;
+	margin-top: 1px;
 }

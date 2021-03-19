@@ -19,7 +19,6 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
@@ -31,7 +30,7 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.util.Configuration;
-import uy.com.amensg.logistica.util.Constants;
+import uy.com.amensg.logistica.util.QueryBuilder;
 import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
@@ -55,16 +54,9 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
 		try {
-			// Query para obtener los registros de muestra
-			TypedQuery<ACMInterfaceMid> queryMuestra = this.construirQuery(metadataConsulta);
-			queryMuestra.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
-			
-			Collection<Object> registrosMuestra = new LinkedList<Object>();
-			for (ACMInterfaceMid acmInterfaceMid : queryMuestra.getResultList()) {
-				registrosMuestra.add(acmInterfaceMid);
-			}
-			
-			result.setRegistrosMuestra(registrosMuestra);
+			return new QueryBuilder<ACMInterfaceMid>().list(
+				entityManager, metadataConsulta, new ACMInterfaceMid()
+			);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -76,24 +68,9 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		Long result = null;
 		
 		try {
-			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-			
-			CriteriaQuery<Long> criteriaQueryCount = criteriaBuilder.createQuery(Long.class);
-			
-			Root<ACMInterfaceMid> rootCount = criteriaQueryCount.from(ACMInterfaceMid.class);
-			rootCount.alias("root");
-			
-			Predicate where = new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, rootCount);
-			
-			criteriaQueryCount
-				.select(criteriaBuilder.count(rootCount))
-				.where(where);
-			
-			TypedQuery<Long> queryCount = entityManager.createQuery(criteriaQueryCount);
-			
-			this.setQueryParameters(criteriaQueryCount, queryCount, metadataConsulta);
-			
-			result = queryCount.getSingleResult();
+			result = new QueryBuilder<ACMInterfaceMid>().count(
+				entityManager, metadataConsulta, new ACMInterfaceMid()
+			);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -110,16 +87,16 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 			acmInterfaceProceso.setFechaInicio(hoy);
 			acmInterfaceProceso.setObservaciones(observaciones);
 			
-			acmInterfaceProceso.setUact(new Long(1));
+			acmInterfaceProceso.setUact(Long.valueOf(1));
 			acmInterfaceProceso.setFact(hoy);
-			acmInterfaceProceso.setTerm(new Long(1));
+			acmInterfaceProceso.setTerm(Long.valueOf(1));
 			
 			acmInterfaceProceso = iACMInterfaceProcesoBean.save(acmInterfaceProceso);
 			
 			ACMInterfaceEstado estado = 
 				entityManager.find(
 					ACMInterfaceEstado.class, 
-					new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
 				);
 			
 			Random random = new Random();
@@ -128,11 +105,11 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
 				
 				acmInterfaceMid.setEstado(estado);
-				acmInterfaceMid.setRandom(new Long(random.nextInt()));
+				acmInterfaceMid.setRandom(Long.valueOf(random.nextInt()));
 				
-				acmInterfaceMid.setUact(new Long(1));
+				acmInterfaceMid.setUact(Long.valueOf(1));
 				acmInterfaceMid.setFact(hoy);
-				acmInterfaceMid.setTerm(new Long(1));
+				acmInterfaceMid.setTerm(Long.valueOf(1));
 				
 				entityManager.merge(acmInterfaceMid);
 			}
@@ -151,18 +128,18 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
 			ACMInterfaceEstado estado = 
-				entityManager.find(ACMInterfaceEstado.class, new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra")));
+				entityManager.find(ACMInterfaceEstado.class, Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra")));
 			
 			for (ACMInterfaceMid acmInterfaceMid : query.getResultList()) {
 				if (!acmInterfaceMid.getEstado().getId().equals(
-						new Long(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
+						Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
 					)
 				) {
 					acmInterfaceMid.setEstado(estado);
 					
-					acmInterfaceMid.setUact(new Long(1));
+					acmInterfaceMid.setUact(Long.valueOf(1));
 					acmInterfaceMid.setFact(hoy);
-					acmInterfaceMid.setTerm(new Long(1));
+					acmInterfaceMid.setTerm(Long.valueOf(1));
 					
 					entityManager.merge(acmInterfaceMid); 
 					
@@ -173,9 +150,9 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 						Configuration.getInstance().getProperty("listaNegra.NoProcesado")
 					);
 					
-					acmInterfaceListaNegra.setTerm(new Long(1));
+					acmInterfaceListaNegra.setTerm(Long.valueOf(1));
 					acmInterfaceListaNegra.setFact(hoy);
-					acmInterfaceListaNegra.setUact(new Long(1));
+					acmInterfaceListaNegra.setUact(Long.valueOf(1));
 					
 					entityManager.persist(acmInterfaceListaNegra);
 				}
@@ -268,7 +245,7 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 					} else if (campo.getJavaType().equals(Long.class)) {
 						query.setParameter(
 							"p" + i,
-							new Long(valor)
+							Long.parseLong(valor)
 						);
 					} else if (campo.getJavaType().equals(String.class)) {
 						query.setParameter(
@@ -278,7 +255,7 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 					} else if (campo.getJavaType().equals(Double.class)) {
 						query.setParameter(
 							"p" + i,
-							new Double(valor)
+							Double.parseDouble(valor)
 						);
 					}
 				} catch (Exception e) {
@@ -318,69 +295,5 @@ public class ACMInterfaceMidBean implements IACMInterfaceMidBean {
 		result = query.getResultList();
 		
 		return result;
-	}
-	
-	private void setQueryParameters(CriteriaQuery<?> criteriaQuery, TypedQuery<?> query, MetadataConsulta metadataConsulta) {
-		Root<?> root = criteriaQuery.getRoots().iterator().next();
-		
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		
-		// Setear los parámetros según las condiciones del filtro
-		int i = 0;
-		for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
-			if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
-				for (String valor : metadataCondicion.getValores()) {
-					String[] campos = metadataCondicion.getCampo().split("\\.");
-					
-					Path<?> field = root;
-					Join<?, ?> join = null;
-					for (int j=0; j<campos.length - 1; j++) {
-						if (join != null) {
-							join = join.join(campos[j], JoinType.LEFT);
-						} else {
-							join = root.join(campos[j], JoinType.LEFT);
-						}
-					}
-					
-					if (join != null) {
-						field = join.get(campos[campos.length - 1]);
-					} else {
-						field = root.get(campos[campos.length - 1]);
-					}
-					
-					try {
-						if (field.getJavaType().equals(Date.class)) {
-							query.setParameter(
-								"p" + i,
-								format.parse(valor)
-							);
-						} else if (field.getJavaType().equals(Long.class)) {
-							query.setParameter(
-								"p" + i,
-								new Long(valor)
-							);
-						} else if (field.getJavaType().equals(String.class)) {
-							query.setParameter(
-								"p" + i,
-								valor
-							);
-						} else if (field.getJavaType().equals(Double.class)) {
-							query.setParameter(
-								"p" + i,
-								new Double(valor)
-							);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					
-					i++;
-				}
-				
-				if (metadataCondicion.getValores().size() == 0) {
-					i++;
-				}
-			}
-		}
 	}
 }

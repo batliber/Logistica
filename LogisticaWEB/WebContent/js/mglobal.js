@@ -7,11 +7,9 @@ function divMenuOnClick(event, element) {
 }
 
 function divLogoutOnClick(event, element) {
-	SeguridadDWR.logout(
-		{
-			callback: function(data) {
-				window.location = "/LogisticaWEB/pages/mobile/mlogin/mlogin.jsp";
-			}, async: false
-		}
-	);
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/logout",   
+	}).then(function(data) {
+		window.location = "/LogisticaWEB/pages/mobile/mlogin/mlogin.jsp";
+	});
 }

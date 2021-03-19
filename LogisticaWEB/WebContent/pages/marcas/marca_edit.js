@@ -6,19 +6,16 @@ function init() {
 	$("#divEliminarMarca").hide();
 	
 	if (id != null) {
-		MarcaDWR.getById(
-			id,
-			{
-				callback: function(data) {
-					$("#inputMarcaNombre").val(data.nombre);
-					
-					if (mode == __FORM_MODE_ADMIN) {
-						$("#divEliminarMarca").show();
-						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-					}
-				}, async: false
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MarcaREST/getById/" + id
+	    }).then(function(data) { 
+	    	$("#inputMarcaNombre").val(data.nombre);
+			
+			if (mode == __FORM_MODE_ADMIN) {
+				$("#divEliminarMarca").show();
+				$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
 			}
-		);
+	    });
 	}
 }
 
@@ -44,25 +41,29 @@ function inputGuardarOnClick(event) {
 	if (id != null) {
 		marca.id = id;
 		
-		MarcaDWR.update(
-			marca,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MarcaREST/update",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(marca)
+	    }).then(function(data) {
+	    	alert("Operación exitosa");
+	    });
 	} else {
-		MarcaDWR.add(
-			marca,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-					
-					$("#inputEliminarMarca").prop("disabled", false);
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MarcaREST/add",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(marca)
+	    }).then(function(data) {
+	    	if (data != null) {
+				alert("Operación exitosa");
+	    	
+				$("#inputEliminarMarca").prop("disabled", false);
+	    	} else {
+	    		alert("Error en la operación");
+	    	}
+	    });
 	}
 }
 
@@ -72,13 +73,13 @@ function inputEliminarOnClick(event) {
 			id: id
 		};
 		
-		MarcaDWR.remove(
-			marca,
-			{
-				callback: function(data) {
-					alert("Operación exitosa");
-				}, async: false
-			}
-		);
+		$.ajax({
+	        url: "/LogisticaWEB/RESTFacade/MarcaREST/remove",
+	        method: "POST",
+	        contentType: 'application/json',
+	        data: JSON.stringify(marca)
+	    }).then(function(data) { 
+	    	alert("Operación exitosa");
+	    });
 	}
 }

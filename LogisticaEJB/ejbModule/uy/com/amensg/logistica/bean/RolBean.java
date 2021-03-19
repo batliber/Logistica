@@ -44,6 +44,32 @@ public class RolBean implements IRolBean {
 		return result;
 	}
 	
+	public Collection<Rol> listMinimal() {
+		Collection<Rol> result = new LinkedList<Rol>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT r.id, r.nombre"
+					+ " FROM Rol r"
+					+ " ORDER BY r.nombre ASC", 
+					Object[].class
+				);
+			
+			for (Object[] rol : query.getResultList()) {
+				Rol rolMinimal = new Rol();
+				rolMinimal.setId((Long)rol[0]);
+				rolMinimal.setNombre((String)rol[1]);
+				
+				result.add(rolMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {
 		MetadataConsultaResultado result = new MetadataConsultaResultado();
 		
@@ -104,6 +130,7 @@ public class RolBean implements IRolBean {
 			List<Rol> resultList = query.getResultList();
 			if (!resultList.isEmpty()) {
 				result = resultList.get(0);
+				
 				entityManager.detach(result);
 			
 				if (initializeCollections) {
@@ -115,6 +142,11 @@ public class RolBean implements IRolBean {
 					
 					Set<Rol> subordinados = new HashSet<Rol>();
 					for (Rol rol : querySubordinados.getResultList()) {
+						entityManager.detach(rol);
+						
+						rol.setMenus(new HashSet<Menu>());
+						rol.setSubordinados(new HashSet<Rol>());
+						
 						subordinados.add(rol);
 					}
 					result.setSubordinados(subordinados);
@@ -188,15 +220,21 @@ public class RolBean implements IRolBean {
 		return result;
 	}
 
-	public void save(Rol rol) {
+	public Rol save(Rol rol) {
+		Rol result = null;
+		
 		try {
 			rol.setFcre(rol.getFact());
 			rol.setUcre(rol.getUact());
 			
 			entityManager.persist(rol);
+			
+			result = rol;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public void remove(Rol rol) {

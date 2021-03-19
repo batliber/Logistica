@@ -1,21 +1,27 @@
 function formatMonthYearDate(date) {
 	if (date != null) {
+		if (typeof(date) == "string") {
+			date = new Date(parseInt(date));
+		} else if (typeof(date) == "number") {
+			date = new Date(date);
+		}
+		
 		var parts = [
-	 	    "0" + date.getDate(), 
-	 	    "0" + (date.getMonth() + 1), 
-	 	    date.getFullYear(),
-	 	    "0" + date.getHours(),
-	 	    "0" + date.getMinutes()
-	 	];
-	 	
-	 	return parts[1].substring(parts[1].length - 2) + "/" + parts[2];
+			"0" + date.getDate(), 
+			"0" + (date.getMonth() + 1), 
+			date.getFullYear(),
+			"0" + date.getHours(),
+			"0" + date.getMinutes()
+		];
+		
+		return parts[1].substring(parts[1].length - 2) + "/" + parts[2];
 	} else {
-		return "";
+		return null;
 	}
 }
 
-function formatShortDate(date) {
-	return formatParts(date, 3);
+function formatShortDate(date, dateSeparator) {
+	return formatParts(date, 3, dateSeparator);
 }
 
 function formatLongDate(date) {
@@ -24,20 +30,33 @@ function formatLongDate(date) {
 
 function formatRawDate(date) {
 	if (date != null) {
-		return date.getTime();
+		if (typeof(date) == "string" || typeof(date) == "number") {
+			return date;
+		} else if (typeof(date) == "object") {
+			return date.getTime();
+		}
 	} else {
 		return "";
 	}
 }
 
-function formatParts(date, size) {
+function formatParts(date, size, dateSeparator, timeSeparator) {
+	var dateSeparatorFinal = dateSeparator != null ? dateSeparator : "/";
+	var timeSeparatorFinal = timeSeparator != null ? timeSeparator : ":";
+	
 	if (date != null) {
+		if (typeof(date) == "string") {
+			date = new Date(parseInt(date));
+		} else if (typeof(date) == "number") {
+			date = new Date(date);
+		}
+		
 		var parts = [
-		    "0" + date.getDate(), 
-		    "0" + (date.getMonth() + 1), 
-		    "" + date.getFullYear(),
-		    "0" + date.getHours(),
-		    "0" + date.getMinutes()
+			"0" + date.getDate(), 
+			"0" + (date.getMonth() + 1), 
+			"" + date.getFullYear(),
+			"0" + date.getHours(),
+			"0" + date.getMinutes()
 		];
 		
 		for (var i=0; i<size; i++) {
@@ -46,7 +65,10 @@ function formatParts(date, size) {
 			}
 		}
 		
-		return parts[0] + "/" + parts[1] + "/" + parts[2] + (size > 3 ? " " + parts[3] + ":" + parts[4] : "");
+		return parts[0] + dateSeparatorFinal 
+			+ parts[1] + dateSeparatorFinal 
+			+ parts[2] 
+			+ (size > 3 ? " " + parts[3] + timeSeparatorFinal + parts[4] : "");
 	} else {
 		return null;
 	}
@@ -68,6 +90,7 @@ function formatBoolean(value) {
 	}
 }
 
+/*
 function parseShortDate(string) {
 	if (string != null && string != "")	{
 		var parts = string.split("/");
@@ -89,6 +112,37 @@ function parseLongDate(string) {
 		return null;
 	}
 }
+*/
+
+function parseShortDate(string) {
+	if (string != null && string != "")	{
+		var parts = string.split("/");
+		
+		return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+	} else {
+		return null;
+	}
+}
+
+function parseLongDate(string) {
+	if (string != null && string != "") {
+		var parts = string.split(" ");
+		var dateParts = parts[0].split("/");
+		var hourParts = parts[1].split(":");
+		
+		return new Date(
+			2000 + parseInt(dateParts[2]), 
+			dateParts[1] - 1, 
+			dateParts[0], 
+			hourParts[0], 
+			hourParts[1], 
+			hourParts.length > 2 ? hourParts[2] : 0, 
+			0
+		).getTime();
+	} else {
+		return null;
+	}
+}
 
 /**
  * Carga las opciones del select con id selectId las opciones contenidas en data.
@@ -104,11 +158,16 @@ function fillSelect(
 	extraAttributeName, 
 	extraAttributeValueField, 
 	extraAttribute2Name, 
-	extraAttribute2ValueField
+	extraAttribute2ValueField,
+	leaveOptions
 ) {
-	$("#" + selectId + " > option").remove();
+	var html = "";
 	
-	var html = "<option value='0'>Seleccione...</option>";
+	if (leaveOptions == null || !leaveOptions) {
+		$("#" + selectId + " > option").remove();
+	
+		html = "<option value='0'>Seleccione...</option>";
+	}
 	
 	var values = {};
 	
@@ -228,6 +287,16 @@ function hideField(elementId) {
 	
 	$("#divLabel" + elementSuffix).hide();
 	$("#div" + elementSuffix).hide();
+}
+
+/**
+ * Oculta los controles compuestos por DIV de etiqueta y DIV de valor.
+ * Asume que los ids respectivos son de la forma divLabel + elementId y div + elementId. 
+ */
+function hideFields(elementIds) {
+	for (var i=0; i<elementIds.length; i++) {
+		hideField(elementIds[i]);
+	}
 }
 
 /**

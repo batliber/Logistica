@@ -45,58 +45,58 @@ public class FinanciacionBean implements IFinanciacionBean {
 				result = new DatosElegibilidadFinanciacion();
 				
 				if (riesgoCrediticio.getCalificacionRiesgoCrediticioAntel().getId().equals(
-					new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioAntel.OK"))
+					Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioAntel.OK"))
 				)) {
 					// Sin deuda ANTEL
 					
 					if (riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDATOS"))
+							Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDATOS"))
 						) ||
 						riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.1C"))
+							Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.1C"))
 						) ||
 						riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.2A"))
+							Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.2A"))
 						)
 					) {
 						// No realizar clearing.
-						result.setElegibilidad(new Long(2));
+						result.setElegibilidad(Long.valueOf(2));
 						result.setMensaje("OK");
 					} else if (
 						riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.2B"))
+							Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.2B"))
 						)
 					) {
 						// Realizar clearing.
-						result.setElegibilidad(new Long(1));
+						result.setElegibilidad(Long.valueOf(1));
 						result.setMensaje("Atención: debe realizar comprobación de Clearing.");
 					} else {
 						// Rechazar.
-						result.setElegibilidad(new Long(0));
+						result.setElegibilidad(Long.valueOf(0));
 						result.setMensaje("Rechazado");
 					}
 				} else {
 					// Con deuda ANTEL.
 					
 					if (riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDATOS"))
+							Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDATOS"))
 						) ||
 						riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.1C"))
+							Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.1C"))
 						) ||
 						riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.2A"))
+							Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.2A"))
 						) ||
 						riesgoCrediticio.getCalificacionRiesgoCrediticioBCU().getId().equals(
-							new Long(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.2B"))
+							Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.2B"))
 						)
 					) {
 						// Realizar clearing.
-						result.setElegibilidad(new Long(1));
+						result.setElegibilidad(Long.valueOf(1));
 						result.setMensaje("Atención: debe realizar comprobación de Clearing.");
 					} else {
 						// Rechazar.
-						result.setElegibilidad(new Long(0));
+						result.setElegibilidad(Long.valueOf(0));
 						result.setMensaje("Rechazado");
 					}
 				}
@@ -104,7 +104,7 @@ public class FinanciacionBean implements IFinanciacionBean {
 				result = new DatosElegibilidadFinanciacion();
 				
 				// Rechazar.
-				result.setElegibilidad(new Long(-1));
+				result.setElegibilidad(Long.valueOf(-1));
 				result.setMensaje("No hay datos de análisis de riesgo.");
 			}
 		} catch (Exception e) {
@@ -122,29 +122,29 @@ public class FinanciacionBean implements IFinanciacionBean {
 	) {
 		DatosFinanciacion result = new DatosFinanciacion();
 		
-		Long diasPorMes = new Long(30);
-		Long diasPorAno = new Long(360);
+		Long diasPorMes = Long.valueOf(30);
+		Long diasPorAno = Long.valueOf(360);
 		
-		Double iva = new Double(Configuration.getInstance().getProperty("impuestos.IVA"));
+		Double iva = Double.valueOf(Configuration.getInstance().getProperty("impuestos.IVA"));
 		Double ui = iUnidadIndexadaBean.getVigente().getValor();
-		Boolean primeraCuotaAlInicio = new Boolean(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.primeraCuotaAlInicio"));
-		Boolean aplicarGastosConcesion = new Boolean(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.aplicarGastosConcesion"));
-		Boolean aplicarSeguro = new Boolean(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.aplicarSeguro"));
-		Double gastosConcesion = new Long(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.gastosConcesion")) * ui;
+		Boolean primeraCuotaAlInicio = Boolean.valueOf(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.primeraCuotaAlInicio"));
+		Boolean aplicarGastosConcesion = Boolean.valueOf(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.aplicarGastosConcesion"));
+		Boolean aplicarSeguro = Boolean.valueOf(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.aplicarSeguro"));
+		Double gastosConcesion = Long.parseLong(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.gastosConcesion")) * ui;
 		Double gastosConcesionIVA = gastosConcesion * iva;
-		Double gastosAdministrativosCuota = new Long(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.gastosAdministrativosCuota")) * ui;
+		Double gastosAdministrativosCuota = Long.parseLong(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.gastosAdministrativosCuota")) * ui;
 		Long maximoCuotasGastosAdministrativos = 
-			new Long(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.maximoCuotasGastosAdministrativos"));
+			Long.parseLong(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.maximoCuotasGastosAdministrativos"));
 		Double gastosAdministrativosCuotaIVA = gastosAdministrativosCuota * iva;
 		Double gastosAdministrativosIVA = Math.min(cuotas, maximoCuotasGastosAdministrativos) * gastosAdministrativosCuotaIVA;
 		
 		Double porcentajeSeguro = 
-			new Double(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.porcentajeSeguro"));
+			Double.valueOf(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.porcentajeSeguro"));
 		
 		Collection<TasaInteresEfectivaAnual> tasaInteresEfectivaAnuales = 
 			iTasaInteresEfectivaAnualBean.listVigentesByTipo(tipoTasaInteresEfectivaAnual);
 		
-		Double teaFinanciacion = new Double(0);
+		Double teaFinanciacion = Double.valueOf(0);
 		for (TasaInteresEfectivaAnual tasaInteresEfectivaAnual : tasaInteresEfectivaAnuales) {
 			Long cuotasDesde = 
 				tasaInteresEfectivaAnual.getCuotasDesde() != null ? 
@@ -169,16 +169,16 @@ public class FinanciacionBean implements IFinanciacionBean {
 		}
 
 //		Double teaFinanciacionIVA = teaFinanciacion * iva;
-		Double temFinanciacion = Math.pow(1 + teaFinanciacion, new Double(diasPorMes) / diasPorAno) - 1;
+		Double temFinanciacion = Math.pow(1 + teaFinanciacion, Double.valueOf(diasPorMes) / diasPorAno) - 1;
 		Double temFinanciacionIVA = temFinanciacion * iva;
-		Double tedFinanciacionIVA = Math.pow(1 + temFinanciacionIVA, new Double(1) / diasPorMes) - 1;
-		Double valorCuotaA = this.pago(temFinanciacionIVA, new Double(cuotas), monto, primeraCuotaAlInicio);
+		Double tedFinanciacionIVA = Math.pow(1 + temFinanciacionIVA, Double.valueOf(1) / diasPorMes) - 1;
+		Double valorCuotaA = this.pago(temFinanciacionIVA, Double.valueOf(cuotas), monto, primeraCuotaAlInicio);
 		
-		Double minimoMensualSeguro = new Long(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.minimoMensualSeguro")) * ui;
+		Double minimoMensualSeguro = Long.parseLong(Configuration.getInstance().getProperty("financiacion.creditoDeLaCasa.minimoMensualSeguro")) * ui;
 		
 		Double capitalAcumulado = monto;
-		Double interesesIVA = new Double(0);
-		Double interesesAcumuladoIVA = new Double(0);
+		Double interesesIVA = Double.valueOf(0);
+		Double interesesAcumuladoIVA = Double.valueOf(0);
 		for (int i=1; i<=cuotas; i++) {
 			for (int j=1; j<=diasPorMes; j++) {
 				capitalAcumulado += interesesIVA;
@@ -191,7 +191,7 @@ public class FinanciacionBean implements IFinanciacionBean {
 		
 		Double cuotaCapitalInteresesAcumuladoIVA = monto + interesesAcumuladoIVA;
 		
-		Double seguro = new Double(0);
+		Double seguro = Double.valueOf(0);
 		if (aplicarSeguro) {
 			seguro += porcentajeSeguro * (cuotaCapitalInteresesAcumuladoIVA + gastosAdministrativosIVA);
 		}
@@ -200,8 +200,8 @@ public class FinanciacionBean implements IFinanciacionBean {
 			seguro += porcentajeSeguro * gastosConcesionIVA;
 		}
 		
-		Double seguroMensual = new Double(0);
-		Double seguroAcumulado = new Double(0);
+		Double seguroMensual = Double.valueOf(0);
+		Double seguroAcumulado = Double.valueOf(0);
 		if (aplicarSeguro) {
 			seguroMensual = Math.max(minimoMensualSeguro, seguro);
 			seguroAcumulado = seguroMensual * cuotas;

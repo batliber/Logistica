@@ -3,13 +3,9 @@
 		var mode = <%= request.getParameter("m") != null ? request.getParameter("m") : "0" %>;
 		var id = <%= request.getParameter("vid") != null ? request.getParameter("vid") : "null" %>;
 	</script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/UsuarioRolEmpresaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/EstadoVisitaPuntoVentaDistribuidorDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/PuntoVentaDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/dwr/interface/VisitaPuntoVentaDistribuidorDWR.js"></script>
-	<script type="text/javascript" src="/LogisticaWEB/pages/mobile/mvisita/mvisita.js"></script>
+	<script type="text/javascript" src="./mvisita.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb6ZHkQPu3YqYlFLsBAGZ-79aVjSXwEig"></script>
-	<link rel="stylesheet" type="text/css" href="/LogisticaWEB/pages/mobile/mvisita/mvisita.css"/>
+	<link rel="stylesheet" type="text/css" href="./mvisita.css"/>
 </head>
 <body>
 <%@ include file="../mincludes/mtitle.jsp" %>

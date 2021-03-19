@@ -1,0 +1,19 @@
+#divConfiguracionClave {
+	float: left;
+	width: 100%;
+}
+
+#inputConfiguracionClave {
+	margin-left: 2px;
+	width: 60%;
+}
+
+#divConfiguracionValor {
+	float: left;
+	width: 100%;
+}
+
+#inputConfiguracionValor {
+	margin-left: 2px;
+	width: 60%;
+}

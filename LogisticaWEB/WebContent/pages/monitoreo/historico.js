@@ -1,6 +1,8 @@
 var grid = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	grid = new Grid(
 		document.getElementById("divTableHistorico"),
 		{
@@ -21,75 +23,72 @@ $(document).ready(function() {
 	grid.rebuild();
 	
 	reloadData();
-});
+}
 
 function reloadData() {
-	ContratoRoutingHistoryDWR.listByContratoId(
-		id,
-		{
-			callback: function(data) {
-				var registros = {
-					cantidadRegistros: data.length,
-					registrosMuestra: []
-				};
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ContratoRoutingHistoryREST/listByContratoId/" + id
+	}).then(function(data) { 
+		var registros = {
+			cantidadRegistros: data.length,
+			registrosMuestra: []
+		};
+		
+		var ordered = data;
+		
+		var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
+		if (ordenaciones.length > 0 && data != null) {
+			ordered = data.sort(function(a, b) {
+				var result = 0;
 				
-				var ordered = data;
-				
-				var ordenaciones = grid.filtroDinamico.calcularOrdenaciones();
-				if (ordenaciones.length > 0 && data != null) {
-					ordered = data.sort(function(a, b) {
-						var result = 0;
+				for (var i=0; i<ordenaciones.length; i++) {
+					var aValue = null;
+					try {
+						aValue = eval("a." + ordenaciones[i].campo);
+					} catch(e) {
+						aValue = null;
+					}
+					
+					var bValue = null;
+					try {
+						bValue = eval("b." + ordenaciones[i].campo);
+					} catch(e) {
+						bValue = null;
+					}
+					
+					if (aValue < bValue) {
+						result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
 						
-						for (var i=0; i<ordenaciones.length; i++) {
-							var aValue = null;
-							try {
-								aValue = eval("a." + ordenaciones[i].campo);
-						    } catch(e) {
-						        aValue = null;
-						    }
-						    
-						    var bValue = null;
-						    try {
-								bValue = eval("b." + ordenaciones[i].campo);
-						    } catch(e) {
-						        bValue = null;
-						    }
-							
-							if (aValue < bValue) {
-								result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							} else if (aValue > bValue) {
-								result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
-								
-								break;
-							}
-						}
+						break;
+					} else if (aValue > bValue) {
+						result = 1 * (ordenaciones[i].ascendente ? 1 : -1);
 						
-						return result;
-					});
+						break;
+					}
 				}
 				
-				for (var i=0; i<ordered.length; i++) {
-					registros.registrosMuestra[registros.registrosMuestra.length] = {
-						id: ordered[i].id,
-						fecha: ordered[i].fecha,
-						empresa: ordered[i].empresa,
-						rol: ordered[i].rol,
-						usuario: ordered[i].usuario,
-						estado: ordered[i].estado,
-						contrato: ordered[i].contrato,
-						usuarioAct: ordered[i].usuarioAct,
-						uact: ordered[i].uact,
-						fact: ordered[i].fact,
-						term: ordered[i].term
-					};
-				}
-				
-				grid.reload(registros);
-			}, async: false
+				return result;
+			});
 		}
-	);
+		
+		for (var i=0; i<ordered.length; i++) {
+			registros.registrosMuestra[registros.registrosMuestra.length] = {
+				id: ordered[i].id,
+				fecha: ordered[i].fecha,
+				empresa: ordered[i].empresa,
+				rol: ordered[i].rol,
+				usuario: ordered[i].usuario,
+				estado: ordered[i].estado,
+				contrato: ordered[i].contrato,
+				usuarioAct: ordered[i].usuarioAct,
+				uact: ordered[i].uact,
+				fact: ordered[i].fact,
+				term: ordered[i].term
+			};
+		}
+		
+		grid.reload(registros);
+	});
 }
 
 function trHistoricoOnClick() {

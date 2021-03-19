@@ -192,6 +192,7 @@
 	float: left;
 	height: 32px;
 	width: 200px;
+	margin-top: 1px;
 }
 
 .selectCampo {
@@ -210,6 +211,7 @@
 	float: left;
 	height: 32px;
 	width: 120px;
+	margin-top: 1px;
 }
 
 .selectCondicion {
@@ -236,6 +238,7 @@
 .divValor {
 	float: left;
 	width: 120px;
+	margin-top: 1px;
 }
 
 .inputValor {
