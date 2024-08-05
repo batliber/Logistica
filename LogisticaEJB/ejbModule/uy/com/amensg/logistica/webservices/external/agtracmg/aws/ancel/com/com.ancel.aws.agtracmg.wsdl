@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="GTRACMG" targetNamespace="com.ancel.aws.agtracmg" xmlns:tns="com.ancel.aws.agtracmg" xmlns:wsdlns="com.ancel.aws.agtracmg" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns1="WEBSERVICES">
+	<types>
+		<schema targetNamespace="com.ancel.aws.agtracmg" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" elementFormDefault="qualified">
+			<import namespace="WEBSERVICES"/>
+			<element name="GTRACMG.Execute">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Xml" type="xsd:string"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="GTRACMG.ExecuteResponse">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Xml" type="xsd:string"/>
+					</sequence>
+				</complexType>
+			</element>
+		</schema>
+	</types>
+	<message name="GTRACMG.ExecuteSoapIn">
+		<part name="parameters" element="tns:GTRACMG.Execute"/>
+	</message>
+	<message name="GTRACMG.ExecuteSoapOut">
+		<part name="parameters" element="tns:GTRACMG.ExecuteResponse"/>
+	</message>
+	<portType name="GTRACMGSoapPort">
+		<operation name="Execute">
+			<input message="wsdlns:GTRACMG.ExecuteSoapIn"/>
+			<output message="wsdlns:GTRACMG.ExecuteSoapOut"/>
+		</operation>
+	</portType>
+	<binding name="GTRACMGSoapBinding" type="wsdlns:GTRACMGSoapPort">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="Execute">
+			<soap:operation soapAction="com.ancel.aws.agtracmgaction/AGTRACMG.Execute"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="GTRACMG">
+		<port name="GTRACMGSoapPort" binding="wsdlns:GTRACMGSoapBinding">
+			<soap:address location="https://wsan-prep.dmz-an.antel.com.uy/aws/servlet/com.ancel.aws.agtracmg"/>
+		</port>
+	</service>
+</definitions>

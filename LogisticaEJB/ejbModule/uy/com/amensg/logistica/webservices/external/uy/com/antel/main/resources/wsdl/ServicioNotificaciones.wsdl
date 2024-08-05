@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://www.antel.com.uy/pi/notification/nbr-v1"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:wsn-bw="http://docs.oasis-open.org/wsn/bw-2"
+    xmlns:wsn-brw="http://docs.oasis-open.org/wsn/brw-2"
+    xmlns:nbr="http://www.antel.com.uy/pi/notification/nbr-v1">
+    <wsdl:documentation>v1.0</wsdl:documentation>
+    
+    <wsdl:import namespace="http://docs.oasis-open.org/wsn/brw-2" location="http://docs.oasis-open.org/wsn/brw-2.wsdl"/>
+    <wsdl:import namespace="http://docs.oasis-open.org/wsn/bw-2" location="http://docs.oasis-open.org/wsn/bw-2.wsdl"/>
+        
+    <wsdl:types>
+        <xs:schema elementFormDefault="qualified"
+            targetNamespace="http://www.antel.com.uy/pi/notification/nbr-v1" version="1.0"
+            xmlns:nbr="http://www.antel.com.uy/pi/notification/nbr-v1" 
+            xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2" 
+            xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:import
+                namespace="http://docs.oasis-open.org/wsn/b-2" 
+                schemaLocation="http://docs.oasis-open.org/wsn/b-2.xsd"/>
+            <xs:element name="NotifyResponse">
+                <xs:complexType>
+                    <xs:sequence minOccurs="0" maxOccurs="1">
+                        <xs:element name="response" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="GetMessagesResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="NotificationMessage" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="CreationTime" type="xs:dateTime"/>
+                                    <xs:element name="uuid" type="xs:string"/>
+                                    <xs:element name="Publisher" type="xs:string"/>
+                                    <xs:element ref="wsnt:Topic" minOccurs="0" maxOccurs="1" />
+                                    <xs:element name="Message">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:any namespace="##any" processContents="lax" minOccurs="1" maxOccurs="1"/>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+        </xs:schema>
+    </wsdl:types>
+    
+    <wsdl:message name="NotifyResponse">
+        <wsdl:part name="NotifyResponse" element="nbr:NotifyResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetMessagesResponse">
+        <wsdl:part name="GetMessagesResponse" element="nbr:GetMessagesResponse"/>
+    </wsdl:message>
+    
+    <wsdl:portType name="NotificationBrokerNotify">
+        <wsdl:operation name="Notify">
+            <wsdl:input message="wsn-bw:Notify" name="Notify"/> 
+            <wsdl:output message="nbr:NotifyResponse" name="NotifyResponse"/> 
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="NotificationBrokerSubscribe">
+        <wsdl:operation name="Subscribe">
+            <wsdl:input  message="wsn-bw:SubscribeRequest" name="SubscribeRequest"/>
+            <wsdl:output message="wsn-bw:SubscribeResponse" name="SubscribeResponse"/>            
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="PullPoint">
+        <wsdl:operation name="GetMessages">
+            <wsdl:input  name="GetMessagesRequest" message="wsn-bw:GetMessagesRequest" />
+            <wsdl:output name="GetMessagesResponse" message="nbr:GetMessagesResponse" />
+        </wsdl:operation>
+    </wsdl:portType>
+    
+    
+    <wsdl:binding name="PublishPortBinding" type="nbr:NotificationBrokerNotify">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>        
+        <wsdl:operation name="Notify">
+            <soap:operation style="document" soapAction="http://docs.oasis-open.org/wsn/bw-2/NotificationConsumer/Notify"/>
+            <wsdl:input name="Notify">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="NotifyResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="SubscribePortBinding" type="nbr:NotificationBrokerSubscribe">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>        
+        <wsdl:operation name="Subscribe">
+            <soap:operation style="document" soapAction="http://docs.oasis-open.org/wsn/bw-2/NotificationProducer/SubscribeRequest"/>
+            <wsdl:input name="SubscribeRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="SubscribeResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    
+    <wsdl:binding name="PullPointPortBinding" type="nbr:PullPoint">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>        
+        <wsdl:operation name="GetMessages">
+            <soap:operation style="document" soapAction="http://docs.oasis-open.org/wsn/bw-2/PullPoint/GetMessagesRequest"/>
+            <wsdl:input name="GetMessagesRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="GetMessagesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>    
+    
+    <wsdl:service name="PublishService">
+        <wsdl:port name="PublishPort" binding="nbr:PublishPortBinding">
+            <soap:address location="http://10.33.9.37:8080/notification-publish/http/publish"/>
+        </wsdl:port>
+    </wsdl:service>    
+
+    <wsdl:service name="SubscribeService">
+        <wsdl:port name="SubscribePort" binding="nbr:SubscribePortBinding">
+            <soap:address location="http://10.33.9.37:8080/notification-publish/http/subscription"/>
+        </wsdl:port>
+    </wsdl:service>    
+
+    <wsdl:service name="PullPointService">
+        <wsdl:port name="PullPointPort" binding="nbr:PullPointPortBinding">
+            <soap:address location="http://10.33.9.37:8080/notification-publish/http/pull"/>
+        </wsdl:port>
+    </wsdl:service>    
+    
+</wsdl:definitions>

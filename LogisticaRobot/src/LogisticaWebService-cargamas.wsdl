@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.webservices.web.logistica.amensg.com.uy/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="LogisticaWebServiceService" targetNamespace="http://soap.webservices.web.logistica.amensg.com.uy/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soap.webservices.web.logistica.amensg.com.uy/" elementFormDefault="unqualified" targetNamespace="http://soap.webservices.web.logistica.amensg.com.uy/" version="1.0">
+
+  <xs:element name="actualizarDatosMidContrato" type="tns:actualizarDatosMidContrato"/>
+
+  <xs:element name="actualizarDatosMidContratoResponse" type="tns:actualizarDatosMidContratoResponse"/>
+
+  <xs:element name="actualizarDatosMidListaNegra" type="tns:actualizarDatosMidListaNegra"/>
+
+  <xs:element name="actualizarDatosMidListaNegraResponse" type="tns:actualizarDatosMidListaNegraResponse"/>
+
+  <xs:element name="actualizarDatosMidListaVacia" type="tns:actualizarDatosMidListaVacia"/>
+
+  <xs:element name="actualizarDatosMidListaVaciaResponse" type="tns:actualizarDatosMidListaVaciaResponse"/>
+
+  <xs:element name="actualizarDatosMidNegociando" type="tns:actualizarDatosMidNegociando"/>
+
+  <xs:element name="actualizarDatosMidNegociandoResponse" type="tns:actualizarDatosMidNegociandoResponse"/>
+
+  <xs:element name="actualizarDatosMidNoLlamar" type="tns:actualizarDatosMidNoLlamar"/>
+
+  <xs:element name="actualizarDatosMidNoLlamarResponse" type="tns:actualizarDatosMidNoLlamarResponse"/>
+
+  <xs:element name="actualizarDatosMidPrepago" type="tns:actualizarDatosMidPrepago"/>
+
+  <xs:element name="actualizarDatosMidPrepagoResponse" type="tns:actualizarDatosMidPrepagoResponse"/>
+
+  <xs:element name="actualizarDatosNumeroContratoListaVacia" type="tns:actualizarDatosNumeroContratoListaVacia"/>
+
+  <xs:element name="actualizarDatosNumeroContratoListaVaciaResponse" type="tns:actualizarDatosNumeroContratoListaVaciaResponse"/>
+
+  <xs:element name="actualizarDatosPersona" type="tns:actualizarDatosPersona"/>
+
+  <xs:element name="actualizarDatosPersonaResponse" type="tns:actualizarDatosPersonaResponse"/>
+
+  <xs:element name="getSiguienteMidSinProcesar" type="tns:getSiguienteMidSinProcesar"/>
+
+  <xs:element name="getSiguienteMidSinProcesarResponse" type="tns:getSiguienteMidSinProcesarResponse"/>
+
+  <xs:element name="getSiguienteNumeroContratoSinProcesar" type="tns:getSiguienteNumeroContratoSinProcesar"/>
+
+  <xs:element name="getSiguienteNumeroContratoSinProcesarResponse" type="tns:getSiguienteNumeroContratoSinProcesarResponse"/>
+
+  <xs:complexType name="actualizarDatosMidListaNegra">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidListaNegraResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidListaVacia">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidListaVaciaResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidNoLlamar">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidNoLlamarResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getSiguienteNumeroContratoSinProcesar">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getSiguienteNumeroContratoSinProcesarResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidContrato">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg2" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg3" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg4" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg5" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg6" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg7" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg8" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg9" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg10" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg11" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg12" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg13" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg14" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidContratoResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidNegociando">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidNegociandoResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getSiguienteMidSinProcesar">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getSiguienteMidSinProcesarResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosNumeroContratoListaVacia">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosNumeroContratoListaVaciaResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosPersona">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg2" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg3" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg4" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg5" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg6" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg7" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg8" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg9" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg10" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg11" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg12" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg13" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg14" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg15" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg16" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg17" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg18" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg19" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg20" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg21" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg22" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg23" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg24" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg25" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg26" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg27" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg28" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosPersonaResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidPrepago">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg2" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg3" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg4" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg5" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg6" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosMidPrepagoResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getSiguienteNumeroContratoSinProcesarResponse">
+    <wsdl:part element="tns:getSiguienteNumeroContratoSinProcesarResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidContrato">
+    <wsdl:part element="tns:actualizarDatosMidContrato" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidListaNegraResponse">
+    <wsdl:part element="tns:actualizarDatosMidListaNegraResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidNegociandoResponse">
+    <wsdl:part element="tns:actualizarDatosMidNegociandoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSiguienteMidSinProcesar">
+    <wsdl:part element="tns:getSiguienteMidSinProcesar" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosPersona">
+    <wsdl:part element="tns:actualizarDatosPersona" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidListaVaciaResponse">
+    <wsdl:part element="tns:actualizarDatosMidListaVaciaResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidPrepago">
+    <wsdl:part element="tns:actualizarDatosMidPrepago" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidListaNegra">
+    <wsdl:part element="tns:actualizarDatosMidListaNegra" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidPrepagoResponse">
+    <wsdl:part element="tns:actualizarDatosMidPrepagoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidListaVacia">
+    <wsdl:part element="tns:actualizarDatosMidListaVacia" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidNoLlamar">
+    <wsdl:part element="tns:actualizarDatosMidNoLlamar" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSiguienteMidSinProcesarResponse">
+    <wsdl:part element="tns:getSiguienteMidSinProcesarResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosPersonaResponse">
+    <wsdl:part element="tns:actualizarDatosPersonaResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSiguienteNumeroContratoSinProcesar">
+    <wsdl:part element="tns:getSiguienteNumeroContratoSinProcesar" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidContratoResponse">
+    <wsdl:part element="tns:actualizarDatosMidContratoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidNegociando">
+    <wsdl:part element="tns:actualizarDatosMidNegociando" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosNumeroContratoListaVacia">
+    <wsdl:part element="tns:actualizarDatosNumeroContratoListaVacia" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosNumeroContratoListaVaciaResponse">
+    <wsdl:part element="tns:actualizarDatosNumeroContratoListaVaciaResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosMidNoLlamarResponse">
+    <wsdl:part element="tns:actualizarDatosMidNoLlamarResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="LogisticaWebService">
+    <wsdl:operation name="actualizarDatosMidListaNegra">
+      <wsdl:input message="tns:actualizarDatosMidListaNegra" name="actualizarDatosMidListaNegra">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosMidListaNegraResponse" name="actualizarDatosMidListaNegraResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidListaVacia">
+      <wsdl:input message="tns:actualizarDatosMidListaVacia" name="actualizarDatosMidListaVacia">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosMidListaVaciaResponse" name="actualizarDatosMidListaVaciaResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidNoLlamar">
+      <wsdl:input message="tns:actualizarDatosMidNoLlamar" name="actualizarDatosMidNoLlamar">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosMidNoLlamarResponse" name="actualizarDatosMidNoLlamarResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSiguienteNumeroContratoSinProcesar">
+      <wsdl:input message="tns:getSiguienteNumeroContratoSinProcesar" name="getSiguienteNumeroContratoSinProcesar">
+    </wsdl:input>
+      <wsdl:output message="tns:getSiguienteNumeroContratoSinProcesarResponse" name="getSiguienteNumeroContratoSinProcesarResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidContrato">
+      <wsdl:input message="tns:actualizarDatosMidContrato" name="actualizarDatosMidContrato">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosMidContratoResponse" name="actualizarDatosMidContratoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidNegociando">
+      <wsdl:input message="tns:actualizarDatosMidNegociando" name="actualizarDatosMidNegociando">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosMidNegociandoResponse" name="actualizarDatosMidNegociandoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSiguienteMidSinProcesar">
+      <wsdl:input message="tns:getSiguienteMidSinProcesar" name="getSiguienteMidSinProcesar">
+    </wsdl:input>
+      <wsdl:output message="tns:getSiguienteMidSinProcesarResponse" name="getSiguienteMidSinProcesarResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosNumeroContratoListaVacia">
+      <wsdl:input message="tns:actualizarDatosNumeroContratoListaVacia" name="actualizarDatosNumeroContratoListaVacia">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosNumeroContratoListaVaciaResponse" name="actualizarDatosNumeroContratoListaVaciaResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosPersona">
+      <wsdl:input message="tns:actualizarDatosPersona" name="actualizarDatosPersona">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosPersonaResponse" name="actualizarDatosPersonaResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidPrepago">
+      <wsdl:input message="tns:actualizarDatosMidPrepago" name="actualizarDatosMidPrepago">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosMidPrepagoResponse" name="actualizarDatosMidPrepagoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LogisticaWebServiceServiceSoapBinding" type="tns:LogisticaWebService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="actualizarDatosMidListaNegra">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosMidListaNegra">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosMidListaNegraResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidListaVacia">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosMidListaVacia">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosMidListaVaciaResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidNoLlamar">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosMidNoLlamar">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosMidNoLlamarResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSiguienteNumeroContratoSinProcesar">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getSiguienteNumeroContratoSinProcesar">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSiguienteNumeroContratoSinProcesarResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidContrato">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosMidContrato">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosMidContratoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidNegociando">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosMidNegociando">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosMidNegociandoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSiguienteMidSinProcesar">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getSiguienteMidSinProcesar">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSiguienteMidSinProcesarResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosNumeroContratoListaVacia">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosNumeroContratoListaVacia">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosNumeroContratoListaVaciaResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosPersona">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosPersona">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosPersonaResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosMidPrepago">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosMidPrepago">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosMidPrepagoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LogisticaWebServiceService">
+    <wsdl:port binding="tns:LogisticaWebServiceServiceSoapBinding" name="LogisticaWebServicePort">
+      <soap:address location="https://www.cargamas.com.uy/LogisticaWEB/LogisticaWebService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

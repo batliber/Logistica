@@ -1,0 +1,9 @@
+#divAtencionClienteTipoContactoDescripcion {
+	float: left;
+	width: 60%;
+}
+
+#inputAtencionClienteTipoContactoDescripcion {
+	margin-left: 2px;
+	width: 100%;
+}

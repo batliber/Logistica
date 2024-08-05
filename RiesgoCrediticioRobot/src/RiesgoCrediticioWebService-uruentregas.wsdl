@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.webservices.web.logistica.amensg.com.uy/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="RiesgoCrediticioWebServiceService" targetNamespace="http://soap.webservices.web.logistica.amensg.com.uy/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soap.webservices.web.logistica.amensg.com.uy/" elementFormDefault="unqualified" targetNamespace="http://soap.webservices.web.logistica.amensg.com.uy/" version="1.0">
+
+  <xs:element name="actualizarDatosRiesgoCrediticioACM" type="tns:actualizarDatosRiesgoCrediticioACM"/>
+
+  <xs:element name="actualizarDatosRiesgoCrediticioACMResponse" type="tns:actualizarDatosRiesgoCrediticioACMResponse"/>
+
+  <xs:element name="actualizarDatosRiesgoCrediticioBCU" type="tns:actualizarDatosRiesgoCrediticioBCU"/>
+
+  <xs:element name="actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera" type="tns:actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera"/>
+
+  <xs:element name="actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse" type="tns:actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse"/>
+
+  <xs:element name="actualizarDatosRiesgoCrediticioBCUResponse" type="tns:actualizarDatosRiesgoCrediticioBCUResponse"/>
+
+  <xs:element name="getSiguienteDocumentoParaControlar" type="tns:getSiguienteDocumentoParaControlar"/>
+
+  <xs:element name="getSiguienteDocumentoParaControlarResponse" type="tns:getSiguienteDocumentoParaControlarResponse"/>
+
+  <xs:element name="getSiguienteDocumentoParaControlarRiesgoOnLine" type="tns:getSiguienteDocumentoParaControlarRiesgoOnLine"/>
+
+  <xs:element name="getSiguienteDocumentoParaControlarRiesgoOnLineResponse" type="tns:getSiguienteDocumentoParaControlarRiesgoOnLineResponse"/>
+
+  <xs:complexType name="actualizarDatosRiesgoCrediticioACM">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg2" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg3" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg4" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg5" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg6" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg7" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg8" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg9" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg10" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg11" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg12" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg13" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosRiesgoCrediticioACMResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg2" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg3" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg4" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg5" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg6" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg7" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg8" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosRiesgoCrediticioBCU">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg2" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg3" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg4" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg5" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg6" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg7" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg8" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg9" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg10" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg11" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg12" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg13" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg14" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg15" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actualizarDatosRiesgoCrediticioBCUResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getSiguienteDocumentoParaControlar">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getSiguienteDocumentoParaControlarResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getSiguienteDocumentoParaControlarRiesgoOnLine">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getSiguienteDocumentoParaControlarRiesgoOnLineResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="actualizarDatosRiesgoCrediticioACM">
+    <wsdl:part element="tns:actualizarDatosRiesgoCrediticioACM" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera">
+    <wsdl:part element="tns:actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSiguienteDocumentoParaControlar">
+    <wsdl:part element="tns:getSiguienteDocumentoParaControlar" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSiguienteDocumentoParaControlarResponse">
+    <wsdl:part element="tns:getSiguienteDocumentoParaControlarResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSiguienteDocumentoParaControlarRiesgoOnLine">
+    <wsdl:part element="tns:getSiguienteDocumentoParaControlarRiesgoOnLine" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosRiesgoCrediticioBCU">
+    <wsdl:part element="tns:actualizarDatosRiesgoCrediticioBCU" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosRiesgoCrediticioBCUResponse">
+    <wsdl:part element="tns:actualizarDatosRiesgoCrediticioBCUResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse">
+    <wsdl:part element="tns:actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSiguienteDocumentoParaControlarRiesgoOnLineResponse">
+    <wsdl:part element="tns:getSiguienteDocumentoParaControlarRiesgoOnLineResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="actualizarDatosRiesgoCrediticioACMResponse">
+    <wsdl:part element="tns:actualizarDatosRiesgoCrediticioACMResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="RiesgoCrediticioWebService">
+    <wsdl:operation name="actualizarDatosRiesgoCrediticioACM">
+      <wsdl:input message="tns:actualizarDatosRiesgoCrediticioACM" name="actualizarDatosRiesgoCrediticioACM">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosRiesgoCrediticioACMResponse" name="actualizarDatosRiesgoCrediticioACMResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera">
+      <wsdl:input message="tns:actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera" name="actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse" name="actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosRiesgoCrediticioBCU">
+      <wsdl:input message="tns:actualizarDatosRiesgoCrediticioBCU" name="actualizarDatosRiesgoCrediticioBCU">
+    </wsdl:input>
+      <wsdl:output message="tns:actualizarDatosRiesgoCrediticioBCUResponse" name="actualizarDatosRiesgoCrediticioBCUResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSiguienteDocumentoParaControlar">
+      <wsdl:input message="tns:getSiguienteDocumentoParaControlar" name="getSiguienteDocumentoParaControlar">
+    </wsdl:input>
+      <wsdl:output message="tns:getSiguienteDocumentoParaControlarResponse" name="getSiguienteDocumentoParaControlarResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSiguienteDocumentoParaControlarRiesgoOnLine">
+      <wsdl:input message="tns:getSiguienteDocumentoParaControlarRiesgoOnLine" name="getSiguienteDocumentoParaControlarRiesgoOnLine">
+    </wsdl:input>
+      <wsdl:output message="tns:getSiguienteDocumentoParaControlarRiesgoOnLineResponse" name="getSiguienteDocumentoParaControlarRiesgoOnLineResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="RiesgoCrediticioWebServiceServiceSoapBinding" type="tns:RiesgoCrediticioWebService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="actualizarDatosRiesgoCrediticioACM">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosRiesgoCrediticioACM">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosRiesgoCrediticioACMResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosRiesgoCrediticioBCUInstitucionFinancieraResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarDatosRiesgoCrediticioBCU">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="actualizarDatosRiesgoCrediticioBCU">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="actualizarDatosRiesgoCrediticioBCUResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSiguienteDocumentoParaControlar">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getSiguienteDocumentoParaControlar">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSiguienteDocumentoParaControlarResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSiguienteDocumentoParaControlarRiesgoOnLine">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getSiguienteDocumentoParaControlarRiesgoOnLine">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSiguienteDocumentoParaControlarRiesgoOnLineResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RiesgoCrediticioWebServiceService">
+    <wsdl:port binding="tns:RiesgoCrediticioWebServiceServiceSoapBinding" name="RiesgoCrediticioWebServicePort">
+      <soap:address location="https://www.uruentregas.com.uy:8444/LogisticaWEB/RiesgoCrediticioWebService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
