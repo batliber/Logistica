@@ -4,13 +4,18 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Marca;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
@@ -21,13 +26,15 @@ import uy.com.amensg.logistica.entities.StockActual;
 import uy.com.amensg.logistica.entities.StockMovimiento;
 import uy.com.amensg.logistica.entities.StockTipoMovimiento;
 import uy.com.amensg.logistica.entities.TipoProducto;
+import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.QueryBuilder;
+import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
 public class StockMovimientoBean implements IStockMovimientoBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -98,6 +105,133 @@ public class StockMovimientoBean implements IStockMovimientoBean {
 		
 		try {
 			result = new QueryBuilder<StockActual>().count(entityManager, metadataConsulta, new StockActual());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public MetadataConsultaResultado listStockActual(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			CriteriaQuery<StockActual> criteriaQuery = criteriaBuilder.createQuery(StockActual.class);
+			
+			Root<StockActual> root = criteriaQuery.from(StockActual.class);
+			root.alias("root");
+			
+			QueryHelper queryHelper = new QueryHelper();
+			
+			Predicate where = queryHelper.construirWhere(metadataConsulta, criteriaBuilder, root);
+			
+			Subquery<UsuarioRolEmpresa> subqueryUsuarioRolEmpresa = criteriaQuery.subquery(UsuarioRolEmpresa.class);
+			Root<UsuarioRolEmpresa> subrootUsuarioRolEmpresa = subqueryUsuarioRolEmpresa.from(UsuarioRolEmpresa.class);
+			
+			where = criteriaBuilder.and(
+				where,
+				criteriaBuilder.exists(
+					subqueryUsuarioRolEmpresa
+						.select(subrootUsuarioRolEmpresa)
+						.where(
+							criteriaBuilder.and(
+								criteriaBuilder.equal(
+									subrootUsuarioRolEmpresa.get("usuario").get("id"), 
+									criteriaBuilder.parameter(Long.class, "usuario")
+								),
+								criteriaBuilder.equal(
+									subrootUsuarioRolEmpresa.get("empresa").get("id"), 
+									root.get("empresa").get("id")
+								)
+							)
+						)
+				)
+			);
+			
+			// Procesar las ordenaciones para los registros de la muestra
+			List<Order> orders = queryHelper.construirOrderBy(metadataConsulta, criteriaBuilder, root);
+			
+			criteriaQuery
+				.select(root)
+				.where(where)
+				.orderBy(orders);
+
+			TypedQuery<StockActual> query = entityManager.createQuery(criteriaQuery);
+			
+			query = queryHelper.cargarParameters(metadataConsulta, query, root);
+			
+			query.setParameter("usuario", usuarioId);
+			
+			// Acotar al tamaño de la muestra
+			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
+			
+			Collection<Object> registrosMuestra = new LinkedList<Object>();
+			for (StockActual stockActual: query.getResultList()) {
+				registrosMuestra.add(stockActual);
+			}
+			
+			result.setRegistrosMuestra(registrosMuestra);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	public Long countStockActual(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			CriteriaQuery<Long> criteriaQueryCount = criteriaBuilder.createQuery(Long.class);
+			
+			Root<StockActual> rootCount = criteriaQueryCount.from(StockActual.class);
+			rootCount.alias("root");
+			
+			QueryHelper queryHelper = new QueryHelper();
+			
+			Predicate where = queryHelper.construirWhere(metadataConsulta, criteriaBuilder, rootCount);
+			
+			Subquery<UsuarioRolEmpresa> subqueryUsuarioRolEmpresa = criteriaQueryCount.subquery(UsuarioRolEmpresa.class);
+			Root<UsuarioRolEmpresa> subrootUsuarioRolEmpresa = subqueryUsuarioRolEmpresa.from(UsuarioRolEmpresa.class);
+			
+			where = criteriaBuilder.and(
+				where,
+				criteriaBuilder.exists(
+					subqueryUsuarioRolEmpresa
+						.select(subrootUsuarioRolEmpresa)
+						.where(
+							criteriaBuilder.and(
+								criteriaBuilder.equal(
+									subrootUsuarioRolEmpresa.get("usuario").get("id"), 
+									criteriaBuilder.parameter(Long.class, "usuario")
+								),
+								criteriaBuilder.equal(
+									subrootUsuarioRolEmpresa.get("empresa").get("id"), 
+									rootCount.get("empresa").get("id")
+								)
+							)
+						)
+				)
+			);
+			
+			// Procesar las ordenaciones para los registros de la muestra
+			List<Order> orders = queryHelper.construirOrderBy(metadataConsulta, criteriaBuilder, rootCount);
+			
+			criteriaQueryCount
+				.select(criteriaBuilder.count(rootCount.get("id")))
+				.where(where);
+
+			TypedQuery<Long> queryCount = entityManager.createQuery(criteriaQueryCount);
+			
+			queryCount = queryHelper.cargarParameters(metadataConsulta, queryCount, rootCount);
+			
+			queryCount.setParameter("usuario", usuarioId);
+			
+			result = queryCount.getSingleResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

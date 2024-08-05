@@ -1,4 +1,5 @@
 var __ROL_ADMINISTRADOR = 1;
+var __ROL_GERENCIA = 41733595;
 
 var mode = __FORM_MODE_USER;
 
@@ -10,10 +11,11 @@ function init() {
 	$("#divButtonNew").hide();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
-			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR) {
+			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_GERENCIA) {
 				mode = __FORM_MODE_ADMIN;
 				
 				$("#divButtonNew").show();
@@ -21,7 +23,8 @@ function init() {
 				grid = new Grid(
 					document.getElementById("divTableEmpresas"),
 					{
-						tdEmpresaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 } 
+						tdEmpresaNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
+						tdEmpresaOmitirControlVendidos: { campo: "omitirControlVendidos", descripcion: "Omitir control vendidos", abreviacion: "Omit. Ctrl. Vend.", tipo: __TIPO_CAMPO_BOOLEAN, ancho: 100 }
 					}, 
 					false,
 					reloadData,
@@ -63,16 +66,16 @@ function reloadData() {
 					var aValue = null;
 					try {
 						aValue = eval("a." + ordenaciones[i].campo);
-				    } catch(e) {
-				        aValue = null;
-				    }
-				    
-				    var bValue = null;
-				    try {
+					} catch(e) {
+						aValue = null;
+					}
+					
+					var bValue = null;
+					try {
 						bValue = eval("b." + ordenaciones[i].campo);
-				    } catch(e) {
-				        bValue = null;
-				    }
+					} catch(e) {
+						bValue = null;
+					}
 					
 					if (aValue < bValue) {
 						result = -1 * (ordenaciones[i].ascendente ? 1 : -1);

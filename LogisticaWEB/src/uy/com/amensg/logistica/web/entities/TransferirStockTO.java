@@ -1,6 +1,8 @@
-package uy.com.amensg.logistica.entities;
+package uy.com.amensg.logistica.web.entities;
 
 import java.util.Collection;
+
+import uy.com.amensg.logistica.entities.StockMovimiento;
 
 public class TransferirStockTO {
 

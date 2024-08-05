@@ -20,7 +20,7 @@
 				<div class="divFormValue">
 					<input type="text" id="inputNumeroSublote" name="inputNumeroSublote" onchange="javascript:inputNumeroSubloteOnChange(event, this)"/>
 					<a href="zxing://scan/?ret=${pageContext.request.requestURL}?code=%7BCODE%7D&SCAN_FORMATS=UPC_A,EAN_13,128">
-						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
+						<img id="imgBarcode" src="/LogisticaWEB/images/barcode.png"/>
 					</a>
 				</div>
 				<div class="divFormLabel">Departamento:</div><div class="divFormValue" id="divDepartamento"><select id="selectDepartamento"></select></div>

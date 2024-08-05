@@ -118,22 +118,22 @@ function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/ContratoREST/listContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.reload(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/ContratoREST/listContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.reload(data);
+	});
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/ContratoREST/countContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.setCount(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/ContratoREST/countContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.setCount(data);
+	});
 }
 
 function inputActualizarOnClick(event, element) {
@@ -188,27 +188,27 @@ function inputAsignarOnClick() {
 	
 	if (metadataConsulta.tamanoSubconjunto <= __MAXIMA_CANTIDAD_REGISTROS_ASIGNACION) {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/ContratoREST/chequearAsignacion",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-	    }).then(function(dataRelaciones) {
+			url: "/LogisticaWEB/RESTFacade/ContratoREST/chequearRelacionesAsignacion",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+		}).then(function(dataRelaciones) {
 			if (dataRelaciones != null
 				&& (dataRelaciones.ok
 					|| confirm("Atención: dentro de la selección hay contratos relacionados sin asignar.")
 				)
 			) {
 				$.ajax({
-			        url: "/LogisticaWEB/RESTFacade/ContratoREST/chequearAsignacion",
-			        method: "POST",
-			        contentType: 'application/json',
-			        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-			    }).then(function(data) {
-			    	if (data != null 
-			    		&& (data.ok 
-			    			|| confirm("Atención: se modificarán registros que ya se encuentran asignados.")
-			    		)
-			    	) {
+					url: "/LogisticaWEB/RESTFacade/ContratoREST/chequearAsignacion",
+					method: "POST",
+					contentType: 'application/json',
+					data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+				}).then(function(data) {
+					if (data != null 
+						&& (data.ok 
+							|| confirm("Atención: se modificarán registros que ya se encuentran asignados.")
+						)
+					) {
 						listDistribuidores()
 							.then(function(data) {
 								fillSelect(
@@ -256,14 +256,14 @@ function inputAceptarOnClick(event, element) {
 	
 	if (confirm("Se asignarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/ContratoREST/asignarDistribuidor",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify({
-	        	"usuario": distribuidor,
-	        	"metadataConsulta": grid.filtroDinamico.calcularMetadataConsulta()
-	        })
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/ContratoREST/asignarDistribuidor",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify({
+				"usuario": distribuidor,
+				"metadataConsulta": grid.filtroDinamico.calcularMetadataConsulta()
+			})
+		}).then(function(data) {
 			alert("Operación exitosa.");
 			
 			reloadData();
@@ -277,16 +277,16 @@ function inputExportarAExcelOnClick(event, element) {
 	if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 		$.ajax({
 			url: "/LogisticaWEB/RESTFacade/ContratoREST/exportarAExcel",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(metadataConsulta)
-	    }).then(function(data) {
-	    	if (data != null) {
-	    		document.getElementById("formExportarAExcel").action = 
-	    			"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
-	    		
-	    		document.getElementById("formExportarAExcel").submit();
-	    	}
-	    });
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(metadataConsulta)
+		}).then(function(data) {
+			if (data != null) {
+				document.getElementById("formExportarAExcel").action = 
+					"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+				
+				document.getElementById("formExportarAExcel").submit();
+			}
+		});
 	}
 }

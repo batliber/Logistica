@@ -3,7 +3,7 @@ package uy.com.amensg.logistica.bean;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 import uy.com.amensg.logistica.webservices.external.bicsa.Consulta;
 import uy.com.amensg.logistica.webservices.external.bicsa.ConsultaSoap;

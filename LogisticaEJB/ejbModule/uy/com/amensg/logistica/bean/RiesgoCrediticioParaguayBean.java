@@ -14,18 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.TimestampType;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EstadoProcesoImportacion;
 import uy.com.amensg.logistica.entities.EstadoRiesgoCrediticio;
@@ -43,7 +37,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -285,7 +279,7 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 						estadoRiesgoCrediticioParaProcesarPrioritario.getId()
 					)
 					|| (
-						// El documento está en estado EnProceso desde hace menos de n minutos.
+						// El documento está en estado EnProceso desde hace menos de n minutos
 						result.getEstadoRiesgoCrediticio().getId().equals(
 							estadoRiesgoCrediticioEnProceso.getId()
 						)
@@ -317,7 +311,7 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 					result.setUact(Long.valueOf(1));
 				}
 			}
-			
+				
 			if (insert) {
 				RiesgoCrediticioParaguay riesgoCrediticioParaguay = new RiesgoCrediticioParaguay();
 				riesgoCrediticioParaguay.setDocumento(documento);
@@ -343,10 +337,10 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+			
 		return result;
 	}
-
+	
 	public RiesgoCrediticioParaguay save(RiesgoCrediticioParaguay riesgoCrediticioParaguay) {
 		RiesgoCrediticioParaguay result = null;
 		
@@ -371,7 +365,7 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 		
 		return result;
 	}
-
+	
 	public RiesgoCrediticioParaguay actualizarDatosRiesgoCrediticioParaguay(RiesgoCrediticioParaguay riesgoCrediticioParaguay) {
 		RiesgoCrediticioParaguay result = null;
 		
@@ -455,10 +449,30 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 		
 		return result;
 	}
-
+	
+	public RiesgoCrediticioParaguay actualizarRespuestaExterna(Long id, String respuestaExterna) {
+		RiesgoCrediticioParaguay result = null;
+		
+		try {
+			Date date = GregorianCalendar.getInstance().getTime();
+			
+			RiesgoCrediticioParaguay riesgoCrediticioParaguayManaged =
+				entityManager.find(RiesgoCrediticioParaguay.class, id);
+			
+			riesgoCrediticioParaguayManaged.setRespuestaExterna(respuestaExterna);
+			
+			riesgoCrediticioParaguayManaged.setFact(date);
+			riesgoCrediticioParaguayManaged.setTerm(Long.valueOf(1));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Exporta los datos que cumplen con los criterios especificados al un archivo .csv de nombre generado según: YYYYMMDDHHmmSS en la carpeta de exportación del sistema.
-	 * 
+	 *
 	 * @param metadataConsulta Criterios de la consulta.
 	 * @param loggedUsuarioId ID del Usuario que consulta.
 	 */
@@ -517,7 +531,7 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 				+ ";sfpApellidos"
 				+ ";sfpPresupuesto"
 				+ ";sfpFnac"
-			);
+);
 			
 			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
 			
@@ -636,7 +650,7 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 		
 		return result;
 	}
-
+	
 	public String preprocesarArchivoEmpresa(String fileName, Long empresaId) {
 		String result = null;
 		
@@ -803,9 +817,7 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 			
 			ProcesoImportacion procesoImportacionManaged = iProcesoImportacionBean.save(procesoImportacion);
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<?> insertRiesgoCrediticio = hibernateSession.createNativeQuery(
+			Query insertRiesgoCrediticio = entityManager.createNativeQuery(
 				"INSERT INTO riesgo_crediticio_paraguay("
 					+ " id,"
 					+ " fecha_vigencia_desde,"
@@ -837,14 +849,14 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 				+ " )"
 			);
 			
-			insertRiesgoCrediticio.setParameter(1, hoy, TimestampType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(2, hoy, TimestampType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(3, hoy, TimestampType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(4, Long.valueOf(1), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(5, loggedUsuarioId, LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(6, loggedUsuarioId, LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(7, empresa.getId(), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(8, estado.getId(), LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(1, hoy);
+			insertRiesgoCrediticio.setParameter(2, hoy);
+			insertRiesgoCrediticio.setParameter(3, hoy);
+			insertRiesgoCrediticio.setParameter(4, Long.valueOf(1));
+			insertRiesgoCrediticio.setParameter(5, loggedUsuarioId);
+			insertRiesgoCrediticio.setParameter(6, loggedUsuarioId);
+			insertRiesgoCrediticio.setParameter(7, empresa.getId());
+			insertRiesgoCrediticio.setParameter(8, estado.getId());
 			
 			SimpleDateFormat parser = new SimpleDateFormat("ddMMyyyy");
 			
@@ -884,7 +896,7 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Formato de línea" + lineNumber + " incompatible."
 							+ " Campo fechaNacimiento incorrecto -> " + fields[1].trim());
 						ok = false;
 					}
@@ -895,7 +907,7 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 					} catch (NumberFormatException pe) {
 						System.err.println(
 							"Error al procesar archivo: " + fileName + "."
-							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Formato de línea" + lineNumber + " incompatible."
 							+ " Campo situación incorrecto -> " + fields[2].trim());
 						ok = false;
 					}
@@ -903,9 +915,9 @@ public class RiesgoCrediticioParaguayBean implements IRiesgoCrediticioParaguayBe
 					if (!ok) {
 						errors++;
 					} else {
-						insertRiesgoCrediticio.setParameter(9, documento, StringType.INSTANCE);
-						insertRiesgoCrediticio.setParameter(10, fechaNacimiento, TimestampType.INSTANCE);
-						insertRiesgoCrediticio.setParameter(11, situacionRiesgoCrediticioParaguayId, LongType.INSTANCE);
+						insertRiesgoCrediticio.setParameter(9, documento);
+						insertRiesgoCrediticio.setParameter(10, fechaNacimiento);
+						insertRiesgoCrediticio.setParameter(11, situacionRiesgoCrediticioParaguayId);
 						
 						insertRiesgoCrediticio.executeUpdate();
 

@@ -3,17 +3,17 @@ package uy.com.amensg.logistica.bean;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.ResultadoEntregaDistribucion;
 
 @Stateless
 public class ResultadoEntregaDistribucionBean implements IResultadoEntregaDistribucionBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public Collection<ResultadoEntregaDistribucion> list() {
@@ -31,6 +31,18 @@ public class ResultadoEntregaDistribucionBean implements IResultadoEntregaDistri
 			for (ResultadoEntregaDistribucion resultadoEntregaDistribucion : query.getResultList()) {
 				result.add(resultadoEntregaDistribucion);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public ResultadoEntregaDistribucion getById(Long id) {
+		ResultadoEntregaDistribucion result = null;
+		
+		try {
+			result = entityManager.find(ResultadoEntregaDistribucion.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

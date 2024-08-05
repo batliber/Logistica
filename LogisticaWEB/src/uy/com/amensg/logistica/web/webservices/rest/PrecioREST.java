@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -6,17 +6,17 @@ import java.util.HashSet;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.IPrecioBean;
 import uy.com.amensg.logistica.bean.PrecioBean;
 import uy.com.amensg.logistica.entities.Empresa;
@@ -26,10 +26,10 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Modelo;
 import uy.com.amensg.logistica.entities.Moneda;
-import uy.com.amensg.logistica.entities.ObtenerPrecioActualTO;
 import uy.com.amensg.logistica.entities.Precio;
 import uy.com.amensg.logistica.entities.TipoProducto;
 import uy.com.amensg.logistica.entities.Usuario;
+import uy.com.amensg.logistica.web.entities.ObtenerPrecioActualTO;
 
 @Path("/PrecioREST")
 public class PrecioREST {

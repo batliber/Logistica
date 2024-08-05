@@ -184,6 +184,24 @@ function listActivadores() {
 	});
 }
 
+function listAtencionClienteOperadores() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listAtencionClienteOperadoresByContextMinimal"
+	});
+}
+
+function listAtencionClienteGestionadores() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listAtencionClienteGestionadoresByContextMinimal"
+	});
+}
+
+function listRoles() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/RolREST/listMinimal"
+	});
+}
+
 function listUsuarios() {
 	return $.ajax({
 		url: "/LogisticaWEB/RESTFacade/UsuarioREST/listMinimal"
@@ -193,6 +211,12 @@ function listUsuarios() {
 function listEstados() {
 	return $.ajax({
 		url: "/LogisticaWEB/RESTFacade/EstadoREST/list"
+	});
+}
+
+function listEstadosAtencionClientes() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/EstadoREST/listEstadosAtencionClientes"
 	});
 }
 
@@ -283,5 +307,29 @@ function listEmpresaRecargaBancoCuentas() {
 function listRecargaEstados() {
 	return $.ajax({
 		url: "/LogisticaWEB/RESTFacade/RecargaEstadoREST/list"
+	});
+}
+
+function listAtencionClienteConceptos() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/AtencionClienteConceptoREST/list"
+	});
+}
+
+function listAtencionClienteTipoContactos() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/AtencionClienteTipoContactoREST/list"
+	});
+}
+
+function listAtencionClienteRespuestaTecnicaComerciales() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/AtencionClienteRespuestaTecnicaComercialREST/list"
+	});
+}
+
+function listModalidadVentas() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/ModalidadVentaREST/list"
 	});
 }

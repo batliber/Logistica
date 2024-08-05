@@ -2,7 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.ResultadoEntregaDistribucion;
 
@@ -10,4 +10,6 @@ import uy.com.amensg.logistica.entities.ResultadoEntregaDistribucion;
 public interface IResultadoEntregaDistribucionBean {
 
 	public Collection<ResultadoEntregaDistribucion> list();
+	
+	public ResultadoEntregaDistribucion getById(Long id);
 }

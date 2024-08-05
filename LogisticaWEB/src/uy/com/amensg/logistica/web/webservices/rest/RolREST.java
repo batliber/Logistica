@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Collection;
 import java.util.Date;
@@ -8,17 +8,17 @@ import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.IRolBean;
 import uy.com.amensg.logistica.bean.RolBean;
 import uy.com.amensg.logistica.entities.Menu;
@@ -42,6 +42,34 @@ public class RolREST {
 				IRolBean iRolBean = lookupBean();
 			
 				result = iRolBean.listMinimal();
+				
+				for (Rol rol : result) {
+					rol.setMenus(new HashSet<Menu>());
+					rol.setSubordinados(new HashSet<Rol>());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@GET
+	@Path("/listMinimalByContext")
+	@Produces("application/json")
+	public Collection<Rol> listMinimalByContext(@Context HttpServletRequest request) {
+		Collection<Rol> result = new LinkedList<Rol>();
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IRolBean iRolBean = lookupBean();
+			
+				result = iRolBean.listMinimal(loggedUsuarioId);
 				
 				for (Rol rol : result) {
 					rol.setMenus(new HashSet<Menu>());

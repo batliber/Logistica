@@ -2,10 +2,10 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import uy.com.amensg.logistica.entities.DatosElegibilidadFinanciacion;
 import uy.com.amensg.logistica.entities.DatosFinanciacion;
@@ -19,7 +19,7 @@ import uy.com.amensg.logistica.util.Configuration;
 @Stateless
 public class FinanciacionBean implements IFinanciacionBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB

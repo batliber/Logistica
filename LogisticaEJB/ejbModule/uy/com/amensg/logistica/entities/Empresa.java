@@ -2,12 +2,12 @@
 
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "empresa")
@@ -32,6 +32,9 @@ public class Empresa extends BaseEntity {
 	
 	@Column(name = "direccion")
 	private String direccion;
+	
+	@Column(name = "omitir_control_vendidos")
+	private Boolean omitirControlVendidos;
 	
 	@OneToMany
 	@JoinTable(name = "forma_pago_empresa", 
@@ -93,6 +96,14 @@ public class Empresa extends BaseEntity {
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+
+	public Boolean getOmitirControlVendidos() {
+		return omitirControlVendidos;
+	}
+
+	public void setOmitirControlVendidos(Boolean omitirControlVendidos) {
+		this.omitirControlVendidos = omitirControlVendidos;
 	}
 
 	public Set<FormaPago> getFormaPagos() {

@@ -1,12 +1,11 @@
-package uy.com.amensg.logistica.test;
+package uy.com.amensg.logistica.web.test;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
+import jakarta.jws.soap.SOAPBinding;
 
 @WebService(
 	name="TestService",
-	targetNamespace="http://tosteaun.no-ip.biz",
 	serviceName = "TestService"
 )
 @SOAPBinding(

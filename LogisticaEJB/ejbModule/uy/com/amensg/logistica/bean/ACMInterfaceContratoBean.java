@@ -1,41 +1,35 @@
 package uy.com.amensg.logistica.bean;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.DateType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.TimestampType;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
 import uy.com.amensg.logistica.entities.ACMInterfaceListaNegra;
@@ -47,15 +41,19 @@ import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.ContratoRoutingHistory;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Estado;
+import uy.com.amensg.logistica.entities.EstadoProcesoImportacion;
 import uy.com.amensg.logistica.entities.EstadoRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
+import uy.com.amensg.logistica.entities.ProcesoImportacion;
 import uy.com.amensg.logistica.entities.RiesgoCrediticio;
 import uy.com.amensg.logistica.entities.Rol;
 import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
+import uy.com.amensg.logistica.entities.TipoProcesoImportacion;
+import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryHelper;
@@ -63,7 +61,7 @@ import uy.com.amensg.logistica.util.QueryHelper;
 @Stateless
 public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -90,16 +88,31 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 	@EJB
 	private ITipoControlRiesgoCrediticioBean iTipoControlRiesgoCrediticioBean;
 	
+	@EJB
+	private IEstadoProcesoImportacionBean iEstadoProcesoImportacionBean;
+	
+	@EJB
+	private ITipoProcesoImportacionBean iTipoProcesoImportacionBean;
+	
+	@EJB
+	private IUsuarioBean iUsuarioBean;
+	
+	@EJB
+	private IProcesoImportacionBean iProcesoImportacionBean;
+	
 	private CriteriaQuery<ACMInterfaceContrato> criteriaQuery;
 	
 	public Collection<ACMInterfaceContrato> list() {
 		Collection<ACMInterfaceContrato> result = new LinkedList<ACMInterfaceContrato>();
 		
 		try {
-			Query query = entityManager.createQuery("SELECT c FROM ACMInterfaceContrato c");
+			TypedQuery<ACMInterfaceContrato> query = 
+				entityManager.createQuery(
+					"SELECT c FROM ACMInterfaceContrato c",
+					ACMInterfaceContrato.class);
 			
-			for (Object object : query.getResultList()) {
-				result.add((ACMInterfaceContrato) object);
+			for (ACMInterfaceContrato acmInterfaceContrato : query.getResultList()) {
+				result.add(acmInterfaceContrato);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -225,6 +238,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					if (metadataCondicion.getValores().size() == 0) {
 						i++;
 					}
+				} else {
+					i++;
 				}
 			}
 			
@@ -330,6 +345,8 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 					if (metadataCondicion.getValores().size() == 0) {
 						i++;
 					}
+				} else {
+					i++;
 				}
 			}
 			
@@ -402,6 +419,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			Long importar = Long.valueOf(0);
 			Long sobreescribir = Long.valueOf(0);
 			Long omitir = Long.valueOf(0);
+			Long ursec = Long.valueOf(0);
 			for (Entry<Long, Integer> entry : map.entrySet()) {
 				switch (entry.getValue()) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
@@ -416,12 +434,17 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 						sobreescribir++;
 						
 						break;
+					case Constants.__COMPROBACION_IMPORTACION_URSEC:
+						ursec++;
+						
+						break;
 				}
 			}
 			
 			result =
 				"Se asignarán " + importar + " MIDs nuevos.|"
 				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
+				+ "Se omitirán por URSEC " + ursec + " MIDs.|"
 				+ "Se omitirán " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -476,20 +499,17 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			
 			Map<Long, Integer> map = iContratoBean.preprocesarConjunto(mids, empresa.getId());
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<Tuple> selectContratoExisteEmpresa = hibernateSession.createNativeQuery(
+			Query selectContratoExisteEmpresa = entityManager.createNativeQuery(
 				"SELECT id"
 				+ " FROM contrato"
 				+ " WHERE mid = :mid"
 				+ " AND empresa_id = :empresaId"
-				+ " AND estado_id = :estadoLlamarId", Tuple.class
+				+ " AND estado_id = :estadoLlamarId"
 			);
-			selectContratoExisteEmpresa.addScalar("id", LongType.INSTANCE);
-			selectContratoExisteEmpresa.setParameter("empresaId", empresa.getId(), LongType.INSTANCE);
-			selectContratoExisteEmpresa.setParameter("estadoLlamarId", estado.getId(), LongType.INSTANCE);
+			selectContratoExisteEmpresa.setParameter("empresaId", empresa.getId());
+			selectContratoExisteEmpresa.setParameter("estadoLlamarId", estado.getId());
 			
-			NativeQuery<?> insertContrato = hibernateSession.createNativeQuery(
+			Query insertContrato = entityManager.createNativeQuery(
 				"INSERT INTO contrato("
 					+ " id,"
 					+ " numero_tramite,"
@@ -547,17 +567,17 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				+ " )"
 			);
 			
-			insertContrato.setParameter(1, empresa.getId(), LongType.INSTANCE);
-			insertContrato.setParameter(2, estado.getId(), LongType.INSTANCE);
-			insertContrato.setParameter(3, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
+			insertContrato.setParameter(1, empresa.getId());
+			insertContrato.setParameter(2, estado.getId());
+			insertContrato.setParameter(3, rolSupervisorCallCenter.getId());
 			
-			insertContrato.setParameter(4, currentDate, TimestampType.INSTANCE);
-			insertContrato.setParameter(5, currentDate, TimestampType.INSTANCE);
-			insertContrato.setParameter(6, Long.valueOf(1), LongType.INSTANCE);
-			insertContrato.setParameter(7, Long.valueOf(1), LongType.INSTANCE);
-			insertContrato.setParameter(8, Long.valueOf(1), LongType.INSTANCE);
+			insertContrato.setParameter(4, currentDate);
+			insertContrato.setParameter(5, currentDate);
+			insertContrato.setParameter(6, Long.valueOf(1));
+			insertContrato.setParameter(7, Long.valueOf(1));
+			insertContrato.setParameter(8, Long.valueOf(1));
 			
-			NativeQuery<?> updateContrato = hibernateSession.createNativeQuery(
+			Query updateContrato = entityManager.createNativeQuery(
 				"UPDATE contrato"
 				+ " SET random = CAST(random() * 1000000 AS integer),"
 					+ " fact = ?,"
@@ -580,11 +600,11 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				+ " WHERE id = ?"
 			);
 			
-			updateContrato.setParameter(1, currentDate, TimestampType.INSTANCE);
-			updateContrato.setParameter(2, Long.valueOf(1), LongType.INSTANCE);
-			updateContrato.setParameter(3, Long.valueOf(1), LongType.INSTANCE);
+			updateContrato.setParameter(1, currentDate);
+			updateContrato.setParameter(2, Long.valueOf(1));
+			updateContrato.setParameter(3, Long.valueOf(1));
 			
-			NativeQuery<?> insertContratoRoutingHistory = hibernateSession.createNativeQuery(
+			Query insertContratoRoutingHistory = entityManager.createNativeQuery(
 				"INSERT INTO contrato_routing_history("
 					+ " id,"
 					+ " fecha,"
@@ -617,7 +637,7 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				+ " )"
 			);
 			
-			insertContratoRoutingHistory.setParameter(1, currentDate, TimestampType.INSTANCE);
+			insertContratoRoutingHistory.setParameter(1, currentDate);
 			
 			Random random = new Random();
 			
@@ -635,27 +655,27 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 				
 				switch (map.get(acmInterfaceContrato.getMid())) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
-						insertContrato.setParameter(9, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null, StringType.INSTANCE);
-						insertContrato.setParameter(10, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null, StringType.INSTANCE);
+						insertContrato.setParameter(9, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null);
+						insertContrato.setParameter(10, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null);
 						
 						// 04/11/2018 - No se importan los datos personales.
-//						insertContrato.setParameter(11, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null, StringType.INSTANCE);
-						insertContrato.setParameter(11, null, StringType.INSTANCE);
-//						insertContrato.setParameter(12, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null, StringType.INSTANCE);
-						insertContrato.setParameter(12, null, StringType.INSTANCE);
-						insertContrato.setParameter(13, acmInterfaceContrato.getDocumentoTipo(), LongType.INSTANCE);
-						insertContrato.setParameter(14, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null, StringType.INSTANCE);
-						insertContrato.setParameter(15, acmInterfaceContrato.getFechaFinContrato(), DateType.INSTANCE);
-//						insertContrato.setParameter(16, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null, StringType.INSTANCE);
-						insertContrato.setParameter(16, null, StringType.INSTANCE);
-						insertContrato.setParameter(17, acmInterfaceContrato.getMid(), LongType.INSTANCE);
-//						insertContrato.setParameter(18, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null, StringType.INSTANCE);
-						insertContrato.setParameter(18, null, StringType.INSTANCE);
-						insertContrato.setParameter(19, acmInterfaceContrato.getNumeroCliente(), LongType.INSTANCE);
-						insertContrato.setParameter(20, acmInterfaceContrato.getNumeroContrato(), LongType.INSTANCE);
-						insertContrato.setParameter(21, observaciones != "" ? observaciones : null, StringType.INSTANCE);
-						insertContrato.setParameter(22, acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null, StringType.INSTANCE);
-						insertContrato.setParameter(23, acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null, StringType.INSTANCE);
+//						insertContrato.setParameter(11, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null);
+						insertContrato.setParameter(11, null);
+//						insertContrato.setParameter(12, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null);
+						insertContrato.setParameter(12, null);
+						insertContrato.setParameter(13, acmInterfaceContrato.getDocumentoTipo());
+						insertContrato.setParameter(14, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null);
+						insertContrato.setParameter(15, acmInterfaceContrato.getFechaFinContrato());
+//						insertContrato.setParameter(16, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null);
+						insertContrato.setParameter(16, null);
+						insertContrato.setParameter(17, acmInterfaceContrato.getMid());
+//						insertContrato.setParameter(18, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null);
+						insertContrato.setParameter(18, null);
+						insertContrato.setParameter(19, acmInterfaceContrato.getNumeroCliente());
+						insertContrato.setParameter(20, acmInterfaceContrato.getNumeroContrato().toString());
+						insertContrato.setParameter(21, observaciones != "" ? observaciones : null);
+						insertContrato.setParameter(22, acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null);
+						insertContrato.setParameter(23, acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null);
 						
 						insertContrato.executeUpdate();
 						
@@ -665,30 +685,30 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 						
 						break;
 					case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
-						selectContratoExisteEmpresa.setParameter("mid", acmInterfaceContrato.getMid(), LongType.INSTANCE);
+						selectContratoExisteEmpresa.setParameter("mid", acmInterfaceContrato.getMid());
 						
-						Long contratoId = (Long) selectContratoExisteEmpresa.list().get(0).get(0);
+						Long contratoId = (Long) ((Integer)selectContratoExisteEmpresa.getResultList().get(0)).longValue();
 						
 						// 04/11/2018 - No se importan los datos personales.
-						updateContrato.setParameter(4, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null, StringType.INSTANCE);
-						updateContrato.setParameter(5, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null, StringType.INSTANCE);
-//						updateContrato.setParameter(6, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null, StringType.INSTANCE);
-						updateContrato.setParameter(6, null, StringType.INSTANCE);
-//						updateContrato.setParameter(7, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null, StringType.INSTANCE);
-						updateContrato.setParameter(7, null, StringType.INSTANCE);
-						updateContrato.setParameter(8, acmInterfaceContrato.getDocumentoTipo(), LongType.INSTANCE);
-						updateContrato.setParameter(9, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null, StringType.INSTANCE);
-						updateContrato.setParameter(10, acmInterfaceContrato.getFechaFinContrato(), DateType.INSTANCE);
-//						updateContrato.setParameter(11, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null, StringType.INSTANCE);
-						updateContrato.setParameter(11, null, StringType.INSTANCE);
-//						updateContrato.setParameter(12, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null, StringType.INSTANCE);
-						updateContrato.setParameter(12, null, StringType.INSTANCE);
-						updateContrato.setParameter(13, acmInterfaceContrato.getNumeroCliente(), LongType.INSTANCE);
-						updateContrato.setParameter(14, acmInterfaceContrato.getNumeroContrato(), LongType.INSTANCE);
-						updateContrato.setParameter(15, observaciones != "" ? observaciones : null, StringType.INSTANCE);
-						updateContrato.setParameter(16, acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null, StringType.INSTANCE);
-						updateContrato.setParameter(17, acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null, StringType.INSTANCE);
-						updateContrato.setParameter(18, contratoId, LongType.INSTANCE);
+						updateContrato.setParameter(4, acmInterfaceContrato.getAgente() != "" ? acmInterfaceContrato.getAgente() : null);
+						updateContrato.setParameter(5, acmInterfaceContrato.getCodigoPostal() != "" ? acmInterfaceContrato.getCodigoPostal() : null);
+//						updateContrato.setParameter(6, acmInterfaceContrato.getDireccion() != "" ? acmInterfaceContrato.getDireccion() : null);
+						updateContrato.setParameter(6, null);
+//						updateContrato.setParameter(7, acmInterfaceContrato.getDocumento() != "" ? acmInterfaceContrato.getDocumento() : null);
+						updateContrato.setParameter(7, null);
+						updateContrato.setParameter(8, acmInterfaceContrato.getDocumentoTipo());
+						updateContrato.setParameter(9, acmInterfaceContrato.getEquipo() != "" ? acmInterfaceContrato.getEquipo() : null);
+						updateContrato.setParameter(10, acmInterfaceContrato.getFechaFinContrato());
+//						updateContrato.setParameter(11, acmInterfaceContrato.getLocalidad() != "" ? acmInterfaceContrato.getLocalidad() : null);
+						updateContrato.setParameter(11, null);
+//						updateContrato.setParameter(12, acmInterfaceContrato.getNombre() != "" ? acmInterfaceContrato.getNombre() : null);
+						updateContrato.setParameter(12, null);
+						updateContrato.setParameter(13, acmInterfaceContrato.getNumeroCliente());
+						updateContrato.setParameter(14, acmInterfaceContrato.getNumeroContrato().toString());
+						updateContrato.setParameter(15, observaciones != "" ? observaciones : null);
+						updateContrato.setParameter(16, acmInterfaceContrato.getTipoContratoCodigo() != "" ? acmInterfaceContrato.getTipoContratoCodigo() : null);
+						updateContrato.setParameter(17, acmInterfaceContrato.getTipoContratoDescripcion() != "" ? acmInterfaceContrato.getTipoContratoDescripcion() : null);
+						updateContrato.setParameter(18, contratoId);
 						
 						updateContrato.executeUpdate();
 						
@@ -978,38 +998,124 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 		Collection<TipoContrato> result = new LinkedList<TipoContrato>();
 		
 		try {
-			// Query con todos los filtros
-			TypedQuery<ACMInterfaceContrato> queryACMInterfaceContrato = 
-				this.construirQuery(metadataConsulta);
-			
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			
-			// Criteria query para los tipos de contrato
-			CriteriaQuery<Object[]> criteriaQueryTiposContrato = criteriaBuilder.createQuery(Object[].class);
+			CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
 			
-			Root<ACMInterfaceContrato> root = criteriaQueryTiposContrato.from(ACMInterfaceContrato.class);
+			Root<ACMInterfaceContrato> root = criteriaQuery.from(ACMInterfaceContrato.class);
+			root.alias("root");
 			
-			criteriaQueryTiposContrato.multiselect(
-				root.get("tipoContratoDescripcion")
-			).distinct(true);
+			Predicate where = new QueryHelper().construirWhere(metadataConsulta, criteriaBuilder, root);
 			
-			// Mismo where que la primera Query
-			criteriaQueryTiposContrato.where(criteriaQuery.getRestriction());
-			
-			TypedQuery<Object[]> queryTiposContrato = entityManager.createQuery(criteriaQueryTiposContrato);
-			
-			for (Parameter<?> parameter : queryACMInterfaceContrato.getParameters()) {
-				queryTiposContrato.setParameter(
-					parameter.getName(), 
-					queryACMInterfaceContrato.getParameterValue(parameter));
+			// Procesar las ordenaciones para los registros de la muestra
+			List<Order> orders = new LinkedList<Order>();
+			for (MetadataOrdenacion metadataOrdenacion : metadataConsulta.getMetadataOrdenaciones()) {
+				String[] campos = metadataOrdenacion.getCampo().split("\\.");
+				
+				Join<?, ?> join = null;
+				for (int j=0; j<campos.length - 1; j++) {
+					if (join != null) {
+						join = join.join(campos[j], JoinType.LEFT);
+					} else {
+						join = root.join(campos[j], JoinType.LEFT);
+					}
+				}
+				
+				if (metadataOrdenacion.getAscendente()) {
+					orders.add(
+						criteriaBuilder.asc(
+							join != null ? join.get(campos[campos.length - 1]) : root.get(campos[campos.length - 1])
+						)
+					);
+				} else {
+					orders.add(
+						criteriaBuilder.desc(
+							join != null ? join.get(campos[campos.length - 1]) : root.get(campos[campos.length - 1])
+						)
+					);
+				}
 			}
 			
-			for (Object object : queryTiposContrato.getResultList()) {
+			criteriaQuery.multiselect(
+				root.get("tipoContratoDescripcion")
+			).distinct(true)
+			.where(where);
+			
+			TypedQuery<Object[]> query = entityManager.createQuery(criteriaQuery);
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			
+			// Setear los parámetros según las condiciones del filtro
+			int i = 0;
+			for (MetadataCondicion metadataCondicion : metadataConsulta.getMetadataCondiciones()) {
+				if (!metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_INCLUIDO)) {
+					for (String valor : metadataCondicion.getValores()) {
+						String[] campos = metadataCondicion.getCampo().split("\\.");
+						
+						Path<ACMInterfaceContrato> field = root;
+						Join<?, ?> join = null;
+						for (int j=0; j<campos.length - 1; j++) {
+							if (join != null) {
+								join = join.join(campos[j], JoinType.LEFT);
+							} else {
+								join = root.join(campos[j], JoinType.LEFT);
+							}
+						}
+						
+						if (join != null) {
+							field = join.get(campos[campos.length - 1]);
+						} else {
+							field = root.get(campos[campos.length - 1]);
+						}
+						
+						try {
+							if (field.getJavaType().equals(Date.class)) {
+								query.setParameter(
+									"p" + i,
+									format.parse(valor)
+								);
+							} else if (field.getJavaType().equals(Long.class)) {
+								query.setParameter(
+									"p" + i,
+									Long.parseLong(valor)
+								);
+							} else if (field.getJavaType().equals(String.class)) {
+								query.setParameter(
+									"p" + i,
+									valor
+								);
+							} else if (field.getJavaType().equals(Double.class)) {
+								query.setParameter(
+									"p" + i,
+									Double.parseDouble(valor)
+								);
+							} else if (field.getJavaType().equals(Boolean.class)) {
+								query.setParameter(
+									"p" + i,
+									Boolean.parseBoolean(valor)
+								);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						
+						i++;
+					}
+					
+					if (metadataCondicion.getValores().size() == 0) {
+						i++;
+					}
+				} else {
+					i++;
+				}
+			}
+			
+			for (Object object : query.getResultList()) {
 				if (object != null) {
 					TipoContrato tipoContrato = new TipoContrato();
 					
 					// tipoContrato.setTipoContratoCodigo((String) fields[0]);
-					tipoContrato.setTipoContratoDescripcion((String) object);
+					tipoContrato.setTipoContratoDescripcion((String) ((Object[]) object)[0]);
 					
 					result.add(tipoContrato);
 				}
@@ -1172,7 +1278,9 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			+ ";" + (acmInterfaceContrato.getFechaExportacion() != null ?
 				format.format(acmInterfaceContrato.getFechaExportacion())
 				: "")
-			+ ";" + format.format(acmInterfaceContrato.getFact())
+			+ ";" + (acmInterfaceContrato.getFact() != null ?
+				format.format(acmInterfaceContrato.getFact())
+				: "")
 			+ ";" + (acmInterfaceContrato.getNumeroCliente() != null ?
 				acmInterfaceContrato.getNumeroCliente()
 				: "")
@@ -1182,6 +1290,419 @@ public class ACMInterfaceContratoBean implements IACMInterfaceContratoBean {
 			+ ";" + (observaciones != null ?
 				observaciones
 				: "");
+		
+		return result;
+	}
+
+	/**
+	 * Procesa un conjunto de datos a importar.
+	 * 
+	 * @param mids Colección de mids a procesar.
+	 * @return Map indicando para cada mid si se importará, sobreescribirá u omitirá.
+	 */
+	public Map<Long, Integer> preprocesarConjunto(Collection<Long> mids) {
+		Map<Long, Integer> result = new HashMap<Long, Integer>();
+		
+		try {
+			TypedQuery<Long> query = 
+				entityManager.createQuery(
+					"SELECT c.mid"
+					+ " FROM ACMInterfaceContrato c"
+					+ " WHERE c.mid IN :mids",
+					Long.class
+				);
+			
+			long chunkSize = 10000;
+			long totalSize = 0;
+			Collection<Long> chunk = new LinkedList<Long>();
+			for (Long mid : mids) {
+				totalSize++;
+				
+				chunk.add(mid);
+				
+				if (chunk.size() == chunkSize || totalSize == mids.size()) {
+					query.setParameter("mids", chunk);
+					
+					for (Long nro : query.getResultList()) {
+						result.put(nro, Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR);
+					}
+					
+					for (Long midFromChunk : chunk) {
+						if (!result.containsKey(midFromChunk)) {
+							result.put(midFromChunk, Constants.__COMPROBACION_IMPORTACION_IMPORTAR);
+						}
+					}
+					
+					chunk.clear();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Procesa el archivo .csv de nombre fileName para los datos de ACM.
+	 * 
+	 * @param fileName El nombre del archivo a Importar.
+	 * @param loggedUsuarioId ID del usuario que ejecuta la acción.
+	 * @return String que informa cuántos registros se importarán, cuántos se sobreescribirán y cuántas se omitirán. 
+	 */
+	public String preprocesarArchivo(String fileName, Long loggedUsuarioId) {
+		String result = null;
+		
+		BufferedReader bufferedReader = null;
+		
+		try {
+			bufferedReader = 
+				new BufferedReader(
+					new FileReader(Configuration.getInstance().getProperty("importacion.carpeta") + fileName)
+				);
+			
+			Collection<Long> mids = new LinkedList<Long>();
+			
+			String line = null;
+			boolean first = true;
+			while ((line = bufferedReader.readLine()) != null) {
+				if (first) {
+					String[] fields = line.split(";");
+					
+					Long mid = Long.parseLong(fields[0].trim());
+					
+					mids.add(mid);
+				} else {
+					first = true;
+				}
+			}
+			
+			Map<Long, Integer> map = this.preprocesarConjunto(mids);
+			
+			Long importar = Long.valueOf(0);
+			Long sobreescribir = Long.valueOf(0);
+			Long omitir = Long.valueOf(0);
+			for (Entry<Long, Integer> entry : map.entrySet()) {
+				switch (entry.getValue()) {
+					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
+						importar++;
+						
+						break;
+					case Constants.__COMPROBACION_IMPORTACION_OMITIR:
+						omitir++;
+						
+						break;
+					case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
+						sobreescribir++;
+						
+						break;
+				}
+			}
+			
+			result =
+				"Se importarán " + importar + " registros nuevos.|"
+				+ "Se sobreescribirán " + sobreescribir + " registros.|"
+				+ "Se omitirán " + omitir + " registros.";
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Importa el archivo .csv de nombre fileName.
+	 *  
+	 * @param fileName El nombre del archivo a Importar.
+	 * @param loggedUsuarioId ID del usuario que ejecuta la acción.
+	 * @return String con el resultado de la operación.
+	 */
+	public String procesarArchivo(String fileName, Long loggedUsuarioId) {
+		BufferedReader bufferedReader = null;
+		
+		String result = null;
+		
+		try {
+			bufferedReader = 
+				new BufferedReader(
+					new FileReader(Configuration.getInstance().getProperty("importacion.carpeta") + fileName)
+				);
+			
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			
+			TipoProcesoImportacion tipoProcesoImportacion =
+				iTipoProcesoImportacionBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty("tipoProcesoImportacion.ACM"))
+				);
+			
+			EstadoProcesoImportacion estadoProcesoImportacionInicio = 
+				iEstadoProcesoImportacionBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.Inicio"))
+				);
+			
+			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoOK = 
+				iEstadoProcesoImportacionBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoOK"))
+				);		
+			
+			EstadoProcesoImportacion estadoProcesoImportacionFinalizadoConErrores = 
+				iEstadoProcesoImportacionBean.getById(
+					Long.parseLong(
+						Configuration.getInstance().getProperty("estadoProcesoImportacion.FinalizadoConErrores")
+					)
+				);
+			
+			Usuario usuario = iUsuarioBean.getById(loggedUsuarioId, false);
+			
+			ProcesoImportacion procesoImportacion = new ProcesoImportacion();
+			procesoImportacion.setEstadoProcesoImportacion(estadoProcesoImportacionInicio);
+			procesoImportacion.setFechaInicio(hoy);
+			procesoImportacion.setNombreArchivo(fileName);
+			procesoImportacion.setTipoProcesoImportacion(tipoProcesoImportacion);
+			procesoImportacion.setUsuario(usuario);
+			
+			procesoImportacion.setFcre(hoy);
+			procesoImportacion.setFact(hoy);
+			procesoImportacion.setTerm(Long.valueOf(1));
+			procesoImportacion.setUact(loggedUsuarioId);
+			procesoImportacion.setUcre(loggedUsuarioId);
+			
+			ProcesoImportacion procesoImportacionManaged = iProcesoImportacionBean.save(procesoImportacion);
+			
+			Query deleteACMInterfaceContrato = entityManager.createNativeQuery(
+				"DELETE FROM acm_interface_contrato WHERE mid = ?"
+			);
+			
+			Query insertACMInterfaceContrato = entityManager.createNativeQuery(
+				"INSERT INTO acm_interface_contrato ("
+					+ " mid,"
+					+ " fecha_fin_contrato,"
+					+ " tipo_contrato_codigo,"
+					+ " tipo_contrato_descripcion,"
+					+ " documento_tipo,"
+					+ " documento,"
+					+ " nombre,"
+					+ " direccion,"
+					+ " codigo_postal,"
+					+ " estado_contrato,"
+					+ " equipo,"
+					+ " agente,"
+					+ " fecha_exportacion,"
+					+ " fact,"
+					+ " localidad,"
+					+ " numero_contrato"
+				+ " )"
+				+ " VALUES ("
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?,"
+					+ " ?"
+				+ ")"
+			);
+			
+			String line = null;
+			long lineNumber = 0;
+			long successful = 0;
+			long errors = 0;
+			while ((line = bufferedReader.readLine()) != null) {
+				lineNumber++;
+				
+				if (lineNumber > 0) {
+					String[] fields = line.split(";", -1);
+					
+					if (fields.length < 1) {
+						System.err.println(
+							"Error al procesar archivo: " + fileName + "."
+							+ " Formato de línea " + lineNumber + " incompatible."
+							+ " Cantidad de columnas (" + fields.length + ") insuficientes."
+						);
+						errors++;
+					} else {
+						boolean ok = true;
+						
+						Long mid = null;
+						try {
+							mid = Long.parseLong(fields[0].trim());
+						} catch (NumberFormatException pe) {
+							System.err.println(
+								"Error al procesar archivo: " + fileName + "."
+								+ " Formato de línea " + lineNumber + " incompatible."
+								+ " Campo mid incorrecto -> " + fields[0].trim());
+							ok = false;
+						}
+						
+						Date fechaFinContrato = null;
+						String fecha = fields[1].trim();
+						try {
+							if (fecha != null && !fecha.equals("")) {
+								fechaFinContrato = simpleDateFormat.parse(fecha);
+							}
+						} catch (ParseException pe) {
+							System.err.println(
+								"Error al procesar archivo: " + fileName + "."
+								+ " Formato de línea " + lineNumber + " incompatible."
+								+ " Campo fechaFinContrato incorrecto -> " + fecha);
+							ok = false;
+						}
+						
+						String tipoContratoCodigo = 
+							(fields[2] != null && !fields[2].equals("")) ? fields[2].trim() : null;
+						
+						String tipoContratoDescripcion = 
+							(fields[3] != null && !fields[3].equals("")) ? fields[3].trim() : null;
+						
+						Long documentoTipo = null;
+						String numero = fields[4].trim();
+						try {
+							if (numero != null && !numero.equals("")) {
+								documentoTipo = Long.parseLong(numero);
+							}
+						} catch (NumberFormatException pe) {
+							System.err.println(
+								"Error al procesar archivo: " + fileName + "."
+								+ " Formato de línea " + lineNumber + " incompatible."
+								+ " Campo documentoTipo incorrecto -> " + numero);
+							ok = false;
+						}
+						
+						String documento = 
+							(fields[5] != null && !fields[5].equals("")) ? fields[5].trim() : null;
+						
+						String nombre = 
+							(fields[6] != null && !fields[6].equals("")) ? fields[6].trim() : null;
+						
+						String direccion = 
+							(fields[7] != null && !fields[7].equals("")) ? fields[7].trim() : null;
+						
+						String codigoPostal = 
+							(fields[8] != null && !fields[8].equals("")) ? fields[8].trim() : null;
+						
+						String estadoContrato = 
+							(fields[9] != null && !fields[9].equals("")) ? fields[9].trim() : null;
+						
+						String equipo = 
+							(fields[10] != null && !fields[10].equals("")) ? fields[10].trim() : null;
+						
+						String agente = 
+							(fields[11] != null && !fields[11].equals("")) ? fields[11].trim() : null;
+						
+						Date fechaExportacion = null;
+						fecha = fields[12].trim();
+						try {
+							if (fecha != null && !fecha.equals("")) {
+								fechaExportacion = simpleDateFormat.parse(fecha);
+							}
+						} catch (ParseException pe) {
+							System.err.println(
+								"Error al procesar archivo: " + fileName + "."
+								+ " Formato de línea " + lineNumber + " incompatible."
+								+ " Campo fechaExportacion incorrecto -> " + fecha);
+							ok = false;
+						}
+						
+						Date fact = null;
+						fecha = fields[13].trim();
+						try {
+							if (fecha != null && !fecha.equals("")) {
+								fact = simpleDateFormat.parse(fecha);
+							}
+						} catch (ParseException pe) {
+							System.err.println(
+								"Error al procesar archivo: " + fileName + "."
+								+ " Formato de línea " + lineNumber + " incompatible."
+								+ " Campo fact incorrecto -> " + fecha);
+							ok = false;
+						}
+						
+						String localidad = 
+							(fields[14] != null && !fields[14].equals("")) ? fields[14].trim() : null;
+						
+						String numeroContrato = 
+							(fields[15] != null && !fields[15].equals("")) ? fields[15].trim() : null;
+						
+						if (!ok) {
+							errors++;
+						} else {
+							// Borro la información que haya para ese mid.
+							deleteACMInterfaceContrato.setParameter(1, mid);
+							
+							deleteACMInterfaceContrato.executeUpdate();
+							
+							insertACMInterfaceContrato.setParameter(1, mid);
+							insertACMInterfaceContrato.setParameter(2, fechaFinContrato);
+							insertACMInterfaceContrato.setParameter(3, tipoContratoCodigo);
+							insertACMInterfaceContrato.setParameter(4, tipoContratoDescripcion);
+							insertACMInterfaceContrato.setParameter(5, documentoTipo);
+							insertACMInterfaceContrato.setParameter(6, documento);
+							insertACMInterfaceContrato.setParameter(7, nombre);
+							insertACMInterfaceContrato.setParameter(8, direccion);
+							insertACMInterfaceContrato.setParameter(9, codigoPostal);
+							insertACMInterfaceContrato.setParameter(10, estadoContrato);
+							insertACMInterfaceContrato.setParameter(11, equipo);
+							insertACMInterfaceContrato.setParameter(12, agente);
+							insertACMInterfaceContrato.setParameter(13, fechaExportacion);
+							insertACMInterfaceContrato.setParameter(14, fact);
+							insertACMInterfaceContrato.setParameter(15, localidad);
+							insertACMInterfaceContrato.setParameter(16, numeroContrato);
+							
+							insertACMInterfaceContrato.executeUpdate();
+							
+							successful++;
+						}
+					}
+				}
+			}
+			
+			result = 
+				"Líneas procesadas con éxito: " + successful + ".|"
+				+ "Líneas con datos incorrectos: " + errors + ".";
+			
+			if (errors > 0) {
+				procesoImportacionManaged.setEstadoProcesoImportacion(estadoProcesoImportacionFinalizadoConErrores);
+			} else {
+				procesoImportacionManaged.setEstadoProcesoImportacion(estadoProcesoImportacionFinalizadoOK);
+			}
+			
+			hoy = GregorianCalendar.getInstance().getTime();
+			
+			procesoImportacionManaged.setFact(hoy);
+			procesoImportacionManaged.setFechaFin(hoy);
+			procesoImportacionManaged.setObservaciones(result);
+			
+			iProcesoImportacionBean.update(procesoImportacionManaged);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		return result;
 	}

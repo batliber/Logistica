@@ -1,11 +1,11 @@
-package uy.com.amensg.logistica.webservices;
+package uy.com.amensg.logistica.web.webservices.soap;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
 import uy.com.amensg.logistica.bean.IRiesgoCrediticioBean;
 import uy.com.amensg.logistica.bean.RiesgoCrediticioBean;
 

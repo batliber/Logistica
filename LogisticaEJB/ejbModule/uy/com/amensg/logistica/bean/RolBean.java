@@ -6,10 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Menu;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
@@ -20,7 +20,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class RolBean implements IRolBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public Collection<Rol> list() {
@@ -55,6 +55,36 @@ public class RolBean implements IRolBean {
 					+ " ORDER BY r.nombre ASC", 
 					Object[].class
 				);
+			
+			for (Object[] rol : query.getResultList()) {
+				Rol rolMinimal = new Rol();
+				rolMinimal.setId((Long)rol[0]);
+				rolMinimal.setNombre((String)rol[1]);
+				
+				result.add(rolMinimal);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Collection<Rol> listMinimal(Long usuarioId) {
+		Collection<Rol> result = new LinkedList<Rol>();
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT DISTINCT r.id, r.nombre"
+					+ " FROM UsuarioRolEmpresa ure"
+					+ " JOIN RolJerarquia rj ON rj.rolId = ure.rol.id"
+					+ " JOIN Rol r ON r.id = rj.rolSubordinadoId"
+					+ " WHERE ure.usuario.id = :usuarioId"
+					+ " ORDER BY r.nombre ASC", 
+					Object[].class
+				);
+			query.setParameter("usuarioId", usuarioId);
 			
 			for (Object[] rol : query.getResultList()) {
 				Rol rolMinimal = new Rol();

@@ -3,10 +3,10 @@ package uy.com.amensg.logistica.bean;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
@@ -16,7 +16,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class BarrioBean implements IBarrioBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public Collection<Barrio> list() {

@@ -3,17 +3,17 @@ package uy.com.amensg.logistica.bean;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 
 import uy.com.amensg.logistica.entities.Menu;
 
 @Stateless
 public class MenuBean implements IMenuBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public Collection<Menu> list() {

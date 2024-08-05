@@ -227,15 +227,15 @@ textarea {
 }
 
 .inputClienteNombre {
-	width: 247px;
+	width: 245px;
 }
 
 .inputClienteApellido {
-	width: 228px;
+	width: 226px;
 }
 
 .inputClienteNombreEmpresa {
-	width: 461px;
+	width: 459px;
 }
 
 .inputClienteSexo {
@@ -243,11 +243,11 @@ textarea {
 }
 
 .inputClienteFechaNacimiento {
-	width: 68px;
+	width: 66px;
 }
 
 .inputClienteTipoCliente {
-	width: 31px;
+	width: 29px;
 }
 
 .inputClienteActividad {
@@ -255,15 +255,15 @@ textarea {
 }
 
 .inputClienteTelefonoContacto {
-	width: 92px;
+	width: 90px;
 }
 
 .inputMID {
-	width: 229px;
+	width: 227px;
 }
 
 .inputNumeroChip {
-	width: 252px;
+	width: 250px;
 }
 
 .inputMarca {
@@ -275,19 +275,19 @@ textarea {
 }
 
 .inputModelo {
-	width: 244px;
+	width: 242px;
 }
 
 .inputCodigoBloqueo {
-	width: 189px;
+	width: 187px;
 }
 
 .inputDireccionCalle {
-	width: 536px;
+	width: 534px;
 }
 
 .inputDireccionNumero {
-	width: 50px;
+	width: 48px;
 }
 
 .inputDireccionBis {
@@ -299,15 +299,15 @@ textarea {
 }
 
 .inputDireccionBlock {
-	width: 61px;
+	width: 59px;
 }
 
 .inputDireccionManzana {
-	width: 61px;
+	width: 59px;
 }
 
 .inputDireccionSolar {
-	width: 62px;
+	width: 60px;
 }
 
 .inputDireccionLocalidad {
@@ -315,7 +315,7 @@ textarea {
 }
 
 .inputDireccionDepartamento {
-	width: 117px;
+	width: 115px;
 }
 
 .inputDireccionCodigoPostal {
@@ -327,35 +327,35 @@ textarea {
 }
 
 .inputUsuarioNombre {
-	width: 235px;
+	width: 233px;
 }
 
 .inputUsuarioApellido {
-	width: 234px;
+	width: 232px;
 }
 
 .inputUsuarioDocumento {
-	width: 224px;
+	width: 222px;
 }
 
 .inputUsuarioEmail {
-	width: 187px;
+	width: 185px;
 }
 
 .inputPlan {
-	width: 161px;
+	width: 159px;
 }
 
 .inputPromotor {
-	width: 138px;
+	width: 136px;
 }
 
 .inputAyudaEconomica {
-	width: 94px;
+	width: 92px;
 }
 
 .inputCantidadMinutos {
-	width: 84px;
+	width: 82px;
 }
 
 .inputDesde {
@@ -363,7 +363,7 @@ textarea {
 }
 
 .inputHasta {
-	width: 153px;
+	width: 151px;
 }
 
 .inputCuentaANTELFacturacionFaltaPago {
@@ -387,15 +387,15 @@ textarea {
 }
 
 .inputAgenteVentaNombre {
-	width: 144px;
+	width: 142px;
 }
 
 .inputAgenteVentaCodigo {
-	width: 148px;
+	width: 146px;
 }
 
 .inputAgenteVentaSucursal {
-	width: 138px;
+	width: 136px;
 }
 
 .inputVendedorNombre {
@@ -403,7 +403,7 @@ textarea {
 }
 
 .inputVendedorDocumento {
-	width: 130px;
+	width: 128px;
 }
 
 .inputControlCuentaBackoffice {

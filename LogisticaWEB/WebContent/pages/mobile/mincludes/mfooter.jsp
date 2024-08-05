@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 
-<%@ page import="uy.com.amensg.logistica.dwr.UsuarioDWR"  %>
-<%@ page import="uy.com.amensg.logistica.entities.UsuarioTO"  %>
-<%@ page import="uy.com.amensg.logistica.entities.UsuarioRolEmpresaTO"  %>
-<%@ page import="uy.com.amensg.logistica.entities.MenuTO"  %>
-<%@ page import="uy.com.amensg.logistica.entities.EmpresaTO"  %>
+<%@ page import="uy.com.amensg.logistica.web.dwr.UsuarioDWR"  %>
+<%@ page import="uy.com.amensg.logistica.web.entities.UsuarioTO"  %>
+<%@ page import="uy.com.amensg.logistica.web.entities.UsuarioRolEmpresaTO"  %>
+<%@ page import="uy.com.amensg.logistica.web.entities.MenuTO"  %>
+<%@ page import="uy.com.amensg.logistica.web.entities.EmpresaTO"  %>
 
 <%@ page import="java.util.*"  %>
 
@@ -16,7 +16,7 @@
 <%@ page import="uy.com.amensg.logistica.bean.SeguridadBean"  %>
 <%@ page import="uy.com.amensg.logistica.bean.UsuarioBean"  %>
 <%@ page import="uy.com.amensg.logistica.entities.Usuario"  %>
-<%@ page import="uy.com.amensg.logistica.entities.UsuarioTO"  %>
+<%@ page import="uy.com.amensg.logistica.web.entities.UsuarioTO"  %>
 
 <%
 	HttpSession httpSession = request.getSession(false);

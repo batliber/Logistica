@@ -1,4 +1,6 @@
-package uy.com.amensg.logistica.entities;
+package uy.com.amensg.logistica.web.entities;
+
+import uy.com.amensg.logistica.entities.MetadataConsulta;
 
 public class VisitaPorSubloteTO {
 

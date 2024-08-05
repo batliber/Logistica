@@ -119,11 +119,23 @@ function inputSubirArchivoOnClick() {
 	showPopUp(document.getElementById("divIFrameImportacionArchivo"));
 }
 
+function inputSubirArchivoURSECOnClick() {
+	showPopUp(document.getElementById("divIFrameImportacionArchivoURSEC"));
+}
+
 function inputCancelarOnClick(event, element) {
 	closePopUp(event, document.getElementById("divIFrameImportacionArchivo"));
 	
 	$("#selectEmpresa").val("0");
 	$("#inputArchivo").val("");
+	
+	reloadData();
+}
+
+function inputCancelarURSECOnClick(event, element) {
+	closePopUp(event, document.getElementById("divIFrameImportacionArchivoURSEC"));
+	
+	$("#inputArchivoURSEC").val("");
 	
 	reloadData();
 }
@@ -154,6 +166,39 @@ function inputAceptarOnClick(event, element) {
 				data: JSON.stringify({
 					"nombre": data.fileName,
 					"empresaId": data.empresaId
+				})
+			}).then(function(data) {
+				if (data != null) {
+					alert(data.mensaje.replace(new RegExp("\\|", "g"), "\n"));
+				}
+				
+				reloadData();
+			});
+		}
+	}, function(data) {
+		alert(data);
+	});
+}
+
+function inputAceptarURSECOnClick(event, element) {
+	var formData = new FormData(document.getElementById("formSubirArchivoURSEC"));
+	
+	$.ajax({
+		url: '/LogisticaWEB/Upload', 
+		type: 'POST',
+		data: formData,
+		processData: false,
+		contentType: false
+	}).then(function(data) {
+		if (data.message.includes("err: ")) {
+			alert(data.message.replace("err\:\ ", ""));
+		} else if (confirm(data.message.replace(new RegExp("\\|", "g"), "\n"))) {
+			$.ajax({
+				url: '/LogisticaWEB/RESTFacade/ContratoURSECREST/procesarArchivoURSEC', 
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					"nombre": data.fileName,
 				})
 			}).then(function(data) {
 				if (data != null) {

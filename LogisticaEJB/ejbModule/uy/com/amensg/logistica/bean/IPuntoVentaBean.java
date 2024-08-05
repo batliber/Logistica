@@ -2,7 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.Departamento;
@@ -69,4 +69,6 @@ public interface IPuntoVentaBean {
 	public void crearVisitaAutor(
 		Usuario distribuidor, String observaciones, PuntoVenta puntoVenta, Long loggedUsuarioId
 	);
+
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 }

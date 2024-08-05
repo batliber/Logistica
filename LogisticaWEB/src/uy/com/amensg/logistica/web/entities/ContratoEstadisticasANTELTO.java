@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.entities;
+package uy.com.amensg.logistica.web.entities;
 
 public class ContratoEstadisticasANTELTO {
 

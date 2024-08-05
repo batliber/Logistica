@@ -1,6 +1,6 @@
 package uy.com.amensg.logistica.bean;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface IImportacionArchivoBeanLocal {

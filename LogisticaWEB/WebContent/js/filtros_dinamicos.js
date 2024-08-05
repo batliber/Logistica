@@ -512,6 +512,8 @@ function _campoOnChange(eventObject) {
 		} else if (tipoCampo == __TIPO_CAMPO_MULTIPLE) {
 			html += 
 				"<option value='eq'>Es igual a</option>"
+				+ "<option value='like'>Contiene</option>"
+				+ "<option value='nlike'>No contiene</option>"
 				+ "<option value='in'>Incluido en</option>"
 				+ "<option value='nl'>Vac&iacute;o</option>"
 				+ "<option value='nnl'>No vac&iacute;o</option>";
@@ -555,6 +557,7 @@ function _campoOnChange(eventObject) {
 		} else if (tipoCampo == __TIPO_CAMPO_RELACION) {
 			html += 
 				"<option value='keq'>Es igual a</option>"
+				+ "<option value='kneq'>No es igual a</option>"
 				+ "<option value='like'>Contiene</option>"
 				+ "<option value='nlike'>No contiene</option>"
 				+ "<option value='nl'>Vac&iacute;o</option>"
@@ -696,6 +699,7 @@ function _condicionOnChange(eventObject) {
 				
 				break;
 			case "keq":
+			case "kneq":
 				var campo = null;
 				for (campo in this.campos) {
 					if (this.campos[campo].campo == selectedFieldValue) {
@@ -977,6 +981,7 @@ function _calcularCondiciones() {
 					
 					break;
 				case "keq":
+				case "kneq":
 					metadataCondicion.campo = selectCampo.find("option:selected").attr("key");
 					
 					metadataCondicion.valores = [divFiltro.find(".selectValor").val()];

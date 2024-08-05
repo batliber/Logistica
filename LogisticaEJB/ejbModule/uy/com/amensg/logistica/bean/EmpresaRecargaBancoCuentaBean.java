@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EmpresaRecargaBancoCuenta;
@@ -20,7 +20,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class EmpresaRecargaBancoCuentaBean implements IEmpresaRecargaBancoCuentaBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId) {

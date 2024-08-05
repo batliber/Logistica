@@ -6,24 +6,32 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
+import uy.com.amensg.logistica.entities.RolJerarquia;
 import uy.com.amensg.logistica.entities.SeguridadAuditoria;
 import uy.com.amensg.logistica.entities.SeguridadTipoEvento;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.QueryBuilder;
+import uy.com.amensg.logistica.util.QueryHelper;
 
 @Stateless
 public class UsuarioBean implements IUsuarioBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public Collection<Usuario> list() {
@@ -99,12 +107,235 @@ public class UsuarioBean implements IUsuarioBean {
 		
 		return result;
 	}
+	
+	public MetadataConsultaResultado listSubordinados(MetadataConsulta metadataConsulta, Long usuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class);
+			
+			Root<Usuario> root = criteriaQuery.from(Usuario.class);
+			root.alias("susub");
+			
+			QueryHelper queryHelper = new QueryHelper();
+			
+			Predicate where = queryHelper.construirWhere(metadataConsulta, criteriaBuilder, root);
+			
+			Subquery<UsuarioRolEmpresa> subqueryUsuarioRolEmpresaSubordinado = 
+				criteriaQuery.subquery(UsuarioRolEmpresa.class);
+			Root<UsuarioRolEmpresa> subrootUsuarioRolEmpresaSubordinado = 
+				subqueryUsuarioRolEmpresaSubordinado.from(UsuarioRolEmpresa.class);
+			subrootUsuarioRolEmpresaSubordinado.alias("suresub");
+						
+			Subquery<RolJerarquia> subqueryRolJerarquia = criteriaQuery.subquery(RolJerarquia.class);
+			Root<RolJerarquia> subrootRolJerarquia = 
+				subqueryRolJerarquia.from(RolJerarquia.class);
+			subrootRolJerarquia.alias("srj");
+			
+			Subquery<UsuarioRolEmpresa> subqueryUsuarioRolEmpresaSuperior = 
+				criteriaQuery.subquery(UsuarioRolEmpresa.class);
+			Root<UsuarioRolEmpresa> subrootUsuarioRolEmpresaSuperior = 
+				subqueryUsuarioRolEmpresaSuperior.from(UsuarioRolEmpresa.class);
+			subrootUsuarioRolEmpresaSuperior.alias("sure");
+			
+			Predicate predicateUsuarioRolEmpresas = 
+				criteriaBuilder.exists(
+					subqueryUsuarioRolEmpresaSubordinado
+						.select(subrootUsuarioRolEmpresaSubordinado)
+						.where(
+							criteriaBuilder.and(
+								criteriaBuilder.equal(
+									subrootUsuarioRolEmpresaSubordinado.get("usuario").get("id"), 
+									root.get("id")
+								),
+								criteriaBuilder.exists(
+									subqueryRolJerarquia
+										.select(subrootRolJerarquia)
+										.where(
+											criteriaBuilder.and(
+												criteriaBuilder.equal(
+													subrootRolJerarquia.get("rolSubordinadoId"),
+													subrootUsuarioRolEmpresaSubordinado.get("rol").get("id")
+												),
+												criteriaBuilder.exists(
+													subqueryUsuarioRolEmpresaSuperior
+														.select(subrootUsuarioRolEmpresaSuperior)
+														.where(
+															criteriaBuilder.and(
+																criteriaBuilder.equal(
+																	subrootUsuarioRolEmpresaSuperior.get("rol").get("id"),
+																	subrootRolJerarquia.get("rolId")
+																),
+																criteriaBuilder.equal(
+																	subrootUsuarioRolEmpresaSuperior.get("empresa").get("id"),
+																	subrootUsuarioRolEmpresaSubordinado.get("empresa").get("id")
+																),
+																criteriaBuilder.equal(
+																	subrootUsuarioRolEmpresaSuperior.get("usuario").get("id"),
+																	criteriaBuilder.parameter(Long.class, "usuario")
+																)
+															)
+														)
+												)
+											)
+										)
+								)
+							)
+						)
+				);
+			
+			where = 
+				criteriaBuilder.and(
+					where,
+					predicateUsuarioRolEmpresas
+				);
+			
+			// Procesar las ordenaciones para los registros de la muestra
+			List<Order> orders = queryHelper.construirOrderBy(metadataConsulta, criteriaBuilder, root);
+			
+			criteriaQuery
+				.select(root)
+				.distinct(true)
+				.where(where)
+				.orderBy(orders);
 
+			TypedQuery<Usuario> query = entityManager.createQuery(criteriaQuery);
+			
+			query = queryHelper.cargarParameters(metadataConsulta, query, root);
+			
+			query.setParameter("usuario", usuarioId);
+			
+			// Acotar al tamaño de la muestra
+			query.setMaxResults(metadataConsulta.getTamanoMuestra().intValue());
+			
+			Collection<Object> registrosMuestra = new LinkedList<Object>();
+			for (Usuario usuario : query.getResultList()) {
+				for (UsuarioRolEmpresa usuarioRolEmpresa : usuario.getUsuarioRolEmpresas()) {
+					usuarioRolEmpresa.getRol().getMenus().size();
+					usuarioRolEmpresa.getRol().getSubordinados().size();
+				}
+				
+				registrosMuestra.add(usuario);
+			}
+			
+			result.setRegistrosMuestra(registrosMuestra);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId) {
 		Long result = null;
 		
 		try {
 			result = new QueryBuilder<Usuario>().count(entityManager, metadataConsulta, new Usuario());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Long countSubordinados(MetadataConsulta metadataConsulta, Long usuarioId) {
+		Long result = null;
+		
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			
+			CriteriaQuery<Long> criteriaQueryCount = criteriaBuilder.createQuery(Long.class);
+			
+			Root<Usuario> rootCount = criteriaQueryCount.from(Usuario.class);
+			rootCount.alias("susub");
+			
+			QueryHelper queryHelper = new QueryHelper();
+			
+			Predicate where = queryHelper.construirWhere(metadataConsulta, criteriaBuilder, rootCount);
+			
+			Subquery<UsuarioRolEmpresa> subqueryUsuarioRolEmpresaSubordinado = 
+				criteriaQueryCount.subquery(UsuarioRolEmpresa.class);
+			Root<UsuarioRolEmpresa> subrootUsuarioRolEmpresaSubordinado = 
+				subqueryUsuarioRolEmpresaSubordinado.from(UsuarioRolEmpresa.class);
+			subrootUsuarioRolEmpresaSubordinado.alias("suresub");
+						
+			Subquery<RolJerarquia> subqueryRolJerarquia = criteriaQueryCount.subquery(RolJerarquia.class);
+			Root<RolJerarquia> subrootRolJerarquia = 
+				subqueryRolJerarquia.from(RolJerarquia.class);
+			subrootRolJerarquia.alias("srj");
+			
+			Subquery<UsuarioRolEmpresa> subqueryUsuarioRolEmpresaSuperior = 
+				criteriaQueryCount.subquery(UsuarioRolEmpresa.class);
+			Root<UsuarioRolEmpresa> subrootUsuarioRolEmpresaSuperior = 
+				subqueryUsuarioRolEmpresaSuperior.from(UsuarioRolEmpresa.class);
+			subrootUsuarioRolEmpresaSuperior.alias("sure");
+			
+			Predicate predicateUsuarioRolEmpresas = 
+				criteriaBuilder.exists(
+					subqueryUsuarioRolEmpresaSubordinado
+						.select(subrootUsuarioRolEmpresaSubordinado)
+						.where(
+							criteriaBuilder.and(
+								criteriaBuilder.equal(
+									subrootUsuarioRolEmpresaSubordinado.get("usuario").get("id"), 
+									rootCount.get("id")
+								),
+								criteriaBuilder.exists(
+									subqueryRolJerarquia
+										.select(subrootRolJerarquia)
+										.where(
+											criteriaBuilder.and(
+												criteriaBuilder.equal(
+													subrootRolJerarquia.get("rolSubordinadoId"),
+													subrootUsuarioRolEmpresaSubordinado.get("rol").get("id")
+												),
+												criteriaBuilder.exists(
+													subqueryUsuarioRolEmpresaSuperior
+														.select(subrootUsuarioRolEmpresaSuperior)
+														.where(
+															criteriaBuilder.and(
+																criteriaBuilder.equal(
+																	subrootUsuarioRolEmpresaSuperior.get("rol").get("id"),
+																	subrootRolJerarquia.get("rolId")
+																),
+																criteriaBuilder.equal(
+																	subrootUsuarioRolEmpresaSuperior.get("empresa").get("id"),
+																	subrootUsuarioRolEmpresaSubordinado.get("empresa").get("id")
+																),
+																criteriaBuilder.equal(
+																	subrootUsuarioRolEmpresaSuperior.get("usuario").get("id"),
+																	criteriaBuilder.parameter(Long.class, "usuario")
+																)
+															)
+														)
+												)
+											)
+										)
+								)
+							)
+						)
+				);
+			
+			where = 
+				criteriaBuilder.and(
+					where,
+					predicateUsuarioRolEmpresas
+				);
+			
+			criteriaQueryCount
+				.select(criteriaBuilder.count(rootCount))
+				.distinct(true)
+				.where(where);
+
+			TypedQuery<Long> queryCount = entityManager.createQuery(criteriaQueryCount);
+			
+			queryCount = queryHelper.cargarParameters(metadataConsulta, queryCount, rootCount);
+			
+			queryCount.setParameter("usuario", usuarioId);
+			
+			result = (Long) queryCount.getSingleResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -199,6 +430,35 @@ public class UsuarioBean implements IUsuarioBean {
 						usuarioRolEmpresa.getRol().getSubordinados().size();
 					}
 				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Usuario getByEmailMinimal(String email) {
+		Usuario result = null;
+		
+		try {
+			TypedQuery<Object[]> query = 
+				entityManager.createQuery(
+					"SELECT u.id, u.nombre"
+					+ " FROM Usuario u"
+					+ " WHERE u.email = :email",
+					Object[].class
+				);
+			query.setParameter("email", email);
+			
+			List<Object[]> resultList = query.getResultList();
+			
+			if (!resultList.isEmpty()) {
+				Object[] object = resultList.get(0);
+				
+				result = new Usuario();
+				result.setId((Long) object[0]);
+				result.setNombre((String) object[1]);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -317,6 +577,42 @@ public class UsuarioBean implements IUsuarioBean {
 			}
 			
 			result = managedUsuario;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Usuario updateIntentosFallidosLogin(Usuario usuario) {
+		Usuario result = null;
+		
+		try {
+			Usuario managedUsuario = entityManager.find(Usuario.class, usuario.getId());
+			
+			managedUsuario.setIntentosFallidosLogin(usuario.getIntentosFallidosLogin());
+			
+			managedUsuario.setFact(usuario.getFact());
+			managedUsuario.setTerm(usuario.getTerm());
+			managedUsuario.setUact(usuario.getUact());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public Usuario updateBloqueado(Usuario usuario) {
+		Usuario result = null;
+		
+		try {
+			Usuario managedUsuario = entityManager.find(Usuario.class, usuario.getId());
+			
+			managedUsuario.setBloqueado(usuario.getBloqueado());
+			
+			managedUsuario.setFact(usuario.getFact());
+			managedUsuario.setTerm(usuario.getTerm());
+			managedUsuario.setUact(usuario.getUact());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

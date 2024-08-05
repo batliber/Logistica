@@ -1,6 +1,8 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_MAESTROS_RIVERGREEN = 20;
+var __ROL_SUPERVISOR_ATENCION_CLIENTES = 75559429;
 var __ROL_DEMO = 21;
+var __ROL_CREACION_USUARIOS = 24;
 
 var mode = __FORM_MODE_USER;
 
@@ -12,12 +14,14 @@ function init() {
 	$("#divButtonNew").hide();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",
+	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
 				|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN
-				|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO) {
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_ATENCION_CLIENTES
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_CREACION_USUARIOS) {
 				mode = __FORM_MODE_ADMIN;
 				
 				$("#divButtonNew").show();
@@ -29,6 +33,7 @@ function init() {
 						tdUsuarioNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
 						tdUsuarioRol: { campo: "rolNombre", descripcion: "Rol", abreviacion: "Rol", tipo: __TIPO_CAMPO_STRING, ancho: 300 }, 
 						tdUsuarioEmpresa: { campo: "empresa.nombre", clave: "empresa.id", descripcion: "Empresa", abreviacion: "Empresa", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEmpresas, clave: "id", valor: "nombre" }, ancho: 300 },
+						tdUsuarioBloqueado: { campo: "bloqueado", descripcion: "Bloqueado", abreviacion: "Bloqueado", tipo: __TIPO_CAMPO_BOOLEAN, ancho: 80 },
 						tdUsuarioFcre: { campo: "fcre", descripcion: "Creado", abreviacion: "Creado", tipo: __TIPO_CAMPO_FECHA_HORA },
 						tdUsuarioFact: { campo: "fact", descripcion: "Modificado", abreviacion: "Modificado", tipo: __TIPO_CAMPO_FECHA_HORA }
 					}, 
@@ -54,11 +59,11 @@ function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/UsuarioREST/listVigentesContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/UsuarioREST/listVigentesContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
 		var registros = {
 			registrosMuestra: []
 		};
@@ -80,13 +85,14 @@ function reloadData() {
 					if (rolNombre.indexOf(data.registrosMuestra[i].usuarioRolEmpresas[j].rol.nombre) < 0) {
 						rolNombre += ", " + data.registrosMuestra[i].usuarioRolEmpresas[j].rol.nombre;
 					}
-				}						
+				}
 			}
 			
 			registros.registrosMuestra[registros.registrosMuestra.length] = {
 				id: data.registrosMuestra[i].id,
 				login: data.registrosMuestra[i].login,
 				contrasena: data.registrosMuestra[i].contrasena,
+				bloqueado: data.registrosMuestra[i].bloqueado,
 				nombre: data.registrosMuestra[i].nombre,
 				fechaBaja: data.registrosMuestra[i].fechaBaja,
 				rolNombre: rolNombre,
@@ -102,13 +108,13 @@ function reloadData() {
 	});
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/UsuarioREST/countVigentesContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.setCount(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/UsuarioREST/countVigentesContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.setCount(data);
+	});
 }
 
 function trUsuarioOnClick(eventObject) {

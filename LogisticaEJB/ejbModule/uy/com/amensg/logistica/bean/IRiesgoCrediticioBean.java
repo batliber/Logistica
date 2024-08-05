@@ -2,7 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.List;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.ACMInterfaceRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticio;

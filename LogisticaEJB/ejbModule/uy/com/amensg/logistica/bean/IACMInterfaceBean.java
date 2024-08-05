@@ -1,7 +1,6 @@
 package uy.com.amensg.logistica.bean;
 
-import javax.ejb.Remote;
-
+import jakarta.ejb.Remote;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfaceNumeroContrato;
@@ -33,5 +32,11 @@ public interface IACMInterfaceBean {
 	
 	public void actualizarDatosMidListaVacia(Long mid);
 	
-	public void actualizarDatosNumeroContratoListaVacia(Long numeroContrato);
+	public void actualizarDatosMidListaNegra(Long mid);
+	
+	public void actualizarDatosMidNegociando(Long mid);
+	
+	public void actualizarDatosMidNoLlamar(Long mid);
+	
+	public void actualizarDatosNumeroContratoListaVacia(String numeroContrato);
 }

@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -6,15 +6,15 @@ import java.util.HashSet;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.IRiesgoCrediticioBean;
 import uy.com.amensg.logistica.bean.RiesgoCrediticioBean;
 import uy.com.amensg.logistica.entities.CalificacionRiesgoCrediticioAntel;
@@ -22,16 +22,16 @@ import uy.com.amensg.logistica.entities.CalificacionRiesgoCrediticioBCU;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EstadoRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.FormaPago;
-import uy.com.amensg.logistica.entities.ImportacionArchivoRiesgoCrediticioTO;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
-import uy.com.amensg.logistica.entities.RegistrarAnalisisRiesgoManualTO;
-import uy.com.amensg.logistica.entities.ResultadoExportacionArchivoTO;
-import uy.com.amensg.logistica.entities.ResultadoImportacionArchivoTO;
 import uy.com.amensg.logistica.entities.RiesgoCrediticio;
 import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.web.entities.ImportacionArchivoRiesgoCrediticioTO;
+import uy.com.amensg.logistica.web.entities.RegistrarAnalisisRiesgoManualTO;
+import uy.com.amensg.logistica.web.entities.ResultadoExportacionArchivoTO;
+import uy.com.amensg.logistica.web.entities.ResultadoImportacionArchivoTO;
 
 @Path("/RiesgoCrediticioREST")
 public class RiesgoCrediticioREST {

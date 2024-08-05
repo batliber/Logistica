@@ -181,11 +181,11 @@ function inputAsignarOnClick() {
 	
 	if (metadataConsulta.tamanoSubconjunto <= __MAXIMA_CANTIDAD_REGISTROS_ASIGNACION) {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/ContratoREST/chequearAsignacion",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/ContratoREST/chequearAsignacion",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+		}).then(function(data) {
 			if (data != null
 				&& (data.ok 
 					|| confirm("Atención: se modificarán registros que ya se encuentran asignados.")

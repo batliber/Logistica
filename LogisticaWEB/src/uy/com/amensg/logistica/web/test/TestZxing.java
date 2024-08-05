@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.test;
+package uy.com.amensg.logistica.web.test;
 
 import java.io.File;
 import java.io.FileOutputStream;

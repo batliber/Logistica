@@ -28,6 +28,7 @@
 			<div class="divFormLabelExtended">Nombre (contrato):</div><div id="divEmpresaNombreContrato" class="divFormValue"><input type="text" id="inputEmpresaNombreContrato" name="inputEmpresaNombreContrato"/></div>
 			<div class="divFormLabelExtended">Nombre sucursal:</div><div id="divEmpresaNombreSucursal" class="divFormValue"><input type="text" id="inputEmpresaNombreSucursal" name="inputEmpresaNombreSucursal"/></div>
 			<div class="divFormLabelExtended">Direcci&oacute;n:</div><div id="divEmpresaDireccion" class="divFormValue"><input type="text" id="inputEmpresaDireccion" name="inputEmpresaDireccion"/></div>
+			<div class="divFormLabelExtended">No control vendidos:</div><div id="divEmpresaOmitirControlVendidos" class="divFormValue"><input type="checkbox" id="inputEmpresaOmitirControlVendidos"/></div>
 			<div class="divFormLabelExtended" id="divLabelAgregarFormaPago">Forma de pago:</div><div class="divFormValue" id="divFormaPago"><select id="selectFormaPago"></select><input type="button" id="inputAgregarFormaPago" value="" onclick="javascript:inputAgregarFormaPagoOnClick(event, this)"/></div>
 			<div class="divFormLabelExtended" id="divLabelAgregarEmpresaUsuarioContrato">Usuarios (contrato):</div><div class="divFormValue" id="divUsuario"><select id="selectUsuario"></select><input type="button" id="inputAgregarUsuario" value="" onclick="javascript:inputAgregarUsuarioOnClick(event, this)"/></div>
 			

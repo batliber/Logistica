@@ -2,10 +2,10 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Configuracion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
@@ -15,7 +15,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class ConfiguracionBean implements IConfiguracionBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta) {

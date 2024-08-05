@@ -3,7 +3,7 @@ package uy.com.amensg.logistica.bean;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.Empresa;
@@ -27,6 +27,8 @@ public interface IContratoBean {
 	
 	public Contrato getByNumeroTramite(Long numeroTramite, boolean initializeCollections);
 	
+	public Contrato getByAntelNroTrn(String antelNroTrn, Long empresaId);
+	
 	public Collection<TipoContrato> listTipoContratos();
 	
 	public Collection<TipoContrato> listTipoContratos(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
@@ -44,6 +46,12 @@ public interface IContratoBean {
 	public String procesarArchivoVentasANTELEmpresa(String fileName, Long empresaId, Long loggedUsuarioId);
 	
 	public String addAsignacionManual(Long empresaId, Contrato contrato, Long loggedUsuarioId);
+	
+	public String addAsignacionManualANTELExterna(Long empresaId, Contrato contrato, Long loggedUsuarioId);
+	
+	public String addAsignacionManualFibraOptica(Long empresaId, Contrato contrato, Long loggedUsuarioId);
+	
+	public String addAsignacionManualAtencionCliente(Long empresaId, Contrato contrato, Long loggedUsuarioId);
 	
 	public boolean chequearAsignacion(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	
@@ -113,9 +121,44 @@ public interface IContratoBean {
 	
 	public void noRecuperado(Contrato contrato);
 	
+	public void noLlamar(Contrato contrato);
+	
+	public void modemDevuelto(Contrato contrato);
+	
 	public void pickUp(Long id, String observaciones, Long loggedUsuarioId);
 	
+	public void instalar(
+		Long id, Long resultadoEntregaDistribucionId, String documento, String nombre, String observaciones, 
+		Long loggedUsuarioId
+	);
+	
+	public void asignarAtencionClienteOperador(Usuario usuario, MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public MetadataConsultaResultado notificarInstalacion(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public MetadataConsultaResultado notificarIZI(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public MetadataConsultaResultado notificarAPIStock(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
 	public void cancelarTramite(Long id, Long loggedUsuarioId);
+	
+	public void atencionClienteRellamar(Contrato contrato);
+	
+	public void atencionClienteSolucionado(Contrato contrato);
+	
+	public void atencionClienteANTEL(Contrato contrato);
+	
+	public void atencionClienteComercial(Contrato contrato);
+	
+	public void atencionClienteCambioCliente(Contrato contrato);
+	
+	public void atencionClienteSupervision(Contrato contrato);
+	
+	public void atencionClienteCerrado(Contrato contrato);
+	
+	public void atencionClienteCambioProveedor(Contrato contrato);
+	
+	public void atencionClienteRechazar(Contrato contrato);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	
@@ -124,6 +167,12 @@ public interface IContratoBean {
 	public String exportarAExcelVentasNuestroCredito(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	
 	public String exportarAExcelVentasCuentaAjena(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public String exportarAExcelFibraOptica(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public String exportarReporteTiemposFibraOptica(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
+	
+	public String exportarAExcelAtencionCliente(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	
 	public Contrato update(Contrato contrato);
 }

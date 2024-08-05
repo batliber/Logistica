@@ -39,10 +39,24 @@
 		<div class="divButton" id="divInputEquiposPagos"><input type="submit" value="Equipos pagos" onclick="javascript:inputEquiposPagosOnClick(event)"/></div>
 		<div class="divButton" id="divInputEquipoDevuelto"><input type="submit" value="Equipo devuelto" onclick="javascript:inputEquipoDevueltoOnClick(event)"/></div>
 		<div class="divButton" id="divInputNoRecuperado"><input type="submit" value="No recuperado" onclick="javascript:inputNoRecuperadoOnClick(event)"/></div>
+		<div class="divButton" id="divInputNoLlamar"><input type="submit" value="No llamar" onclick="javascript:inputNoLlamarOnClick(event)"/></div>
+		<div class="divButton" id="divInputModemDevuelto"><input type="submit" value="Módem devuelto" onclick="javascript:inputModemDevueltoOnClick(event)"/></div>
+		
+		<div class="divButton" id="divInputAtencionClienteRellamar"><input type="submit" value="Rellamar" onclick="javascript:inputAtencionClienteRellamarOnClick(event)"/></div>
+		<div class="divButton" id="divInputAtencionClienteRechazar"><input type="submit" value="Rechazar" onclick="javascript:inputAtencionClienteRechazarOnClick(event)"/></div>
+		<div class="divButton" id="divInputAtencionClienteSolucionado"><input type="submit" value="Solucionado" onclick="javascript:inputAtencionClienteSolucionadoOnClick(event)"/></div>
+		<div class="divButton" id="divInputAtencionClienteANTEL"><input type="submit" value="ANTEL" onclick="javascript:inputAtencionClienteANTELOnClick(event)"/></div>
+		<div class="divButton" id="divInputAtencionClienteComercial"><input type="submit" value="Comercial" onclick="javascript:inputAtencionClienteComercialOnClick(event)"/></div>
+		<div class="divButton" id="divInputAtencionClienteCerrado"><input type="submit" value="Cerrado" onclick="javascript:inputAtencionClienteCerradoOnClick(event)"/></div>
+		
 		<div class="divButtonBarSeparator">&nbsp;</div>
 		<div class="divButton" id="divInputEstadoRiesgoCrediticio"><input type="submit" value="Estado Riesgo" onclick="javascript:inputEstadoRiesgoCrediticioOnClick(event)"/></div>
+		<div class="divButton" id="divInputAtencionClienteCambioCliente"><input type="submit" value="Cambio cliente" onclick="javascript:inputAtencionClienteCambioClienteOnClick(event)"/></div>
+		<div class="divButton" id="divInputAtencionClienteCambioProveedor"><input type="submit" value="Cambio de proveedor" onclick="javascript:inputAtencionClienteCambioProveedorOnClick(event)"/></div>
+		<div class="divButton" id="divInputAtencionClienteSupervision"><input type="submit" value="Supervisión" onclick="javascript:inputAtencionClienteSupervisionOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirKit"><input type="submit" value="Imprimir kit" onclick="javascript:inputImprimirKitOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirKitANTEL"><input type="submit" value="Imprimir kit" onclick="javascript:inputImprimirKitANTELOnClick(event)"/></div>
+		<div class="divButton" id="divInputImprimirQRInstalacionFibra"><input type="submit" value="Imprimir QR" onclick="javascript:inputImprimirQRInstalacionFibraOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirContrato"><input type="submit" value="Imprimir contrato" onclick="javascript:inputImprimirContratoOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirPagare"><input type="submit" value="Imprimir pagare" onclick="javascript:inputImprimirPagareOnClick(event)"/></div>
 		<div class="divButton" id="divInputImprimirRemito"><input type="submit" value="Imprimir remito" onclick="javascript:inputImprimirRemitoOnClick(event)"/></div>
@@ -56,12 +70,14 @@
 	</div>
 	<div class="divPopupWindow">
 		<div class="divLayoutColumn">
-			<div class="divFormLabelExtended" id="divLabelEmpresa">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa"></select></div>
+			<div class="divFormLabelExtended" id="divLabelEmpresa">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa" onchange="javascript:selectEmpresaOnChange(event, this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelVendedor">Vendedor:</div><div id="divVendedor" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelBackoffice">Back-office:</div><div id="divBackoffice" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelDistribuidor">Distribuidor:</div><div id="divDistribuidor" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelActivador">Activador:</div><div id="divActivador" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelCoordinador">Coordinador:</div><div id="divCoordinador" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelAtencionClienteOperador">Operador:</div><div id="divAtencionClienteOperador" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelAtencionClienteGestionador">Gestionador:</div><div id="divAtencionClienteGestionador" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelRol">Rol:</div><div id="divRol" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelUsuario">Usuario:</div><div id="divUsuario" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelNumeroTramite">Tr&aacute;mite:</div><div id="divNumeroTramite" class="divFormValue">&nbsp;</div>
@@ -72,22 +88,28 @@
 			<div class="divFormLabelExtended" id="divLabelMid">MID:</div><div id="divMid" class="divFormValue"><input type="text" id="inputMid"/></div>
 			<div class="divFormLabelExtended" id="divLabelEstado">Estado:</div><div id="divEstado" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelRandom">Random:</div><div id="divRandom" class="divFormValue">&nbsp;</div>
-			<div class="divFormLabelExtended" id="divLabelFechaVenta">Fecha de venta:</div><div id="divFechaVenta" class="divFormValue">&nbsp;</div>
-			<div class="divFormLabelExtended" id="divLabelFechaVentaMostrar">Fecha de venta:</div><div id="divFechaVentaMostrar" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaVenta">Fecha de venta:</div><div id="divFechaVenta" class="divFormValue">&nbsp;</div>			
 			<div class="divFormLabelExtended" id="divLabelFechaBackoffice">Fecha de backoffice:</div><div id="divFechaBackoffice" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaEntregaDistribuidor">Fecha de entrega distribuidor:</div><div id="divFechaEntregaDistribuidor" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaDevolucionDistribuidor">Fecha de devoluci&oacute;n distribuidor:</div><div id="divFechaDevolucionDistribuidor" class="divFormValue">&nbsp;</div>
-			<div class="divFormLabelExtended" id="divLabelFechaEnvioAntel">Fecha de env&iacute;o a ANTEL:</div><div id="divFechaEnvioAntel" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaEnvioAntel">Fecha de env&iacute;o a ANTEL:</div><div id="divFechaEnvioAntel" class="divFormValue"><input type="text" id="inputFechaEnvioAntel"/></div>
 			<div class="divFormLabelExtended" id="divLabelFechaActivacion">Fecha de activaci&oacute;n:</div><div id="divFechaActivacion" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaCoordinacion">Fecha de cordinaci&oacute;n:</div><div id="divFechaCoordinacion" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelFechaEnvioANucleo">Fecha de env. N&uacute;cleo:</div><div id="divFechaEnvioANucleo" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaEnvioAIZI">Fecha de env. IZI:</div><div id="divFechaEnvioAIZI" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaEnvioAGLA">Fecha de env. GLA:</div><div id="divFechaEnvioAGLA" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionFecha">Fecha de resultado entrega:</div><div id="divResultadoEntregaDistribucionFecha" class="divFormValue">&nbsp;</div>
-			<div class="divFormLabelExtended" id="divLabelFechaPickUp">Fecha de pick-up:</div><div id="divFechaPickUp" divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaPickUp">Fecha de pick-up:</div><div id="divFechaPickUp" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaAtencionClienteOperador">Fecha operador:</div><div id="divFechaAtencionClienteOperador" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaAtencionClienteGestionador">Fecha gestionador:</div><div id="divFechaAtencionClienteGestionador" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaAtencionClienteDevuelto">Fecha devuelto:</div><div id="divFechaAtencionClienteDevuelto" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaAtencionClienteCierre">Fecha cierre:</div><div id="divFechaAtencionClienteCierre" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFcre">Fecha ingreso:</div><div id="divFcre" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelLocalidad">Localidad:</div><div id="divLocalidad" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelCodigoPostal">C&oacute;digo postal:</div><div id="divCodigoPostal" class="divFormValue">&nbsp;</div>
-			<div class="divFormLabelExtended" id="divLabelFechaVencimiento">Fecha de vencimiento:</div><div id="divFechaVencimiento" class="divFormValue">&nbsp;</div>
+			<div class="divFormLabelExtended" id="divLabelFechaFinContrato">Fecha de vencimiento:</div><div id="divFechaFinContrato" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelNumeroContrato">N&uacute;mero de contrato:</div><div id="divNumeroContrato" class="divFormValue"><input type="text" id="inputNumeroContrato"/></div>
-			<div class="divFormLabelExtended" id="divLabelPlan">Plan:</div><div id="divPlan" class="divFormValue"><input type="text" id="inputPlan"/></div>
+			<div class="divFormLabelExtended" id="divLabelTipoContratoDescripcion">Plan:</div><div id="divTipoContratoDescripcion" class="divFormValue"><input type="text" id="inputTipoContratoDescripcion"/></div>
 			<div class="divFormLabelExtended" id="divLabelNuevoPlanString">Nuevo plan (digit):</div><div id="divNuevoPlanString" class="divFormValue">&nbsp;</div>
 			<div class="divFormLabelExtended" id="divLabelModalidadVenta">Modalidad de venta:</div><div id="divModalidadVenta" class="divFormValue"><select id="selectModalidadVenta"></select></div>
 			<div class="divFormLabelExtended" id="divLabelNuevoPlan">Nuevo plan:</div><div id="divNuevoPlan" class="divFormValue"><select id="selectNuevoPlan"></select></div>
@@ -112,6 +134,8 @@
 			<div class="divFormLabelExtended" id="divLabelNumeroFactura" id="divLabelNumeroFactura">N&uacute;mero factura:</div><div id="divNumeroFactura" class="divFormValue"><input type="text" id="inputNumeroFactura"/></div>
 			<div class="divFormLabelExtended" id="divLabelNumeroFacturaRiverGreen" id="divLabelNumeroFacturaRiverGreen">N&uacute;m. fac. River Green:</div><div id="divNumeroFacturaRiverGreen" class="divFormValue"><input type="text" id="inputNumeroFacturaRiverGreen"/><input type="checkbox" id="inputFacturaRiverGreen" onclick="javascript:inputFacturaRiverGreenOnClick(event, this)"/></div>
 			<div class="divFormLabelExtended" id="divLabelNumeroSerie" id="divLabelNumeroSerie">Nº de serie:</div><div id="divNumeroSerie" class="divFormValue"><input type="text" id="inputNumeroSerie" onchange="javascript:inputNumeroSerieOnChange(event, this)"/></div>
+			<div class="divFormLabelExtended" id="divLabelAtencionClienteTipoContacto">Tipo:</div><div id="divAtencionClienteTipoContacto" class="divFormValue"><select id="selectAtencionClienteTipoContacto"></select></div>
+			<div class="divFormLabelExtended" id="divLabelAtencionClienteConcepto">Concepto:</div><div id="divAtencionClienteConcepto" class="divFormValue"><select id="selectAtencionClienteConcepto"></select></div>
 			<div class="divFormLabelExtended" id="divLabelNumeroChip" id="divLabelNumeroChip">Nº de chip:</div><div id="divNumeroChip" class="divFormValue"><input type="text" id="inputNumeroChip"/></div>
 			<div class="divFormLabelExtended" id="divLabelNumeroBloqueo" id="divLabelNumeroBloqueo">C&oacute;d. de bloqueo:</div><div id="divNumeroBloqueo" class="divFormValue"><input type="text" id="inputNumeroBloqueo"/></div>
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucion">Resultado entrega:</div><div id="divResultadoEntregaDistribucion" class="divFormValue">&nbsp;</div>
@@ -135,6 +159,8 @@
 			<div class="divFormLabelExtended" id="divLabelTurno">Turno:</div><div id="divTurno" class="divFormValue"><select id="selectTurno" onchange="javascript:selectTurnoOnChange(this)"></select></div>
 			<div class="divFormLabelExtended" id="divLabelFechaEntrega">Fecha de entrega:</div><div id="divFechaEntrega" class="divFormValue"><select id="selectFechaEntrega"></select></div>
 			<div class="divFormLabelExtended" id="divLabelFechaActivarEn">Activar en:</div><div id="divFechaActivarEn" class="divFormValue"><input type="text" id="inputFechaActivarEn"/></div>
+			<div class="divFormLabelExtended" id="divLabelAtencionClienteCantidadVeces">Veces cons./recl.:</div><div id="divAtencionClienteCantidadVeces" class="divFormValue"><input type="text" id="inputAtencionClienteCantidadVeces"/></div>
+			<div class="divFormLabelExtended" id="divLabelAtencionClienteRespuestaTecnicaComercial">Respuesta téc./com:</div><div id="divAtencionClienteRespuestaTecnicaComercial" class="divFormValue"><select id="selectRespuestaTecnicaComercial"></select></div>
 			<div class="divFormLabelExtended" id="divLabelObservaciones">Observaciones:</div><div id="divObservaciones" class="divFormValue"><textarea id="textareaObservaciones"></textarea></div>
 			<div class="divFormLabelExtended" id="divLabelResultadoEntregaDistribucionObservaciones">Obs. entrega:</div><div id="divResultadoEntregaDistribucionObservaciones" class="divFormValue"><textarea id="textareaResultadoEntregaDistribucionObservaciones"></textarea></div>
 		</div>

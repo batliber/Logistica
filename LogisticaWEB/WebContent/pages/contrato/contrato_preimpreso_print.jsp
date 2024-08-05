@@ -404,11 +404,12 @@
 %>
 					<div class="divFila" style="height: 30px;border-bottom: none;">
 						<div class="divColumnaFifth" style="width: 108px;height: 28px;">Llamadas</div>
-						<div class="divColumnaFifth" style="width: 175px;height: 28px;">&nbsp;</div>
-						<div class="divColumnaFifth" style="width: 75px;height: 28px;border-bottom: solid 1px black;">Destino Antel (por minuto)</div>
-						<div class="divColumnaFifth" style="width: 120px;height: 28px;border-bottom: solid 1px black;">Destino celular (otras compa&ntilde;&iacute;as) (por minuto)</div>
-						<div class="divColumnaFifthFiller" style="width: 163px;height: 28px;border-bottom: solid 1px black;">Destinos a m&oacute;viles amigos (por minuto)<sup>(2)</sup></div>
+						<div class="divColumnaFifth" style="width: 175px;height: 28px;">Inclu&iacute;do</div>
+						<div class="divColumnaFifth" style="width: 85px;height: 28px;border-bottom: solid 1px black;">Destino Antel (por min) $<input type="text" class="inputEspecificacionesPrecioMinutoHorarioNormal"/></div>
+						<div class="divColumnaFifth" style="width: 140px;height: 28px;border-bottom: solid 1px black;">Destino celular (otras compa&ntilde;&iacute;as) (por min) $<input type="text" class="inputEspecificacionesPrecioMinutoOtrasOperadoras"/></div>
+						<div class="divColumnaFifthFiller" style="width: 133px;height: 28px;border-bottom: solid 1px black;">Destinos a m&oacute;viles amigos (por min)<sup>(2)</sup> $<input type="text" class="inputEspecificacionesPrecioMinutoNumerosAmigos"/></div>
 					</div>
+					<!-- 
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 						<div class="divColumnaFifth" style="width: 108px;height: 18px;">&nbsp;</div>
 						<div class="divColumnaFifth" style="width: 175px;height: 18px;border-bottom: solid 1px black;">&nbsp;</div>
@@ -416,18 +417,21 @@
 						<div class="divColumnaFifth" style="width: 120px;height: 18px;border-bottom: solid 1px black;">$<input type="text" class="inputEspecificacionesPrecioMinutoOtrasOperadoras"/></div>
 						<div class="divColumnaFifthFiller" style="width: 163px;height: 18px;border-bottom: solid 1px black;">$<input type="text" class="inputEspecificacionesPrecioMinutoNumerosAmigos"/></div>
 					</div>
+					 -->
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 						<div class="divColumnaQuarter" style="width: 108px;height: 18px;">&nbsp;</div>
-						<div class="divColumnaQuarter" style="width: 175px;height: 18px;">Inclu&iacute;do</div>
-						<div class="divColumnaQuarter" style="width: 198px;height: 18px;border-bottom: solid 1px black;">M&oacute;viles gratis destinos Antel<sup>(3)</sup></div>
-						<div class="divColumnaQuarterFiller" style="width: 163px;height: 18px;border-bottom: solid 1px black;">Fijo gratis de ANTEL<sup>(4)</sup></div>
+						<div class="divColumnaQuarter" style="width: 175px;height: 18px;border-bottom: solid 1px black;">&nbsp;</div>
+						<div class="divColumnaQuarter" style="width: 198px;height: 18px;border-bottom: solid 1px black;">M&oacute;viles gratis destinos Antel<sup>(3)</sup> <input type="text" class="inputEspecificacionesMinutosGratisMovil"/></div>
+						<div class="divColumnaQuarterFiller" style="width: 163px;height: 18px;border-bottom: solid 1px black;">Fijo gratis de ANTEL<sup>(4)</sup> <input type="text" class="inputEspecificacionesMinutosGratisFijo"/></div>
 					</div>
+					<!-- 
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 						<div class="divColumnaQuarter" style="width: 108px;height: 18px;">&nbsp;</div>
 						<div class="divColumnaQuarter" style="width: 175px;height: 18px;border-bottom: solid 1px black;">&nbsp;</div>
 						<div class="divColumnaQuarter" style="width: 198px;height: 18px;border-bottom: solid 1px black;"><input type="text" class="inputEspecificacionesMinutosGratisMovil"/></div>
 						<div class="divColumnaQuarterFiller" style="width: 163px;height: 18px;border-bottom: solid 1px black;"><input type="text" class="inputEspecificacionesMinutosGratisFijo"/></div>
 					</div>
+					 -->
 <%
 		}
 %>
@@ -474,34 +478,40 @@
 					</div>
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 						<div class="divColumnaThird" style="width: 108px;height: 18px;">Mensajer&iacute;a</div>
-						<div class="divColumnaThird" style="width: 175px;height: 18px;">&nbsp;</div>
-						<div class="divColumnaThirdFiller" style="width: 364px;height: 18px;border-bottom: solid 1px black;">Precio SMS (por sms)</div>
+						<div class="divColumnaThird" style="width: 175px;height: 18px;">Inclu&iacute;do</div>
+						<div class="divColumnaThirdFiller" style="width: 364px;height: 18px;border-bottom: solid 1px black;">Precio SMS (por sms) $<input type="text" class="inputEspecificacionesPrecioSMS"/></div>
 					</div>
+					<!-- 
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 						<div class="divColumnaThird" style="width: 108px;height: 18px;">&nbsp;</div>
 						<div class="divColumnaThird" style="width: 175px;height: 18px;border-bottom: solid 1px black;">&nbsp;</div>
 						<div class="divColumnaThirdFiller" style="width: 364px;height: 18px;border-bottom: solid 1px black;">$<input type="text" class="inputEspecificacionesPrecioSMS"/></div>
 					</div>
+					 -->
 					<div class="divFila" style="height: 20px;border-bottom: none;">
-						<div class="divColumnaThird" style="width: 108px;height: 18px;">&nbsp;</div>
-						<div class="divColumnaThird" style="width: 175px;height: 18px;">Inclu&iacute;do</div>
-						<div class="divColumnaThirdFiller" style="width: 364px;height: 18px;border-bottom: solid 1px black;">SMS gratis destinos Antel<sup>(5)</sup></div>
+						<div class="divColumnaThird" style="width: 108px;height: 18px;border-bottom: solid 1px black;">&nbsp;</div>
+						<div class="divColumnaThird" style="width: 175px;height: 18px;border-bottom: solid 1px black;">&nbsp;</div>
+						<div class="divColumnaThirdFiller" style="width: 364px;height: 18px;border-bottom: solid 1px black;">SMS gratis destinos Antel<sup>(5)</sup> <input type="text" class="inputEspecificacionesSMSGratisMovil"/> sms</div>
 					</div>
+					<!-- 
 					<div class="divFila" style="height: 20px;">
 						<div class="divColumnaThird" style="width: 108px;">&nbsp;</div>
 						<div class="divColumnaThird" style="width: 175px;">&nbsp;</div>
 						<div class="divColumnaThirdFiller" style="width: 364px;"><input type="text" class="inputEspecificacionesSMSGratisMovil"/> sms</div>
 					</div>
+					 -->
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 						<div class="divColumnaThird" style="width: 108px;height: 18px;">Navegaci&oacute;n</div>
 						<div class="divColumnaThird" style="width: 175px;height: 18px;">&nbsp;</div>
-						<div class="divColumnaThirdFiller" style="width: 364px;height: 18px;border-bottom: solid 1px black;">Precio del MB (por MB)<sup><%= (!conLimite) ? "(6)" : "" %></sup></div>
+						<div class="divColumnaThirdFiller" style="width: 364px;height: 18px;border-bottom: solid 1px black;">Precio del MB (por MB)<sup><%= (!conLimite) ? "(6)" : "" %></sup> $<input type="text" class="inputEspecificacionesConsumoFueraBono"/></div>
 					</div>
+					<!-- 
 					<div class="divFila" style="height: 20px;border-bottom: none;">
 						<div class="divColumnaThird" style="width: 108px;height: 18px;">&nbsp;</div>
 						<div class="divColumnaThird" style="width: 175px;height: 18px;border-bottom: solid 1px black;">&nbsp;</div>
 						<div class="divColumnaThirdFiller" style="width: 364px;height: 18px;border-bottom: solid 1px black;">$<input type="text" class="inputEspecificacionesConsumoFueraBono"/></div>
 					</div>
+					 -->
 					<div class="divFila" style="height: 20px;">
 						<div class="divColumnaThird" style="width: 108px;height: 18px;">&nbsp;</div>
 						<div class="divColumnaThird" style="width: 175px;height: 18px;">M&aacute;ximo rendimiento para datos<sup>(1)</sup></div>
@@ -512,6 +522,17 @@
 						<div class="divColumnaHalfFiller" style="width: 542px;height: 18px;"><input type="text" class="inputEspecificacionesDuraccionContractual"/></div>
 					</div>
 				</div>
+<%
+		if (contrato.getNuevoPlan() != null 
+			&& contrato.getNuevoPlan().getDescripcion().startsWith("2425")) {
+%>
+				<div class="">
+					Promoci&oacute;n: el plan cuenta con 10.000 minutos incluidos a destinos fijos y m&oacute;viles de Antel durante 12 meses. Finalizada la duraci&oacute;n contractual del plan de 12 meses, el consumo m&iacute;nimo pasar&aacute; a ser $530, el m&aacute;ximo rendimiento de datos ser&aacute; 4 GB y no dispondr&aacute; del beneficio promocional de 10.000 minutos incluidos a destinos Antel. Este plan permite realizar recargas de saldo y promocionales, servicios de valor agregado y contratar paquetes de roaming a pagar en factura. Verificar los topes del plan en www.antel.com.uy.
+				</div>
+<%
+		}
+%>
+
 <%
 		if (conLimite) {
 %>
@@ -591,14 +612,17 @@
 %>
 				<div class=""><span style="font-weight: bold;">Roaming:</span> Tu plan cuenta con el beneficio Roaming como en casa. Consult&aacute; los pa&iacute;ses habilitados y detalles de este beneficio en antel.com.uy/casa</div>
 				<div class="">Los beneficios se eligen en www.antel.com.uy, por la App o *611# y rigen dentro del territorio nacional, por m&aacute;s informaci&oacute;n en www.antel.com.uy</div>
+				<div class=""><span style="font-weight: bold;">Portabilidad:</span> Clientes con servicios activos de Antel: Si al solicitar la portaci&oacute;n hacia Antel el Cliente adquiere un equipo haciendo uso de las bonificaciones disponibles sobre su precio de lista y luego su solicitud resulta rechazada, deber&aacute; reintegrar a Antel el monto de la bonificaci&oacute;n otorgada. Para tal caso, el Cliente autoriza a Antel a facturar el monto de la bonificaci&oacute;n otorgada en cualquiera de sus cuentas de servicios de Antel y en un n&uacute;mero de cuotas igual al del plan de financiaci&oacute;n seleccionado para la compra del equipo. Clientes sin servicios activos de Antel: Al solicitar la portaci&oacute;n hacia Antel, finalizado el tr&aacute;mite, el Cliente puede adquirir un equipo haciendo uso de las bonificaciones disponibles sobre su precio de lista. Condici&oacute;n suspensiva: La vigencia de este contrato queda supeditada al &eacute;xito de la portaci&oacute;n, si &eacute;sta es rechazada conforme a lo dispuesto Reglamento de Portabilidad Num&eacute;rica aprobado por Decreto Nro. 26/021 de 19 de enero de 2021, el contrato se tendr&aacute; por no suscrito. En las contrataciones no presenciales el consumidor podr&aacute; ejercer el derecho consagrado en el art&iacute;culo 16 de la Ley 17.250, dentro de los cinco d&iacute;as h&aacute;biles siguientes a la contrataci&oacute;n del servicio o entrega del producto, cumpliendo en todo, con las condiciones establecidas en dicha norma. El Reglamento de Servicios de ANTEL, las Condiciones de Contrataci&oacute;n y las Condiciones de garant&iacute;a de Equipos y/o accesorios forman parte de este documento y pueden consultarse en la Web de ANTEL <a href="https://www.antel.com.uy/condiciones">www.antel.com.uy/condiciones</a> , en los Locales Comerciales y/o Tiendas. Los cargos mensuales establecidos en el contrato ser&aacute;n modificados autom&aacute;ticamente de conformidad con lo dispuesto en el Art. 12 del Decreto Ley Nº 14.235 de 25 de julio de 1974 en la redacci&oacute;n dada por el Art. 13 de la Ley Nº 16.211 del 1 de octubre de 1991 y el Art. 353 de la Ley Nº 19.996. Cuando el documento es firmado electr&oacute;nicamente se le env&iacute;a a la direcci&oacute;n de correo electr&oacute;nico declarado por el cliente; si se firma de forma manuscrita se entrega el original al cliente en el mismo acto de su suscripci&oacute;n y se guarda copia fiel del original.</div>
+				<!-- 
 				<div class="" style="font-weight: bold;">Duraci&oacute;n contractual: <sup>(7)</sup></div>
 				<div class="">- Plazo contractual culminado, si realiza un cambio de plan sin comprar un equipo m&oacute;vil, el nuevo plan ser&aacute; de libre rescisi&oacute;n.</div>
 				<div class="">- Plazo contractual no culminado, si realiza un cambio de plan a uno de igual o mayor consumo m&iacute;nimo, sin comprar un equipo m&oacute;vil, se mantendr&aacute; la duraci&oacute;n del contrato original.</div>
 				<div class="">En las contrataciones no presenciales el consumidor podr&aacute; ejercer el derecho consagrado en el art&iacute; 16 de la Ley 17.250, dentro de los cinco d&iacute;as h&aacute;biles siguientes a la contrataci&oacute;n del servicio o entrega del producto, cumpliendo en todo, con las condiciones establecidas en dicha norma.</div>
 				<div class="">El Reglamento de Servicios de ANTEL y las Condiciones de Contrataci&oacute;n forman parte de este documento y puden consultarse en la Web de ANTEL www.antel.com.uy, en los Locales Comerciales y/o Tiendas.</div>
 				<div class="">Los cargos mensuales establecidos en el contrato ser&aacute;n modificados autom&aacute;ticamente de conformidad con lo dispuesto en el Art. 12 del Decreto de Ley Nº 14.235 de 25 de julio de 1974 en la redacci&oacute;n dada por el Art. 13 de la Ley Nº 16.211 del 1 de octubre de 1991.</div>
-				<!-- <div class="">El documento original es entregado al cliente en el mismo acto de su suscripci&oacute;n. Se guarda copia fiel del original.</div> -->
+				<div class="">El documento original es entregado al cliente en el mismo acto de su suscripci&oacute;n. Se guarda copia fiel del original.</div>
 				<div class="">Cuando el documento es firmado electr&oacute;nicamente se le env&iacute;a a la direcci&oacute;n de correo electr&oacute;nico declarado por el cliente; si se firma de forma manuscrita se entrega el original al cliente en el mismo acto de su suscripci&oacute;n y se guarda copia fiel del original.</div>
+				-->
 				<br/>
 				<div class="">
 					Observaciones:

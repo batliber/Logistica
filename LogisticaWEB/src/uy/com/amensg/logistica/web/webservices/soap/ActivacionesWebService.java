@@ -1,11 +1,11 @@
-package uy.com.amensg.logistica.webservices;
+package uy.com.amensg.logistica.web.webservices.soap;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
 import uy.com.amensg.logistica.bean.ActivacionBean;
 import uy.com.amensg.logistica.bean.ActivacionConexionBean;
 import uy.com.amensg.logistica.bean.IActivacionBean;
@@ -25,10 +25,11 @@ public class ActivacionesWebService {
 			IActivacionConexionBean iActivacionConexionBean = lookupActivacionConexionBean();
 			
 			Activacion activacion = iActivacionBean.getSiguienteMidParaActivar();
-			ActivacionConexion activacionConexion = 
-				iActivacionConexionBean.getRandomByEmpresaId(activacion.getEmpresa().getId());
 			
 			if (activacion != null) {
+				ActivacionConexion activacionConexion = 
+					iActivacionConexionBean.getRandomByEmpresaId(activacion.getEmpresa().getId());
+				
 				result = 
 					activacion.getMid() + " " 
 					+ activacion.getChip() + " "

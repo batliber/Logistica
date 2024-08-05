@@ -17,11 +17,11 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		
 		Iterator<String> iterator = data.iterator();
 		
-		// Parsear los parámetros tipados.
+		// Parsear los parï¿½metros tipados.
 		
 		// empresaId
 		try {
-			result.add(new Long(iterator.next()));
+			result.add(Long.decode(iterator.next()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -38,7 +38,7 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		
 		// vigente
 		try {
-			result.add(new Double("0" + iterator.next().replace(",", ".")));
+			result.add(Double.parseDouble("0" + iterator.next().replace(",", ".")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -46,7 +46,7 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		
 		// vigenteNoAutoLiquidable
 		try {
-			result.add(new Double("0" + iterator.next().replace(",", ".")));
+			result.add(Double.parseDouble("0" + iterator.next().replace(",", ".")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -54,7 +54,7 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		
 		// previsionesTotales
 		try {
-			result.add(new Double("0" + iterator.next().replace(",", ".")));
+			result.add(Double.parseDouble("0" + iterator.next().replace(",", ".")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -62,7 +62,7 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 		
 		// contingencias
 		try {
-			result.add(new Double("0" + iterator.next().replace(",", ".")));
+			result.add(Double.parseDouble("0" + iterator.next().replace(",", ".")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -165,9 +165,9 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 			result.setNull(parameterIndex++, Types.DECIMAL);
 		}
 		
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		result.setTimestamp(parameterIndex++, new Timestamp(new Date().getTime()));
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		
 		return result;
 	}
@@ -228,9 +228,9 @@ public class BCUInterfaceRiesgoCrediticioInstitucionFinanciera extends DataProce
 			result.setNull(parameterIndex++, Types.DECIMAL);
 		}
 		
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		result.setTimestamp(parameterIndex++, new Timestamp(new Date().getTime()));
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		
 		if (documento != null) {
 			result.setString(parameterIndex++, documento);

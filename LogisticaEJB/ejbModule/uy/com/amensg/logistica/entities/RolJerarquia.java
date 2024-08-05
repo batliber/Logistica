@@ -2,42 +2,40 @@ package uy.com.amensg.logistica.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 
 @Entity
+@IdClass(RolJerarquiaCompositeKey.class)
 @Table(name = "seguridad_rol_jerarquia")
 public class RolJerarquia implements Serializable {
 
 	private static final long serialVersionUID = -7969516374237541090L;
 
 	@Id
-	private Long id;
+	@Column(name = "rol_id")
+	private Long rolId;
 	
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "rol_id", nullable = false)
-	private Rol rol;
-	
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "rol_subordinado_id", nullable = false)
-	private Rol rolSubordinado;
+	@Id
+	@Column(name = "rol_subordinado_id")
+	private Long rolSubordinadoId;
 
-	public Rol getRol() {
-		return rol;
+	public Long getRolId() {
+		return rolId;
 	}
 
-	public void setRol(Rol rol) {
-		this.rol = rol;
+	public void setRolId(Long rolId) {
+		this.rolId = rolId;
 	}
 
-	public Rol getRolSubordinado() {
-		return rolSubordinado;
+	public Long getRolSubordinadoId() {
+		return rolSubordinadoId;
 	}
 
-	public void setRolSubordinado(Rol rolSubordinado) {
-		this.rolSubordinado = rolSubordinado;
+	public void setRolSubordinadoId(Long rolSubordinadoId) {
+		this.rolSubordinadoId = rolSubordinadoId;
 	}
 }

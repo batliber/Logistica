@@ -1,16 +1,16 @@
-package uy.com.amensg.logistica.webservices;
+package uy.com.amensg.logistica.web.webservices.soap;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
 import uy.com.amensg.logistica.bean.ACMInterfaceBean;
 import uy.com.amensg.logistica.bean.IACMInterfaceBean;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
@@ -121,7 +121,7 @@ public class LogisticaWebService {
 				acmInterfaceContrato.setNumeroCliente(Long.parseLong(numeroCliente));
 			}
 			if (numeroContrato != null) {
-				acmInterfaceContrato.setNumeroContrato(Long.parseLong(numeroContrato));
+				acmInterfaceContrato.setNumeroContrato(numeroContrato);
 			}
 			acmInterfaceContrato.setRandom(Long.valueOf(random.nextInt()));
 			if (tipoContratoCodigo != null && !tipoContratoCodigo.trim().isEmpty()) {
@@ -137,6 +137,7 @@ public class LogisticaWebService {
 
 			iACMInterfaceBean.update(acmInterfaceContrato);
 		} catch (Exception e) {
+			System.err.println("Error para el MID: " + mid);
 			e.printStackTrace();
 		}
 	}
@@ -199,6 +200,7 @@ public class LogisticaWebService {
 			
 			iACMInterfaceBean.update(acmInterfacePrepago);
 		} catch (Exception e) {
+			System.err.println("Error para el MID: " + mid);
 			e.printStackTrace();
 		}
 	}
@@ -210,6 +212,43 @@ public class LogisticaWebService {
 			
 			iACMInterfaceBean.actualizarDatosMidListaVacia(Long.parseLong(mid));
 		} catch (Exception e) {
+			System.err.println("Error para el MID: " + mid);
+			e.printStackTrace();
+		}
+	}
+	
+	@WebMethod
+	public void actualizarDatosMidListaNegra(String mid) {
+		try {
+			IACMInterfaceBean iACMInterfaceBean = lookupACMInterfaceBean();
+			
+			iACMInterfaceBean.actualizarDatosMidListaNegra(Long.parseLong(mid));
+		} catch (Exception e) {
+			System.err.println("Error para el MID: " + mid);
+			e.printStackTrace();
+		}
+	}
+	
+	@WebMethod
+	public void actualizarDatosMidNegociando(String mid) {
+		try {
+			IACMInterfaceBean iACMInterfaceBean = lookupACMInterfaceBean();
+			
+			iACMInterfaceBean.actualizarDatosMidNegociando(Long.parseLong(mid));
+		} catch (Exception e) {
+			System.err.println("Error para el MID: " + mid);
+			e.printStackTrace();
+		}
+	}
+	
+	@WebMethod
+	public void actualizarDatosMidNoLlamar(String mid) {
+		try {
+			IACMInterfaceBean iACMInterfaceBean = lookupACMInterfaceBean();
+			
+			iACMInterfaceBean.actualizarDatosMidNoLlamar(Long.parseLong(mid));
+		} catch (Exception e) {
+			System.err.println("Error para el MID: " + mid);
 			e.printStackTrace();
 		}
 	}
@@ -219,8 +258,9 @@ public class LogisticaWebService {
 		try {
 			IACMInterfaceBean iACMInterfaceBean = lookupACMInterfaceBean();
 			
-			iACMInterfaceBean.actualizarDatosNumeroContratoListaVacia(Long.parseLong(numeroContrato));
+			iACMInterfaceBean.actualizarDatosNumeroContratoListaVacia(numeroContrato);
 		} catch (Exception e) {
+			System.err.println("Error para el contrato: " + numeroContrato);
 			e.printStackTrace();
 		}
 	}
@@ -355,6 +395,7 @@ public class LogisticaWebService {
 				iACMInterfaceBean.update(acmInterfacePersona, Long.parseLong(mid));
 			}
 		} catch (Exception e) {
+			System.err.println("Error para el MID: " + mid);
 			e.printStackTrace();
 		}
 	}

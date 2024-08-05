@@ -1,5 +1,6 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_PLANES = 22;
+var __ROL_SUPERVISOR_ATENCION_CLIENTES = 75559429;
 
 var grid = null;
 
@@ -13,7 +14,8 @@ function init() {
 	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
-				|| data.usuarioRolEmpresas[i].rol.id == __ROL_PLANES) {
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_PLANES
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_ATENCION_CLIENTES) {
 				mode = __FORM_MODE_ADMIN;
 				
 				$("#divButtonNew").show();

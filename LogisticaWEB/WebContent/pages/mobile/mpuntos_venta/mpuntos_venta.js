@@ -88,14 +88,16 @@ function fillMap(visitas) {
 				url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
 			}
 			if (puntoVenta.estadoVisitaPuntoVentaDistribuidor != null) {
-				if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_PENDIENTE_ID) {
-					icon.url = "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+				if (puntoVenta.fechaBaja != null) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_AUTOR_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_PENDIENTE_ID) {
+					icon.url = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
 				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_VISITADO_ID) {
 					icon.url = "https://maps.google.com/mapfiles/ms/icons/green-dot.png";
 				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_PERMANENTE_ID) {
 					icon.url = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
-				} else if (puntoVenta.estadoVisitaPuntoVentaDistribuidor.id == __ESTADO_VISITA_AUTOR_ID) {
-					icon.url = "https://maps.google.com/mapfiles/ms/icons/blue-dot.png";
 				}
 			}
 			
@@ -129,15 +131,21 @@ function fillMap(visitas) {
 								+ "Desea navegar al punto de venta?"
 							)
 						) {
-							window.location.href = 
-								"https://www.google.com/maps/search/?api=1&dir_action=navigate&query=" + 
-									visitaPuntoVenta.puntoVenta.latitud
-									+ ", " + visitaPuntoVenta.puntoVenta.longitud
+							w = window.open(
+								"about:blank"
+							);
+							w.location = "https://www.google.com/maps/search/?api=1&dir_action=navigate&query=" 
+								+ visitaPuntoVenta.puntoVenta.latitud
+								+ ", " + visitaPuntoVenta.puntoVenta.longitud;
+							
+							if (confirm("¿Desea visitar el punto de venta?")) {
+								window.location.href = 
+									"/LogisticaWEB/pages/mobile/mvisita/mvisita.jsp?m=0&vid=" + visitaPuntoVenta.id;
+							}
 						}
 					}
 				});
 			});
-
 			
 			markers.push(marker);
 			

@@ -1,14 +1,14 @@
-package uy.com.amensg.logistica.listeners;
+package uy.com.amensg.logistica.web.listeners;
 
 import java.util.GregorianCalendar;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 import uy.com.amensg.logistica.bean.ISeguridadBean;
 import uy.com.amensg.logistica.bean.SeguridadBean;
 

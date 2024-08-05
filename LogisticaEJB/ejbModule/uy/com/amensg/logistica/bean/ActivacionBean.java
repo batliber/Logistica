@@ -14,18 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.DateType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import uy.com.amensg.logistica.entities.Activacion;
 import uy.com.amensg.logistica.entities.ActivacionLote;
 import uy.com.amensg.logistica.entities.Empresa;
@@ -45,7 +39,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class ActivacionBean implements IActivacionBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -290,9 +284,7 @@ public class ActivacionBean implements IActivacionBean {
 			
 			ActivacionLote activacionLoteManaged = iActivacionLoteBean.save(activacionLote);
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<?> insertActivacion = hibernateSession.createNativeQuery(
+			Query insertActivacion = entityManager.createNativeQuery(
 				"INSERT INTO activacion("
 					+ " id,"
 					+ " fecha_activacion,"
@@ -326,17 +318,17 @@ public class ActivacionBean implements IActivacionBean {
 				+ " )"
 			);
 			
-			insertActivacion.setParameter(1, fechaMin, DateType.INSTANCE);
-			insertActivacion.setParameter(2, hoy, DateType.INSTANCE);
-			insertActivacion.setParameter(3, hoy, DateType.INSTANCE);
-			insertActivacion.setParameter(4, hoy, DateType.INSTANCE);
-			insertActivacion.setParameter(5, Long.valueOf(1), LongType.INSTANCE);
-			insertActivacion.setParameter(6, loggedUsuarioId, LongType.INSTANCE);
-			insertActivacion.setParameter(7, loggedUsuarioId, LongType.INSTANCE);
-			insertActivacion.setParameter(8, empresa.getId(), LongType.INSTANCE);
-			insertActivacion.setParameter(9, estado.getId(), LongType.INSTANCE);
-			insertActivacion.setParameter(10, tipoActivacionId, LongType.INSTANCE);
-			insertActivacion.setParameter(11, activacionLoteManaged.getId(), LongType.INSTANCE);
+			insertActivacion.setParameter(1, fechaMin);
+			insertActivacion.setParameter(2, hoy);
+			insertActivacion.setParameter(3, hoy);
+			insertActivacion.setParameter(4, hoy);
+			insertActivacion.setParameter(5, Long.valueOf(1));
+			insertActivacion.setParameter(6, loggedUsuarioId);
+			insertActivacion.setParameter(7, loggedUsuarioId);
+			insertActivacion.setParameter(8, empresa.getId());
+			insertActivacion.setParameter(9, estado.getId());
+			insertActivacion.setParameter(10, tipoActivacionId);
+			insertActivacion.setParameter(11, activacionLoteManaged.getId());
 			
 			String line = null;
 			long lineNumber = 0;
@@ -374,8 +366,8 @@ public class ActivacionBean implements IActivacionBean {
 					if (!ok) {
 						errors++;
 					} else {
-						insertActivacion.setParameter(12, mid, LongType.INSTANCE);
-						insertActivacion.setParameter(13, chip, StringType.INSTANCE);
+						insertActivacion.setParameter(12, mid);
+						insertActivacion.setParameter(13, chip);
 
 						insertActivacion.executeUpdate();
 
@@ -437,15 +429,15 @@ public class ActivacionBean implements IActivacionBean {
 				Activacion activacion = resultList.get(0);
 				
 				EstadoActivacion estadoActivacion = 
-					iEstadoActivacionBean.getById(Long.parseLong(Configuration.getInstance().getProperty("estadoActivacion.PROCESANDO")));
+					iEstadoActivacionBean.getById(
+					Long.parseLong(Configuration.getInstance().getProperty("estadoActivacion.PROCESANDO"))
+					);
 				
 				activacion.setEstadoActivacion(estadoActivacion);
 				
 				activacion.setFact(hoy);
 				activacion.setTerm(Long.valueOf(1));
 				activacion.setUact(Long.valueOf(1));
-				
-				activacion = entityManager.merge(activacion);
 				
 				result = activacion;
 			}
@@ -481,7 +473,9 @@ public class ActivacionBean implements IActivacionBean {
 				EstadoActivacion estadoActivacion = 
 					iEstadoActivacionBean.getById(estadoActivacionId);
 				
-				if (estadoActivacionId.equals(Long.parseLong(Configuration.getInstance().getProperty("estadoActivacion.OK")))) {
+				if (estadoActivacionId.equals(
+					Long.parseLong(Configuration.getInstance().getProperty("estadoActivacion.OK")))
+				) {
 					activacion.setFechaActivacion(hoy);
 					
 					gregorianCalendar.add(GregorianCalendar.MONTH, 6);
@@ -494,8 +488,6 @@ public class ActivacionBean implements IActivacionBean {
 				activacion.setFact(hoy);
 				activacion.setTerm(Long.valueOf(1));
 				activacion.setUact(Long.valueOf(1));
-				
-				activacion = entityManager.merge(activacion);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -527,6 +519,7 @@ public class ActivacionBean implements IActivacionBean {
 					Activacion.class
 				);
 			query.setParameter("chip", chip);
+			query.setMaxResults(1);
 			
 			List<Activacion> resultList = query.getResultList();
 			if (resultList.size() > 0) {
@@ -554,6 +547,7 @@ public class ActivacionBean implements IActivacionBean {
 				);
 			query.setParameter("empresaId", empresaId);
 			query.setParameter("mid", mid);
+			query.setMaxResults(1);
 			
 			List<Activacion> resultList = query.getResultList();
 			if (resultList.size() > 0) {
@@ -584,8 +578,6 @@ public class ActivacionBean implements IActivacionBean {
 			activacionManaged.setFact(activacion.getFact());
 			activacionManaged.setTerm(activacion.getTerm());
 			activacionManaged.setUact(activacion.getUact());
-			
-			entityManager.merge(activacionManaged);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -737,6 +729,7 @@ public class ActivacionBean implements IActivacionBean {
 				+ ";Sub-lote"
 				+ ";Distribuidor"
 				+ ";Fecha asignación distribuidor"
+				+ ";Id de Punto de venta"
 				+ ";Punto de venta"
 				+ ";Fecha asignación punto venta"
 				+ ";Fecha de liquidación"
@@ -776,6 +769,9 @@ public class ActivacionBean implements IActivacionBean {
 						: "")
 					+ ";" + (activacion.getActivacionSublote() != null && activacion.getActivacionSublote().getFechaAsignacionDistribuidor() != null ?
 						format.format(activacion.getActivacionSublote().getFechaAsignacionDistribuidor())
+						: "")
+					+ ";" + (activacion.getActivacionSublote() != null && activacion.getActivacionSublote().getPuntoVenta() != null ?
+						activacion.getActivacionSublote().getPuntoVenta().getId()
 						: "")
 					+ ";" + (activacion.getActivacionSublote() != null && activacion.getActivacionSublote().getPuntoVenta() != null ?
 						activacion.getActivacionSublote().getPuntoVenta().getNombre()

@@ -12,31 +12,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.DateType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.TimestampType;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Parameter;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
+import uy.com.amensg.logistica.entities.ACMInterfaceMid;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
+import uy.com.amensg.logistica.entities.ACMInterfaceProceso;
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.ContratoRoutingHistory;
 import uy.com.amensg.logistica.entities.Empresa;
@@ -46,7 +42,7 @@ import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
 import uy.com.amensg.logistica.entities.Rol;
-import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.util.ConfigurationPH;
 import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.QueryHelper;
 
@@ -55,6 +51,9 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 	
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitPHXA")
 	private EntityManager entityManagerPH;
+	
+	@EJB
+	private IACMInterfaceProcesoBean iACMInterfaceProcesoBean;
 	
 	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogisticaXA")
 	private EntityManager entityManagerELARED;
@@ -226,7 +225,7 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 			PrintWriter printWriter = 
 				new PrintWriter(
 					new FileWriter(
-						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+						ConfigurationPH.getInstance().getProperty("exportacion.carpeta") + fileName
 					)
 				);
 			
@@ -274,6 +273,7 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 			Long importar = Long.valueOf(0);
 			Long sobreescribir = Long.valueOf(0);
 			Long omitir = Long.valueOf(0);
+			Long ursec = Long.valueOf(0);
 			for (Entry<Long, Integer> entry : map.entrySet()) {
 				switch (entry.getValue()) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
@@ -288,12 +288,17 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 						sobreescribir++;
 						
 						break;
+					case Constants.__COMPROBACION_IMPORTACION_URSEC:
+						ursec++;
+						
+						break;
 				}
 			}
 			
 			result =
 				"Se asignarán " + importar + " MIDs nuevos.|"
 				+ "Se sobreescribirán " + sobreescribir + " MIDs.|"
+				+ "Se omitirán por URSEC " + ursec + " MIDs.|"
 				+ "Se omitirán " + omitir + " MIDs.";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -317,7 +322,7 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 			Date currentDate = gregorianCalendar.getTime();
 			
 			String fileName =
-				Configuration.getInstance().getProperty("exportacion.carpeta")
+				ConfigurationPH.getInstance().getProperty("exportacion.carpeta")
 					+ gregorianCalendar.get(GregorianCalendar.YEAR)
 					+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1)
 					+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH)
@@ -329,10 +334,10 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 			PrintWriter printWriter = new PrintWriter(new FileWriter(fileName));
 			
 			Rol rolSupervisorCallCenter = 
-				entityManagerELARED.find(Rol.class, Long.parseLong(Configuration.getInstance().getProperty("rol.SupervisorCallCenter")));
+				entityManagerELARED.find(Rol.class, Long.parseLong(ConfigurationPH.getInstance().getProperty("rol.SupervisorCallCenter")));
 			
 			Estado estado = 
-				entityManagerELARED.find(Estado.class, Long.parseLong(Configuration.getInstance().getProperty("estado.LLAMAR")));
+				entityManagerELARED.find(Estado.class, Long.parseLong(ConfigurationPH.getInstance().getProperty("estado.LLAMAR")));
 			
 			Collection<ACMInterfacePrepago> subconjunto = this.listSubconjunto(metadataConsulta);
 			
@@ -342,21 +347,17 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 			}
 			Map<Long, Integer> map = iContratoBean.preprocesarConjunto(mids, empresa.getId());
 			
-			Session hibernateSession = entityManagerELARED.unwrap(Session.class);
-			
-			NativeQuery<Tuple> selectContratoExisteEmpresa = hibernateSession.createNativeQuery(
+			Query selectContratoExisteEmpresa = entityManagerELARED.createNativeQuery(
 				"SELECT id"
 				+ " FROM contrato"
 				+ " WHERE mid = :mid"
 				+ " AND empresa_id = :empresaId"
-				+ " AND estado_id = :estadoLlamarId",
-				Tuple.class
+				+ " AND estado_id = :estadoLlamarId"
 			);
-			selectContratoExisteEmpresa.addScalar("id", LongType.INSTANCE);
-			selectContratoExisteEmpresa.setParameter("empresaId", empresa.getId(), LongType.INSTANCE);
-			selectContratoExisteEmpresa.setParameter("estadoLlamarId", estado.getId(), LongType.INSTANCE);
+			selectContratoExisteEmpresa.setParameter("empresaId", empresa.getId());
+			selectContratoExisteEmpresa.setParameter("estadoLlamarId", estado.getId());
 			
-			NativeQuery<?> insertContrato = hibernateSession.createNativeQuery(
+			Query insertContrato = entityManagerELARED.createNativeQuery(
 				"INSERT INTO contrato("
 					+ " id,"
 					+ " numero_tramite,"
@@ -414,17 +415,17 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 				+ " )"
 			);
 			
-			insertContrato.setParameter(1, empresa.getId(), LongType.INSTANCE);
-			insertContrato.setParameter(2, estado.getId(), LongType.INSTANCE);
-			insertContrato.setParameter(3, rolSupervisorCallCenter.getId(), LongType.INSTANCE);
+			insertContrato.setParameter(1, empresa.getId());
+			insertContrato.setParameter(2, estado.getId());
+			insertContrato.setParameter(3, rolSupervisorCallCenter.getId());
 			
-			insertContrato.setParameter(4, currentDate, TimestampType.INSTANCE);
-			insertContrato.setParameter(5, currentDate, TimestampType.INSTANCE);
-			insertContrato.setParameter(6, Long.valueOf(1), LongType.INSTANCE);
-			insertContrato.setParameter(7, Long.valueOf(1), LongType.INSTANCE);
-			insertContrato.setParameter(8, Long.valueOf(1), LongType.INSTANCE);
+			insertContrato.setParameter(4, currentDate);
+			insertContrato.setParameter(5, currentDate);
+			insertContrato.setParameter(6, Long.valueOf(1));
+			insertContrato.setParameter(7, Long.valueOf(1));
+			insertContrato.setParameter(8, Long.valueOf(1));
 			
-			NativeQuery<?> updateContrato = hibernateSession.createNativeQuery(
+			Query updateContrato = entityManagerELARED.createNativeQuery(
 				"UPDATE contrato"
 				+ " SET random = CAST(random() * 1000000 AS integer),"
 					+ " fact = ?,"
@@ -447,11 +448,11 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 				+ " WHERE id = ?"
 			);
 			
-			updateContrato.setParameter(1, currentDate, TimestampType.INSTANCE);
-			updateContrato.setParameter(2, Long.valueOf(1), LongType.INSTANCE);
-			updateContrato.setParameter(3, Long.valueOf(1), LongType.INSTANCE);
+			updateContrato.setParameter(1, currentDate);
+			updateContrato.setParameter(2, Long.valueOf(1));
+			updateContrato.setParameter(3, Long.valueOf(1));
 			
-			NativeQuery<?> insertContratoRoutingHistory = hibernateSession.createNativeQuery(
+			Query insertContratoRoutingHistory = entityManagerELARED.createNativeQuery(
 				"INSERT INTO contrato_routing_history("
 					+ " id,"
 					+ " fecha,"
@@ -484,7 +485,7 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 				+ " )"
 			);
 			
-			insertContratoRoutingHistory.setParameter(1, currentDate, TimestampType.INSTANCE);
+			insertContratoRoutingHistory.setParameter(1, currentDate);
 			
 			DecimalFormat formatMonto = new DecimalFormat("0.00");
 			
@@ -501,27 +502,26 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 				
 				switch (map.get(acmInterfacePrepago.getMid())) {
 					case Constants.__COMPROBACION_IMPORTACION_IMPORTAR:
-						insertContrato.setParameter(9, null, StringType.INSTANCE);
-						insertContrato.setParameter(10, null, StringType.INSTANCE);
-						insertContrato.setParameter(11, null, StringType.INSTANCE);
-						insertContrato.setParameter(12, null, StringType.INSTANCE);
-						insertContrato.setParameter(13, null, LongType.INSTANCE);
-						insertContrato.setParameter(14, null, StringType.INSTANCE);
-						insertContrato.setParameter(15, null, DateType.INSTANCE);
-						insertContrato.setParameter(16, null, StringType.INSTANCE);
-						insertContrato.setParameter(17, acmInterfacePrepago.getMid(), LongType.INSTANCE);
-						insertContrato.setParameter(18, null, StringType.INSTANCE);
-						insertContrato.setParameter(19, null, LongType.INSTANCE);
-						insertContrato.setParameter(20, null, LongType.INSTANCE);
+						insertContrato.setParameter(9, null);
+						insertContrato.setParameter(10, null);
+						insertContrato.setParameter(11, null);
+						insertContrato.setParameter(12, null);
+						insertContrato.setParameter(13, null);
+						insertContrato.setParameter(14, null);
+						insertContrato.setParameter(15, null);
+						insertContrato.setParameter(16, null);
+						insertContrato.setParameter(17, acmInterfacePrepago.getMid());
+						insertContrato.setParameter(18, null);
+						insertContrato.setParameter(19, null);
+						insertContrato.setParameter(20, null);
 						insertContrato.setParameter(21, 
 							"Monto promedio: " 
 								+ (acmInterfacePrepago.getMontoPromedio() != null ? formatMonto.format(acmInterfacePrepago.getMontoPromedio()) : "0") 
 								+ ".\n"
-							+ observaciones,
-							StringType.INSTANCE
+							+ observaciones
 						);
-						insertContrato.setParameter(22, null, StringType.INSTANCE);
-						insertContrato.setParameter(23, null, StringType.INSTANCE);
+						insertContrato.setParameter(22, null);
+						insertContrato.setParameter(23, null);
 						
 						insertContrato.executeUpdate();
 						
@@ -531,31 +531,30 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 						
 						break;
 					case Constants.__COMPROBACION_IMPORTACION_SOBREESCRIBIR:
-						selectContratoExisteEmpresa.setParameter("mid", acmInterfacePrepago.getMid(), LongType.INSTANCE);
+						selectContratoExisteEmpresa.setParameter("mid", acmInterfacePrepago.getMid());
 						
-						Long contratoId = (Long) selectContratoExisteEmpresa.list().get(0).get(0);
+						Long contratoId = (Long) ((Integer) selectContratoExisteEmpresa.getResultList().get(0)).longValue();
 						
-						updateContrato.setParameter(4, null, StringType.INSTANCE);
-						updateContrato.setParameter(5, null, StringType.INSTANCE);
-						updateContrato.setParameter(6, null, StringType.INSTANCE);
-						updateContrato.setParameter(7, null, StringType.INSTANCE);
-						updateContrato.setParameter(8, null, LongType.INSTANCE);
-						updateContrato.setParameter(9, null, StringType.INSTANCE);
-						updateContrato.setParameter(10, null, DateType.INSTANCE);
-						updateContrato.setParameter(11, null, StringType.INSTANCE);
-						updateContrato.setParameter(12, null, StringType.INSTANCE);
-						updateContrato.setParameter(13, null, LongType.INSTANCE);
-						updateContrato.setParameter(14, null, LongType.INSTANCE);
+						updateContrato.setParameter(4, null);
+						updateContrato.setParameter(5, null);
+						updateContrato.setParameter(6, null);
+						updateContrato.setParameter(7, null);
+						updateContrato.setParameter(8, null);
+						updateContrato.setParameter(9, null);
+						updateContrato.setParameter(10, null);
+						updateContrato.setParameter(11, null);
+						updateContrato.setParameter(12, null);
+						updateContrato.setParameter(13, null);
+						updateContrato.setParameter(14, null);
 						updateContrato.setParameter(15, 
 							"Monto promedio: " 
 								+ (acmInterfacePrepago.getMontoPromedio() != null ? formatMonto.format(acmInterfacePrepago.getMontoPromedio()) : "0") 
 								+ ".\n"
-							+ observaciones,
-							StringType.INSTANCE
+							+ observaciones
 						);
-						updateContrato.setParameter(16, null, StringType.INSTANCE);
-						updateContrato.setParameter(17, null, StringType.INSTANCE);
-						updateContrato.setParameter(18, contratoId, LongType.INSTANCE);
+						updateContrato.setParameter(16, null);
+						updateContrato.setParameter(17, null);
+						updateContrato.setParameter(18, contratoId);
 						
 						updateContrato.executeUpdate();
 						
@@ -622,6 +621,47 @@ public class ACMInterfacePrepagoPHBean implements IACMInterfacePrepagoPHBean {
 						entityManagerELARED.remove(contrato);
 					}
 				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void reprocesar(MetadataConsulta metadataConsulta, String observaciones) {
+		try {
+			Date hoy = GregorianCalendar.getInstance().getTime();
+			
+			ACMInterfaceProceso acmInterfaceProceso = new ACMInterfaceProceso();
+			acmInterfaceProceso.setFechaInicio(hoy);
+			acmInterfaceProceso.setObservaciones(observaciones);
+			
+			acmInterfaceProceso.setUact(Long.valueOf(1));
+			acmInterfaceProceso.setFact(hoy);
+			acmInterfaceProceso.setTerm(Long.valueOf(1));
+			
+			entityManagerPH.persist(acmInterfaceProceso);
+			
+			ACMInterfaceEstado estado = 
+				entityManagerPH.find(
+					ACMInterfaceEstado.class, 
+					Long.parseLong(ConfigurationPH.getInstance().getProperty("acmInterfaceEstado.ParaProcesarPrioritario"))
+				);
+			
+			Random random = new Random();
+			
+			for (ACMInterfacePrepago acmInterfacePrepago : this.listSubconjunto(metadataConsulta)) {
+				ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
+				acmInterfaceMid.setMid(acmInterfacePrepago.getMid());
+				acmInterfaceMid.setProcesoId(acmInterfaceProceso.getId());
+				
+				acmInterfaceMid.setEstado(estado);
+				acmInterfaceMid.setRandom(Long.valueOf(random.nextInt()));
+				
+				acmInterfaceMid.setUact(Long.valueOf(1));
+				acmInterfaceMid.setFact(hoy);
+				acmInterfaceMid.setTerm(Long.valueOf(1));
+				
+				entityManagerPH.merge(acmInterfaceMid);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

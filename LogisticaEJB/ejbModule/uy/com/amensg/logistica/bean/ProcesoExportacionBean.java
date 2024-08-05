@@ -1,17 +1,46 @@
 package uy.com.amensg.logistica.bean;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
+import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.ProcesoExportacion;
+import uy.com.amensg.logistica.util.QueryBuilder;
 
 @Stateless
 public class ProcesoExportacionBean implements IProcesoExportacionBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
+	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		MetadataConsultaResultado result = new MetadataConsultaResultado();
+		
+		try {
+			return new QueryBuilder<ProcesoExportacion>().list(entityManager, metadataConsulta, new ProcesoExportacion());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	public Long count(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		Long result = null;
+		
+		try {
+			result = new QueryBuilder<ProcesoExportacion>().count(entityManager, metadataConsulta, new ProcesoExportacion());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public ProcesoExportacion save(ProcesoExportacion procesoExportacion) {
 		ProcesoExportacion result = null;
 		
@@ -29,6 +58,7 @@ public class ProcesoExportacionBean implements IProcesoExportacionBean {
 		return result;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void update(ProcesoExportacion procesoExportacion) {
 		try {
 			ProcesoExportacion procesoExportacionManaged = entityManager.find(ProcesoExportacion.class, procesoExportacion.getId());

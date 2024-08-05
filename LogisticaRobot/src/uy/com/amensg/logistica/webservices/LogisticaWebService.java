@@ -8,49 +8,52 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
-@WebService(targetNamespace = "http://webservices.logistica.amensg.com.uy/", name = "LogisticaWebService")
+@WebService(
+	targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+	name = "LogisticaWebService"
+)
 @XmlSeeAlso({ObjectFactory.class})
 public interface LogisticaWebService {
 
 	@WebMethod
-    @RequestWrapper(
-    	localName = "getSiguienteMidSinProcesar", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.GetSiguienteMidSinProcesar"
-    )
-    @ResponseWrapper(
-    	localName = "getSiguienteMidSinProcesarResponse", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.GetSiguienteMidSinProcesarResponse"
-    )
-    @WebResult(name = "return", targetNamespace = "")
+	@RequestWrapper(
+		localName = "getSiguienteMidSinProcesar", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.GetSiguienteMidSinProcesar"
+	)
+	@ResponseWrapper(
+		localName = "getSiguienteMidSinProcesarResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.GetSiguienteMidSinProcesarResponse"
+	)
+	@WebResult(name = "return", targetNamespace = "")
 	public String getSiguienteMidSinProcesar();
 	
 	@WebMethod
-    @RequestWrapper(
-    	localName = "getSiguienteNumeroContratoSinProcesar", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.GetSiguienteNumeroContratoSinProcesar"
-    )
-    @ResponseWrapper(
-    	localName = "getSiguienteNumeroContratoSinProcesarResponse", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.GetSiguienteNumeroContratoSinProcesarResponse"
-    )
-    @WebResult(name = "return", targetNamespace = "")
+	@RequestWrapper(
+		localName = "getSiguienteNumeroContratoSinProcesar", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.GetSiguienteNumeroContratoSinProcesar"
+	)
+	@ResponseWrapper(
+		localName = "getSiguienteNumeroContratoSinProcesarResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.GetSiguienteNumeroContratoSinProcesarResponse"
+	)
+	@WebResult(name = "return", targetNamespace = "")
 	public String getSiguienteNumeroContratoSinProcesar();
 	
 	@WebMethod
-    @RequestWrapper(
-    	localName = "actualizarDatosMidContrato", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidContrato"
-    )
-    @ResponseWrapper(
-    	localName = "actualizarDatosMidContratoResponse", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidContratoResponse"
-    )
+	@RequestWrapper(
+		localName = "actualizarDatosMidContrato", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidContrato"
+	)
+	@ResponseWrapper(
+		localName = "actualizarDatosMidContratoResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidContratoResponse"
+	)
 	public void actualizarDatosMidContrato(
 		@WebParam(name = "arg0", targetNamespace = "")
 		String arg0,
@@ -85,16 +88,16 @@ public interface LogisticaWebService {
 	);
 	
 	@WebMethod
-    @RequestWrapper(
-    	localName = "actualizarDatosMidPrepago", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidPrepago"
-    )
-    @ResponseWrapper(
-    	localName = "actualizarDatosMidPrepagoResponse", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidPrepagoResponse"
-    )
+	@RequestWrapper(
+		localName = "actualizarDatosMidPrepago", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidPrepago"
+	)
+	@ResponseWrapper(
+		localName = "actualizarDatosMidPrepagoResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidPrepagoResponse"
+	)
 	public void actualizarDatosMidPrepago(
 		@WebParam(name = "arg0", targetNamespace = "")
 		String arg0,
@@ -113,48 +116,96 @@ public interface LogisticaWebService {
 	);
 
 	@WebMethod
-    @RequestWrapper(
-    	localName = "actualizarDatosMidListaVacia", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidListaVacia"
-    )
-    @ResponseWrapper(
-    	localName = "actualizarDatosMidListaVaciaResponse", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidListaVaciaResponse"
-    )
+	@RequestWrapper(
+		localName = "actualizarDatosMidListaVacia", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidListaVacia"
+	)
+	@ResponseWrapper(
+		localName = "actualizarDatosMidListaVaciaResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidListaVaciaResponse"
+	)
 	public void actualizarDatosMidListaVacia(
 		@WebParam(name = "arg0", targetNamespace = "")
 		String arg0
 	);
 	
 	@WebMethod
-    @RequestWrapper(
-    	localName = "actualizarDatosNumeroContratoListaVacia", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosNumeroContratoListaVacia"
-    )
-    @ResponseWrapper(
-    	localName = "actualizarDatosNumeroContratoListaVaciaResponse", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosNumeroContratoListaVaciaResponse"
-    )
+	@RequestWrapper(
+		localName = "actualizarDatosMidListaNegra", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidListaNegra"
+	)
+	@ResponseWrapper(
+		localName = "actualizarDatosMidListaNegraResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidListaNegraResponse"
+	)
+	public void actualizarDatosMidListaNegra(
+		@WebParam(name = "arg0", targetNamespace = "")
+		String arg0
+	);
+	
+	@WebMethod
+	@RequestWrapper(
+		localName = "actualizarDatosMidNegociando", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidNegociando"
+	)
+	@ResponseWrapper(
+		localName = "actualizarDatosMidNegociandoResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidNegociandoResponse"
+	)
+	public void actualizarDatosMidNegociando(
+		@WebParam(name = "arg0", targetNamespace = "")
+		String arg0
+	);
+	
+	@WebMethod
+	@RequestWrapper(
+		localName = "actualizarDatosMidNoLlamar", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidNoLlamar"
+	)
+	@ResponseWrapper(
+		localName = "actualizarDatosMidNoLlamarResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosMidNoLlamarResponse"
+	)
+	public void actualizarDatosMidNoLlamar(
+		@WebParam(name = "arg0", targetNamespace = "")
+		String arg0
+	);
+	
+	@WebMethod
+	@RequestWrapper(
+		localName = "actualizarDatosNumeroContratoListaVacia", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosNumeroContratoListaVacia"
+	)
+	@ResponseWrapper(
+		localName = "actualizarDatosNumeroContratoListaVaciaResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosNumeroContratoListaVaciaResponse"
+	)
 	public void actualizarDatosNumeroContratoListaVacia(
 		@WebParam(name = "arg0", targetNamespace = "")
 		String arg0
 	);
 
 	@WebMethod
-    @RequestWrapper(
-    	localName = "actualizarDatosPersona", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosPersona"
-    )
-    @ResponseWrapper(
-    	localName = "actualizarDatosPersonaResponse", 
-    	targetNamespace = "http://webservices.logistica.amensg.com.uy/", 
-    	className = "uy.com.amensg.logistica.webservices.ActualizarDatosPersonaResponse"
-    )
+	@RequestWrapper(
+		localName = "actualizarDatosPersona", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosPersona"
+	)
+	@ResponseWrapper(
+		localName = "actualizarDatosPersonaResponse", 
+		targetNamespace = "http://soap.webservices.web.logistica.amensg.com.uy/", 
+		className = "uy.com.amensg.logistica.webservices.ActualizarDatosPersonaResponse"
+	)
 	public void actualizarDatosPersona(
 		@WebParam(name = "arg0", targetNamespace = "")
 		String arg0,

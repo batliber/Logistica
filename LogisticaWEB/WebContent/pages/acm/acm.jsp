@@ -29,6 +29,8 @@
 				<div class="divButton"><input type="submit" id="inputControlarRiesgoCrediticioSubconjunto" value="Controlar subconjunto" onclick="javascript:inputControlarRiesgoCrediticioSubconjuntoOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
 				<div class="divButton"><input type="submit" id="inputListaNegra" value="Lista negra" onclick="javascript:inputListaNegraOnClick(event, this)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+				<div class="divButton"><input type="submit" id="inputSubirArchivo" value="Subir archivo" onclick="javascript:inputSubirArchivoOnClick(event, this)"/></div>
 			</div>
 			<div class="divButtonTitleBar">
 				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
@@ -40,6 +42,8 @@
 				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Riesgo crediticio</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Lista negra</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Archivo</div>
 			</div>
 			<div class="divMainWindow">
 				<div>
@@ -127,6 +131,29 @@
 				<div class="divFormLabelExtended">Empresa:</div><div id="divTipoControlRiesgoCrediticioEmpresa" class="divFormValue"><select id="selectTipoControlRiesgoCrediticioEmpresa"></select></div>
 				<div class="divFormLabelExtended">Tipo de control:</div><div id="divTipoControlRiesgoCrediticio" class="divFormValue"><select id="selectTipoControlRiesgoCrediticio"></select></div>
 				<div class="divFormLabelExtended" style="display: none;">Tama&ntilde;o suconjunto:</div><div id="divTipoControlRiesgoCrediticioTamanoSubconjunto" class="divFormValue"><input type="hidden" id="inputTipoControlRiesgoCrediticioTamanoSubconjunto"/></div>
+			</div>
+		</div>
+	</div>
+	<div id="divIFrameImportacionArchivo" style="display: none;">
+		<div class="divTitleBar">
+			<div class="divTitleBarText" style="float:left;">Importaci&oacute;n archivo</div>
+			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
+		</div>
+		<div id="divImportacionArchivo">
+			<div class="divButtonBar">
+				<div class="divButton"><input type="submit" value="Aceptar" onclick="javascript:inputAceptarSubirArchivoOnClick(event)"/></div>
+				<div class="divButton"><input type="submit" value="Cancelar" onclick="javascript:inputCancelarOnClick(event)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divPopupWindow">
+				<form id="formSubirArchivo" method="POST" action="/LogisticaWEB/Upload" enctype="multipart/form-data">
+					<input type="hidden" name="caller" value="/LogisticaWEB/pages/acm/acm.jsp"/>
+					<div class="divFormLabelExtended">Archivo:</div><div id="divArchivo" class="divFormValue"><input type="file" id="inputArchivo" name="inputArchivo"/></div>
+				</form>
 			</div>
 		</div>
 	</div>

@@ -2,7 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
@@ -16,8 +16,12 @@ public interface IUsuarioBean {
 	public Collection<Usuario> listMinimal();
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
+	
+	public MetadataConsultaResultado listSubordinados(MetadataConsulta metadataConsulta, Long usuarioId);
 
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
+	
+	public Long countSubordinados(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Usuario getById(Long id, boolean initializeCollections);
 	
@@ -25,9 +29,15 @@ public interface IUsuarioBean {
 	
 	public Usuario getByLogin(String login, boolean initializeCollections);
 	
+	public Usuario getByEmailMinimal(String email);
+	
 	public Usuario save(Usuario usuario);
 	
 	public void remove(Usuario usuario);
 	
 	public Usuario update(Usuario usuario);
+	
+	public Usuario updateIntentosFallidosLogin(Usuario usuario);
+	
+	public Usuario updateBloqueado(Usuario usuario);
 }

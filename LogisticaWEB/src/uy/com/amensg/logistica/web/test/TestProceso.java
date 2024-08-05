@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.test;
+package uy.com.amensg.logistica.web.test;
 
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -277,7 +277,7 @@ public class TestProceso {
 		contrato.setFechaEntrega(GregorianCalendar.getInstance().getTime());
 		contrato.setFechaNacimiento(GregorianCalendar.getInstance().getTime());
 //		contrato.setNuevoPlan("NUEVO PLAN");
-		contrato.setNumeroContrato(Long.valueOf(1));
+		contrato.setNumeroContrato("1");
 		contrato.setObservaciones("VENTA");
 		contrato.setPrecio(Double.valueOf(1.0));
 		

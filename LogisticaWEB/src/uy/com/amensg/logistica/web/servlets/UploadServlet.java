@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.servlets;
+package uy.com.amensg.logistica.web.servlets;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -10,20 +10,24 @@ import java.util.Set;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import uy.com.amensg.logistica.bean.ACMInterfaceContratoBean;
 import uy.com.amensg.logistica.bean.ActivacionBean;
 import uy.com.amensg.logistica.bean.ContratoBean;
+import uy.com.amensg.logistica.bean.ContratoURSECBean;
 import uy.com.amensg.logistica.bean.ControlBean;
 import uy.com.amensg.logistica.bean.EmpresaBean;
+import uy.com.amensg.logistica.bean.IACMInterfaceContratoBean;
 import uy.com.amensg.logistica.bean.IActivacionBean;
 import uy.com.amensg.logistica.bean.IContratoBean;
+import uy.com.amensg.logistica.bean.IContratoURSECBean;
 import uy.com.amensg.logistica.bean.IControlBean;
 import uy.com.amensg.logistica.bean.IEmpresaBean;
 import uy.com.amensg.logistica.bean.ILiquidacionBean;
@@ -66,6 +70,8 @@ public class UploadServlet extends HttpServlet {
 				processRecargaRequest(request, response);
 			} else if (caller.contains("ANTEL")) {
 				processVentasANTELUploadRequest(request, response);
+			} else if (caller.contains("ursec")) {
+				processURSECRequest(request, response);
 			} else if (caller.contains("ventas")
 				|| caller.contains("monitoreo")) {
 				processContratoUploadRequest(request, response);
@@ -83,6 +89,8 @@ public class UploadServlet extends HttpServlet {
 				processContratoArchivoAdjuntoRequest(request, response);
 			} else if (caller.contains("liquidaciones")) {
 				processLiquidacionesRequest(request, response);
+			} else if (caller.contains("acm")) {
+				processACMInterfaceContratoRequest(request, response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -139,6 +147,9 @@ public class UploadServlet extends HttpServlet {
 		HttpSession httpSession = request.getSession(false);
 		Long loggedUsuarioId = Long.parseLong(httpSession.getAttribute("sesion").toString());
 		
+		TipoArchivoAdjunto tipoArchivoAdjunto = new TipoArchivoAdjunto();
+		tipoArchivoAdjunto.setId(Long.valueOf(1));
+		
 		IContratoBean iContratoBean = lookupContratoBean();
 		
 		Contrato contrato = iContratoBean.getByNumeroTramite(numeroTramite, true);
@@ -163,6 +174,7 @@ public class UploadServlet extends HttpServlet {
 					contratoArchivoAdjunto.setContrato(contrato);
 					contratoArchivoAdjunto.setFechaSubida(date);
 					contratoArchivoAdjunto.setUrl(stringDate + "_" + contrato.getMid() + "_" + fileName);
+					contratoArchivoAdjunto.setTipoArchivoAdjunto(tipoArchivoAdjunto);
 					
 					contratoArchivoAdjunto.setFcre(date);
 					contratoArchivoAdjunto.setFact(date);
@@ -332,19 +344,19 @@ public class UploadServlet extends HttpServlet {
 			String contentDisposition = part.getHeader("content-disposition");
 			
 			String[] tokens = contentDisposition.split(";");
-	        for (String token : tokens) {
-	        	if (token.trim().startsWith("filename")) {
-            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-            		break;
-            	}
-	        }
-	        
-	        if (fileName != null) {
-	        	fileName = stringNow + "_" + fileName;
-	        	
-	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
-	        	break;
-	        }
+			for (String token : tokens) {
+				if (token.trim().startsWith("filename")) {
+					fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+					break;
+				}
+			}
+			
+			if (fileName != null) {
+				fileName = stringNow + "_" + fileName;
+				
+				part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+				break;
+			}
 		}
 		
 		IContratoBean iContratoBean = lookupContratoBean();
@@ -390,19 +402,19 @@ public class UploadServlet extends HttpServlet {
 			String contentDisposition = part.getHeader("content-disposition");
 			
 			String[] tokens = contentDisposition.split(";");
-	        for (String token : tokens) {
-	        	if (token.trim().startsWith("filename")) {
-            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-            		break;
-            	}
-	        }
-	        
-	        if (fileName != null) {
-	        	fileName = stringNow + "_" + fileName;
-	        	
-	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
-	        	break;
-	        }
+			for (String token : tokens) {
+				if (token.trim().startsWith("filename")) {
+					fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+					break;
+				}
+			}
+			
+			if (fileName != null) {
+				fileName = stringNow + "_" + fileName;
+				
+				part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+				break;
+			}
 		}
 		
 		IContratoBean iContratoBean = lookupContratoBean();
@@ -446,17 +458,17 @@ public class UploadServlet extends HttpServlet {
 			String contentDisposition = part.getHeader("content-disposition");
 			
 			String[] tokens = contentDisposition.split(";");
-	        for (String token : tokens) {
-	        	if (token.trim().startsWith("filename")) {
-            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-            		break;
-            	}
-	        }
-	        
-	        if (fileName != null && !fileName.equals("")) {
-	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
-	        	break;
-	        }
+			for (String token : tokens) {
+				if (token.trim().startsWith("filename")) {
+					fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+					break;
+				}
+			}
+			
+			if (fileName != null && !fileName.equals("")) {
+				part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+				break;
+			}
 		}
 		
 		HttpSession httpSession = request.getSession(false);
@@ -581,19 +593,19 @@ public class UploadServlet extends HttpServlet {
 					String contentDisposition = part.getHeader("content-disposition");
 					
 					String[] tokens = contentDisposition.split(";");
-			        for (String token : tokens) {
-			        	if (token.trim().startsWith("filename")) {
-		            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-		            		break;
-		            	}
-			        }
-			        
-			        if (fileName != null) {
-			        	fileName = format.format(date) + "_" + fileName;
-			        	
-			        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
-			        	break;
-			        }
+					for (String token : tokens) {
+						if (token.trim().startsWith("filename")) {
+							fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+							break;
+						}
+					}
+					
+					if (fileName != null) {
+						fileName = format.format(date) + "_" + fileName;
+						
+						part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+						break;
+					}
 				}
 				
 				IControlBean iControlBean = lookupControlBean();
@@ -646,19 +658,19 @@ public class UploadServlet extends HttpServlet {
 			String contentDisposition = part.getHeader("content-disposition");
 			
 			String[] tokens = contentDisposition.split(";");
-	        for (String token : tokens) {
-	        	if (token.trim().startsWith("filename")) {
-            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-            		break;
-            	}
-	        }
-	        
-	        if (fileName != null) {
-	        	fileName = format.format(date) + "_" + fileName;
-	        	
-	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
-	        	break;
-	        }
+			for (String token : tokens) {
+				if (token.trim().startsWith("filename")) {
+					fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+					break;
+				}
+			}
+			
+			if (fileName != null) {
+				fileName = format.format(date) + "_" + fileName;
+				
+				part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+				break;
+			}
 		}
 		
 		IRiesgoCrediticioBean iRiesgoCrediticioBean = lookupRiesgoCrediticioBean();
@@ -707,19 +719,19 @@ public class UploadServlet extends HttpServlet {
 			String contentDisposition = part.getHeader("content-disposition");
 			
 			String[] tokens = contentDisposition.split(";");
-	        for (String token : tokens) {
-	        	if (token.trim().startsWith("filename")) {
-            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-            		break;
-            	}
-	        }
-	        
-	        if (fileName != null) {
-	        	fileName = format.format(date) + "_" + fileName;
-	        	
-	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
-	        	break;
-	        }
+			for (String token : tokens) {
+				if (token.trim().startsWith("filename")) {
+					fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+					break;
+				}
+			}
+			
+			if (fileName != null) {
+				fileName = format.format(date) + "_" + fileName;
+				
+				part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+				break;
+			}
 		}
 		
 		IRiesgoCrediticioParaguayBean iRiesgoCrediticioParaguayBean = lookupRiesgoCrediticioParaguayBean();
@@ -780,34 +792,34 @@ public class UploadServlet extends HttpServlet {
 			String[] tokens = contentDisposition.split(";");
 			for (String token : tokens) {
 				if (token.trim().startsWith("filename")) {
-	        		String fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-	        		
-	        		part.write(
+					String fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+					
+					part.write(
 						Configuration.getInstance().getProperty("importacion.carpeta") + 
 							stringDate 
 							+ (contrato.getMid() != null ? "_" + contrato.getMid() : "") 
 							+ "_" + fileName
 					);
-	        		
-	        		ContratoArchivoAdjunto contratoArchivoAdjunto = new ContratoArchivoAdjunto();
-	        		contratoArchivoAdjunto.setContrato(contrato);
-	        		contratoArchivoAdjunto.setFechaSubida(date);
-	        		contratoArchivoAdjunto.setTipoArchivoAdjunto(tipoArchivoAdjunto);
-	        		contratoArchivoAdjunto.setUrl(
-	        			stringDate 
-	        			+ (contrato.getMid() != null ? "_" + contrato.getMid() : "")
-	        			+ "_" + fileName);
-	        		
-	        		contratoArchivoAdjunto.setFcre(date);
-	        		contratoArchivoAdjunto.setFact(date);
-	        		contratoArchivoAdjunto.setTerm(Long.valueOf(1));
-	        		contratoArchivoAdjunto.setUact(loggedUsuarioId);
-	        		contratoArchivoAdjunto.setUcre(loggedUsuarioId);
-	        		
-	        		archivosAdjuntos.add(contratoArchivoAdjunto);
-	        		
-	        		break;
-        		}
+					
+					ContratoArchivoAdjunto contratoArchivoAdjunto = new ContratoArchivoAdjunto();
+					contratoArchivoAdjunto.setContrato(contrato);
+					contratoArchivoAdjunto.setFechaSubida(date);
+					contratoArchivoAdjunto.setTipoArchivoAdjunto(tipoArchivoAdjunto);
+					contratoArchivoAdjunto.setUrl(
+						stringDate 
+						+ (contrato.getMid() != null ? "_" + contrato.getMid() : "")
+						+ "_" + fileName);
+					
+					contratoArchivoAdjunto.setFcre(date);
+					contratoArchivoAdjunto.setFact(date);
+					contratoArchivoAdjunto.setTerm(Long.valueOf(1));
+					contratoArchivoAdjunto.setUact(loggedUsuarioId);
+					contratoArchivoAdjunto.setUcre(loggedUsuarioId);
+					
+					archivosAdjuntos.add(contratoArchivoAdjunto);
+					
+					break;
+				}
 			}
 		}
 		
@@ -847,19 +859,19 @@ public class UploadServlet extends HttpServlet {
 			String contentDisposition = part.getHeader("content-disposition");
 			
 			String[] tokens = contentDisposition.split(";");
-	        for (String token : tokens) {
-	        	if (token.trim().startsWith("filename")) {
-            		fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
-            		break;
-            	}
-	        }
-	        
-	        if (fileName != null) {
-	        	fileName = format.format(date) + "_" + fileName;
-	        	
-	        	part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
-	        	break;
-	        }
+			for (String token : tokens) {
+				if (token.trim().startsWith("filename")) {
+					fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+					break;
+				}
+			}
+			
+			if (fileName != null) {
+				fileName = format.format(date) + "_" + fileName;
+				
+				part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+				break;
+			}
 		}
 		
 		ILiquidacionBean iLiquidacionBean = lookupLiquidacionBean();
@@ -879,6 +891,128 @@ public class UploadServlet extends HttpServlet {
 		response.addHeader("Content-Type", "application/json");
 		response.getWriter().write(json);
 		response.getWriter().close();
+	}
+	
+	/**
+	 * Procesamiento de archivos de URSEC.
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws NamingException
+	 */
+	private void processURSECRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException {
+		HttpSession httpSession = request.getSession(false);
+		if (httpSession != null) {
+			Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+			
+			if (loggedUsuarioId != null) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
+				
+				Date date = GregorianCalendar.getInstance().getTime();
+				
+				String fileName = null;
+				for (Part part : request.getParts()) {
+					String contentDisposition = part.getHeader("content-disposition");
+					
+					String[] tokens = contentDisposition.split(";");
+					for (String token : tokens) {
+						if (token.trim().startsWith("filename")) {
+							fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+							break;
+						}
+					}
+					
+					if (fileName != null) {
+						fileName = format.format(date) + "_" + fileName;
+						
+						part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+						break;
+					}
+				}
+				
+				IContratoURSECBean iContratoURSECBean = lookupContratoURSECBean();
+				
+				String result = iContratoURSECBean.preprocesarArchivoURSEC(
+					fileName,
+					loggedUsuarioId
+				);
+				
+				request.setAttribute("message", result);
+				request.setAttribute("fileName", fileName);
+				
+				String json = "{"
+					+ "\"message\": \"" + result + "\","
+					+ "\"fileName\": \"" + fileName + "\""
+					+ "}";
+				
+				response.addHeader("Content-Type", "application/json");
+				response.getWriter().write(json);
+				response.getWriter().close();
+			}
+		}
+	}
+	
+	/**
+	 * Procesamiento de archivos con datos de ACM.
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws NamingException
+	 */
+	private void processACMInterfaceContratoRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException {
+		HttpSession httpSession = request.getSession(false);
+		if (httpSession != null) {
+			Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+			
+			if (loggedUsuarioId != null) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
+				
+				Date date = GregorianCalendar.getInstance().getTime();
+				
+				String fileName = null;
+				for (Part part : request.getParts()) {
+					String contentDisposition = part.getHeader("content-disposition");
+					
+					String[] tokens = contentDisposition.split(";");
+					for (String token : tokens) {
+						if (token.trim().startsWith("filename")) {
+							fileName = token.substring(token.indexOf("=") + 2, token.length()-1);
+							break;
+						}
+					}
+					
+					if (fileName != null) {
+						fileName = format.format(date) + "_" + fileName;
+						
+						part.write(Configuration.getInstance().getProperty("importacion.carpeta") + fileName);
+						break;
+					}
+				}
+				
+				IACMInterfaceContratoBean iACMInterfaceContratoBean = lookupACMInterfaceContratoBean();
+				
+				String result = iACMInterfaceContratoBean.preprocesarArchivo(
+					fileName,
+					loggedUsuarioId
+				);
+				
+				request.setAttribute("message", result);
+				request.setAttribute("fileName", fileName);
+				
+				String json = "{"
+					+ "\"message\": \"" + result + "\","
+					+ "\"fileName\": \"" + fileName + "\""
+					+ "}";
+				
+				response.addHeader("Content-Type", "application/json");
+				response.getWriter().write(json);
+				response.getWriter().close();
+			}
+		}
 	}
 	
 	private IContratoBean lookupContratoBean() throws NamingException {
@@ -975,5 +1109,29 @@ public class UploadServlet extends HttpServlet {
 		Context context = new InitialContext();
 		
 		return (ILiquidacionBean) context.lookup(lookupName);
+	}
+	
+	private IContratoURSECBean lookupContratoURSECBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
+		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
+		String beanName = ContratoURSECBean.class.getSimpleName();
+		String remoteInterfaceName = IContratoURSECBean.class.getName();
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
+		Context context = new InitialContext();
+		
+		return (IContratoURSECBean) context.lookup(lookupName);
+	}
+	
+	private IACMInterfaceContratoBean lookupACMInterfaceContratoBean() throws NamingException {
+		String prefix = "java:jboss/exported/";
+		String EARName = "Logistica";
+		String appName = "LogisticaEJB";
+		String beanName = ACMInterfaceContratoBean.class.getSimpleName();
+		String remoteInterfaceName = IACMInterfaceContratoBean.class.getName();
+		String lookupName = prefix + "/" + EARName + "/" + appName + "/" + beanName + "!" + remoteInterfaceName;
+		Context context = new InitialContext();
+		
+		return (IACMInterfaceContratoBean) context.lookup(lookupName);
 	}
 }

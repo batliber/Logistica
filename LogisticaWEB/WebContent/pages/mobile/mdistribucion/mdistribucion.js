@@ -31,7 +31,7 @@ function init() {
 						$("#selectResultadoEntregaDistribucion").val(data.resultadoEntregaDistribucion.id);
 					}
 					if (data.resultadoEntregaDistribucionObservaciones) {
-						$("#textareaObservaciones").text(data.resultadoEntregaDistribucionObservaciones);
+						$("#textareaObservaciones").val(data.resultadoEntregaDistribucionObservaciones);
 					}
 				}
 				

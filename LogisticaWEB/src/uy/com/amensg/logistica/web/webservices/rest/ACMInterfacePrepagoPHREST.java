@@ -1,29 +1,30 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.HashSet;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.ACMInterfacePrepagoPHBean;
 import uy.com.amensg.logistica.bean.IACMInterfacePrepagoPHBean;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
-import uy.com.amensg.logistica.entities.AsignacionTO;
 import uy.com.amensg.logistica.entities.FormaPago;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
-import uy.com.amensg.logistica.entities.PreprocesarAsignacionTO;
-import uy.com.amensg.logistica.entities.ResultadoExportacionArchivoTO;
-import uy.com.amensg.logistica.entities.ResultadoPreprocesarAsignacionTO;
 import uy.com.amensg.logistica.entities.Usuario;
+import uy.com.amensg.logistica.web.entities.AsignacionTO;
+import uy.com.amensg.logistica.web.entities.PreprocesarAsignacionTO;
+import uy.com.amensg.logistica.web.entities.ReprocesarTO;
+import uy.com.amensg.logistica.web.entities.ResultadoExportacionArchivoTO;
+import uy.com.amensg.logistica.web.entities.ResultadoPreprocesarAsignacionTO;
 
 @Path("/ACMInterfacePrepagoPHREST")
 public class ACMInterfacePrepagoPHREST {
@@ -199,6 +200,27 @@ public class ACMInterfacePrepagoPHREST {
 				IACMInterfacePrepagoPHBean iACMInterfacePrepagoPHBean = lookupBean();
 				
 				iACMInterfacePrepagoPHBean.deshacerAsignacion(metadataConsulta);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@POST
+	@Path("/reprocesar")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void reprocesar(ReprocesarTO reprocesarTO, @Context HttpServletRequest request) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				IACMInterfacePrepagoPHBean iACMInterfacePrepagoPHBean = lookupBean();
+				
+				iACMInterfacePrepagoPHBean.reprocesar(
+					reprocesarTO.getMetadataConsulta(),
+					reprocesarTO.getObservaciones()
+				);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

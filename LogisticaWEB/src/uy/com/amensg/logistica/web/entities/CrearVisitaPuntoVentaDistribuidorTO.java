@@ -1,4 +1,7 @@
-package uy.com.amensg.logistica.entities;
+package uy.com.amensg.logistica.web.entities;
+
+import uy.com.amensg.logistica.entities.MetadataConsulta;
+import uy.com.amensg.logistica.entities.Usuario;
 
 public class CrearVisitaPuntoVentaDistribuidorTO {
 

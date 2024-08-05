@@ -1,33 +1,33 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.HashSet;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.ACMInterfacePrepagoBean;
 import uy.com.amensg.logistica.bean.IACMInterfacePrepagoBean;
 import uy.com.amensg.logistica.entities.ACMInterfacePrepago;
-import uy.com.amensg.logistica.entities.AsignacionTO;
-import uy.com.amensg.logistica.entities.ControlarRiesgoCrediticioTO;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.FormaPago;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
-import uy.com.amensg.logistica.entities.PreprocesarAsignacionTO;
-import uy.com.amensg.logistica.entities.ReprocesarTO;
-import uy.com.amensg.logistica.entities.ResultadoExportacionArchivoTO;
-import uy.com.amensg.logistica.entities.ResultadoPreprocesarAsignacionTO;
 import uy.com.amensg.logistica.entities.TipoControlRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.Usuario;
+import uy.com.amensg.logistica.web.entities.AsignacionTO;
+import uy.com.amensg.logistica.web.entities.ControlarRiesgoCrediticioTO;
+import uy.com.amensg.logistica.web.entities.PreprocesarAsignacionTO;
+import uy.com.amensg.logistica.web.entities.ReprocesarTO;
+import uy.com.amensg.logistica.web.entities.ResultadoExportacionArchivoTO;
+import uy.com.amensg.logistica.web.entities.ResultadoPreprocesarAsignacionTO;
 
 @Path("/ACMInterfacePrepagoREST")
 public class ACMInterfacePrepagoREST {

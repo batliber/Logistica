@@ -309,3 +309,13 @@ function showField(elementId) {
 	$("#divLabel" + elementSuffix).show();
 	$("#div" + elementSuffix).show();
 }
+
+/**
+ * Muestra los controles compuestos por DIV de etiqueta y DIV de valor.
+ * Asume que los ids respectivos son de la forma divLabel + elementId y div + elementId. 
+ */
+function showFields(elementIds) {
+	for (var i=0; i<elementIds.length; i++) {
+		showField(elementIds[i]);
+	}
+}

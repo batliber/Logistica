@@ -23,6 +23,7 @@ function init() {
 				grid = new Grid(
 					document.getElementById("divTablePuntosVenta"),
 					{
+						tdId: { campo: "id", descripcion: "Id", abreviacion: "Id", tipo: __TIPO_CAMPO_NUMERICO },
 						tdNombre: { campo: "nombre", descripcion: "Nombre", abreviacion: "Nombre", tipo: __TIPO_CAMPO_STRING, ancho: 200 },
 						tdTelefono: { campo: "telefono", descripcion: "Teléfono", abreviacion: "Tel.", tipo: __TIPO_CAMPO_STRING, ancho: 100, oculto: true },
 						tdContacto: { campo: "contacto", descripcion: "Contacto", abreviacion: "Contacto", tipo: __TIPO_CAMPO_STRING, ancho: 150, oculto: true },
@@ -72,7 +73,7 @@ function initMap() {
 		divMap, {
 			center: {lat: 0, lng: 0},
 			zoom: 8
-    	}
+		}
 	);
 }
 
@@ -248,4 +249,24 @@ function divCloseOnClick(event, element) {
 	closePopUp(event, element.parentNode.parentNode);
 	
 	reloadData();
+}
+
+function inputExportarAExcelOnClick(event, element) {
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	
+	if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
+		$.ajax({
+			url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/exportarAExcel",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(metadataConsulta)
+		}).then(function(data) {
+			if (data != null) {
+				document.getElementById("formExportarAExcel").action = 
+					"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+				
+				document.getElementById("formExportarAExcel").submit();
+			}
+		});
+	}
 }

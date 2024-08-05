@@ -1,27 +1,39 @@
 package uy.com.amensg.riesgoCrediticio.robot;
 
-import java.net.URL;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 
-import uy.com.amensg.riesgoCrediticio.robot.util.Configuration;
 import uy.com.amensg.riesgoCrediticio.webservices.RiesgoCrediticioWebService;
 
 public class ConnectionStrategyWebService implements IConnectionStrategy {
 
-	public String getSiguienteDocumentoParaControlar() {
+	public String getSiguienteDocumentoParaControlar(String wsdlFileName) {
 		String result = "";
 		
 		try {
 			Service service = Service.create(
-				new URL(Configuration.getInstance().getProperty("RiesgoCrediticioWebServiceWSDLURL")), 
-				new QName("http://webservices.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
+				getClass().getClassLoader().getResource(wsdlFileName),
+				new QName("http://soap.webservices.web.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
 			);
 			
-			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
+			RiesgoCrediticioWebService port = service.getPort(RiesgoCrediticioWebService.class);
 			
-			result = webService.getSiguienteDocumentoParaControlar();
+			preparePort(port);
+			
+			result = port.getSiguienteDocumentoParaControlar();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -29,18 +41,20 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 		return result;
 	}
 	
-	public String getSiguienteDocumentoParaControlarRiesgoOnLine() {
+	public String getSiguienteDocumentoParaControlarRiesgoOnLine(String wsdlFileName) {
 		String result = "";
 		
 		try {
 			Service service = Service.create(
-				new URL(Configuration.getInstance().getProperty("RiesgoCrediticioWebServiceWSDLURL")), 
-				new QName("http://webservices.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
+				getClass().getClassLoader().getResource(wsdlFileName),
+				new QName("http://soap.webservices.web.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
 			);
 			
-			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
+			RiesgoCrediticioWebService port = service.getPort(RiesgoCrediticioWebService.class);
 			
-			result = webService.getSiguienteDocumentoParaControlarRiesgoOnLine();
+			preparePort(port);
+			
+			result = port.getSiguienteDocumentoParaControlarRiesgoOnLine();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -49,6 +63,7 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosRiesgoCrediticioACM(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
@@ -65,13 +80,15 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 		String numeroClienteMovil) {
 		try {
 			Service service = Service.create(
-				new URL(Configuration.getInstance().getProperty("RiesgoCrediticioWebServiceWSDLURL")), 
-				new QName("http://webservices.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
+				getClass().getClassLoader().getResource(wsdlFileName),
+				new QName("http://soap.webservices.web.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
 			);
 			
-			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
+			RiesgoCrediticioWebService port = service.getPort(RiesgoCrediticioWebService.class);
 			
-			webService.actualizarDatosRiesgoCrediticioACM(
+			preparePort(port);
+			
+			port.actualizarDatosRiesgoCrediticioACM(
 				riesgoCrediticioId,
 				empresaId,
 				documento,
@@ -93,6 +110,7 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
@@ -112,13 +130,15 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 	) {
 		try {
 			Service service = Service.create(
-				new URL(Configuration.getInstance().getProperty("RiesgoCrediticioWebServiceWSDLURL")), 
-				new QName("http://webservices.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
+				getClass().getClassLoader().getResource(wsdlFileName),
+				new QName("http://soap.webservices.web.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
 			);
 			
-			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
+			RiesgoCrediticioWebService port = service.getPort(RiesgoCrediticioWebService.class);
 			
-			webService.actualizarDatosRiesgoCrediticioBCU(
+			preparePort(port);
+			
+			port.actualizarDatosRiesgoCrediticioBCU(
 				riesgoCrediticioId,
 				empresaId,
 				documento,
@@ -142,6 +162,7 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
@@ -154,13 +175,15 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 	) {
 		try {
 			Service service = Service.create(
-				new URL(Configuration.getInstance().getProperty("RiesgoCrediticioWebServiceWSDLURL")), 
-				new QName("http://webservices.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
+				getClass().getClassLoader().getResource(wsdlFileName),
+				new QName("http://soap.webservices.web.logistica.amensg.com.uy/", "RiesgoCrediticioWebServiceService")
 			);
 			
-			RiesgoCrediticioWebService webService = service.getPort(RiesgoCrediticioWebService.class);
+			RiesgoCrediticioWebService port = service.getPort(RiesgoCrediticioWebService.class);
 			
-			webService.actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+			preparePort(port);
+			
+			port.actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
 				riesgoCrediticioId,
 				empresaId,
 				documento,
@@ -174,5 +197,36 @@ public class ConnectionStrategyWebService implements IConnectionStrategy {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void preparePort(RiesgoCrediticioWebService port) 
+		throws NoSuchAlgorithmException, KeyStoreException, CertificateException, FileNotFoundException, 
+		IOException, UnrecoverableKeyException, KeyManagementException {
+		BindingProvider bindingProvider = (BindingProvider) port;
+		
+		TrustManager[] trustAllCerts = new TrustManager[] { 
+			new X509TrustManager() {
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+				
+				public void checkServerTrusted(X509Certificate[] chain, String authType)
+					throws CertificateException {
+				}
+			
+				public void checkClientTrusted(X509Certificate[] chain, String authType)
+					throws CertificateException {
+				}
+			}
+		};
+		
+		SSLContext sslContext = SSLContext.getInstance("SSL");
+		
+		sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+		
+		bindingProvider.getRequestContext().put(
+			"com.sun.xml.internal.ws.transport.https.client.SSLSocketFactory",
+			sslContext.getSocketFactory()
+		);
 	}
 }

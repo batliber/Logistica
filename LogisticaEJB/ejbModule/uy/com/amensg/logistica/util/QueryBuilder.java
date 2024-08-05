@@ -3,20 +3,21 @@ package uy.com.amensg.logistica.util;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.ParameterExpression;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
@@ -40,7 +41,7 @@ public class QueryBuilder<T> {
 			List<Order> orderBy = this.construirOrderBy(criteriaBuilder, metadataConsulta, root);
 			
 			criteriaQuery
-				.select(null)
+				.select(root)
 				.where(where)
 				.orderBy(orderBy);
 
@@ -387,35 +388,133 @@ public class QueryBuilder<T> {
 						field = root.get(campos[campos.length - 1]);
 					}
 					
-					try {
-						if (field.getJavaType().equals(Date.class)) {
+					if (field.getJavaType().equals(Date.class)) {
+						try {
+							Date valorDate = format.parse(valor);
+							
 							result.setParameter(
 								"p" + i,
-								format.parse(valor)
+								valorDate
 							);
-						} else if (field.getJavaType().equals(Long.class)) {
-							result.setParameter(
-								"p" + i,
-								Long.parseLong(valor)
+						} catch (Exception e) {
+							System.err.println("Valor no válido en metadataConsulta: " 
+								+ metadataCondicion.getCampo() + " " + metadataCondicion.getOperador()  + " "  + valor
 							);
-						} else if (field.getJavaType().equals(String.class)) {
+							
+							Date valorDate = null;
+							
+							if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_IGUAL)) {
+								GregorianCalendar gregorianCalendar = new GregorianCalendar();
+								gregorianCalendar.set(GregorianCalendar.YEAR, 1900);
+								
+								valorDate = gregorianCalendar.getTime();
+								
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_IGUAL)) {
+								GregorianCalendar gregorianCalendar = new GregorianCalendar();
+								gregorianCalendar.set(GregorianCalendar.YEAR, 1900);
+								
+								valorDate = gregorianCalendar.getTime();
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MAYOR)) {
+								GregorianCalendar gregorianCalendar = new GregorianCalendar();
+								gregorianCalendar.set(GregorianCalendar.YEAR, 3000);
+								
+								valorDate = gregorianCalendar.getTime();
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MENOR)) {
+								GregorianCalendar gregorianCalendar = new GregorianCalendar();
+								gregorianCalendar.set(GregorianCalendar.YEAR, 1900);
+								
+								valorDate = gregorianCalendar.getTime();
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_ENTRE)) {
+								
+							}
+							
 							result.setParameter(
 								"p" + i,
-								valor
-							);
-						} else if (field.getJavaType().equals(Double.class)) {
-							result.setParameter(
-								"p" + i,
-								Double.parseDouble(valor)
-							);
-						} else if (field.getJavaType().equals(Boolean.class)) {
-							result.setParameter(
-								"p" + i,
-								Boolean.parseBoolean(valor)
+								valorDate
 							);
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
+					} else if (field.getJavaType().equals(Long.class)) {
+						try {
+							Long valorLong = Long.parseLong(valor);
+							
+							result.setParameter(
+								"p" + i,
+								valorLong
+							);
+						} catch (Exception e) {
+							System.err.println("Valor no válido en metadataConsulta: " 
+								+ metadataCondicion.getCampo() + " " + metadataCondicion.getOperador()  + " "  + valor
+							);
+							
+							Long valorLong = Long.MIN_VALUE;
+							
+							if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_IGUAL)) {
+								valorLong = Long.MIN_VALUE;
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_IGUAL)) {
+								valorLong = Long.MAX_VALUE;
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MAYOR)) {
+								valorLong = Long.MAX_VALUE;
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MENOR)) {
+								valorLong = Long.MIN_VALUE;
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_ENTRE)) {
+								valorLong = Long.MIN_VALUE;
+							}
+							
+							result.setParameter(
+								"p" + i,
+								valorLong
+							);
+						}
+					} else if (field.getJavaType().equals(String.class)) {
+						result.setParameter(
+							"p" + i,
+							valor
+						);
+					} else if (field.getJavaType().equals(Double.class)) {
+						try {
+							Double valorDouble = Double.parseDouble(valor);
+							
+							result.setParameter(
+								"p" + i,
+								valorDouble
+							);
+						} catch (Exception e) {
+							System.err.println("Valor no válido en metadataConsulta: " 
+								+ metadataCondicion.getCampo() + " " + metadataCondicion.getOperador()  + " "  + valor
+							);
+							
+							Double valorDouble = Double.MIN_VALUE;
+							
+							if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_IGUAL)) {
+								valorDouble = Double.MIN_VALUE;
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_NOT_IGUAL)) {
+								valorDouble = Double.MAX_VALUE;
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MAYOR)) {
+								valorDouble = Double.MAX_VALUE;
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_MENOR)) {
+								valorDouble = Double.MIN_VALUE;
+							} else if (metadataCondicion.getOperador().equals(Constants.__METADATA_CONDICION_OPERADOR_ENTRE)) {
+								valorDouble = Double.MIN_VALUE;
+							}
+							
+							result.setParameter(
+								"p" + i,
+								valorDouble
+							);
+						}
+					} else if (field.getJavaType().equals(Boolean.class)) {
+						try {
+							Boolean valorBoolean = Boolean.parseBoolean(valor);
+							
+							result.setParameter(
+								"p" + i,
+								valorBoolean
+							);
+						} catch (Exception e) {
+							System.err.println("Valor no válido en metadataConsulta: " 
+								+ metadataCondicion.getCampo() + " " + metadataCondicion.getOperador()  + " "  + valor
+							);
+						}
 					}
 					
 					i++;

@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.PuntoVenta;
 import uy.com.amensg.logistica.entities.RecargaEmpresa;
@@ -17,7 +17,7 @@ import uy.com.amensg.logistica.entities.RecargaMovimiento;
 @Stateless
 public class RecargaMovimientoBean implements IRecargaMovimientoBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public Collection<RecargaMovimiento> listSaldoByPuntoVenta(PuntoVenta puntoVenta) {

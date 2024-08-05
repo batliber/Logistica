@@ -18,8 +18,8 @@ function init() {
 	$("#divButtonExportarAExcelEncargadoActivacionesSinDistribucion").hide();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
 				|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION_CHIPS
@@ -43,10 +43,13 @@ function init() {
 						tdActivacionSublote: { campo: "activacionSublote.numero", abreviacion: "Sublote", descripcion: "Sublote", tipo: __TIPO_CAMPO_NUMERICO },
 						tdDistribuidor: { campo: "activacionSublote.distribuidor.nombre", clave: "activacionSublote.distribuidor.id", descripcion: "Distribuidor", abreviacion: "Distribuidor", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDistribuidores, clave: "id", valor: "nombre" }, ancho: 125 },
 						tdFechaAsignacionDistribuidor: { campo: "activacionSublote.fechaAsignacionDistribuidor", abreviacion: "F. Asign. Distr.", descripcion: "Fecha asign. Distribuidor", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
+						tdPuntoVentaId: { campo: "activacionSublote.puntoVenta.id", descripcion: "Id de Punto de Venta.", abreviacion: "Id PV.", tipo: __TIPO_CAMPO_NUMERICO },
 						tdPuntoVenta: { campo: "activacionSublote.puntoVenta.nombre", clave: "activacionSublote.puntoVenta.id", descripcion: "Punto de venta", abreviacion: "Punto de venta", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listPuntoVentas, clave: "id", valor: "nombre" }, ancho: 125 },
 						tdPuntoVentaDepartamento: { campo: "activacionSublote.puntoVenta.departamento.nombre", clave: "activacionSublote.puntoVenta.departamento.id", descripcion: "Departamento", abreviacion: "Departamento", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listDepartamentos, clave: "id", valor: "nombre" } },
 						tdFechaAsignacionPuntoVenta: { campo: "activacionSublote.fechaAsignacionPuntoVenta", abreviacion: "F. Asign. P.V.", descripcion: "Fecha asign. Pto. venta", tipo: __TIPO_CAMPO_FECHA, ancho: 90 },
 						tdFechaLiquidacion: { campo: "liquidacion.fechaLiquidacion", abreviacion: "F. Liq.", descripcion: "Fecha de liquidación", tipo: __TIPO_CAMPO_FECHA_HORA },
+						tdFcre: { campo: "fcre", abreviacion: "Creado", descripcion: "Creado", tipo: __TIPO_CAMPO_FECHA_HORA },
+						tdFact: { campo: "fact", abreviacion: "Modificado", descripcion: "Modificado", tipo: __TIPO_CAMPO_FECHA_HORA }
 					}, 
 					true,
 					reloadData,
@@ -144,29 +147,29 @@ function init() {
 		$("#divIFrameActivacion").draggable();
 		$("#divIFrameSeleccionVendedor").draggable();
 		$("#divIFrameImportacionArchivo").draggable();
-    });
+	});
 }
 
 function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/ActivacionREST/listContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.reload(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/ActivacionREST/listContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.reload(data);
+	});
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/ActivacionREST/countContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.setCount(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/ActivacionREST/countContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.setCount(data);
+	});
 }
 
 function inputActualizarOnClick(event, element) {
@@ -211,26 +214,26 @@ function closeDialog() {
 
 function inputSubirArchivoOnClick(event, element) {
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
-    }).then(function(data) {
-    	fillSelect(
-    		"selectEmpresa",
-    		data,
-    		"id",
-    		"nombre"
-    	);
-    });
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+	}).then(function(data) {
+		fillSelect(
+			"selectEmpresa",
+			data,
+			"id",
+			"nombre"
+		);
+	});
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/TipoActivacionREST/list"
-    }).then(function(data) {
-    	fillSelect(
-    		"selectTipoActivacion",
-    		data,
-    		"id",
-    		"descripcion"
-    	);
-    });
+		url: "/LogisticaWEB/RESTFacade/TipoActivacionREST/list"
+	}).then(function(data) {
+		fillSelect(
+			"selectTipoActivacion",
+			data,
+			"id",
+			"descripcion"
+		);
+	});
 	
 	showPopUp(document.getElementById("divIFrameImportacionArchivo"));
 }
@@ -296,17 +299,17 @@ function inputExportarAExcelOnClick(event, element) {
 	if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 		$.ajax({
 			url: "/LogisticaWEB/RESTFacade/ActivacionREST/exportarAExcel",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(metadataConsulta)
-	    }).then(function(data) {
-	    	if (data != null) {
-	    		document.getElementById("formExportarAExcel").action = 
-	    			"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
-	    		
-	    		document.getElementById("formExportarAExcel").submit();
-	    	}
-	    });
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(metadataConsulta)
+		}).then(function(data) {
+			if (data != null) {
+				document.getElementById("formExportarAExcel").action = 
+					"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+				
+				document.getElementById("formExportarAExcel").submit();
+			}
+		});
 	}
 }
 
@@ -316,17 +319,17 @@ function inputExportarAExcelSupervisorDistribucionChipsOnClick(event, element) {
 	if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 		$.ajax({
 			url: "/LogisticaWEB/RESTFacade/ActivacionREST/exportarAExcelSupervisorDistribucionChips",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(metadataConsulta)
-	    }).then(function(data) {
-	    	if (data != null) {
-	    		document.getElementById("formExportarAExcelSupervisorDistribucionChips").action = 
-	    			"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
-	    		
-	    		document.getElementById("formExportarAExcelSupervisorDistribucionChips").submit();
-	    	}
-	    });
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(metadataConsulta)
+	}).then(function(data) {
+			if (data != null) {
+				document.getElementById("formExportarAExcelSupervisorDistribucionChips").action = 
+					"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+				
+				document.getElementById("formExportarAExcelSupervisorDistribucionChips").submit();
+			}
+		});
 	}
 }
 
@@ -336,17 +339,17 @@ function inputExportarAExcelEncargadoActivacionesOnClick(event, element) {
 	if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 		$.ajax({
 			url: "/LogisticaWEB/RESTFacade/ActivacionREST/exportarAExcelEncargadoActivaciones",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(metadataConsulta)
-	    }).then(function(data) {
-	    	if (data != null) {
-	    		document.getElementById("formExportarAExcelEncargadoActivaciones").action = 
-	    			"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
-	    		
-	    		document.getElementById("formExportarAExcelEncargadoActivaciones").submit();
-	    	}
-	    });
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(metadataConsulta)
+		}).then(function(data) {
+			if (data != null) {
+				document.getElementById("formExportarAExcelEncargadoActivaciones").action = 
+					"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+				
+				document.getElementById("formExportarAExcelEncargadoActivaciones").submit();
+			}
+		});
 	}
 }
 
@@ -356,16 +359,16 @@ function inputExportarAExcelEncargadoActivacionesSinDistribucionOnClick(event, e
 	if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 		$.ajax({
 			url: "/LogisticaWEB/RESTFacade/ActivacionREST/exportarAExcelEncargadoActivacionesSinDistribucion",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(metadataConsulta)
-	    }).then(function(data) {
-	    	if (data != null) {
-	    		document.getElementById("formExportarAExcelEncargadoActivacionesSinDistribucion").action = 
-	    			"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
-	    		
-	    		document.getElementById("formExportarAExcelEncargadoActivacionesSinDistribucion").submit();
-	    	}
-	    });
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(metadataConsulta)
+		}).then(function(data) {
+			if (data != null) {
+				document.getElementById("formExportarAExcelEncargadoActivacionesSinDistribucion").action = 
+					"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+				
+				document.getElementById("formExportarAExcelEncargadoActivacionesSinDistribucion").submit();
+			}
+		});
 	}
 }

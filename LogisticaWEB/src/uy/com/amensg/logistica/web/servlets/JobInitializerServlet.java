@@ -1,24 +1,24 @@
-package uy.com.amensg.logistica.servlets;
+package uy.com.amensg.logistica.web.servlets;
+
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
-import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
-import uy.com.amensg.logistica.scheduling.FinProcesosJob;
-import uy.com.amensg.logistica.scheduling.ReprocesarPendientesRiesgoOnLineJob;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.web.scheduling.FinProcesosJob;
+import uy.com.amensg.logistica.web.scheduling.ReprocesarPendientesRiesgoOnLineJob;
 
 public class JobInitializerServlet extends HttpServlet {
 
@@ -46,21 +46,21 @@ public class JobInitializerServlet extends HttpServlet {
 			if (scheduler.getJobDetail(new JobKey("finProcesosJob", "procesos")) != null) {
 				scheduler.deleteJob(new JobKey("finProcesosJob", "procesos"));
 			}
-			
-			JobDetail jobDetail = JobBuilder.newJob(FinProcesosJob.class)
+						
+			JobDetail jobDetail = newJob(FinProcesosJob.class)
 				.withIdentity("finProcesosJob", "procesos")
 				.build();
-	
+			
 			Long intervaloEjecucion = 
 				Long.parseLong(
 					Configuration.getInstance().getProperty("finProcesosJob.interavaloEjecucion")
 				);
 			
-			Trigger trigger = TriggerBuilder.newTrigger()
+			Trigger trigger = newTrigger()
 				.withIdentity("finProcesosTrigger", "procesos")
 				.startNow()
 				.withSchedule(
-					SimpleScheduleBuilder.simpleSchedule()
+					simpleSchedule()
 						.withIntervalInMinutes(
 							intervaloEjecucion.intValue()
 						)
@@ -75,7 +75,7 @@ public class JobInitializerServlet extends HttpServlet {
 				scheduler.deleteJob(new JobKey("reprocesarPendientesRiesgoOnLineJob", "riesgoOnline"));
 			}
 			
-			jobDetail = JobBuilder.newJob(ReprocesarPendientesRiesgoOnLineJob.class)
+			jobDetail = newJob(ReprocesarPendientesRiesgoOnLineJob.class)
 				.withIdentity("reprocesarPendientesRiesgoOnLineJob", "riesgoOnline")
 				.build();
 	
@@ -86,11 +86,11 @@ public class JobInitializerServlet extends HttpServlet {
 					)
 				);
 			
-			trigger = TriggerBuilder.newTrigger()
+			trigger = newTrigger()
 				.withIdentity("reprocesarPendientesRiesgoOnLineTrigger", "riesgoOnline")
 				.startNow()
 				.withSchedule(
-					SimpleScheduleBuilder.simpleSchedule()
+					simpleSchedule()
 						.withIntervalInMinutes(intervaloEjecucion.intValue())
 						.repeatForever()
 				)

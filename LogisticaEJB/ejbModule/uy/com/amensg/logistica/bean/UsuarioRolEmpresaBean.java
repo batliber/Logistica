@@ -3,11 +3,11 @@ package uy.com.amensg.logistica.bean;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.Rol;
@@ -18,7 +18,7 @@ import uy.com.amensg.logistica.util.Configuration;
 @Stateless
 public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -153,6 +153,26 @@ public class UsuarioRolEmpresaBean implements IUsuarioRolEmpresaBean {
 		Rol rol = 
 			iRolBean.getById(
 				Long.parseLong(Configuration.getInstance().getProperty("rol.DistribuidorChips")),
+				false
+			);
+			
+		return this.listByRolUsuario(rol, usuario);
+	}
+	
+	public Collection<UsuarioRolEmpresa> listAtencionClienteOperadoresByUsuario(Usuario usuario) {
+		Rol rol = 
+			iRolBean.getById(
+				Long.parseLong(Configuration.getInstance().getProperty("rol.AtencionClienteOperador")),
+				false
+			);
+			
+		return this.listByRolUsuario(rol, usuario);
+	}
+	
+	public Collection<UsuarioRolEmpresa> listAtencionClienteGestionadoresByUsuario(Usuario usuario) {
+		Rol rol = 
+			iRolBean.getById(
+				Long.parseLong(Configuration.getInstance().getProperty("rol.AtencionClienteGestionador")),
 				false
 			);
 			

@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
@@ -17,7 +17,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class SeguridadAuditoriaBean implements ISeguridadAuditoriaBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta) {

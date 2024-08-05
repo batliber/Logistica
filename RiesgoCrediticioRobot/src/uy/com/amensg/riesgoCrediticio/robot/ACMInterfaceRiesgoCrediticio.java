@@ -20,11 +20,11 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		Iterator<String> iterator = data.iterator();
 		
-		// Parsear los par�metros tipados.
+		// Parsear los parámetros tipados.
 		
 		// empresaId
 		try {
-			result.add(new Long(iterator.next()));
+			result.add(Long.decode(iterator.next()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -59,7 +59,7 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		// contratosCelular
 		try {
-			result.add(new Long(iterator.next()));
+			result.add(Long.decode(iterator.next()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -67,7 +67,7 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		// contratosSolaFirmaCelular
 		try {
-			result.add(new Long("0" + iterator.next()));
+			result.add(Long.decode("0" + iterator.next()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -75,7 +75,7 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		// contratosGarantiaCelular
 		try {
-			result.add(new Long("0" + iterator.next()));
+			result.add(Long.decode("0" + iterator.next()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -83,7 +83,7 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		// saldoAyudaEconomicaCelular
 		try {
-			result.add(new Double("0" + iterator.next().replace(",", ".")).doubleValue());
+			result.add(Long.decode("0" + iterator.next().replace(",", ".")).doubleValue());
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -91,7 +91,7 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		// numeroClienteFijo
 		try {
-			result.add(new Long(iterator.next()));
+			result.add(Long.decode(iterator.next()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -105,7 +105,7 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 		
 		// numeroClienteMovil
 		try {
-			result.add(new Long(iterator.next()));
+			result.add(Long.valueOf(iterator.next()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.add(null);
@@ -233,9 +233,9 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 			result.setNull(parameterIndex++, Types.BIGINT);
 		}
 		
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		result.setTimestamp(parameterIndex++, new Timestamp(new Date().getTime()));
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		
 		return result;
 	}
@@ -335,9 +335,9 @@ public class ACMInterfaceRiesgoCrediticio extends DataProcessingTemplateMethod {
 			result.setNull(parameterIndex++, Types.BIGINT);
 		}
 		
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		result.setTimestamp(parameterIndex++, new Timestamp(new Date().getTime()));
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		
 		if (documento != null) {
 			result.setString(parameterIndex++, documento);

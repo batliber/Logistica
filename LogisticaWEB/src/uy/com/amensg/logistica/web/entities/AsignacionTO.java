@@ -1,4 +1,7 @@
-package uy.com.amensg.logistica.entities;
+package uy.com.amensg.logistica.web.entities;
+
+import uy.com.amensg.logistica.entities.Empresa;
+import uy.com.amensg.logistica.entities.MetadataConsulta;
 
 public class AsignacionTO {
 

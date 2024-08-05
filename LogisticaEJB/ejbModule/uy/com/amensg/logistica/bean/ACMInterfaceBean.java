@@ -4,19 +4,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import uy.com.amensg.logistica.entities.ACMInterfaceContrato;
 import uy.com.amensg.logistica.entities.ACMInterfaceEstado;
 import uy.com.amensg.logistica.entities.ACMInterfaceMid;
@@ -28,11 +21,26 @@ import uy.com.amensg.logistica.util.Configuration;
 @Stateless
 public class ACMInterfaceBean implements IACMInterfaceBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
 	private IACMInterfacePersonaBean iACMInterfacePersonaBean;
+	
+	@EJB
+	private IEstadoProcesoImportacionBean iEstadoProcesoImportacionBean;
+	
+	@EJB
+	private ITipoProcesoImportacionBean iTipoProcesoImportacionBean;
+	
+	@EJB
+	private IUsuarioBean iUsuarioBean;
+	
+	@EJB
+	private IProcesoImportacionBean iProcesoImportacionBean;
+	
+	@EJB
+	private IProcesoImportacionLineaBean iProcesoImportacionLineaBean;
 	
 	public String getSiguienteMidSinProcesar() {
 		String result = null;
@@ -206,6 +214,11 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			
 			this.remove(acmInterfaceContrato);
 			
+			ACMInterfacePrepago acmInterfacePrepago = new ACMInterfacePrepago();
+			acmInterfacePrepago.setMid(acmInterfaceContrato.getMid());
+			
+			this.remove(acmInterfacePrepago);
+			
 			acmInterfaceContrato.setFact(today);
 			
 			entityManager.persist(acmInterfaceContrato);
@@ -234,6 +247,11 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 				);
 			
 			this.remove(acmInterfacePrepago);
+			
+			ACMInterfaceContrato acmInterfaceContrato = new ACMInterfaceContrato();
+			acmInterfaceContrato.setMid(acmInterfacePrepago.getMid());
+			
+			this.remove(acmInterfaceContrato);
 			
 			acmInterfacePrepago.setFact(today);
 			
@@ -293,9 +311,7 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 			ACMInterfacePersona acmInterfacePersonaManaged = 
 				iACMInterfacePersonaBean.getByIdCliente(acmInterfacePersona.getIdCliente());
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<?> insertPersonaQuery = hibernateSession.createNativeQuery(
+			Query insertPersonaQuery = entityManager.createNativeQuery(
 				"INSERT INTO acm_interface_persona("
 					+ " id,"
 					+ " fcre,"
@@ -427,26 +443,26 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 				insertPersonaQuery.executeUpdate();
 			}
 			
-			NativeQuery<?> deleteMidPersonaQuery = hibernateSession.createNativeQuery(
+			Query deleteMidPersonaQuery = entityManager.createNativeQuery(
 				"DELETE FROM acm_interface_mid_persona WHERE mid = :mid"
 			);
-			deleteMidPersonaQuery.setParameter("mid", mid, LongType.INSTANCE);
+			deleteMidPersonaQuery.setParameter("mid", mid);
 			
-			NativeQuery<Tuple> selectPersonaQuery = hibernateSession.createNativeQuery(
+			Query selectPersonaQuery = entityManager.createNativeQuery(
 				"SELECT p.id"
 				+ " FROM acm_interface_persona p"
-				+ " WHERE p.id_cliente = :idCliente", Tuple.class
+				+ " WHERE p.id_cliente = :idCliente"
 			);
-			selectPersonaQuery.setParameter("idCliente", acmInterfacePersona.getIdCliente(), StringType.INSTANCE);
+			selectPersonaQuery.setParameter("idCliente", acmInterfacePersona.getIdCliente());
 			
-			NativeQuery<?> insertMidPersonaQuery = hibernateSession.createNativeQuery(
+			Query insertMidPersonaQuery = entityManager.createNativeQuery(
 				"INSERT INTO acm_interface_mid_persona(mid, persona_id)"
 				+ " SELECT :mid, p.id"
 				+ " FROM acm_interface_persona p"
 				+ " WHERE p.id_cliente = :idCliente"
 			);
-			insertMidPersonaQuery.setParameter("mid", mid, LongType.INSTANCE);
-			insertMidPersonaQuery.setParameter("idCliente", acmInterfacePersona.getIdCliente(), StringType.INSTANCE);
+			insertMidPersonaQuery.setParameter("mid", mid);
+			insertMidPersonaQuery.setParameter("idCliente", acmInterfacePersona.getIdCliente());
 			
 			deleteMidPersonaQuery.executeUpdate();
 			insertMidPersonaQuery.executeUpdate();
@@ -487,7 +503,103 @@ public class ACMInterfaceBean implements IACMInterfaceBean {
 		}
 	}
 	
-	public void actualizarDatosNumeroContratoListaVacia(Long numeroContrato) {
+	public void actualizarDatosMidListaNegra(Long mid) {
+		try {
+			ACMInterfaceContrato acmInterfaceContrato = new ACMInterfaceContrato();
+			acmInterfaceContrato.setMid(mid);
+			
+			this.remove(acmInterfaceContrato);
+			
+			ACMInterfacePrepago acmInterfacePrepago = new ACMInterfacePrepago();
+			acmInterfacePrepago.setMid(mid);
+			
+			this.remove(acmInterfacePrepago);
+			
+			ACMInterfaceEstado estado = 
+				entityManager.find(
+					ACMInterfaceEstado.class, 
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.ListaNegra"))
+				);
+			
+			ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
+			acmInterfaceMid.setEstado(estado);
+			acmInterfaceMid.setMid(mid);
+			
+			acmInterfaceMid.setFact(GregorianCalendar.getInstance().getTime());
+			acmInterfaceMid.setTerm(Long.valueOf(1));
+			acmInterfaceMid.setUact(Long.valueOf(1));
+			
+			this.update(acmInterfaceMid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void actualizarDatosMidNegociando(Long mid) {
+		try {
+			ACMInterfaceContrato acmInterfaceContrato = new ACMInterfaceContrato();
+			acmInterfaceContrato.setMid(mid);
+			
+			this.remove(acmInterfaceContrato);
+			
+			ACMInterfacePrepago acmInterfacePrepago = new ACMInterfacePrepago();
+			acmInterfacePrepago.setMid(mid);
+			
+			this.remove(acmInterfacePrepago);
+			
+			ACMInterfaceEstado estado = 
+				entityManager.find(
+					ACMInterfaceEstado.class, 
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.Negociando"))
+				);
+			
+			ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
+			acmInterfaceMid.setEstado(estado);
+			acmInterfaceMid.setMid(mid);
+			
+			acmInterfaceMid.setFact(GregorianCalendar.getInstance().getTime());
+			acmInterfaceMid.setTerm(Long.valueOf(1));
+			acmInterfaceMid.setUact(Long.valueOf(1));
+			
+			this.update(acmInterfaceMid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void actualizarDatosMidNoLlamar(Long mid) {
+		try {
+			ACMInterfaceContrato acmInterfaceContrato = new ACMInterfaceContrato();
+			acmInterfaceContrato.setMid(mid);
+			
+			this.remove(acmInterfaceContrato);
+			
+			ACMInterfacePrepago acmInterfacePrepago = new ACMInterfacePrepago();
+			acmInterfacePrepago.setMid(mid);
+			
+			this.remove(acmInterfacePrepago);
+			
+			ACMInterfaceEstado estado = 
+				entityManager.find(
+					ACMInterfaceEstado.class, 
+					Long.parseLong(Configuration.getInstance().getProperty("acmInterfaceEstado.NoLlamar"))
+				);
+			
+			ACMInterfaceMid acmInterfaceMid = new ACMInterfaceMid();
+			acmInterfaceMid.setEstado(estado);
+			acmInterfaceMid.setMid(mid);
+			
+			acmInterfaceMid.setFact(GregorianCalendar.getInstance().getTime());
+			acmInterfaceMid.setTerm(Long.valueOf(1));
+			acmInterfaceMid.setUact(Long.valueOf(1));
+			
+			this.update(acmInterfaceMid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void actualizarDatosNumeroContratoListaVacia(String numeroContrato) {
 		try {
 			ACMInterfaceContrato acmInterfaceContrato = new ACMInterfaceContrato();
 			acmInterfaceContrato.setNumeroContrato(numeroContrato);

@@ -3,17 +3,17 @@ package uy.com.amensg.logistica.bean;
 import java.util.List;
 import java.util.Random;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.ActivacionConexion;
 
 @Stateless
 public class ActivacionConexionBean implements IActivacionConexionBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 
 	public ActivacionConexion getRandomByEmpresaId(Long empresaId) {

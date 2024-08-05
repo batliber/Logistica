@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Collection;
 import java.util.Date;
@@ -8,42 +8,50 @@ import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.ContratoBean;
 import uy.com.amensg.logistica.bean.IContratoBean;
-import uy.com.amensg.logistica.entities.AsignacionContratosUsuarioTO;
-import uy.com.amensg.logistica.entities.ChequearAsignacionTO;
-import uy.com.amensg.logistica.entities.ChequearRelacionesAsignacionTO;
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.ContratoArchivoAdjunto;
+import uy.com.amensg.logistica.entities.ContratoDireccion;
 import uy.com.amensg.logistica.entities.FormaPago;
-import uy.com.amensg.logistica.entities.ImportacionArchivoVentasANTELTO;
-import uy.com.amensg.logistica.entities.ImportacionArchivoVentasTO;
 import uy.com.amensg.logistica.entities.Menu;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
-import uy.com.amensg.logistica.entities.PickUpTO;
-import uy.com.amensg.logistica.entities.ResultadoAsignacionManualTO;
-import uy.com.amensg.logistica.entities.ResultadoExportacionArchivoTO;
-import uy.com.amensg.logistica.entities.ResultadoImportacionArchivoTO;
-import uy.com.amensg.logistica.entities.ResultadoValidarVentaTO;
 import uy.com.amensg.logistica.entities.Rol;
 import uy.com.amensg.logistica.entities.TipoContrato;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
+import uy.com.amensg.logistica.web.entities.AsignacionContratosUsuarioTO;
+import uy.com.amensg.logistica.web.entities.ChequearAsignacionTO;
+import uy.com.amensg.logistica.web.entities.ChequearRelacionesAsignacionTO;
+import uy.com.amensg.logistica.web.entities.ImportacionArchivoVentasANTELTO;
+import uy.com.amensg.logistica.web.entities.ImportacionArchivoVentasTO;
+import uy.com.amensg.logistica.web.entities.InstalarTO;
+import uy.com.amensg.logistica.web.entities.PickUpTO;
+import uy.com.amensg.logistica.web.entities.ResultadoAsignacionManualTO;
+import uy.com.amensg.logistica.web.entities.ResultadoExportacionArchivoTO;
+import uy.com.amensg.logistica.web.entities.ResultadoImportacionArchivoTO;
+import uy.com.amensg.logistica.web.entities.ResultadoNotificarAPIStockBatchTO;
+import uy.com.amensg.logistica.web.entities.ResultadoNotificarAPIStockTO;
+import uy.com.amensg.logistica.web.entities.ResultadoNotificarIZIBatchTO;
+import uy.com.amensg.logistica.web.entities.ResultadoNotificarIZITO;
+import uy.com.amensg.logistica.web.entities.ResultadoNotificarInstalacionBatchTO;
+import uy.com.amensg.logistica.web.entities.ResultadoNotificarInstalacionTO;
+import uy.com.amensg.logistica.web.entities.ResultadoValidarVentaTO;
 
 @Path("/ContratoREST")
 public class ContratoREST {
@@ -99,6 +107,7 @@ public class ContratoREST {
 					contrato.getEmpresa().setEmpresaUsuarioContratos(new HashSet<Usuario>());
 					contrato.getEmpresa().setFormaPagos(new HashSet<FormaPago>());
 					
+					contrato.setDirecciones(new HashSet<ContratoDireccion>());
 					contrato.setArchivosAdjuntos(new HashSet<ContratoArchivoAdjunto>());
 					
 					if (contrato.getActivador() != null) {
@@ -119,6 +128,14 @@ public class ContratoREST {
 						
 					if (contrato.getVendedor() != null) {
 						contrato.getVendedor().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+					}
+					
+					if (contrato.getAtencionClienteOperador() != null) {
+						contrato.getAtencionClienteOperador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+					}
+					
+					if (contrato.getAtencionClienteGestionador() != null) {
+						contrato.getAtencionClienteGestionador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 					}
 					
 					if (contrato.getUsuario() != null) {
@@ -201,6 +218,7 @@ public class ContratoREST {
 					contrato.getEmpresa().setFormaPagos(new HashSet<FormaPago>());
 					
 					contrato.setArchivosAdjuntos(new HashSet<ContratoArchivoAdjunto>());
+					contrato.setDirecciones(new HashSet<ContratoDireccion>());
 					
 					if (contrato.getActivador() != null) {
 						contrato.getActivador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
@@ -220,6 +238,14 @@ public class ContratoREST {
 						
 					if (contrato.getVendedor() != null) {
 						contrato.getVendedor().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+					}
+					
+					if (contrato.getAtencionClienteOperador() != null) {
+						contrato.getAtencionClienteOperador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+					}
+					
+					if (contrato.getAtencionClienteGestionador() != null) {
+						contrato.getAtencionClienteGestionador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 					}
 					
 					if (contrato.getUsuario() != null) {
@@ -290,41 +316,53 @@ public class ContratoREST {
 				
 				result = iContratoBean.getById(id, true);
 				
-				if (result.getArchivosAdjuntos() != null) {
+				if (result != null && result.getArchivosAdjuntos() != null) {
 					result.setArchivosAdjuntos(new HashSet<ContratoArchivoAdjunto>());
 				}
 				
-				if (result.getActivador() != null) {
+				if (result != null && result.getActivador() != null) {
 					result.getActivador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
-				if (result.getBackoffice() != null)	{
+				if (result != null && result.getBackoffice() != null)	{
 					result.getBackoffice().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 				
-				if (result.getCoordinador() != null) {	
+				if (result != null && result.getCoordinador() != null) {
 					result.getCoordinador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 				
-				if (result.getDistribuidor() != null) {
+				if (result != null && result.getDirecciones() != null) {
+					result.setDirecciones(new HashSet<ContratoDireccion>());
+				}
+				
+				if (result != null && result.getDistribuidor() != null) {
 					result.getDistribuidor().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 				
-				if (result.getEmpresa() != null) {
+				if (result != null && result.getEmpresa() != null) {
 					result.getEmpresa().setEmpresaUsuarioContratos(new HashSet<Usuario>());
 					result.getEmpresa().setFormaPagos(new HashSet<FormaPago>());
 				}
 				
-				if (result.getRol() != null) {
+				if (result != null && result.getRol() != null) {
 					result.getRol().setMenus(new HashSet<Menu>());
 					result.getRol().setSubordinados(new HashSet<Rol>());
 				}
 				
-				if (result.getUsuario() != null) {
+				if (result != null && result.getUsuario() != null) {
 					result.getUsuario().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 				
-				if (result.getVendedor() != null) {
+				if (result != null && result.getVendedor() != null) {
 					result.getVendedor().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+				}
+				
+				if (result != null && result.getAtencionClienteOperador() != null) {
+					result.getAtencionClienteOperador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+				}
+				
+				if (result != null && result.getAtencionClienteGestionador() != null) {
+					result.getAtencionClienteGestionador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 			}
 		} catch (Exception e) {
@@ -350,37 +388,54 @@ public class ContratoREST {
 				
 				result = iContratoBean.getByNumeroTramite(numeroTramite, true);
 				
-				if (result.getActivador() != null) {
+				if (result != null && result.getArchivosAdjuntos() != null) {
+					result.setArchivosAdjuntos(new HashSet<ContratoArchivoAdjunto>());
+				}
+				
+				if (result != null && result.getActivador() != null) {
 					result.getActivador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
-				if (result.getBackoffice() != null)	{
+				
+				if (result != null && result.getBackoffice() != null)	{
 					result.getBackoffice().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 				
-				if (result.getCoordinador() != null) {	
+				if (result != null && result.getCoordinador() != null) {	
 					result.getCoordinador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 				
-				if (result.getDistribuidor() != null) {
+				if (result != null && result.getDirecciones() != null) {
+					result.setDirecciones(new HashSet<ContratoDireccion>());
+				}
+				
+				if (result != null && result.getDistribuidor() != null) {
 					result.getDistribuidor().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 				
-				if (result.getEmpresa() != null) {
+				if (result != null && result.getEmpresa() != null) {
 					result.getEmpresa().setEmpresaUsuarioContratos(new HashSet<Usuario>());
 					result.getEmpresa().setFormaPagos(new HashSet<FormaPago>());
 				}
 				
-				if (result.getRol() != null) {
+				if (result != null && result.getRol() != null) {
 					result.getRol().setMenus(new HashSet<Menu>());
 					result.getRol().setSubordinados(new HashSet<Rol>());
 				}
 				
-				if (result.getUsuario() != null) {
+				if (result != null && result.getUsuario() != null) {
 					result.getUsuario().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 				
-				if (result.getVendedor() != null) {
+				if (result != null && result.getVendedor() != null) {
 					result.getVendedor().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+				}
+				
+				if (result != null && result.getAtencionClienteOperador() != null) {
+					result.getAtencionClienteOperador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+				}
+				
+				if (result != null && result.getAtencionClienteGestionador() != null) {
+					result.getAtencionClienteGestionador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 				}
 			}
 		} catch (Exception e) {
@@ -600,6 +655,103 @@ public class ContratoREST {
 						contrato, 
 						loggedUsuarioId
 					);
+				
+				result = new ResultadoAsignacionManualTO();
+				
+				String id = resultado.split(";")[0];
+				if (id != null && !id.isEmpty()) {
+					result.setId(Long.decode(id));
+				}
+				
+				result.setResultado( 
+					resultado.split(";")[1]
+				);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@POST
+	@Path("/addAsignacionManualFibraOptica")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoAsignacionManualTO addAsignacionManualFibraOptica(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		ResultadoAsignacionManualTO result = null;
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				String resultado = 
+					iContratoBean.addAsignacionManualFibraOptica(
+						contrato.getEmpresa().getId(), 
+						contrato, 
+						loggedUsuarioId
+					);
+				
+				result = new ResultadoAsignacionManualTO();
+				
+				String id = resultado.split(";")[0];
+				if (id != null && !id.isEmpty()) {
+					result.setId(Long.decode(id));
+				}
+				
+				result.setResultado( 
+					resultado.split(";")[1]
+				);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@POST
+	@Path("/addAsignacionManualAtencionCliente")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoAsignacionManualTO addAsignacionManualAtencionCliente(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		ResultadoAsignacionManualTO result = null;
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				String resultado = 
+					iContratoBean.addAsignacionManualAtencionCliente(
+						contrato.getEmpresa().getId(), 
+						contrato, 
+						loggedUsuarioId
+					);
+				
 				result = new ResultadoAsignacionManualTO();
 				
 				String id = resultado.split(";")[0];
@@ -712,6 +864,32 @@ public class ContratoREST {
 				IContratoBean iContratoBean = lookupBean();
 				
 				iContratoBean.asignarActivador(
+					asignacionContratosUsuarioTO.getUsuario(), 
+					asignacionContratosUsuarioTO.getMetadataConsulta(), 
+					usuarioId
+				);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@POST
+	@Path("/asignarAtencionClienteOperador")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void asignarAtencionClienteOperador(
+		AsignacionContratosUsuarioTO asignacionContratosUsuarioTO, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				iContratoBean.asignarAtencionClienteOperador(
 					asignacionContratosUsuarioTO.getUsuario(), 
 					asignacionContratosUsuarioTO.getMetadataConsulta(), 
 					usuarioId
@@ -1479,6 +1657,34 @@ public class ContratoREST {
 	}
 	
 	@POST
+	@Path("/noLlamar")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void noLlamar(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.noLlamar(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@POST
 	@Path("/pickUp")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
@@ -1501,6 +1707,179 @@ public class ContratoREST {
 	}
 	
 	@POST
+	@Path("/instalar")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void instalar(
+		InstalarTO instalarTO, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				iContratoBean.instalar(
+					instalarTO.getContratoId(),
+					instalarTO.getResultadoEntregaDistribucionId(),
+					instalarTO.getDocumento(),
+					instalarTO.getNombre(),
+					instalarTO.getObservaciones(),
+					loggedUsuarioId
+				);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@POST
+	@Path("/modemDevuelto")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void modemDevuelto(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.modemDevuelto(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@POST
+	@Path("/notificarInstalacion")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoNotificarInstalacionBatchTO notificarInstalacion(
+		MetadataConsulta metadataConsulta, @Context HttpServletRequest request
+	) {
+		ResultadoNotificarInstalacionBatchTO result = null;
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Collection<Object> registrosMuestra = iContratoBean.notificarInstalacion(metadataConsulta, usuarioId).getRegistrosMuestra();
+				
+				Collection<ResultadoNotificarInstalacionTO> resultadoNotificarInstalaciones = 
+					new LinkedList<ResultadoNotificarInstalacionTO>();
+				for (Object resultado : registrosMuestra) {
+					ResultadoNotificarInstalacionTO resultadoNotificarInstalacionTO =
+						new ResultadoNotificarInstalacionTO();
+					resultadoNotificarInstalacionTO.setResultado((Long)resultado);
+					
+					resultadoNotificarInstalaciones.add(resultadoNotificarInstalacionTO);
+				}
+				
+				result = new ResultadoNotificarInstalacionBatchTO();
+				result.setResultadoNotificarInstalaciones(resultadoNotificarInstalaciones);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@POST
+	@Path("/notificarIZI")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoNotificarIZIBatchTO notificarIZI(
+		MetadataConsulta metadataConsulta, @Context HttpServletRequest request
+	) {
+		ResultadoNotificarIZIBatchTO result = null;
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Collection<Object> registrosMuestra = iContratoBean.notificarIZI(metadataConsulta, usuarioId).getRegistrosMuestra();
+				
+				Collection<ResultadoNotificarIZITO> resultadoNotificarIZIs = 
+					new LinkedList<ResultadoNotificarIZITO>();
+				for (Object resultado : registrosMuestra) {
+					ResultadoNotificarIZITO resultadoNotificarIZITO =
+						new ResultadoNotificarIZITO();
+					resultadoNotificarIZITO.setResultado((String)resultado);
+					
+					resultadoNotificarIZIs.add(resultadoNotificarIZITO);
+				}
+				
+				result = new ResultadoNotificarIZIBatchTO();
+				result.setResultadoNotificarIZIs(resultadoNotificarIZIs);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@POST
+	@Path("/notificarAPIStock")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoNotificarAPIStockBatchTO notificarAPIStock(
+		MetadataConsulta metadataConsulta, @Context HttpServletRequest request
+	) {
+		ResultadoNotificarAPIStockBatchTO result = new ResultadoNotificarAPIStockBatchTO();
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Collection<Object> registrosMuestra = iContratoBean.notificarAPIStock(metadataConsulta, usuarioId).getRegistrosMuestra();
+				
+				Collection<ResultadoNotificarAPIStockTO> resultadoNotificarAPIStocks = 
+					new LinkedList<ResultadoNotificarAPIStockTO>();
+				for (Object resultado : registrosMuestra) {
+					ResultadoNotificarAPIStockTO resultadoNotificarAPIStockTO =
+						new ResultadoNotificarAPIStockTO();
+					resultadoNotificarAPIStockTO.setResultado((String)resultado);
+					
+					resultadoNotificarAPIStocks.add(resultadoNotificarAPIStockTO);
+				}
+				
+				result.setResultadoNotificarAPIStocks(resultadoNotificarAPIStocks);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@POST
 	@Path("/cancelarTramite")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
@@ -1516,6 +1895,258 @@ public class ContratoREST {
 				IContratoBean iContratoBean = lookupBean();
 				
 				iContratoBean.cancelarTramite(contrato.getId(), loggedUsuarioId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@POST
+	@Path("/atencionClienteRellamar")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteRellamar(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteRellamar(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@POST
+	@Path("/atencionClienteSolucionado")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteSolucionado(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteSolucionado(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@POST
+	@Path("/atencionClienteANTEL")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteANTEL(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteANTEL(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@POST
+	@Path("/atencionClienteComercial")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteComercial(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteComercial(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@POST
+	@Path("/atencionClienteCambioCliente")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteCambioCliente(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteCambioCliente(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@POST
+	@Path("/atencionClienteSupervision")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteSupervision(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteSupervision(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@POST
+	@Path("/atencionClienteCerrado")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteCerrado(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteCerrado(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@POST
+	@Path("/atencionClienteCambioProveedor")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteCambioProveedor(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteCambioProveedor(contrato);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@POST
+	@Path("/atencionClienteRechazar")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public void atencionClienteRechazar(
+		Contrato contrato, @Context HttpServletRequest request
+	) {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				Date hoy = GregorianCalendar.getInstance().getTime();
+				
+				contrato.setFact(hoy);
+				contrato.setTerm(Long.valueOf(1));
+				contrato.setUact(loggedUsuarioId);
+				
+				iContratoBean.atencionClienteRechazar(contrato);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1661,7 +2292,103 @@ public class ContratoREST {
 		return result;
 	}
 	
-	private IContratoBean lookupBean() throws NamingException {
+	@POST
+	@Path("/exportarAExcelFibraOptica")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoExportacionArchivoTO exportarAExcelFibraOptica(
+		MetadataConsulta metadataConsulta, @Context HttpServletRequest request
+	) {
+		ResultadoExportacionArchivoTO result = null;
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				String nombreArchivo = 
+					iContratoBean.exportarAExcelFibraOptica(metadataConsulta, usuarioId);
+				
+				if (nombreArchivo != null) {
+					result = new ResultadoExportacionArchivoTO();
+					result.setNombreArchivo(nombreArchivo);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@POST
+	@Path("/exportarReporteTiemposFibraOptica")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoExportacionArchivoTO exportarReporteTiemposFibraOptica(
+		MetadataConsulta metadataConsulta, @Context HttpServletRequest request
+	) {
+		ResultadoExportacionArchivoTO result = null;
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				String nombreArchivo = 
+					iContratoBean.exportarReporteTiemposFibraOptica(metadataConsulta, usuarioId);
+				
+				if (nombreArchivo != null) {
+					result = new ResultadoExportacionArchivoTO();
+					result.setNombreArchivo(nombreArchivo);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+		
+	@POST
+	@Path("/exportarAExcelAtencionCliente")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoExportacionArchivoTO exportarAExcelAtencionCliente(
+		MetadataConsulta metadataConsulta, @Context HttpServletRequest request
+	) {
+		ResultadoExportacionArchivoTO result = null;
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IContratoBean iContratoBean = lookupBean();
+				
+				String nombreArchivo = 
+					iContratoBean.exportarAExcelAtencionCliente(metadataConsulta, usuarioId);
+				
+				if (nombreArchivo != null) {
+					result = new ResultadoExportacionArchivoTO();
+					result.setNombreArchivo(nombreArchivo);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+ 	private IContratoBean lookupBean() throws NamingException {
 		String prefix = "java:jboss/exported/";
 		String EARName = "Logistica";
 		String appName = "LogisticaEJB";

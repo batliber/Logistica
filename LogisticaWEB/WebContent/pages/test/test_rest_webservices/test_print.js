@@ -8,6 +8,14 @@ function init() {
 		"value"
 	);
 	
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/WebServicesREST/listAllResources",
+		method: "GET",
+		contentType: "application/json",
+	}).then(function(data) {
+		fillSelect("selectURL", data, "uri", "uri");
+	});
+	
 	fillSelect(
 		"selectParametersTemplate", 
 		[{ id: "plain", value: "Plain" }, { id: "mc", value: "Metadata consulta" }],
@@ -16,6 +24,15 @@ function init() {
 	);
 	
 	$("#selectParametersTemplate").val("plain");
+}
+
+function selectURLOnChange(event, element) {
+	var pesosElement = $(element);
+	if (pesosElement.val() == "string") {
+		$("#inputURL").val("");
+	} else {
+		$("#inputURL").val(pesosElement.val());
+	}
 }
 
 function selectParametersTemplateOnChange(event, element) {

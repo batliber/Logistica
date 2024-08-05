@@ -1,6 +1,7 @@
 var __ROL_ADMINISTRADOR = 1;
 var __ROL_SUPERVISOR_DISTRIBUCION = 7;
 var __ROL_MAESTROS_RIVERGREEN = 20;
+var __ROL_SUPERVISOR_ATENCION_CLIENTES = 75559429;
 
 var grid = null;
 
@@ -10,12 +11,13 @@ function init() {
 	$("#divButtonNew").hide();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",
+	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
 				|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_DISTRIBUCION
-				|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN) {
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN
+				|| data.usuarioRolEmpresas[i].rol.id == __ROL_SUPERVISOR_ATENCION_CLIENTES) {
 				mode = __FORM_MODE_ADMIN;
 				$("#divButtonNew").show();
 				

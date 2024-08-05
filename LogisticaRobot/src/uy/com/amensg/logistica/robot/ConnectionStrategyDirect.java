@@ -77,7 +77,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		this.preparedStatementUpdateMid.setLong(2, uact);
 		this.preparedStatementUpdateMid.setTimestamp(3, new Timestamp(fact.getTime()));
 		this.preparedStatementUpdateMid.setLong(4, term);
-		this.preparedStatementUpdateMid.setLong(5, new Long(mid));
+		this.preparedStatementUpdateMid.setLong(5, Long.parseLong(mid));
 		
 		this.preparedStatementUpdateMid.executeUpdate();
 	}
@@ -98,7 +98,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		this.preparedStatementUpdateNumeroContrato.executeUpdate();
 	}
 	
-	public String getSiguienteMidSinProcesar() {
+	public String getSiguienteMidSinProcesar(String wsdlFileName) {
 		String result = null;
 		
 		try {
@@ -115,17 +115,17 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 				+ " limit 1"
 			);
 			preparedStatementQuery.setLong(
-				1, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesar"))
+				1, Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesar"))
 			);
 			preparedStatementQuery.setLong(
-				2, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesarPrioritario"))
+				2, Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesarPrioritario"))
 			);
 			
 			ResultSet resultSet = preparedStatementQuery.executeQuery();
 			if (resultSet.next()) {
-				String mid = new Long(resultSet.getLong(1)).toString();
+				String mid = Long.valueOf(resultSet.getLong(1)).toString();
 				String documento = resultSet.getString(2) != null ? resultSet.getString(2) : "";
-				String numeroContrato = resultSet.getString(3) != null ? new Long(resultSet.getLong(3)).toString() : "";
+				String numeroContrato = resultSet.getString(3) != null ? Long.valueOf(resultSet.getLong(3)).toString() : "";
 				
 				if (!documento.equals("")) {
 					result = "C " + mid + " " + documento + " " + numeroContrato;
@@ -133,10 +133,10 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 					result = "P " + mid;
 				}
 				
-				Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso"));
-				Long uact = new Long(1);
+				Long estado = Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso"));
+				Long uact = Long.valueOf(1);
 				Date fact = new Date();
-				Long term = new Long(1);
+				Long term = Long.valueOf(1);
 				
 				this.actualizarACMInterfaceMid(
 					estado,
@@ -157,7 +157,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		return result;
 	}
 	
-	public String getSiguienteNumeroContratoSinProcesar() {
+	public String getSiguienteNumeroContratoSinProcesar(String wsdlFileName) {
 		String result = null;
 		
 		try {
@@ -173,10 +173,10 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 				+ " limit 1"
 			);
 			preparedStatementQuery.setLong(
-				1, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesar"))
+				1, Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesar"))
 			);
 			preparedStatementQuery.setLong(
-				2, new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesarPrioritario"))
+				2, Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.ParaProcesarPrioritario"))
 			);
 			
 			ResultSet resultSet = preparedStatementQuery.executeQuery();
@@ -185,10 +185,10 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 				
 				result = numeroContrato.toString();
 				
-				Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso"));
-				Long uact = new Long(1);
+				Long estado = Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.EnProceso"));
+				Long uact = Long.valueOf(1);
 				Date fact = new Date();
-				Long term = new Long(1);
+				Long term = Long.valueOf(1);
 				
 				this.actualizarACMInterfaceNumeroContrato(
 					estado,
@@ -210,6 +210,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosMidContrato(
+		String wsdlFileName,
 		String direccion, 
 		String documentoTipo,
 		String documento,
@@ -229,8 +230,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		try {
 			this.initializeConnection();
 			
-			this.preparedStatementDeleteContratoByMid.setLong(1, new Long(mid));
-			this.preparedStatementDeletePrepagoByMid.setLong(1, new Long(mid));
+			this.preparedStatementDeleteContratoByMid.setLong(1, Long.parseLong(mid));
+			this.preparedStatementDeletePrepagoByMid.setLong(1, Long.parseLong(mid));
 			
 			this.preparedStatementDeleteContratoByMid.executeUpdate();
 			this.preparedStatementDeletePrepagoByMid.executeUpdate();
@@ -284,7 +285,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 				+ ")"
 			);
 			preparedStatementUpdateContrato.setString(1, direccion);
-			preparedStatementUpdateContrato.setLong(2, new Long(documentoTipo));
+			preparedStatementUpdateContrato.setLong(2, Long.parseLong(documentoTipo));
 			preparedStatementUpdateContrato.setString(3, documento);
 			preparedStatementUpdateContrato.setDate(4, new java.sql.Date(format.parse(fechaFinContrato).getTime()));
 			preparedStatementUpdateContrato.setString(5, localidad);
@@ -294,8 +295,8 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			preparedStatementUpdateContrato.setString(9, tipoContratoDescripcion);
 			preparedStatementUpdateContrato.setString(10, agente);
 			preparedStatementUpdateContrato.setString(11, equipo);
-			preparedStatementUpdateContrato.setLong(12, new Long(numeroCliente));
-			preparedStatementUpdateContrato.setLong(13, new Long(numeroContrato));
+			preparedStatementUpdateContrato.setLong(12, Long.parseLong(numeroCliente));
+			preparedStatementUpdateContrato.setLong(13, Long.parseLong(numeroContrato));
 			if (estadoContrato != null && !estadoContrato.equals("")) {
 				preparedStatementUpdateContrato.setString(14, estadoContrato);
 			} else {
@@ -305,13 +306,13 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			preparedStatementUpdateContrato.setLong(15, 1);
 			preparedStatementUpdateContrato.setTimestamp(16, new Timestamp(new Date().getTime()));
 			preparedStatementUpdateContrato.setLong(17, 1);
-			preparedStatementUpdateContrato.setLong(18, new Long(mid));
-			preparedStatementUpdateContrato.setLong(19, new Long(random.nextInt()));
+			preparedStatementUpdateContrato.setLong(18, Long.parseLong(mid));
+			preparedStatementUpdateContrato.setLong(19, Long.valueOf(random.nextInt()));
 			
-			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
-			Long uact = new Long(1);
+			Long estado = Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
+			Long uact = Long.valueOf(1);
 			Date fact = new Date();
-			Long term = new Long(1);
+			Long term = Long.valueOf(1);
 			
 			this.actualizarACMInterfaceMid(
 				estado,
@@ -326,7 +327,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 				uact,
 				fact,
 				term,
-				new Long(numeroContrato)
+				Long.parseLong(numeroContrato)
 			);
 			
 			preparedStatementUpdateContrato.executeUpdate();
@@ -340,6 +341,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosMidPrepago(
+		String wsdlFileName,
 		String mesAno, 
 		String mid,
 		String montoMesActual, 
@@ -351,17 +353,17 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		try {
 			this.initializeConnection();
 			
-			this.preparedStatementDeleteContratoByMid.setLong(1, new Long(mid));
-			this.preparedStatementDeletePrepagoByMid.setLong(1, new Long(mid));
+			this.preparedStatementDeleteContratoByMid.setLong(1, Long.parseLong(mid));
+			this.preparedStatementDeletePrepagoByMid.setLong(1, Long.parseLong(mid));
 			
 			this.preparedStatementDeleteContratoByMid.executeUpdate();
 			this.preparedStatementDeletePrepagoByMid.executeUpdate();
 			
 			Date mesAnoDate = null;
-			Double montoMesActualDouble = new Double(-1);
-			Double montoMesAnterior1Double = new Double(-1);
-			Double montoMesAnterior2Double = new Double(-1);
-			Double montoPromedio = new Double(-1);
+			Double montoMesActualDouble = Double.valueOf(-1);
+			Double montoMesAnterior1Double = Double.valueOf(-1);
+			Double montoMesAnterior2Double = Double.valueOf(-1);
+			Double montoPromedio = Double.valueOf(-1);
 			Date fechaActivacionKitDate = null;
 			
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -371,9 +373,9 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			try {
 				// Parsear los parámetros tipados.
 				mesAnoDate = format.parse("01/" + mesAno);
-				montoMesActualDouble = new Double(montoMesActual);
-				montoMesAnterior1Double = new Double(montoMesAnterior1);
-				montoMesAnterior2Double = new Double(montoMesAnterior2);
+				montoMesActualDouble = Double.valueOf(montoMesActual);
+				montoMesAnterior1Double = Double.valueOf(montoMesAnterior1);
+				montoMesAnterior2Double = Double.valueOf(montoMesAnterior2);
 				montoPromedio = 
 					(montoMesActualDouble + montoMesAnterior1Double + montoMesAnterior2Double) / 3;
 				fechaActivacionKitDate = format.parse(fechaActivacionKit);
@@ -429,13 +431,13 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 			preparedStatementUpdatePrepago.setLong(8, 1);
 			preparedStatementUpdatePrepago.setTimestamp(9, new Timestamp(new Date().getTime()));
 			preparedStatementUpdatePrepago.setLong(10, 1);
-			preparedStatementUpdatePrepago.setLong(11, new Long(mid));
-			preparedStatementUpdatePrepago.setLong(12, new Long(random.nextInt()));
+			preparedStatementUpdatePrepago.setLong(11, Long.parseLong(mid));
+			preparedStatementUpdatePrepago.setLong(12, Long.valueOf(random.nextInt()));
 			
-			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
-			Long uact = new Long(1);
+			Long estado = Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.Procesado"));
+			Long uact = Long.valueOf(1);
 			Date fact = new Date();
-			Long term = new Long(1);
+			Long term = Long.valueOf(1);
 			
 			this.actualizarACMInterfaceMid(
 				estado,
@@ -456,21 +458,21 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosMidListaVacia(
-		String mid
+		String wsdlFileName, String mid
 	) {
 		try  {
 			this.initializeConnection();
 			
-			this.preparedStatementDeleteContratoByMid.setLong(1, new Long(mid));
-			this.preparedStatementDeletePrepagoByMid.setLong(1, new Long(mid));
+			this.preparedStatementDeleteContratoByMid.setLong(1, Long.parseLong(mid));
+			this.preparedStatementDeletePrepagoByMid.setLong(1, Long.parseLong(mid));
 			
 			this.preparedStatementDeleteContratoByMid.executeUpdate();
 			this.preparedStatementDeletePrepagoByMid.executeUpdate();
 			
-			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia"));
-			Long uact = new Long(1);
+			Long estado = Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia"));
+			Long uact = Long.valueOf(1);
 			Date fact = new Date();
-			Long term = new Long(1);
+			Long term = Long.valueOf(1);
 			
 			this.actualizarACMInterfaceMid(
 				estado,
@@ -488,27 +490,63 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		}
 	}
 	
+	public void actualizarDatosMidListaNegra(
+		String wsdlFileName, String mid
+		) {
+		try  {
+			this.initializeConnection();
+			
+			this.connection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void actualizarDatosMidNegociando(
+		String wsdlFileName, String mid
+		) {
+		try  {
+			this.initializeConnection();
+			
+			this.connection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void actualizarDatosMidNoLlamar(
+		String wsdlFileName, String mid
+		) {
+		try  {
+			this.initializeConnection();
+			
+			this.connection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void actualizarDatosNumeroContratoListaVacia(
-		String numeroContrato
+		String wsdlFileName, String numeroContrato
 	) {
 		try  {
 			this.initializeConnection();
 			
-			this.preparedStatementDeleteContratoByNumeroContrato.setLong(1, new Long(numeroContrato));
+			this.preparedStatementDeleteContratoByNumeroContrato.setLong(1, Long.parseLong(numeroContrato));
 			
 			this.preparedStatementDeleteContratoByNumeroContrato.executeUpdate();
 			
-			Long estado = new Long(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia"));
-			Long uact = new Long(1);
+			Long estado = Long.parseLong(Configuration.getInstance().getProperty("ACMInterfaceEstado.ListaVacia"));
+			Long uact = Long.valueOf(1);
 			Date fact = new Date();
-			Long term = new Long(1);
+			Long term = Long.valueOf(1);
 			
 			this.actualizarACMInterfaceNumeroContrato(
 				estado,
 				uact,
 				fact,
 				term,
-				new Long(numeroContrato)
+				Long.parseLong(numeroContrato)
 			);
 			
 			this.connection.commit();
@@ -520,6 +558,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosPersona(
+		String wsdlFileName,
 		String idCliente,
 		String mid,
 		String pais,

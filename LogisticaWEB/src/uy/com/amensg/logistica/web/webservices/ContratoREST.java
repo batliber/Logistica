@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices;
+package uy.com.amensg.logistica.web.webservices;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -7,18 +7,18 @@ import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 import uy.com.amensg.logistica.bean.ContratoANTELBean;
 import uy.com.amensg.logistica.bean.ContratoBean;
 import uy.com.amensg.logistica.bean.ContratoRoutingHistoryANTELBean;
@@ -27,30 +27,30 @@ import uy.com.amensg.logistica.bean.IContratoANTELBean;
 import uy.com.amensg.logistica.bean.IContratoBean;
 import uy.com.amensg.logistica.bean.IContratoRoutingHistoryANTELBean;
 import uy.com.amensg.logistica.bean.IDepartamentoBean;
-import uy.com.amensg.logistica.entities.AltaANTELTO;
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.ContratoANTEL;
-import uy.com.amensg.logistica.entities.ContratoANTELTO;
-import uy.com.amensg.logistica.entities.ContratoEstadisticasANTELTO;
 import uy.com.amensg.logistica.entities.ContratoRoutingHistoryANTEL;
 import uy.com.amensg.logistica.entities.DatosEstadisticasResultadoEntregasANTEL;
 import uy.com.amensg.logistica.entities.DatosEstadisticasVentasANTEL;
-import uy.com.amensg.logistica.entities.DatosGraficoResultadoEntregasANTELTO;
-import uy.com.amensg.logistica.entities.DatosGraficoVentasANTELTO;
 import uy.com.amensg.logistica.entities.Departamento;
 import uy.com.amensg.logistica.entities.Empresa;
-import uy.com.amensg.logistica.entities.EstadoANTELTO;
-import uy.com.amensg.logistica.entities.HistoricoByNumeroTramiteANTELTO;
-import uy.com.amensg.logistica.entities.ListDatosGraficoResultadoEntregasANTELTO;
-import uy.com.amensg.logistica.entities.ListDatosGraficoVentasANTELTO;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.MetadataOrdenacion;
-import uy.com.amensg.logistica.entities.ResultadoAltaANTELTO;
 import uy.com.amensg.logistica.entities.TipoDocumento;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
+import uy.com.amensg.logistica.web.entities.AltaANTELTO;
+import uy.com.amensg.logistica.web.entities.ContratoANTELTO;
+import uy.com.amensg.logistica.web.entities.ContratoEstadisticasANTELTO;
+import uy.com.amensg.logistica.web.entities.DatosGraficoResultadoEntregasANTELTO;
+import uy.com.amensg.logistica.web.entities.DatosGraficoVentasANTELTO;
+import uy.com.amensg.logistica.web.entities.EstadoANTELTO;
+import uy.com.amensg.logistica.web.entities.HistoricoByNumeroTramiteANTELTO;
+import uy.com.amensg.logistica.web.entities.ListDatosGraficoResultadoEntregasANTELTO;
+import uy.com.amensg.logistica.web.entities.ListDatosGraficoVentasANTELTO;
+import uy.com.amensg.logistica.web.entities.ResultadoAltaANTELTO;
 
 @Path("/TramiteREST")
 public class ContratoREST {

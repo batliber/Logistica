@@ -1,15 +1,15 @@
 package uy.com.amensg.logistica.bean;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import uy.com.amensg.logistica.entities.FormatoImportacionArchivo;
 
 @Stateless
 public class FormatoImportacionArchivoBean implements IFormatoImportacionArchivoBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public FormatoImportacionArchivo getById(Long id) {

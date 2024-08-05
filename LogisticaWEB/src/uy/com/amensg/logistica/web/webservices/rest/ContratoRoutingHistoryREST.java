@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -6,19 +6,20 @@ import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.ContratoRoutingHistoryBean;
 import uy.com.amensg.logistica.bean.IContratoRoutingHistoryBean;
 import uy.com.amensg.logistica.entities.Contrato;
 import uy.com.amensg.logistica.entities.ContratoArchivoAdjunto;
+import uy.com.amensg.logistica.entities.ContratoDireccion;
 import uy.com.amensg.logistica.entities.ContratoRoutingHistory;
 import uy.com.amensg.logistica.entities.FormaPago;
 import uy.com.amensg.logistica.entities.Menu;
@@ -68,6 +69,7 @@ public class ContratoRoutingHistoryREST {
 					contrato.getEmpresa().setFormaPagos(new HashSet<FormaPago>());
 					
 					contrato.setArchivosAdjuntos(new HashSet<ContratoArchivoAdjunto>());
+					contrato.setDirecciones(new HashSet<ContratoDireccion>());
 					
 					if (contrato.getActivador() != null) {
 						contrato.getActivador().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());

@@ -16,7 +16,7 @@
 				<div class="divFormValue">
 					<input type="text" id="inputNumeroTramite" name="inputNumeroTramite" onchange="javascript:inputNumeroTramiteOnChange(event, this)"/>
 					<a href="zxing://scan/?ret=${pageContext.request.requestURL}?code=%7BCODE%7D&SCAN_FORMATS=UPC_A,EAN_13,128">
-						<img id="imgBarcode" src="/LogisticaWEB/Barcode?code=12345678"/>
+						<img id="imgBarcode" src="/LogisticaWEB/images/barcode.png"/>
 					</a>
 				</div>
 				<div class="divFormLabel">MID:</div><div class="divFormValue" id="divMID"><a id="aMID" name="aMID" href="#">&nbsp;</a></div>

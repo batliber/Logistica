@@ -5,7 +5,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "actualizarDatosRiesgoCredititioBCUResponse")
+@XmlType(
+	namespace = "http://soap.webservices.web.logistica.amensg.com.uy/message",
+	name = "actualizarDatosRiesgoCredititioBCUResponse"
+)
 public class ActualizarDatosRiesgoCrediticioBCUResponse {
 
 }

@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div class="divButtonBar">
-		<div class="divButton"><input type="submit" value="Guardar" onclick="javascript:inputGuardarOnClick(event)"/></div>
+		<div class="divButton"><input type="submit" value="Guardar" onclick="javascript:inputGuardarOnClick(event, this)"/></div>
 		<div class="divButton"><input type="submit" value="Imprimir" onclick="javascript:inputImprimirOnClick(event, this)"/></div>
 		<div class="divButtonBarSeparator">&nbsp;</div>
 	</div>

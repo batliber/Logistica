@@ -17,18 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.TimestampType;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import uy.com.amensg.logistica.entities.ACMInterfacePersona;
 import uy.com.amensg.logistica.entities.ACMInterfaceRiesgoCrediticio;
 import uy.com.amensg.logistica.entities.BCUInterfaceRiesgoCrediticio;
@@ -61,7 +55,7 @@ import uy.com.amensg.logistica.webservices.external.tablero.RiesgoCreditoAmigoSo
 @Stateless
 public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -515,9 +509,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 			CalificacionRiesgoCrediticioBCU calificacionRiesgoCrediticioBCU = 
 				iCalificacionRiesgoCrediticioBCUBean.getById(Long.parseLong(Configuration.getInstance().getProperty("calificacionRiesgoCrediticioBCU.SINDETERMINAR")));
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<?> insertRiesgoCrediticio = hibernateSession.createNativeQuery(
+			Query insertRiesgoCrediticio = entityManager.createNativeQuery(
 				"INSERT INTO riesgo_crediticio("
 					+ " id,"
 					+ " fecha_vigencia_desde,"
@@ -551,17 +543,17 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				+ " )"
 			);
 			
-			insertRiesgoCrediticio.setParameter(1, hoy, TimestampType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(2, hoy, TimestampType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(3, hoy, TimestampType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(4, Long.valueOf(1), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(5, loggedUsuarioId, LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(6, loggedUsuarioId, LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(7, empresa.getId(), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(8, estado.getId(), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(9, tipoControlRiesgoCrediticioId, LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(10, calificacionRiesgoCrediticioAntel.getId(), LongType.INSTANCE);
-			insertRiesgoCrediticio.setParameter(11, calificacionRiesgoCrediticioBCU.getId(), LongType.INSTANCE);
+			insertRiesgoCrediticio.setParameter(1, hoy);
+			insertRiesgoCrediticio.setParameter(2, hoy);
+			insertRiesgoCrediticio.setParameter(3, hoy);
+			insertRiesgoCrediticio.setParameter(4, Long.valueOf(1));
+			insertRiesgoCrediticio.setParameter(5, loggedUsuarioId);
+			insertRiesgoCrediticio.setParameter(6, loggedUsuarioId);
+			insertRiesgoCrediticio.setParameter(7, empresa.getId());
+			insertRiesgoCrediticio.setParameter(8, estado.getId());
+			insertRiesgoCrediticio.setParameter(9, tipoControlRiesgoCrediticioId);
+			insertRiesgoCrediticio.setParameter(10, calificacionRiesgoCrediticioAntel.getId());
+			insertRiesgoCrediticio.setParameter(11, calificacionRiesgoCrediticioBCU.getId());
 			
 			String line = null;
 			long lineNumber = 0;
@@ -596,7 +588,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 					if (!ok) {
 						errors++;
 					} else {
-						insertRiesgoCrediticio.setParameter(12, documento, StringType.INSTANCE);
+						insertRiesgoCrediticio.setParameter(12, documento);
 						
 						insertRiesgoCrediticio.executeUpdate();
 
@@ -724,6 +716,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				iACMInterfaceRiesgoCrediticioBean.save(acmInterfaceRiesgoCrediticio);
 			}
 		} catch (Exception e) {
+			System.err.println("Error para el riesgo con id: " + riesgoCrediticioId);
 			e.printStackTrace();
 		}
 	}
@@ -773,6 +766,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				iBCUInterfaceRiesgoCrediticioBean.save(bcuInterfaceRiesgoCrediticio);
 			}
 		} catch (Exception e) {
+			System.err.println("Error para el riesgo con id: " + riesgoCrediticioId);
 			e.printStackTrace();
 		}
 	}
@@ -822,6 +816,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				iBCUInterfaceRiesgoCrediticioBean.save(bcuInterfaceRiesgoCrediticio);
 			}
 		} catch (Exception e) {
+			System.err.println("Error para el riesgo con id: " + riesgoCrediticioId);
 			e.printStackTrace();
 		}
 	}
@@ -853,12 +848,12 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				
 				CalificacionRiesgoCrediticioBCU calificacionRiesgoCrediticioBCU = 
 					iCalificacionRiesgoCrediticioBCUBean.getByCalificacion(
-						bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion()
+						bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion().trim()
 					);
 				
 				if (calificacionRiesgoCrediticioBCU == null) {
-					throw new Exception("Se recibió una código de calificación no registrado: " 
-						+ bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion());
+					throw new Exception("Se recibió un código de calificación no registrado: " 
+						+ bcuInterfaceRiesgoCrediticioInstitucionFinanciera.getCalificacion().trim());
 				} else {
 					// Si la calificación de riesgo es null, SIN DETERMINAR o si es mayor que la peor registrada, 
 					// actualizar.
@@ -939,6 +934,7 @@ public class RiesgoCrediticioBean implements IRiesgoCrediticioBean {
 				}
 			}
 		} catch (Exception e) {
+			System.err.println("Error para el riesgo con id: " + riesgoCrediticioId);
 			e.printStackTrace();
 		}
 	}

@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.test;
+package uy.com.amensg.logistica.web.test;
 
 import uy.com.amensg.logistica.webservices.external.tablero.RiesgoCreditoAmigo;
 import uy.com.amensg.logistica.webservices.external.tablero.RiesgoCreditoAmigoRIESGOBCU;

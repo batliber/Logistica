@@ -59,7 +59,7 @@
 	width: 100%;
 	height: 145px;
 	padding-top: 5px;
-	padding-right: -1px;
+	padding-right: 1px;
 	border-left: solid 1px black;
 	border-bottom: solid 1px black;
 	border-right: solid 1px black;
@@ -161,6 +161,14 @@
 }
 
 #selectFechaEntrega {
+	width: 65%;
+}
+
+#selectAtencionClienteTipoContacto {
+	width: 65%;
+}
+
+#selectRespuestaTecnicaComercial {
 	width: 65%;
 }
 

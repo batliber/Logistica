@@ -5,16 +5,6 @@ var accionesHabilitadas = false;
 
 var grid = null;
 
-var estados = [
-	"No procesado", 
-	"En proceso", 
-	"Procesado", 
-	"Lista vacia", 
-	"Para procesar", 
-	"Prioritario", 
-	"Lista negra"
-];
-
 $(document).ready(init);
 
 function init() {
@@ -25,7 +15,7 @@ function init() {
 	*/
 	
 	$.ajax({
-		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData"
 	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 			if (
@@ -44,7 +34,7 @@ function init() {
 				break;
 			}
 		}
-    });
+	});
 }
 
 function inputActualizarOnClick(event, element) {
@@ -134,7 +124,7 @@ function selectTipoRegistroOnChange() {
 			document.getElementById("divTabla"),
 			{
 				tdSinDatosMID: { campo: "mid", descripcion: "MID", abreviacion: "MID", tipo: __TIPO_CAMPO_NUMERICO },
-				tdEstado: { campo: "estado.descripcion", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listEstados, clave: "id", valor: "descripcion" }, ancho: 90 },
+				tdEstado: { campo: "estado.descripcion", clave: "estado.id", descripcion: "Estado", abreviacion: "Estado", tipo: __TIPO_CAMPO_RELACION, dataSource: { funcion: listACMInterfaceEstados, clave: "id", valor: "descripcion" }, ancho: 90 },
 				tdSinDatosFact: { campo: "fact", descripcion: "Obtenido", abreviacion: "Obtenido", tipo: __TIPO_CAMPO_FECHA }
 			}, 
 			true,
@@ -150,11 +140,11 @@ function selectTipoRegistroOnChange() {
 
 function listTipoContratos() {
 	return $.ajax({
-        url: "/LogisticaWEB/RESTFacade/ACMInterfaceContratoPHREST/listTipoContratosContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    });
+		url: "/LogisticaWEB/RESTFacade/ACMInterfaceContratoPHREST/listTipoContratosContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	});
 }
 
 function inputTamanoMuestraOnChange(event) {
@@ -173,31 +163,31 @@ function reloadData() {
 	
 	if ($("#selectTipoRegistro").val() == "contrato") {
 		listURL = "/LogisticaWEB/RESTFacade/ACMInterfaceContratoPHREST/listContextAware";
-	    countURL = "/LogisticaWEB/RESTFacade/ACMInterfaceContratoPHREST/countContextAware";
+		countURL = "/LogisticaWEB/RESTFacade/ACMInterfaceContratoPHREST/countContextAware";
 	} else if ($("#selectTipoRegistro").val() == "prepago") {
 		listURL = "/LogisticaWEB/RESTFacade/ACMInterfacePrepagoPHREST/listContextAware";
-	    countURL = "/LogisticaWEB/RESTFacade/ACMInterfacePrepagoPHREST/countContextAware";
+		countURL = "/LogisticaWEB/RESTFacade/ACMInterfacePrepagoPHREST/countContextAware";
 	}
 	
 	$.ajax({
-        url: listURL,
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.reload(data);
-    });
+		url: listURL,
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.reload(data);
+	});
 	
 	$.ajax({
-        url: countURL,
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.setCount(data);
-    	
-    	$("#inputHabilitarAcciones").prop("disabled", false);
-    });
+		url: countURL,
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.setCount(data);
+	
+		$("#inputHabilitarAcciones").prop("disabled", false);
+	});
 }
 
 function inputExportarAExcelOnClick(event, element) {
@@ -221,33 +211,33 @@ function exportarAExcel(metadataConsulta) {
 	if (URL != null) {
 		if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 			$.ajax({
-		        url: URL,
-		        method: "POST",
-		        contentType: 'application/json',
-		        data: JSON.stringify(metadataConsulta)
-		    }).then(function(data) {
-		    	if (data != null) {
-		    		document.getElementById("formExportarAExcel").action = 
-		    			"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
-		    		
-		    		document.getElementById("formExportarAExcel").submit();
-		    	}
-		    });
+				url: URL,
+				method: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify(metadataConsulta)
+			}).then(function(data) {
+				if (data != null) {
+					document.getElementById("formExportarAExcel").action = 
+						"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+					
+					document.getElementById("formExportarAExcel").submit();
+				}
+			});
 		}
 	}
 }
 
 function inputAsignarOnClick(event) {
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
-    }).then(function(data) {
-    	fillSelect(
-    		"selectEmpresa", 
-    		data,
-    		"id", 
-    		"nombre"
-    	);
-    });
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+	}).then(function(data) {
+		fillSelect(
+			"selectEmpresa", 
+			data,
+			"id", 
+			"nombre"
+		);
+	});
 	
 	showPopUp(document.getElementById("divIFrameSeleccionEmpresa"));
 }
@@ -258,15 +248,15 @@ function inputAsignarSubconjuntoOnClick(event) {
 	$("#inputTamanoSubconjuntoAsignacion").val(metadataConsulta.tamanoSubconjunto);
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
-    }).then(function(data) {
-    	fillSelect(
-    		"selectEmpresa", 
-    		data,
-    		"id", 
-    		"nombre"
-    	);
-    });
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+	}).then(function(data) {
+		fillSelect(
+			"selectEmpresa", 
+			data,
+			"id", 
+			"nombre"
+		);
+	});
 	
 	showPopUp(document.getElementById("divIFrameSeleccionEmpresa"));
 }
@@ -329,27 +319,27 @@ function inputAceptarOnClick(event) {
 	
 	if (preprocesarURL != null && procesarURL != null) {
 		$.ajax({
-	        url: preprocesarURL,
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify({
-	        	"metadataConsulta": metadataConsulta,
-	        	"empresa": empresa
-	        })
-	    }).then(function(data) {
-	    	if (data != null && confirm(data.datos.replace(new RegExp("\\|", "g"), "\n"))) {
-		    	$.ajax({
-			        url: procesarURL,
-			        method: "POST",
-			        contentType: 'application/json',
-			        data: JSON.stringify({
-			        	"metadataConsulta": metadataConsulta,
-			        	"empresa": empresa,
-			        	"observaciones": $("#textareaObservaciones").val()
-			        })
-			    }).then(function(data) {
-			    	if (data != null) {
-				    	alert("Archivo generado: " + data.nombreArchivo);
+			url: preprocesarURL,
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify({
+				"metadataConsulta": metadataConsulta,
+				"empresa": empresa
+			})
+		}).then(function(data) {
+			if (data != null && confirm(data.datos.replace(new RegExp("\\|", "g"), "\n"))) {
+				$.ajax({
+					url: procesarURL,
+					method: "POST",
+					contentType: 'application/json',
+					data: JSON.stringify({
+						"metadataConsulta": metadataConsulta,
+						"empresa": empresa,
+						"observaciones": $("#textareaObservaciones").val()
+					})
+				}).then(function(data) {
+					if (data != null) {
+						alert("Archivo generado: " + data.nombreArchivo);
 						
 						closePopUp(event, document.getElementById("divIFrameSeleccionEmpresa"));
 						
@@ -358,10 +348,10 @@ function inputAceptarOnClick(event) {
 						$("#textareaObservaciones").val("");
 						
 						reloadData();
-			    	}
-			    });
-	    	}
-	    });
+					}
+				});
+			}
+		});
 	}
 }
 
@@ -380,15 +370,107 @@ function inputDeshacerAsignacionOnClick(event) {
 	if (URL != null) {
 		if (confirm("Se anulará la última asignación.")) {
 			$.ajax({
-		        url: URL,
-		        method: "POST",
-		        contentType: 'application/json',
-		        data: JSON.stringify(metadataConsulta)
-		    }).then(function(data) {
-		    	alert("Operación exitosa.");
-		    	
+				url: URL,
+				method: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify(metadataConsulta)
+			}).then(function(data) {
+				alert("Operación exitosa.");
+				
 				reloadData();
-		    });
+			});
 		}	
+	}
+}
+
+function inputReprocesarOnClick(event) {
+	var metadataConsulta = grid.filtroDinamico.calcularMetadataConsulta();
+	metadataConsulta.tamanoSubconjunto = grid.getCount();
+
+	reprocesar(metadataConsulta);
+}
+
+function inputReprocesarSubconjuntoOnClick(event) {
+	reprocesar(grid.filtroDinamico.calcularMetadataConsulta());
+}
+
+function reprocesar(metadataConsulta) {
+	var URL = null;
+	
+	if ($("#selectTipoRegistro").val() == "contrato") {
+		$("#selectTipoProcesamiento").val(0);
+		$("#textareaSeleccionTipoProcesamientoObservaciones").val("");
+		
+		showPopUp(document.getElementById("divIFrameSeleccionTipoProcesamiento"));
+	} else if ($("#selectTipoRegistro").val() == "prepago") {
+		URL = "/LogisticaWEB/RESTFacade/ACMInterfacePrepagoPHREST/reprocesar";
+	} else if ($("#selectTipoRegistro").val() == "numeroContrato") {
+		URL = "/LogisticaWEB/RESTFacade/ACMInterfaceContratoPHREST/reprocesar";
+	} else if ($("#selectTipoRegistro").val() == "sinDatos") {
+		URL = "/LogisticaWEB/RESTFacade/ACMInterfaceMidPHREST/reprocesarSinDatos";
+	} else {
+		alert("Funcionalidad no habilitada para el tipo de registro.");
+	}
+	
+	if (URL != null) {
+		var observaciones = prompt("Se reprocesarán " + metadataConsulta.tamanoSubconjunto + " registros.");
+		
+		if (observaciones != null) {
+			$.ajax({
+				url: URL,
+				method: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify({
+					"metadataConsulta": metadataConsulta,
+					"observaciones": observaciones
+				})
+			}).then(function(data) {
+				alert("Operación exitosa.");
+				
+				reloadData();
+			});
+		}
+	}
+}
+
+function inputCancelarSeleccionTipoProcesamientoOnClick(event) {
+	closePopUp(event, document.getElementById("divIFrameSeleccionTipoProcesamiento"));
+	
+	$("#selectTipoProcesamiento").val(0);
+	$("#textareaSeleccionTipoProcesamientoObservaciones").val("");
+	
+	reloadData();
+}
+
+function inputAceptarSeleccionTipoProcesamientoOnClick(event) {
+	var tipoProcesamiento = $("#selectTipoProcesamiento").val();
+	var observaciones = $("#textareaSeleccionTipoProcesamientoObservaciones").val();
+	
+	var URL = null;
+	
+	if (tipoProcesamiento == 0) {
+		alert("Debe seleccionar un tipo de procesamiento.");
+	} else if (tipoProcesamiento == 1) {
+		URL = "/LogisticaWEB/RESTFacade/ACMInterfaceContratoPHREST/reprocesarPorMID";
+	} else {
+		URL = "/LogisticaWEB/RESTFacade/ACMInterfaceContratoPHREST/reprocesarPorNumeroContrato";
+	}
+	
+	if (URL != null) {
+		$.ajax({
+			url: URL,
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify({
+				"metadataConsulta": grid.filtroDinamico.calcularMetadataConsulta(),
+				"observaciones": observaciones
+			})
+		}).then(function(data) {
+			alert("Operación exitosa.");
+			
+			inputCancelarSeleccionTipoProcesamientoOnClick();
+			
+			reloadData();
+		});
 	}
 }

@@ -2,11 +2,12 @@ package uy.com.amensg.logistica.robot;
 
 public interface IConnectionStrategy {
 
-	public String getSiguienteMidSinProcesar();
+	public String getSiguienteMidSinProcesar(String wsdlFileName);
 	
-	public String getSiguienteNumeroContratoSinProcesar();
+	public String getSiguienteNumeroContratoSinProcesar(String wsdlFileName);
 	
 	public void actualizarDatosMidContrato(
+		String wsdlFileName,
 		String direccion,
 		String documentoTipo,
 		String documento,
@@ -25,6 +26,7 @@ public interface IConnectionStrategy {
 	);
 	
 	public void actualizarDatosMidPrepago(
+		String wsdlFileName,
 		String mesAno,
 		String mid,
 		String montoMesActual,
@@ -35,14 +37,27 @@ public interface IConnectionStrategy {
 	);
 
 	public void actualizarDatosMidListaVacia(
-		String mid
+		String wsdlFileName, String mid
+	);
+	
+	public void actualizarDatosMidListaNegra(
+		String wsdlFileName, String mid
+	);
+	
+	public void actualizarDatosMidNegociando(
+		String wsdlFileName, String mid
+	);
+	
+	public void actualizarDatosMidNoLlamar(
+		String wsdlFileName, String mid
 	);
 	
 	public void actualizarDatosNumeroContratoListaVacia(
-		String numeroContrato
+		String wsdlFileName, String numeroContrato
 	);
 
 	public void actualizarDatosPersona(
+		String wsdlFileName,
 		String idCliente,
 		String mid,
 		String pais,

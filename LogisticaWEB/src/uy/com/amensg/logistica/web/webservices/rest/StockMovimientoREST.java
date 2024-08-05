@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Collection;
 import java.util.Date;
@@ -8,19 +8,19 @@ import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 import uy.com.amensg.logistica.bean.IStockMovimientoBean;
 import uy.com.amensg.logistica.bean.StockMovimientoBean;
 import uy.com.amensg.logistica.entities.Empresa;
@@ -30,8 +30,8 @@ import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.StockActual;
 import uy.com.amensg.logistica.entities.StockMovimiento;
 import uy.com.amensg.logistica.entities.TipoProducto;
-import uy.com.amensg.logistica.entities.TransferirStockTO;
 import uy.com.amensg.logistica.entities.Usuario;
+import uy.com.amensg.logistica.web.entities.TransferirStockTO;
 
 @Path("/StockMovimientoREST")
 public class StockMovimientoREST {
@@ -49,9 +49,11 @@ public class StockMovimientoREST {
 			HttpSession httpSession = request.getSession(false);
 			
 			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
 				IStockMovimientoBean iStockMovimientoBean = lookupBean();
 				
-				result = iStockMovimientoBean.listStockActual(metadataConsulta);
+				result = iStockMovimientoBean.listStockActual(metadataConsulta, loggedUsuarioId);
 				
 				for (Object object : result.getRegistrosMuestra()) {
 					StockActual stockActual = (StockActual) object;
@@ -80,9 +82,11 @@ public class StockMovimientoREST {
 			HttpSession httpSession = request.getSession(false);
 			
 			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long loggedUsuarioId = (Long) httpSession.getAttribute("sesion");
+				
 				IStockMovimientoBean iStockMovimientoBean = lookupBean();
 				
-				result = iStockMovimientoBean.countStockActual(metadataConsulta);
+				result = iStockMovimientoBean.countStockActual(metadataConsulta, loggedUsuarioId);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

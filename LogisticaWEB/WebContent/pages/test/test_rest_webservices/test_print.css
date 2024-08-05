@@ -12,6 +12,10 @@ div {
 	width: 100%;
 }
 
+#selectURL {
+	width: 100%;
+}
+
 .divResponse {
 	height: 500px;
 }

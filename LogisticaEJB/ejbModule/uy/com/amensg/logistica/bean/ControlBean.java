@@ -14,20 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.DateType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.TimestampType;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import uy.com.amensg.logistica.entities.Control;
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.EstadoControl;
@@ -47,7 +39,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class ControlBean implements IControlBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -310,21 +302,18 @@ public class ControlBean implements IControlBean {
 			procesoImportacionManaged.setUact(loggedUsuarioId);
 			procesoImportacionManaged.setFact(hoy);
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<Tuple> selectActivacion = hibernateSession.createNativeQuery(
+			Query selectActivacion = entityManager.createNativeQuery(
 				"SELECT asl.distribuidor_id, asl.fecha_asignacion_distribuidor, asl.punto_venta_id, asl.fecha_asignacion_punto_venta"
 				+ " FROM activacion a"
 				+ " INNER JOIN activacion_sublote_activacion asla ON asla.activacion_id = a.id"
 				+ " INNER JOIN activacion_sublote asl ON asl.id = asla.activacion_sublote_id"
 				+ " WHERE a.empresa_id = ?"
 				+ " AND a.mid = ?"
-				+ " AND a.chip = ?",
-				Tuple.class
+				+ " AND a.chip = ?"
 			);
-			selectActivacion.setParameter(1, empresa.getId(), LongType.INSTANCE);
+			selectActivacion.setParameter(1, empresa.getId());
 			
-			NativeQuery<?> insertControl = hibernateSession.createNativeQuery(
+			Query insertControl = entityManager.createNativeQuery(
 				"INSERT INTO control("
 					+ " id,"
 					+ " fecha_control,"
@@ -373,20 +362,20 @@ public class ControlBean implements IControlBean {
 				+ " )"
 			);
 			
-			insertControl.setParameter(1, fechaMin, DateType.INSTANCE);
-			insertControl.setParameter(2, fechaMin, DateType.INSTANCE);
-			insertControl.setParameter(3, hoy, TimestampType.INSTANCE);
-			insertControl.setParameter(4, fechaMin, DateType.INSTANCE);
-			insertControl.setParameter(5, Long.valueOf(0), LongType.INSTANCE);
-			insertControl.setParameter(6, Long.valueOf(0), LongType.INSTANCE);
-			insertControl.setParameter(7, hoy, TimestampType.INSTANCE);
-			insertControl.setParameter(8, hoy, TimestampType.INSTANCE);
-			insertControl.setParameter(9, Long.valueOf(1), LongType.INSTANCE);
-			insertControl.setParameter(10, loggedUsuarioId, LongType.INSTANCE);
-			insertControl.setParameter(11, loggedUsuarioId, LongType.INSTANCE);
-			insertControl.setParameter(12, empresa.getId(), LongType.INSTANCE);
-			insertControl.setParameter(13, estado.getId(), LongType.INSTANCE);
-			insertControl.setParameter(14, tipoControlId, LongType.INSTANCE);
+			insertControl.setParameter(1, fechaMin);
+			insertControl.setParameter(2, fechaMin);
+			insertControl.setParameter(3, hoy);
+			insertControl.setParameter(4, fechaMin);
+			insertControl.setParameter(5, Long.valueOf(0));
+			insertControl.setParameter(6, Long.valueOf(0));
+			insertControl.setParameter(7, hoy);
+			insertControl.setParameter(8, hoy);
+			insertControl.setParameter(9, Long.valueOf(1));
+			insertControl.setParameter(10, loggedUsuarioId);
+			insertControl.setParameter(11, loggedUsuarioId);
+			insertControl.setParameter(12, empresa.getId());
+			insertControl.setParameter(13, estado.getId());
+			insertControl.setParameter(14, tipoControlId);
 			
 			Long successful = Long.valueOf(0);
 			Long errors = Long.valueOf(0);
@@ -427,50 +416,50 @@ public class ControlBean implements IControlBean {
 						ok = false;
 					}
 					
-					selectActivacion.setParameter(2, mid, LongType.INSTANCE);
-					selectActivacion.setParameter(3, chip, StringType.INSTANCE);
+					selectActivacion.setParameter(2, mid);
+					selectActivacion.setParameter(3, chip);
 					
-					List<Tuple> resultList = selectActivacion.list();
+					List<?> resultList = selectActivacion.getResultList();
 					if (!resultList.isEmpty()) {
-						Tuple tuple = resultList.get(0);
+						Object[] tuple = (Object[])resultList.get(0);
 						
-						if (tuple.toArray().length == 4) {
+						if (tuple.length == 4) {
 							Long distribuidorId = null;
-							if (tuple.get(0) != null) {
-								distribuidorId = Long.valueOf((Integer) tuple.get(0));
+							if (tuple[0] != null) {
+								distribuidorId = Long.valueOf((Integer) tuple[0]);
 							}
-							insertControl.setParameter(17, distribuidorId, LongType.INSTANCE);
+							insertControl.setParameter(17, distribuidorId);
 							
 							Date fechaAsignacionDistribuidor = null;
-							if (tuple.get(1) != null) {
-								fechaAsignacionDistribuidor = (Date) tuple.get(1);
+							if (tuple[1] != null) {
+								fechaAsignacionDistribuidor = (Date) tuple[1];
 							}
-							insertControl.setParameter(18, fechaAsignacionDistribuidor, TimestampType.INSTANCE);
+							insertControl.setParameter(18, fechaAsignacionDistribuidor);
 							
 							Long puntoVentaId = null;
-							if (tuple.get(2) != null) {
-								puntoVentaId = Long.valueOf((Integer) tuple.get(2));
+							if (tuple[2] != null) {
+								puntoVentaId = Long.valueOf((Integer) tuple[2]);
 							}
-							insertControl.setParameter(19, puntoVentaId, LongType.INSTANCE);
+							insertControl.setParameter(19, puntoVentaId);
 							
 							Date fechaAsignacionPuntoVenta = null;
-							if (tuple.get(3) != null) {
-								fechaAsignacionPuntoVenta = (Date) tuple.get(3);
+							if (tuple[3] != null) {
+								fechaAsignacionPuntoVenta = (Date) tuple[3];
 							}
-							insertControl.setParameter(20, fechaAsignacionPuntoVenta, TimestampType.INSTANCE);
+							insertControl.setParameter(20, fechaAsignacionPuntoVenta);
 						}
 					} else {
-						insertControl.setParameter(17, null, LongType.INSTANCE);
-						insertControl.setParameter(18, null, TimestampType.INSTANCE);
-						insertControl.setParameter(19, null, LongType.INSTANCE);
-						insertControl.setParameter(20, null, TimestampType.INSTANCE);
+						insertControl.setParameter(17, null);
+						insertControl.setParameter(18, null);
+						insertControl.setParameter(19, null);
+						insertControl.setParameter(20, null);
 					}
 					
 					if (!ok) {
 						errors++;
 					} else {
-						insertControl.setParameter(15, mid, LongType.INSTANCE);
-						insertControl.setParameter(16, chip, StringType.INSTANCE);
+						insertControl.setParameter(15, mid);
+						insertControl.setParameter(16, chip);
 						
 						insertControl.executeUpdate();
 

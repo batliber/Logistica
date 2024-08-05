@@ -14,6 +14,14 @@ function inputImprimirKitANTELOnClick() {
 	);
 }
 
+function inputImprimirQRInstalacionFibraOnClick(event) {
+	var contrato = collectContratoData();
+	
+	window.open(
+		"/LogisticaWEB/pages/contrato/contrato_qr_instalacion_fibra_print.jsp?m=" + __FORM_MODE_PRINT + "&cid=" + contrato.id
+	);
+}
+
 function inputImprimirContratoOnClick() {
 	if (!checkRequiredFields()) {
 		alert("Información incompleta.");
@@ -153,25 +161,71 @@ function inputGuardarOnClick() {
 			return false;
 		}
 		
-		$.ajax({
-			url: "/LogisticaWEB/RESTFacade/ContratoREST/addAsignacionManual",
-			method: "POST",
-			contentType: 'application/json',
-			data: JSON.stringify(contrato)
-		}).then(function(data) {
-			if (data != null) {
-				alert(data.resultado);
-				
-				if (data.id != null && data.id != "") {
-					id = data.id
-					mode = __FORM_MODE_READ_ANTEL;
-					refinarForm();
-					reloadContrato();
+		if (mode == __FORM_MODE_NEW_INSTALACION_FIBRA) {
+			$.ajax({
+				url: "/LogisticaWEB/RESTFacade/ContratoREST/addAsignacionManualFibraOptica",
+				method: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify(contrato)
+			}).then(function(data) {
+				if (data != null) {
+					alert(data.resultado);
+					
+					if (data.id != null && data.id != "") {
+						id = data.id
+						mode = __FORM_MODE_READ_INSTALACION_FIBRA;
+						
+						refinarFormRemote();
+						reloadContrato();
+					}
+				} else {
+					alert("No se pudo completar la operación.");
 				}
-			} else {
-				alert("No se pudo completar la operación.");
-			}
-		});
+			});
+		} else if (mode == __FORM_MODE_NEW_ATENCION_CLIENTE) {
+			$.ajax({
+				url: "/LogisticaWEB/RESTFacade/ContratoREST/addAsignacionManualAtencionCliente",
+				method: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify(contrato)
+			}).then(function(data) {
+				if (data != null) {
+					alert(data.resultado);
+					
+					if (data.id != null && data.id != "") {
+						id = data.id
+						mode = __FORM_MODE_READ_ATENCION_CLIENTE;
+						
+						refinarFormRemote();
+						reloadContrato();
+					}
+				} else {
+					alert("No se pudo completar la operación.");
+				}
+			});
+		} else {
+			$.ajax({
+				url: "/LogisticaWEB/RESTFacade/ContratoREST/addAsignacionManual",
+				method: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify(contrato)
+			}).then(function(data) {
+				if (data != null) {
+					alert(data.resultado);
+					
+					if (data.id != null && data.id != "") {
+						id = data.id
+						if (mode == __FORM_MODE_NEW_ANTEL) {
+							mode = __FORM_MODE_READ_ANTEL;
+						}
+						refinarFormRemote();
+						reloadContrato();
+					}
+				} else {
+					alert("No se pudo completar la operación.");
+				}
+			});
+		}
 	}
 }
 
@@ -520,4 +574,80 @@ function inputEquipoDevueltoOnClick() {
 
 function inputNoRecuperadoOnClick() {
 	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/noRecuperado", collectContratoData());
+}
+
+function inputNoLlamarOnClick() {
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/noLlamar", collectContratoData());
+}
+
+function inputModemDevueltoOnClick() {
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/modemDevuelto", collectContratoData());
+}
+
+function inputAtencionClienteRellamarOnClick() {
+	if (!checkRequiredFields()) {
+		alert("Información incompleta.");
+		return;
+	}
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteRellamar", collectContratoData());
+}
+
+function inputAtencionClienteSolucionadoOnClick() {
+	if (!checkRequiredFields()) {
+		alert("Información incompleta.");
+		return;
+	}
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteSolucionado", collectContratoData());
+}
+
+function inputAtencionClienteANTELOnClick() {
+	if (!checkRequiredFields()) {
+		alert("Información incompleta.");
+		return;
+	}
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteANTEL", collectContratoData());
+}
+
+function inputAtencionClienteComercialOnClick() {
+	if (!checkRequiredFields()) {
+		alert("Información incompleta.");
+		return;
+	}
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteComercial", collectContratoData());
+}
+
+function inputAtencionClienteCambioClienteOnClick() {
+	if (!checkRequiredFields()) {
+		alert("Información incompleta.");
+		return;
+	}
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteCambioCliente", collectContratoData());
+}
+
+function inputAtencionClienteSupervisionOnClick() {
+	if (!checkRequiredFields()) {
+		alert("Información incompleta.");
+		return;
+	}
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteSupervision", collectContratoData());
+}
+
+function inputAtencionClienteCerradoOnClick() {
+	if (!checkRequiredFields()) {
+		alert("Información incompleta.");
+		return;
+	}
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteCerrado", collectContratoData());
+}
+
+function inputAtencionClienteCambioProveedorOnClick() {
+	if (!checkRequiredFields()) {
+		alert("Información incompleta.");
+		return;
+	}
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteCambioProveedor", collectContratoData());
+}
+
+function inputAtencionClienteRechazarOnClick() {
+	realizarAccionContrato("/LogisticaWEB/RESTFacade/ContratoREST/atencionClienteRechazar", collectContratoData());
 }

@@ -3,10 +3,10 @@ package uy.com.amensg.logistica.bean;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import uy.com.amensg.logistica.entities.SeguridadAuditoria;
 import uy.com.amensg.logistica.entities.SeguridadTipoEvento;
@@ -21,7 +21,7 @@ import uy.com.amensg.logistica.util.MD5Utils;
 @Stateless
 public class SeguridadBean implements ISeguridadBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -56,7 +56,7 @@ public class SeguridadBean implements ISeguridadBean {
 				usuario.setUact(Long.valueOf(1));
 				usuario.setTerm(Long.valueOf(1));
 				
-				iUsuarioBean.update(usuario);
+				iUsuarioBean.updateIntentosFallidosLogin(usuario);
 			}
 			
 			SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
@@ -81,22 +81,24 @@ public class SeguridadBean implements ISeguridadBean {
 			
 			return seguridadAuditoria;
 		} else {
+			usuario.setFact(date);
+			usuario.setUact(Long.valueOf(1));
+			usuario.setTerm(Long.valueOf(1));
+			
 			if (usuario.getIntentosFallidosLogin() != null) {
 				usuario.setIntentosFallidosLogin(usuario.getIntentosFallidosLogin() + 1);
 			} else {
 				usuario.setIntentosFallidosLogin(Long.valueOf(1));
 			}
 			
-			usuario.setFact(date);
-			usuario.setUact(Long.valueOf(1));
-			usuario.setTerm(Long.valueOf(1));
+			iUsuarioBean.updateIntentosFallidosLogin(usuario);
 			
 			if (usuario.getIntentosFallidosLogin().equals(
 				Long.parseLong(Configuration.getInstance().getProperty("seguridad.maximaCantidadIntentosFallidosLogin"))
 			)) {
 				usuario.setBloqueado(true);
 				
-				iUsuarioBean.update(usuario);
+				iUsuarioBean.updateBloqueado(usuario);
 				
 				SeguridadAuditoria seguridadAuditoria = new SeguridadAuditoria();
 				seguridadAuditoria.setFecha(date);
@@ -120,8 +122,6 @@ public class SeguridadBean implements ISeguridadBean {
 				
 				throw new UsuarioBloqueadoException("Usuario bloqueado.");
 			} else {
-				iUsuarioBean.update(usuario);
-				
 				throw new UsuarioContrasenaIncorrectaException("Usuario o contraseña incorrecta.");
 			}
 		}

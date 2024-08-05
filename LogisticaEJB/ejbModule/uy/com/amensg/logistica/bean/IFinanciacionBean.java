@@ -1,6 +1,6 @@
 package uy.com.amensg.logistica.bean;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.DatosElegibilidadFinanciacion;
 import uy.com.amensg.logistica.entities.DatosFinanciacion;

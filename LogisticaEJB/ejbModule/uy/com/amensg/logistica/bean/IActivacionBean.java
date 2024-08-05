@@ -3,7 +3,7 @@ package uy.com.amensg.logistica.bean;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Activacion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;

@@ -3,10 +3,12 @@ package uy.com.amensg.logistica.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.SequenceGenerator;
 
 @MappedSuperclass
 public class BaseEntity implements Serializable {
@@ -15,23 +17,31 @@ public class BaseEntity implements Serializable {
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue
-	private Long id;
+	@GeneratedValue(
+		strategy = GenerationType.SEQUENCE,
+		generator = "hibernate_sequence"
+	)
+	@SequenceGenerator(
+		name = "hibernate_sequence",
+		sequenceName = "hibernate_sequence",
+		allocationSize = 1
+	)
+	protected Long id;
 	
 	@Column(name = "ucre")
-	private Long ucre;
+	protected Long ucre;
 	
 	@Column(name = "fcre")
-	private Date fcre;
+	protected Date fcre;
 	
 	@Column(name = "uact")
-	private Long uact;
+	protected Long uact;
 	
 	@Column(name = "fact")
-	private Date fact;
+	protected Date fact;
 	
 	@Column(name = "term")
-	private Long term;
+	protected Long term;
 
 	public Long getId() {
 		return id;

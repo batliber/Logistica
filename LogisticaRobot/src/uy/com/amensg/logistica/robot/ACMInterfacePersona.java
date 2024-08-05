@@ -381,9 +381,9 @@ public class ACMInterfacePersona extends DataProcessingTemplateMethod {
 			result.setNull(parameterIndex++, Types.VARCHAR);
 		}
 		
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		result.setTimestamp(parameterIndex++, new Timestamp(new Date().getTime()));
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		
 		result.executeUpdate();
 		
@@ -401,7 +401,7 @@ public class ACMInterfacePersona extends DataProcessingTemplateMethod {
 			PreparedStatement preparedStatementInsertMidPersona = connection.prepareStatement(
 				"INSERT INTO acm_interface_mid_persona(mid, persona_id) VALUES (?, ?)"
 			);
-			preparedStatementInsertMidPersona.setLong(1, new Long(mid));
+			preparedStatementInsertMidPersona.setLong(1, Long.decode(mid));
 			preparedStatementInsertMidPersona.setLong(2, id);
 			
 			preparedStatementInsertMidPersona.executeUpdate();
@@ -628,9 +628,9 @@ public class ACMInterfacePersona extends DataProcessingTemplateMethod {
 			result.setNull(parameterIndex++, Types.VARCHAR);
 		}
 		
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		result.setTimestamp(parameterIndex++, new Timestamp(new Date().getTime()));
-		result.setLong(parameterIndex++, new Long(1));
+		result.setLong(parameterIndex++, Long.valueOf(1));
 		
 		result.setLong(parameterIndex++, id);
 		
@@ -642,8 +642,8 @@ public class ACMInterfacePersona extends DataProcessingTemplateMethod {
 			+ " WHERE mid = ?"
 			+ " AND persona_id = ?"
 		);
-		preparedStatementMidPersona.setLong(1, new Long(mid));
-		preparedStatementMidPersona.setLong(2, new Long(id));
+		preparedStatementMidPersona.setLong(1, Long.decode(mid));
+		preparedStatementMidPersona.setLong(2, Long.valueOf(id));
 		
 		ResultSet resultSetMidPersona = preparedStatementMidPersona.executeQuery();
 		while(resultSetMidPersona.next()) {
@@ -653,7 +653,7 @@ public class ACMInterfacePersona extends DataProcessingTemplateMethod {
 				PreparedStatement preparedStatementInsertMidPersona = connection.prepareStatement(
 					"INSERT INTO acm_interface_mid_persona(mid, persona_id) VALUES (?, ?)"
 				);
-				preparedStatementInsertMidPersona.setLong(1, new Long(mid));
+				preparedStatementInsertMidPersona.setLong(1, Long.decode(mid));
 				preparedStatementInsertMidPersona.setLong(2, id);
 				
 				preparedStatementInsertMidPersona.executeUpdate();

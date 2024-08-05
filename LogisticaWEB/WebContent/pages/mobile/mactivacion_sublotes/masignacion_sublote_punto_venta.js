@@ -212,7 +212,7 @@ function inputNumeroSubloteOnChange(event, element) {
 	
 	if (numeroSublote != null && numeroSublote != "") {
 		$.ajax({
-			url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/getByNumero/" + numeroSublote
+			url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/getByNumeroContextAware/" + numeroSublote
 		}).then(showSubloteData);
 	} else {
 		inputLimpiarOnClick();

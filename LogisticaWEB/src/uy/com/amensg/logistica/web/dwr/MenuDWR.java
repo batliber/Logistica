@@ -1,7 +1,7 @@
-package uy.com.amensg.logistica.dwr;
+package uy.com.amensg.logistica.web.dwr;
 
 import uy.com.amensg.logistica.entities.Menu;
-import uy.com.amensg.logistica.entities.MenuTO;
+import uy.com.amensg.logistica.web.entities.MenuTO;
 
 public class MenuDWR {
 	

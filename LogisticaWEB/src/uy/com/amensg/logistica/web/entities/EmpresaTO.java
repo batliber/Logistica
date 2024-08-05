@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.entities;
+package uy.com.amensg.logistica.web.entities;
 
 import java.util.Collection;
 
@@ -10,6 +10,7 @@ public class EmpresaTO extends BaseTO {
 	private String nombreContrato;
 	private String nombreSucursal;
 	private String direccion;
+	private Boolean omitirControlVendidos;
 	private Collection<FormaPagoTO> formaPagos;
 	private Collection<UsuarioTO> empresaUsuarioContratos;
 
@@ -59,6 +60,14 @@ public class EmpresaTO extends BaseTO {
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+
+	public Boolean getOmitirControlVendidos() {
+		return omitirControlVendidos;
+	}
+
+	public void setOmitirControlVendidos(Boolean omitirControlVendidos) {
+		this.omitirControlVendidos = omitirControlVendidos;
 	}
 
 	public Collection<FormaPagoTO> getFormaPagos() {

@@ -2,7 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
@@ -21,6 +21,10 @@ public interface IACMInterfaceContratoPHBean {
 	public String asignar(MetadataConsulta metadataConsulta, Empresa empresa, String observaciones);
 	
 	public void deshacerAsignacion(MetadataConsulta metadataConsulta);
+	
+	public void reprocesarPorMID(MetadataConsulta metadataConsulta, String observaciones);
+	
+	public void reprocesarPorNumeroContrato(MetadataConsulta metadataConsulta, String observaciones);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	

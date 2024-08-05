@@ -3,10 +3,10 @@ package uy.com.amensg.logistica.entities;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "seguridad_usuario")
@@ -25,6 +25,9 @@ public class Usuario extends BaseEntity {
 	
 	@Column(name = "documento")
 	private String documento;
+	
+	@Column(name = "email")
+	private String email;
 	
 	@Column(name = "fecha_baja")
 	private Date fechaBaja;
@@ -71,6 +74,14 @@ public class Usuario extends BaseEntity {
 
 	public void setDocumento(String documento) {
 		this.documento = documento;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Date getFechaBaja() {

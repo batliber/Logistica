@@ -2,7 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
@@ -14,6 +14,8 @@ public interface IRolBean {
 	public Collection<Rol> list();
 	
 	public Collection<Rol> listMinimal();
+	
+	public Collection<Rol> listMinimal(Long usuarioId);
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 	

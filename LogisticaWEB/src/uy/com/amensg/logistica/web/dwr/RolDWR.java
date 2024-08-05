@@ -1,12 +1,12 @@
-package uy.com.amensg.logistica.dwr;
+package uy.com.amensg.logistica.web.dwr;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
 import uy.com.amensg.logistica.entities.Menu;
-import uy.com.amensg.logistica.entities.MenuTO;
 import uy.com.amensg.logistica.entities.Rol;
-import uy.com.amensg.logistica.entities.RolTO;
+import uy.com.amensg.logistica.web.entities.MenuTO;
+import uy.com.amensg.logistica.web.entities.RolTO;
 
 public class RolDWR {
 		

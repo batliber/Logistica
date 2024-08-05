@@ -29,15 +29,15 @@ function init() {
 		.then(function(odata) {
 			if (id != null) {
 				$.ajax({
-			        url: "/LogisticaWEB/RESTFacade/RecargaPuntoVentaUsuarioREST/getPuntoVentaByUsuarioId/" + id
-			   	}).then(function(data) {
+					url: "/LogisticaWEB/RESTFacade/RecargaPuntoVentaUsuarioREST/getPuntoVentaByUsuarioId/" + id
+				}).then(function(data) {
 					if (data != null) {
 						$("#selectUsuarioPuntoVenta").val(data.id);
 					}
 				}).then(function(data) {
 					$.ajax({
-				        url: "/LogisticaWEB/RESTFacade/UsuarioREST/getById/" + id
-				    }).then(function(data) {
+						url: "/LogisticaWEB/RESTFacade/UsuarioREST/getById/" + id
+					}).then(function(data) {
 						$("#inputUsuarioLogin").val(data.login);
 						$("#inputUsuarioNombre").val(data.nombre);
 						$("#inputUsuarioDocumento").val(data.documento);
@@ -126,37 +126,37 @@ function initPuntosVenta() {
 		url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
 	}).then(function(data) {
 		fillSelect(
-	    	"selectUsuarioPuntoVenta", 
-	    	data,
-	   		"id", 
-	   		"nombre"
-	   	);
+			"selectUsuarioPuntoVenta", 
+			data,
+			"id", 
+			"nombre"
+		);
 	}); 
 }
 
 function initEmpresas() {
-    return $.ajax({
-        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
-    }).then(function(data) {
-	    fillSelect(
-	    	"selectEmpresa", 
-	    	data,
-	   		"id", 
-	   		"nombre"
-	   	);
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+	}).then(function(data) {
+		fillSelect(
+			"selectEmpresa", 
+			data,
+			"id", 
+			"nombre"
+		);
 	});
 }
 
 function initRoles() {
 	return $.ajax({
-        url: "/LogisticaWEB/RESTFacade/RolREST/listMinimal"
+		url: "/LogisticaWEB/RESTFacade/RolREST/listMinimalByContext"
 	}).then(function(data) {
-	  	fillSelect(
-	       	"selectRol", 
-	       	data,
-	       	"id", 
-	       	"nombre"
-	       );
+		fillSelect(
+			"selectRol", 
+			data,
+			"id", 
+			"nombre"
+		);
 	});
 }
 
@@ -190,8 +190,8 @@ function inputAgregarEmpresaOnClick(event, element) {
 		
 		if (!found) {
 			$.ajax({
-		        url: "/LogisticaWEB/RESTFacade/EmpresaREST/getById/" + empresaId
-		    }).then(function(data) {
+				url: "/LogisticaWEB/RESTFacade/EmpresaREST/getById/" + empresaId
+			}).then(function(data) {
 				empresas.cantidadRegistros = empresas.cantidadRegistros + 1;
 				empresas.registrosMuestra[empresas.registrosMuestra.length] = data;
 				
@@ -216,8 +216,8 @@ function inputAgregarRolOnClick(event, element) {
 		
 		if (!found) {
 			$.ajax({
-		        url: "/LogisticaWEB/RESTFacade/RolREST/getById/" + rolId
-		    }).then(function(data) {
+				url: "/LogisticaWEB/RESTFacade/RolREST/getById/" + rolId
+			}).then(function(data) {
 				roles.cantidadRegistros = roles.cantidadRegistros + 1;
 				roles.registrosMuestra[roles.registrosMuestra.length] = data;
 				
@@ -325,11 +325,11 @@ function inputGuardarOnClick(event) {
 		}
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/UsuarioREST/update",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(usuario)
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/UsuarioREST/update",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(usuario)
+		}).then(function(data) {
 			if (data != null) {
 				var puntoVentaId = $("#selectUsuarioPuntoVenta").val();
 						
@@ -346,9 +346,9 @@ function inputGuardarOnClick(event) {
 				
 				$.ajax({
 					url: "/LogisticaWEB/RESTFacade/RecargaPuntoVentaUsuarioREST/update",
-				    method: "POST",
-				    contentType: 'application/json',
-				    data: JSON.stringify(recargaPuntoVentaUsuario)
+					method: "POST",
+					contentType: 'application/json',
+					data: JSON.stringify(recargaPuntoVentaUsuario)
 				}).then(function(data) {
 					alert("Operación exitosa");
 				});
@@ -360,16 +360,16 @@ function inputGuardarOnClick(event) {
 		usuario.contrasena = $("#inputUsuarioContrasena").val();
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/UsuarioREST/getByLogin/" + usuario.login
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/UsuarioREST/getByLogin/" + usuario.login
+		}).then(function(data) {
 			if (data == null) {
 				$.ajax({
-			        url: "/LogisticaWEB/RESTFacade/UsuarioREST/add",
-			        method: "POST",
-			        contentType: 'application/json',
-			        data: JSON.stringify(usuario)
-			    }).then(function(data) {
-			    	if (data != null) {
+					url: "/LogisticaWEB/RESTFacade/UsuarioREST/add",
+					method: "POST",
+					contentType: 'application/json',
+					data: JSON.stringify(usuario)
+				}).then(function(data) {
+					if (data != null) {
 						id = data.id;
 						
 						var puntoVentaId = $("#selectUsuarioPuntoVenta").val();
@@ -386,18 +386,18 @@ function inputGuardarOnClick(event) {
 						}
 						
 						$.ajax({
-					        url: "/LogisticaWEB/RESTFacade/RecargaPuntoVentaUsuarioREST/update",
-					        method: "POST",
-					        contentType: 'application/json',
-					        data: JSON.stringify(recargaPuntoVentaUsuario)
-					    }).then(function(data) {
+							url: "/LogisticaWEB/RESTFacade/RecargaPuntoVentaUsuarioREST/update",
+							method: "POST",
+							contentType: 'application/json',
+							data: JSON.stringify(recargaPuntoVentaUsuario)
+						}).then(function(data) {
 							alert("Operación exitosa");
 					
-			    			$("#inputEliminarUsuario").prop("disabled", false);
+							$("#inputEliminarUsuario").prop("disabled", false);
 						});
-			    	} else {
-			    		alert("Error en la operación");
-			    	}
+					} else {
+						alert("Error en la operación");
+					}
 				});
 			} else {
 				alert("Ya existe un usuario con ese login.");
@@ -413,11 +413,11 @@ function inputEliminarOnClick(event) {
 		};
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/UsuarioREST/remove",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(usuario)
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/UsuarioREST/remove",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(usuario)
+		}).then(function(data) {
 			alert("Operación exitosa");
 		});
 	}

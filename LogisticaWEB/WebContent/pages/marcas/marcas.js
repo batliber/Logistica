@@ -9,8 +9,8 @@ function init() {
 	$("#divButtonNew").hide();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
 				|| data.usuarioRolEmpresas[i].rol.id == __ROL_MAESTROS_RIVERGREEN) {
@@ -46,22 +46,22 @@ function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/MarcaREST/listContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.reload(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/MarcaREST/listContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.reload(data);
+	});
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/MarcaREST/countContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.setCount(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/MarcaREST/countContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.setCount(data);
+	});
 }
 
 function trMarcaOnClick(eventObject) {

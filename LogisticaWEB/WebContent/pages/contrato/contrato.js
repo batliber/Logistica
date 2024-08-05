@@ -1,3 +1,5 @@
+var __EMPRESA_ID_ATENCION_CLIENTES = 75559430;
+
 var __SEMANAS_DISPONIBILIDAD_FECHA_ENTREGA = 4;
 var __FORMA_PAGO_TARJETA_ID = 3;
 var __FORMA_PAGO_NUESTRO_CREDITO_ID = 4;
@@ -7,6 +9,7 @@ var __ELEGIBILIDAD_FINANCIACION_REALIZAR_CLEARING = 1;
 var __ELEGIBILIDAD_FINANCIACION_NO_REALIZAR_CLEARING = 2;
 var __ELEGIBILIDAD_SIN_ANALISIS = -1;
 var __TIPO_ARCHIVO_ADJUNTO_REMITO_RIVERGREEN = 2;
+var __TIPO_ARCHIVO_ADJUNTO_EFACTURA_ANTEL = 5;
 
 var gridArchivosAdjuntos = null;
 var gridContratosRelacionados = null;
@@ -18,9 +21,10 @@ function init() {
 	initTabArchivosAdjuntos();
 	initTabContratosRelacionados();
 	
-	refinarForm();
+	refinarFormRemote();
 	
 	$("#selectFechaEntrega").append("<option value='0'>Seleccione...</option>");
+	$("#selectFormaPago").append("<option value='0'>Seleccione...</option>");
 	
 	initEmpresas()
 		.then(function(data) {
@@ -32,25 +36,34 @@ function init() {
 								.then(function(data) {
 									initModalidadVenta()
 										.then(function(data) {
-											initTarjetaCredito()
+											initAtencionClienteTipoContacto()
 												.then(function(data) {
-													initTipoDocumento()
+													initAtencionClienteConcepto()
 														.then(function(data) {
-															initSexo()
+															initTarjetaCredito()
 																.then(function(data) {
-																	initDepartamento()
+																	initTipoDocumento()
 																		.then(function(data) {
-																			initBarrio()
+																			initSexo()
 																				.then(function(data) {
-																					initZona()
+																					initDepartamento()
 																						.then(function(data) {
-																							initTurno()
+																							initBarrio()
 																								.then(function(data) {
-																									initTipoProducto()
+																									initZona()
 																										.then(function(data) {
-																											if (id != null) {
-																												reloadContrato();
-																											}
+																											initTurno()
+																												.then(function(data) {
+																													initRepuestaTecnicaComercial()
+																														.then(function(data) {
+																															initTipoProducto()
+																																.then(function(data) {
+																																	if (id != null) {
+																																		reloadContrato();
+																																	}
+																																});
+																														});
+																												});
 																										});
 																								});
 																						});
@@ -135,7 +148,7 @@ function reloadArchivosAdjuntosData(id, contrato) {
 		for (var i=0; i<archivoAdjuntos.length; i++) {
 			if (mode == __FORM_MODE_ANTEL) {
 				if (archivoAdjuntos[i].tipoArchivoAdjunto != null
-				&& archivoAdjuntos[i].tipoArchivoAdjunto.id == __TIPO_ARCHIVO_ADJUNTO_REMITO_RIVERGREEN) {
+					&& archivoAdjuntos[i].tipoArchivoAdjunto.id == __TIPO_ARCHIVO_ADJUNTO_REMITO_RIVERGREEN) {
 					var url =
 						"<a href=\"/LogisticaWEB/Download?fn=" + archivoAdjuntos[i].url + "&f=s\">" 
 							+ archivoAdjuntos[i].url 
@@ -146,32 +159,63 @@ function reloadArchivosAdjuntosData(id, contrato) {
 					data.cantidadRegistros++;
 				}
 			} else {
-				var url =
-					"<a href=\"/LogisticaWEB/Download?fn=" + archivoAdjuntos[i].url + "&f=s\">" 
-						+ archivoAdjuntos[i].url 
-					+ "</a>";
-				
-				data.registrosMuestra[data.cantidadRegistros] = archivoAdjuntos[i];
-				data.registrosMuestra[data.cantidadRegistros].urlLink = url;
-				data.cantidadRegistros++;
+				if (archivoAdjuntos[i].tipoArchivoAdjunto != null
+					&& archivoAdjuntos[i].tipoArchivoAdjunto.id == __TIPO_ARCHIVO_ADJUNTO_EFACTURA_ANTEL) {
+					var url =
+						"<a href=" + archivoAdjuntos[i].url + ">" 
+							+ archivoAdjuntos[i].url
+						+ "</a>";
+					
+					data.registrosMuestra[data.cantidadRegistros] = archivoAdjuntos[i];
+					data.registrosMuestra[data.cantidadRegistros].urlLink = url;
+					data.cantidadRegistros++;
+				} else {	
+					var url =
+						"<a href=\"/LogisticaWEB/Download?fn=" + archivoAdjuntos[i].url + "&f=s\">" 
+							+ archivoAdjuntos[i].url 
+						+ "</a>";
+					
+					data.registrosMuestra[data.cantidadRegistros] = archivoAdjuntos[i];
+					data.registrosMuestra[data.cantidadRegistros].urlLink = url;
+					data.cantidadRegistros++;
+				}
 			}
 		}
 		
 		var html = "";
 		var imgGalleryClass = "imgGalleryActive";
 		for (var i=0; i<data.registrosMuestra.length; i++) {
+			var registroMuestra = data.registrosMuestra[i];
+			
 			if (i > 0) {
 				imgGalleryClass = "imgGalleryInactive";
 			}
 			
-			html += "<img class='" + imgGalleryClass + "'"
-				+ " aaid='" + data.registrosMuestra[i].id + "'"
-				+ " src='/LogisticaWEB/Stream?fn=" + data.registrosMuestra[i].url + "'/>";
+			if (registroMuestra.tipoArchivoAdjunto.id != __TIPO_ARCHIVO_ADJUNTO_EFACTURA_ANTEL) {
+				html += "<img class='" + imgGalleryClass + "'"
+					+ " aaid='" + data.registrosMuestra[i].id + "'"
+					+ " src='/LogisticaWEB/Stream?fn=" + data.registrosMuestra[i].url + "'/>";
+			}
 		}
 		
 		$(".divGalleryContent").html(html != "" ? html : "&nbsp;");
 		
 		gridArchivosAdjuntos.reload(data);
+	});
+}
+
+function reloadDireccionesData(id, contrato) {
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/ContratoDireccionREST/listByContratoId/" + id
+	}).then(function(direcciones) {
+		for (var i=0; i<direcciones.length; i++) {
+			var direccion = direcciones[i];
+			if (direccion.tipoDireccion.id == 1) {
+				$("#divTab1").attr("did", direccion.id);
+			} else if (direccion.tipoDireccion.id == 2) {
+				$("#divTab2").attr("did", direccion.id);
+			}
+		}
 	});
 }
 
@@ -215,12 +259,16 @@ function inputAgregarAdjuntoOnClick(event, element) {
 		contentType: false
 	}).then(function(data) {
 		alert(data.message.replace(new RegExp("\\|", "g"), "\n"));
+		$("#selectTipoArchivoAdjunto").val(0);
+		$("#inputAdjunto").val(null);
+		
+		reloadArchivosAdjuntosData(id);
 	}, function(data) {
 		alert(data.message);
 		$("#selectTipoArchivoAdjunto").val(0);
 		$("#inputAdjunto").val(null);
 		
-		reloadArchivosAdjuntosData();
+		reloadArchivosAdjuntosData(id);
 	});
 }
 
@@ -312,471 +360,248 @@ function inputAgregarContratoRelacionadoOnClick(event, element) {
 	});
 }
 
-function refinarForm() {
-	hideFields([
-		"empresa", "rol", "usuario", "vendedor", "backoffice", "distribuidor", "activador", "coordinador",
-		"fechaVenta", "fechaVentaMostrar", "fechaBackoffice", "fechaEntregaDistribuidor", 
-		"fechaDevolucionDistribuidor", "fechaEnvioAntel", "fechaActivacion", "fechaCoordinacion", 
-		"fechaEnvioANucleo", "fechaPickUp", "nuevoPlanString", "resultadoEntregaDistribucion", 
-		"resultadoEntregaDistribucionObservaciones", "resultadoEntregaDistribucionLatitud",
-		"resultadoEntregaDistribucionLongitud", "resultadoEntregaDistribucionPrecision", 
-		"tipoTasaInteresEfectivaAnual", "tarjetaCredito", "cuotas", "valorCuota", "numeroVale", "intereses",
-		"gastosAdministrativos", "gastosConcesion", "gastosAdministrativosTotales", "unidadIndexada", 
-		"tasaInteresEfectivaAnual", "antelNroTrn", "antelFormaPago", "antelNroServicioCuenta", "antelImporte",
-		"incluirChip", "random", "resultadoEntregaDistribucionFecha"
-	]);
+function refinarFormRemote() {
+	$(".divButtonBar .divButton").hide();
+	$(".divButtonTitleBar div").hide();
+	$(".divFormLabelExtended").hide();
+	$(".divFormValue").hide();
 	
+	hideFields(["unidadIndexada", "tasaInteresEfectivaAnual"]);
 	$("#divRealizarClearing").hide();
-	$("#inputNumeroFacturaRiverGreen").prop("disabled", true);
 	
-	$(".divButtonBar > div").hide();
-	$(".divButtonTitleBar > div").hide();
-	
-	if (mode == __FORM_MODE_READ) {
-		makeFieldsReadOnly([
-			"divEmpresa", "divMid", "divPlan", "divNumeroContrato", "divNuevoPlan", "divMotivoCambioPlan",
-			"divModalidadVenta", "divTipoProducto", "divEquipo", "divNumeroSerie", "divNumeroChip",
-			"divNumeroBloqueo", "divTipoDocumento", "divDocumento", "divNombre", "divApellido", 
-			"divFechaNacimiento", "divSexo", "divNumeroFactura", "divNumeroFacturaRiverGreen",
+	$.ajax({
+		url: "/LogisticaWEB/RESTFacade/EntidadVistaREST/getById/" + mode,
+		method: "GET",
+		contentType: 'application/json',
+	}).then(function(data) {
+		if (data != null) {
+			var visibles = 0;
+			for (var i=0; i<data.entidadVistaAcciones.length; i++) {
+				var entidadVistaAccion = data.entidadVistaAcciones[i];
+				
+				if (entidadVistaAccion.visible) {
+					var accion = entidadVistaAccion.entidadAccion;
+					
+					$("#divInput" + accion.nombre).show();
+					
+					visibles++;
+				}
+			}
 			
-			"divAgregarAdjunto", "divTipoArchivoAdjunto",
+			var sizes = [
+				"Single", "Double", "Triple", "Fourfold", "Quintuple", "Sextuple", "Septuple", 
+				"Octuple", "Ninetuple"
+			];
 			
-			"divDireccionFactura", "divDireccionFacturaCalle", "divDireccionFacturaNumero", 
-			"divDireccionFacturaBis", "divDireccionFacturaBlock", "divDireccionFacturaApto", 
-			"divDireccionFacturaSolar", "divDireccionFacturaManzana", "divDireccionFacturaCodigoPostal",
-			"divDireccionFacturaLocalidad", "divDireccionFacturaObservaciones", "divDireccionFacturaDepartamento",
+			$("#divButtonTitleTripleSize").attr("id", "divButtonTitle" + sizes[visibles - 1] + "Size");
 			
-			"divDireccionEntrega", "divDireccionEntregaCalle", "divDireccionEntregaNumero", 
-			"divDireccionEntregaBis", "divDireccionEntregaBlock", "divDireccionEntregaApto",
-			"divDireccionEntregaSolar", "divDireccionEntregaManzana", "divDireccionEntregaCodigoPostal",
-			"divDireccionEntregaLocalidad", "divDireccionEntregaObservaciones", "divDireccionEntregaDepartamento",
+			var hidden = [];
+			var visibles = [];
+			var readOnly = [];
+			var required = [];
+			for (var i=0; i<data.entidadVistaCampos.length; i++) {
+				var entidadVistaCampo = data.entidadVistaCampos[i];
+				
+				if (!entidadVistaCampo.visible) {
+					hidden[hidden.length] = entidadVistaCampo.nombre;
+				} else {
+					visibles[visibles.length] = entidadVistaCampo.nombre;
+				}
+				
+				if (!entidadVistaCampo.editable) {
+					readOnly[readOnly.length] = "div" 
+						+ entidadVistaCampo.nombre.substring(0, 1).toUpperCase()
+						+ entidadVistaCampo.nombre.substring(1);
+				}
+				
+				if (entidadVistaCampo.obligatorio) {
+					required[required.length] = "divLabel" 
+						+ entidadVistaCampo.nombre.substring(0, 1).toUpperCase()
+						+ entidadVistaCampo.nombre.substring(1);
+				}
+			}
 			
-			"divTelefonoContacto", "divEmail", "divPrecio", "divValorCuota", "divMoneda", "divFormaPago",
-			"divTarjetaCredito", "divCuotas", "divDepartamento", "divBarrio", "divZona", "divTurno",
-			"divFechaEntrega", "divFechaActivarEn", "divObservaciones", "divCostoEnvio",
-		]);
-		
-		$("#divObservaciones").css("width", "65%");
-	} else if (mode == __FORM_MODE_NEW) {
-		showField("empresa");
-		
-		makeFieldsReadOnly([
-			"divNumeroSerie",  "divNumeroChip", "divNumeroBloqueo", "divNumeroFactura",
-			"divNumeroFacturaRiverGreen", "divFechaActivarEn",
-			"divAgregarAdjunto"
-		]);
-		
-		hideFields([
-			"numeroSerie", "numeroChip", "numeroBloqueo", "numeroFactura", "numeroFacturaRiverGreen", "fechaActivarEn"
-		]);
-		
-		setRequiredFields(["divLabelEmpresa", "divLabelMid" ]);
-		
-		$("#divInputGuardar").show();
-		
-		$("#divButtonTitleFourfoldSize").hide();
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
-	} else if (mode == __FORM_MODE_NEW_ANTEL) {
-		showField("empresa");
-		showField("antelNroTrn");
-		
-		makeFieldsReadOnly([
-			"divAgregarAdjunto"
-		]);
-		
-		hideFields([
-			"localidad", "codigoPostal", "fechaVencimiento", "plan", "numeroContrato", "modalidadVenta",
-			"nuevoPlan", "motivoCambioPlan", "tipoProducto", "equipo", "numeroSerie", "numeroChip",
-			"numeroBloqueo", "tipoDocumento", "fechaNacimiento", "sexo", "numeroFacturaRiverGreen",
-			"costoEnvio", "email", "moneda", "precio", "formaPago", "tarjetaCredito", "numeroFactura", 
-			"fechaActivarEn", "estado"
-		]);
-		
-		setRequiredFields([
-			"divLabelEmpresa", "divLabelMid", "divLabelDireccionEntregaDepartamento", "divLabelDireccionEntregaLocalidad"
-		]);
-		
-		$("#divInputGuardar").show();
-		$("#divInputImprimirKitANTEL").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").hide();
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
-	} else if (mode == __FORM_MODE_READ_ANTEL) {
-		makeFieldsReadOnly([
-			"divEmpresa", "divMid", "divPlan", "divNumeroContrato", "divNuevoPlan", "divMotivoCambioPlan",
-			"divModalidadVenta", "divTipoProducto", "divEquipo", "divNumeroSerie", "divNumeroChip",
-			"divNumeroBloqueo", "divTipoDocumento", "divDocumento", "divNombre", "divApellido", 
-			"divFechaNacimiento", "divSexo", "divNumeroFactura", "divNumeroFacturaRiverGreen",
+			hideFields(hidden);
+			showFields(visibles);
+			makeFieldsReadOnly(readOnly);
+			setRequiredFields(required);
 			
-			"divAgregarAdjunto", "divTipoArchivoAdjunto",
+			$("#inputNumeroFacturaRiverGreen").prop("disabled", true);
 			
-			"divDireccionFactura", "divDireccionFacturaCalle", "divDireccionFacturaNumero", 
-			"divDireccionFacturaBis", "divDireccionFacturaBlock", "divDireccionFacturaApto", 
-			"divDireccionFacturaSolar", "divDireccionFacturaManzana", "divDireccionFacturaCodigoPostal",
-			"divDireccionFacturaLocalidad", "divDireccionFacturaObservaciones", "divDireccionFacturaDepartamento",
-			
-			"divDireccionEntrega", "divDireccionEntregaCalle", "divDireccionEntregaNumero", 
-			"divDireccionEntregaBis", "divDireccionEntregaBlock", "divDireccionEntregaApto",
-			"divDireccionEntregaSolar", "divDireccionEntregaManzana", "divDireccionEntregaCodigoPostal",
-			"divDireccionEntregaLocalidad", "divDireccionEntregaObservaciones", "divDireccionEntregaDepartamento",
-			
-			"divTelefonoContacto", "divEmail", "divPrecio", "divValorCuota", "divMoneda", "divFormaPago",
-			"divTarjetaCredito", "divCuotas", "divDepartamento", "divBarrio", "divZona", "divTurno",
-			"divFechaEntrega", "divFechaActivarEn", "divObservaciones", "divCostoEnvio",
-		]);
-		
-		hideFields([
-			"localidad", "codigoPostal", "fechaVencimiento", "plan", "numeroContrato", "modalidadVenta",
-			"nuevoPlan", "motivoCambioPlan", "tipoProducto", "equipo", "numeroSerie", "numeroChip",
-			"numeroBloqueo", "tipoDocumento", "fechaNacimiento", "sexo", "numeroFacturaRiverGreen",
-			"costoEnvio", "email", "moneda", "precio", "formaPago", "tarjetaCredito", "numeroFactura", 
-			"fechaActivarEn", "estado"
-		]);
-		
-		$("#divObservaciones").css("width", "65%");
-		
-		$("#divInputImprimirKitANTEL").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").hide();
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
-	} else if (mode == __FORM_MODE_SUPERVISOR_CALL_CENTER) {
-		showField("incluirChip");
-		
-		makeFieldsReadOnly([
-			"divEmpresa", "divMid", "divNumeroSerie",  "divNumeroChip", "divNumeroBloqueo", "divNumeroFactura",
-			"divNumeroFacturaRiverGreen", "divFechaActivarEn"
-		]);
-		
-		hideFields([
-			"numeroSerie", "numeroChip", "numeroBloqueo", "numeroFactura", "numeroFacturaRiverGreen", "fechaActivarEn"
-		]);
-		
-		setRequiredFields([
-			"divLabelModalidadVenta", "divLabelNuevoPlan", "divLabelTipoProducto", "divLabelEquipo",
-			"divLabelFormaPago", "divLabelMoneda", "divLabelDocumento", "divLabelNombre", "divLabelApellido",
-			"divLabelFechaNacimiento", "divLabelSexo", "divLabelDireccionFactura", "divLabelDireccionEntrega",
-			"divLabelTelefonoContacto", "divLabelEmail", "divLabelDepartamento", "divLabelBarrio",
-			"divLabelZona", "divLabelTurno", "divLabelFechaEntrega", "divLabelCostoEnvio"
-		]);
-		
-		$("#divInputAgendar").show();
-		$("#divInputPosponer").show();
-		$("#divInputRechazar").show();
-		$("#divInputTelelink").show();
-		$("#divInputRenovo").show();
-
-		$("#divInputEstadoRiesgoCrediticio").show();
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
-	} else if (mode == __FORM_MODE_VENTA) {
-		showField("incluirChip");
-		
-		makeFieldsReadOnly([
-			"divEmpresa", "divMid", "divNumeroSerie",  "divNumeroChip", "divNumeroBloqueo", "divNumeroFactura",
-			"divNumeroFacturaRiverGreen", "divFechaActivarEn"
-		]);
-		
-		hideFields([
-			"numeroSerie", "numeroChip", "numeroBloqueo", "numeroFactura", "numeroFacturaRiverGreen", "fechaActivarEn"
-		]);
-		
-		setRequiredFields([
-			"divLabelModalidadVenta", "divLabelNuevoPlan", "divLabelTipoProducto", "divLabelEquipo",
-			"divLabelFormaPago", "divLabelMoneda", "divLabelDocumento", "divLabelNombre", "divLabelApellido",
-			"divLabelFechaNacimiento", "divLabelSexo", "divLabelDireccionFactura", "divLabelDireccionEntrega",
-			"divLabelTelefonoContacto", "divLabelEmail", "divLabelDepartamento", "divLabelBarrio", "divLabelZona",
-			"divLabelTurno", "divLabelFechaEntrega", "divLabelCostoEnvio"
-		]);
-		
-		$("#divInputAgendar").show();
-		$("#divInputPosponer").show();
-		$("#divInputRechazar").show();
-		$("#divInputTelelink").show();
-		$("#divInputRenovo").show();
-
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
-	} else if (mode == __FORM_MODE_BACKOFFICE) {
-		showField("empresa");
-		showField("incluirChip");
-		
-		makeFieldsReadOnly([ "divEmpresa", "divMid" ]);
-		
-//		$("#divFechaActivarEn").html("&nbsp;");
-//		hideField("fechaActivarEn");
-		
-		setRequiredFields([
-			"divLabelModalidadVenta", "divLabelNuevoPlan", "divLabelTipoProducto", "divLabelEquipo",
-			"divLabelFormaPago", "divLabelMoneda", "divLabelDocumento", "divLabelNombre", "divLabelApellido",
-			"divLabelFechaNacimiento", "divLabelSexo", "divLabelDireccionFactura", "divLabelDireccionEntrega",
-			"divLabelTelefonoContacto", "divLabelEmail", "divLabelDepartamento", "divLabelBarrio", "divLabelZona",
-			"divLabelTurno", "divLabelFechaEntrega", "divLabelCostoEnvio",
-			
-			"divLabelNumeroFactura", "divLabelNumeroSerie", "divLabelNumeroChip"
-		]);
-		
-		$("#divInputDistribuir").show();
-		$("#divInputRechazar").show();
-		$("#divInputTelelink").show();
-		$("#divInputRenovo").show();
-		$("#divInputReagendar").show();
-		
-		$("#divInputImprimirKit").show();
-		$("#divInputImprimirContrato").show();
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
-	} else if (mode == __FORM_MODE_RECOORDINACION) {
-		showField("empresa");
-		showField("incluirChip");
-		
-		makeFieldsReadOnly([ "divEmpresa", "divMid", "divFechaAtivarEn" ]);
-		
-		hideField("fechaActivarEn");
-		
-		setRequiredFields([
-			"divLabelModalidadVenta", "divLabelNuevoPlan", "divLabelTipoProducto", "divLabelEquipo",
-			"divLabelFormaPago", "divLabelMoneda", "divLabelDocumento", "divLabelNombre", "divLabelApellido",
-			"divLabelFechaNacimiento", "divLabelSexo", "divLabelDireccionFactura", "divLabelDireccionEntrega",
-			"divLabelTelefonoContacto", "divLabelEmail", "divLabelDepartamento", "divLabelBarrio", "divLabelZona",
-			"divLabelTurno", "divLabelFechaEntrega", "divLabelCostoEnvio",
-			
-			"divLabelNumeroFactura", "divLabelNumeroSerie", "divLabelNumeroChip"
-		]);
-		
-		$("#divInputRedistribuir").show();
-		$("#divInputTelelink").show();
-		$("#divInputRenovo").show();
-		$("#divInputReActivar").show();
-		$("#divInputNoRecoordina").show();
-		
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
-	} else if (mode == __FORM_MODE_DISTRIBUCION) {
-		showField("resultadoEntregaDistribucionObservaciones");
-		showField("incluirChip");
-		showField("empresa");
-		
-		makeFieldsReadOnly([ 
-			"divEmpresa", "divMid", "divLocalidad", "divCodigoPostal", "divFechaVencimiento", "divPlan", 
-			"divFechaActivarEn"
-		]);
-		
-		hideFields([
-			"localidad", "codigoPostal", "fechaVencimiento", "plan", "fechaActivarEn"
-		]);
-		
-		setRequiredFields([
-			"divLabelModalidadVenta", "divLabelNuevoPlan", "divLabelTipoProducto", "divLabelEquipo",
-			"divLabelFormaPago", "divLabelMoneda", "divLabelDocumento", "divLabelNombre", "divLabelApellido",
-			"divLabelFechaNacimiento", "divLabelDireccionFactura", "divLabelDireccionEntrega",
-			"divLabelTelefonoContacto", "divLabelEmail", "divLabelDepartamento", "divLabelBarrio", "divLabelZona",
-			"divLabelTurno", "divLabelFechaEntrega", "divLabelCostoEnvio",
-			
-			"divLabelNumeroFactura", "divLabelNumeroSerie"
-		]);
-		
-		$("#divInputActivar").show();
-		$("#divInputNoFirma").show();
-		$("#divInputRecoordinar").show();
-		$("#divInputGestionDistribucion").show();
-		
-		$("#divInputImprimirAdjuntos").show();
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
-	} else if (mode == __FORM_MODE_REDISTRIBUCION) {
-		$("#divLabelResultadoEntregaDistribucionObservaciones").show();
-		$("#divResultadoEntregaDistribucionObservaciones").show();
-		
-		showField("empresa");
-		showField("incluirChip");
-		
-		makeFieldsReadOnly([ 
-			"divEmpresa", "divMid", "divLocalidad", "divCodigoPostal", "divFechaVencimiento", "divPlan", 
-			"divFechaActivarEn"
-		]);
-		
-		hideFields([
-			"localidad", "codigoPostal", "fechaVencimiento", "plan", "fechaActivarEn"
-		]);
-		
-		setRequiredFields([
-			"divLabelModalidadVenta", "divLabelNuevoPlan", "divLabelTipoProducto", "divLabelEquipo",
-			"divLabelFormaPago", "divLabelMoneda", "divLabelDocumento", "divLabelNombre", "divLabelApellido",
-			"divLabelFechaNacimiento", "divLabelDireccionFactura", "divLabelDireccionEntrega", 
-			"divLabelTelefonoContacto", "divLabelEmail", "divLabelDepartamento", "divLabelBarrio", "divLabelZona",
-			"divLabelTurno", "divLabelFechaEntrega", "divLabelCostoEnvio",
-			
-			"divLabelNumeroFactura", "divLabelNumeroSerie"
-		]);
-		
-		$("#divInputReActivar").show();
-		$("#divInputNoFirma").show();
-		$("#divInputRecoordinar").show();
-		$("#divInputGestionDistribucion").show();
-		
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
-	} else if (mode == __FORM_MODE_ACTIVACION) {
-		showField("empresa");
-		
-		makeFieldsReadOnly([ "divEmpresa", "divMid" ]);
-		
-		setRequiredFields([
-			"divLabelModalidadVenta", "divLabelNuevoPlan", "divLabelTipoProducto", "divLabelEquipo",
-			"divLabelFormaPago", "divLabelMoneda", "divLabelDocumento", "divLabelNombre", "divLabelApellido",
-			"divLabelFechaNacimiento", "divLabelDireccionFactura", "divLabelDireccionEntrega",
-			"divLabelTelefonoContacto", "divLabelEmail", "divLabelDepartamento", "divLabelBarrio", "divLabelZona",
-			"divLabelTurno", "divLabelFechaEntrega", "divLabelNumeroFactura", "divLabelNumeroSerie", 
-			"divLabelCostoEnvio"
-		]);
-		
-		$("#divInputEnviarAAntel").show();
-		$("#divInputAgendarActivacion").show();
-		$("#divInputTerminar").show();
-		$("#divInputFaltaDocumentacion").show();
-		$("#divInputFacturaImpaga").show();
-		$("#divInputCanceladoPorCliente").show();
-		
-		$("#divInputImprimirContrato").show();
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleSextupleSize");
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
-	} else if (mode == __FORM_MODE_SUPERVISOR_ACTIVACION) {
-		showField("empresa");
-		
-		makeFieldsReadOnly([ "divEmpresa", "divMid" ]);
-		
-		setRequiredFields([
-			"divLabelModalidadVenta", "divLabelNuevoPlan", "divLabelTipoProducto", "divLabelEquipo",
-			"divLabelFormaPago", "divLabelMoneda", "divLabelDocumento", "divLabelNombre", "divLabelApellido",
-			"divLabelFechaNacimiento", "divLabelDireccionFactura", "divLabelDireccionEntrega", 
-			"divLabelTelefonoContacto", "divLabelEmail", "divLabelDepartamento", "divLabelBarrio", "divLabelZona",
-			"divLabelTurno", "divLabelFechaEntrega", "divLabelNumeroFactura", "divLabelNumeroSerie",
-			
-			"divLabelCostoEnvio"
-		]);
-		
-		$("#divInputEnviarAAntel").show();
-		$("#divInputAgendarActivacion").show();
-		$("#divInputTerminar").show();
-		$("#divInputFaltaDocumentacion").show();
-		$("#divInputCerrar").show();
-		$("#divInputGestionInterna").show();
-		$("#divInputEquipoPerdido").show();
-		$("#divInputFacturaImpaga").show();
-		$("#divInputCanceladoPorCliente").show();
-		
-		$("#divInputImprimirContrato").show();
-		$("#divInputGuardar").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleNinetupleSize");
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
-	} else if (mode == __FORM_MODE_ANTEL) {
-		showField("antelNroTrn");
-		showField("antelFormaPago");
-		showField("antelNroServicioCuenta");
-		showField("antelImporte");
-		showField("fechaVentaMostrar");
-		
-		makeFieldsReadOnly([
-			"divEmpresa", "divMid", "divPlan", "divNumeroContrato", "divModalidadVenta", "divNuevoPlan",
-			"divMotivoCambioPlan", "divTipoProducto", "divEquipo", "divNumeroSerie", "divNumeroChip", 
-			"divNumeroBloqueo", "divTipoDocumento", "divDocumento", "divNombre", "divApellido", 
-			"divFechaNacimiento", "divSexo", "divNumeroFactura", "divNumeroFacturaRiverGreen", 
-			"divAgregarAdjunto", "divTipoArchivoAdjunto",
-			
-			"divDireccionFactura", "divDireccionFacturaCalle", "divDireccionFacturaNumero",
-			"divDireccionFacturaBis", "divDireccionFacturaBlock", "divDireccionFacturaApto", 
-			"divDireccionFacturaSolar", "divDireccionFacturaManzana", "divDireccionFacturaCodigoPostal",
-			"divDireccionFacturaLocalidad", "divDireccionFacturaObservaciones", "divDireccionFacturaDepartamento",
-			
-			"divDireccionEntrega", "divDireccionEntregaCalle", "divDireccionEntregaNumero",
-			"divDireccionEntregaBis", "divDireccionEntregaBlock", "divDireccionEntregaApto",
-			"divDireccionEntregaSolar", "divDireccionEntregaManzana", "divDireccionEntregaCodigoPostal",
-			"divDireccionEntregaLocalidad", "divDireccionEntregaObservaciones", "divDireccionEntregaDepartamento",
-			
-			"divTelefonoContacto", "divEmail", "divPrecio", "divValorCuota", "divMoneda", "divFormaPago",
-			"divTarjetaCredito", "divCuotas", "divDepartamento", "divBarrio", "divZona", "divTurno",
-			"divFechaEntrega", "divFechaActivarEn", "divObservaciones"
-		]);
-		
-		hideFields([
-			"localidad", "codigoPostal", "fechaVencimiento", "mid", "plan", "numeroContrato", "modalidadVenta",
-			"nuevoPlan", "motivoCambioPlan", "tipoProducto", "equipo", "numeroSerie", "numeroChip",
-			"numeroBloqueo", "tipoDocumento", "fechaNacimiento", "sexo", "numeroFacturaRiverGreen",
-			"costoEnvio", "email", "precio", "formaPago", "tarjetaCredito", "departamento", "barrio", "zona",
-			"turno", "fechaEntrega", "fechaActivarEn"
-		]);
-	} else if (mode == __FORM_MODE_RIESGO_CREDITICIO) {
-		showField("fechaEnvioANucleo");
-		
-		makeFieldsReadOnly([
-			"divEmpresa", "divMid", "divPlan", "divNumeroContrato", "divModalidadVenta", "divNuevoPlan",
-			"divMotivoCambioPlan", "divTipoProducto", "divEquipo", "divNumeroSerie", "divNumeroChip",
-			"divNumeroBloqueo", "divTipoDocumento", "divDocumento", "divNombre", "divApellido", 
-			"divFechaNacimiento", "divSexo", "divNumeroFactura", "divNumeroFacturaRiverGreen",
-			"divAgregarAdjunto", "divTipoArchivoAdjunto",
-			
-			"divDireccionFactura", "divDireccionFacturaCalle", "divDireccionFacturaNumero",
-			"divDireccionFacturaBis", "divDireccionFacturaBlock", "divDireccionFacturaApto",
-			"divDireccionFacturaSolar", "divDireccionFacturaManzana", "divDireccionFacturaCodigoPostal",
-			"divDireccionFacturaLocalidad", "divDireccionFacturaObservaciones", "divDireccionFacturaDepartamento",
-			
-			"divDireccionEntrega", "divDireccionEntregaCalle", "divDireccionEntregaNumero",
-			"divDireccionEntregaBis", "divDireccionEntregaBlock", "divDireccionEntregaApto",
-			"divDireccionEntregaSolar", "divDireccionEntregaManzana", "divDireccionEntregaCodigoPostal",
-			"divDireccionEntregaLocalidad", "divDireccionEntregaObservaciones", "divDireccionEntregaDepartamento",
-			
-			"divTelefonoContacto", "divEmail", "divPrecio", "divValorCuota", "divMoneda", "divFormaPago",
-			"divTarjetaCredito", "divCuotas", "divDepartamento", "divBarrio", "divZona", "divTurno", 
-			"divFechaEntrega", "divFechaActivarEn", "divObservaciones"
-		]);
-		
-		hideFields([
-			"localidad", "codigoPostal", "fechaVencimiento", "antelNroTrn", "antelNroServicioCuenta", "antelImporte",
-			"fechaVentaMostrar", "plan", "modalidadVenta", "motivoCambioPlan", "numeroSerie", "numeroChip",
-			"numeroBloqueo", "fechaNacimiento", "sexo", "numeroFactura", "numeroFacturaRiverGreen",
-			"costoEnvio", "email", "tarjetaCredito", "departamento", "barrio", "zona", "turno", "fechaEntrega", 
-			"fechaActivarEn"
-		]);
-		
-		$("#divInputEnviadoANucleo").show();
-		
-		$(".divButtonBarSeparator").show();
-		$(".divButtonTitleBar > div").show();
-		$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleSingleSize");
-		$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
-	}
+			if (mode == __FORM_MODE_READ) {
+				$("#divObservaciones").css("width", "65%");
+			} else if (mode == __FORM_MODE_NEW) {
+				$("#divButtonTitleFourfoldSize").hide();
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_NEW_ANTEL) {
+				makeFieldsReadOnly([
+					"divAgregarAdjunto"
+				]);
+				
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").hide();
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
+			} else if (mode == __FORM_MODE_READ_ANTEL) {
+				$("#divObservaciones").css("width", "65%");
+				
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").hide();
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_SUPERVISOR_CALL_CENTER) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleSextupleSize");
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
+			} else if (mode == __FORM_MODE_VENTA) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleSextupleSize");
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_BACKOFFICE) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
+			} else if (mode == __FORM_MODE_RECOORDINACION) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_DISTRIBUCION) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
+			} else if (mode == __FORM_MODE_REDISTRIBUCION) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_ACTIVACION) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleSextupleSize");
+			} else if (mode == __FORM_MODE_SUPERVISOR_ACTIVACION) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleNinetupleSize");
+			} else if (mode == __FORM_MODE_ANTEL) {
+			} else if (mode == __FORM_MODE_RIESGO_CREDITICIO) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleSingleSize");
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_INSTALACION_FIBRA) {
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleTripleSize");
+			} else if (mode == __FORM_MODE_NEW_INSTALACION_FIBRA) {
+				makeFieldsReadOnly([
+					"divAgregarAdjunto"
+				]);
+				
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").hide();
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleDoubleSize");
+			} else if (mode == __FORM_MODE_READ_INSTALACION_FIBRA) {
+				$("#divObservaciones").css("width", "65%");
+				
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").hide();
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_NEW_ATENCION_CLIENTE) {
+				$("#divTabTitle1").hide();
+				$("#divTabTitle1").attr("class", "divTabTitle");
+				$("#divTab1").hide();
+				$("#divTabTitle2").hide();
+				$("#divTab3").show();
+				$("#divTabTitle3").attr("class", "divTabTitleSelected");
+				$("#divTabTitle4").hide();
+				
+				var data = {
+					empresa: { 
+						id: __EMPRESA_ID_ATENCION_CLIENTES,
+						nombre: "Atencion a Clientes" 
+					}
+				};
+				populateField("empresa", data, "empresa.id", "empresa.nombre", "eid", "empresa.id");
+				
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").hide();
+				$("#divButtonTitleTripleSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_ATENCION_CLIENTE_OPERADOR) {
+				$("#divTabTitle1").hide();
+				$("#divTabTitle1").attr("class", "divTabTitle");
+				$("#divTab1").hide();
+				$("#divTabTitle2").hide();
+				$("#divTab3").show();
+				$("#divTabTitle3").attr("class", "divTabTitleSelected");
+				$("#divTabTitle4").hide();
+				
+				$("#divLabelAntelNroTrn").text("Ticket asignado");
+				$("#divLabelFechaActivarEn").text("Fecha ingreso ANTEL");
+				
+				$("#divLabelAntelNroTrn").detach().insertAfter($("#divAtencionClienteRespuestaTecnicaComercial"));
+				$("#divAntelNroTrn").detach().insertAfter($("#divLabelAntelNroTrn"));
+				$("#divLabelFechaActivarEn").detach().insertAfter($("#divAntelNroTrn"));
+				$("#divFechaActivarEn").detach().insertAfter($("#divLabelFechaActivarEn"));
+				$("#divLabelAtencionClienteCantidadVeces").detach().insertAfter($("#divFechaActivarEn"));
+				$("#divAtencionClienteCantidadVeces").detach().insertAfter($("#divLabelAtencionClienteCantidadVeces"));
+				
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
+			} else if (mode == __FORM_MODE_ATENCION_CLIENTE_SUPERVISOR) {
+				$("#divTabTitle1").hide();
+				$("#divTabTitle1").attr("class", "divTabTitle");
+				$("#divTab1").hide();
+				$("#divTabTitle2").hide();
+				$("#divTab3").show();
+				$("#divTabTitle3").attr("class", "divTabTitleSelected");
+				$("#divTabTitle4").hide();
+				
+				$("#divLabelAntelNroTrn").text("Ticket asignado");
+				$("#divLabelFechaActivarEn").text("Fecha ingreso ANTEL");
+				
+				$("#divLabelAntelNroTrn").detach().insertAfter($("#divAtencionClienteRespuestaTecnicaComercial"));
+				$("#divAntelNroTrn").detach().insertAfter($("#divLabelAntelNroTrn"));
+				$("#divLabelFechaActivarEn").detach().insertAfter($("#divAntelNroTrn"));
+				$("#divFechaActivarEn").detach().insertAfter($("#divLabelFechaActivarEn"));
+				$("#divLabelAtencionClienteCantidadVeces").detach().insertAfter($("#divFechaActivarEn"));
+				$("#divAtencionClienteCantidadVeces").detach().insertAfter($("#divLabelAtencionClienteCantidadVeces"));
+				
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleQuintupleSize");
+			} else if (mode == __FORM_MODE_READ_ATENCION_CLIENTE) {
+				$("#divTabTitle1").hide();
+				$("#divTabTitle1").attr("class", "divTabTitle");
+				$("#divTab1").hide();
+				$("#divTabTitle2").hide();
+				$("#divTab3").show();
+				$("#divTabTitle3").attr("class", "divTabTitleSelected");
+				$("#divTabTitle4").hide();
+				
+				$("#divLabelAntelNroTrn").text("Ticket asignado");
+				$("#divLabelFechaActivarEn").text("Fecha ingreso ANTEL");
+				
+				$("#divLabelAntelNroTrn").detach().insertAfter($("#divAtencionClienteRespuestaTecnicaComercial"));
+				$("#divAntelNroTrn").detach().insertAfter($("#divLabelAntelNroTrn"));
+				$("#divLabelFechaActivarEn").detach().insertAfter($("#divAntelNroTrn"));
+				$("#divFechaActivarEn").detach().insertAfter($("#divLabelFechaActivarEn"));
+				$("#divLabelAtencionClienteCantidadVeces").detach().insertAfter($("#divFechaActivarEn"));
+				$("#divAtencionClienteCantidadVeces").detach().insertAfter($("#divLabelAtencionClienteCantidadVeces"));
+				
+				$(".divButtonBarSeparator").show();
+				$(".divButtonTitleBar > div").show();
+				$("#divButtonTitleFourfoldSize").attr("id", "divButtonTitleSingleSize");
+			} else if (mode == __FORM_MODE_CONSULTA) {
+				$("#divObservaciones").css("width", "65%");
+			}
+		}
+	});
 }
 
 function makeFieldsReadOnly(fieldIds) {
@@ -856,6 +681,36 @@ function initModalidadVenta() {
 		if ($("#selectModalidadVenta").length > 0) {
 			fillSelect(
 				"selectModalidadVenta", 
+				data,
+				"id", 
+				"descripcion"
+			);
+		}
+	});
+}
+
+function initAtencionClienteTipoContacto() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/AtencionClienteTipoContactoREST/list"
+	}).then(function(data) {
+		if ($("#selectAtencionClienteTipoContacto").length > 0) {
+			fillSelect(
+				"selectAtencionClienteTipoContacto", 
+				data,
+				"id", 
+				"descripcion"
+			);
+		}
+	});
+}
+
+function initAtencionClienteConcepto() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/AtencionClienteConceptoREST/list"
+	}).then(function(data) {
+		if ($("#selectAtencionClienteConcepto").length > 0) {
+			fillSelect(
+				"selectAtencionClienteConcepto", 
 				data,
 				"id", 
 				"descripcion"
@@ -1013,6 +868,21 @@ function initTurno() {
 	});
 }
 
+function initRepuestaTecnicaComercial() {
+	return $.ajax({
+		url: "/LogisticaWEB/RESTFacade/AtencionClienteRespuestaTecnicaComercialREST/list"
+	}).then(function(data) {
+		if ($("#selectAtencionClienteRespuestaTecnicaComercial").length > 0) {
+			fillSelect(
+				"selectAtencionClienteRespuestaTecnicaComercial",
+				data,
+				"id", 
+				"descripcion"
+			);
+		}
+	});
+}
+
 function initDisponibilidadEntrega(empresaId, zonaId, turnoId) {
 	return $.ajax({
 		url: "/LogisticaWEB/RESTFacade/DisponibilidadEntregaEmpresaZonaTurnoREST/listByEmpresaZonaTurno?"
@@ -1132,7 +1002,7 @@ function reloadContrato() {
 		// Fechas del workflow
 		// -------------------
 		
-		populateField("fechaVenta", data, "fechaVenta", "fechaVenta", null, null, formatRawDate);
+		populateField("fechaVenta", data, "fechaVenta", "fechaVenta", "fv", "fechaVenta", formatLongDate);
 		populateField("fechaVentaMostrar", data, "fechaVenta", "fechaVenta", null, null, formatLongDate);
 		populateField("fechaBackoffice", data, "fechaBackoffice", "fechaBackoffice", null, null, formatRawDate);
 		populateField("fechaEntregaDistribuidor", data, "fechaEntregaDistribuidor", "fechaEntregaDistribuidor", null, null, formatRawDate);
@@ -1143,6 +1013,11 @@ function reloadContrato() {
 		populateField("fechaRechazo", data, "fechaRechazo", "fechaRechazo", null, null, formatRawDate);
 		populateField("resultadoEntregaDistribucionFecha", data, "resultadoEntregaDistribucionFecha", "resultadoEntregaDistribucionFecha", null, null, formatRawDate);
 		populateField("fechaPickUp", data, "fechaPickUp", "fechaPickUp", null, null, formatRawDate);
+		populateField("fechaAtencionClienteOperador", data, "fechaAtencionClienteOperador", "fechaAtencionClienteOperador", null, null, formatRawDate);
+		populateField("fechaAtencionClienteGestionador", data, "fechaAtencionClienteGestionador", "fechaAtencionClienteGestionador", null, null, formatRawDate);
+		populateField("fechaAtencionClienteDevuelto", data, "fechaAtencionClienteDevuelto", "fechaAtencionClienteDevuelto", null, null, formatRawDate);
+		populateField("fechaAtencionClienteCierre", data, "fechaAtencionClienteCierre", "fechaAtencionClienteCierre", null, null, formatRawDate);
+		populateField("fcre", data, "fcre", "fcre", null, null, formatLongDate);
 	
 		// -------------------
 		
@@ -1156,6 +1031,8 @@ function reloadContrato() {
 		populateField("distribuidor", data, "distribuidor.id", "distribuidor.nombre", "did", "distribuidor.id");
 		populateField("activador", data, "activador.id", "activador.nombre", "aid", "activador.id");
 		populateField("coordinador", data, "coordinador.id", "coordinador.nombre", "coid", "coordinador.id");
+		populateField("atencionClienteOperador", data, "atencionClienteOperador.id", "atencionClienteOperador.nombre", "acoid", "atencionClienteOperador.id");
+		populateField("atencionClienteGestionador", data, "atencionClienteGestionador.id", "atencionClienteGestionador.nombre", "acgid", "atencionClienteGestionador.id");
 		
 		// ---------------------
 		
@@ -1179,9 +1056,9 @@ function reloadContrato() {
 		}
 		populateField("localidad", data, "localidad", "localidad");
 		populateField("codigoPostal", data, "codigoPostal", "codigoPostal");
-		populateField("fechaVencimiento", data, "fechaFinContrato", "fechaFinContrato", null, null, formatShortDate);
+		populateField("fechaFinContrato", data, "fechaFinContrato", "fechaFinContrato", null, null, formatShortDate);
 		populateField("numeroContrato", data, "numeroContrato", "numeroContrato");
-		populateField("plan", data, "tipoContratoDescripcion", "tipoContratoDescripcion");
+		populateField("tipoContratoDescripcion", data, "tipoContratoDescripcion", "tipoContratoDescripcion");
 		populateField("nuevoPlanString", data, "nuevoPlanString", "nuevoPlanString");
 		
 		if (data.nuevoPlan != null) {
@@ -1197,6 +1074,11 @@ function reloadContrato() {
 		}
 		populateField("nuevoPlan", data, "nuevoPlan.id", "nuevoPlan.descripcion");
 		populateField("modalidadVenta", data, "modalidadVenta.id", "modalidadVenta.descripcion");
+		
+		populateField("atencionClienteTipoContacto", data, "atencionClienteTipoContacto.id", "atencionClienteTipoContacto.descripcion");
+		populateField("atencionClienteConcepto", data, "atencionClienteConcepto.id", "atencionClienteConcepto.descripcion");
+		populateField("atencionClienteRespuestaTecnicaComercial", data, "atencionClienteRespuestaTecnicaComercial.id", "atencionClienteRespuestaTecnicaComercial.descripcion");
+		populateField("atencionClienteCantidadVeces", data, "atencionClienteCantidadVeces", "atencionClienteCantidadVeces");
 		
 		populateField("motivoCambioPlan", data, "motivoCambioPlan.id", "motivoCambioPlan.descripcion");
 		populateField("tipoProducto", data, "tipoProducto.id", "tipoProducto.descripcion");
@@ -1268,8 +1150,8 @@ function reloadContrato() {
 		populateField("direccionEntregaLocalidad", data, "direccionEntregaLocalidad", "direccionEntregaLocalidad");
 		populateField("direccionEntregaObservaciones", data, "direccionEntregaObservaciones", "direccionEntregaObservaciones");
 		
-		populateField("direccionFacturaDepartamento", data, "direccionFacturaDepartamento.id", "direccionFacturaDepartamento.nombre");
-		populateField("direccionEntregaDepartamento", data, "direccionEntregaDepartamento.id", "direccionEntregaDepartamento.nombre");
+		populateField("direccionFacturaDepartamento", data, "direccionFacturaDepartamento.id", "direccionFacturaDepartamento.nombre", "did", "direccionFacturaDepartamento.id");
+		populateField("direccionEntregaDepartamento", data, "direccionEntregaDepartamento.id", "direccionEntregaDepartamento.nombre", "did", "direccionEntregaDepartamento.id");
 		
 		populateField("resultadoEntregaDistribucion", data, "resultadoEntregaDistribucion.id", "resultadoEntregaDistribucion.descripcion", "redid", "resultadoEntregaDistribucion.id");
 		populateField("resultadoEntregaDistribucionLatitud", data, "resultadoEntregaDistribucionLatitud");
@@ -1282,7 +1164,9 @@ function reloadContrato() {
 		populateField("antelNroServicioCuenta", data, "antelNroServicioCuenta", "antelNroServicioCuenta");
 		populateField("antelImporte", data, "antelImporte", "antelImporte");
 		
-		populateField("fechaEnvioANucleo", data, "fechaEnvioANucleo", "fechaEnvioANucleo", null, null, formatLongDate)
+		populateField("fechaEnvioANucleo", data, "fechaEnvioANucleo", "fechaEnvioANucleo", null, null, formatLongDate);
+		populateField("fechaEnvioAIZI", data, "fechaEnvioAIZI", "fechaEnvioAIZI", null, null, formatLongDate);
+		populateField("fechaEnvioAGLA", data, "fechaEnvioAGLA", "fechaEnvioAGLA", null, null, formatLongDate);
 		
 		if (data.departamento != null) {
 			if ($("#selectDepartamento").length > 0) {
@@ -1393,7 +1277,7 @@ function reloadContrato() {
 									
 									populateField("formaPago", data, "formaPago.id", "formaPago.descripcion", "fid", "formaPago.id");
 									
-									if (data.zona != null) {
+									if (data.zona != null && data.turno != null) {
 										initDisponibilidadEntrega(data.empresa.id, data.zona.id, data.turno.id)
 											.then(function(dataDisponibilidadEntrega) {
 												if (data.fechaEntrega != null) {
@@ -1414,10 +1298,12 @@ function reloadContrato() {
 												
 												reloadArchivosAdjuntosData(data.id);
 												reloadContratosRelacionadosData(data.id);
+												reloadDireccionesData(data.id);
 											});
 									} else {
 										reloadArchivosAdjuntosData(data.id);
 										reloadContratosRelacionadosData(data.id);
+										reloadDireccionesData(data.id);
 									}
 								});
 					});
@@ -1427,7 +1313,7 @@ function reloadContrato() {
 }
 
 function reloadFormasPago(empresaId, documento) {
-	if (documento != null && documento != "" && empresaId != null && empresaId != "") {
+	if (empresaId != null && empresaId != "") {
 		return $.ajax({
 			url: "/LogisticaWEB/RESTFacade/EmpresaREST/listFormasPagoById/" + empresaId
 		}).then(callbackReloadFormasPago);
@@ -1458,37 +1344,40 @@ function callbackReloadFormasPago(formasPago) {
 			}
 		}
 		
+		// Si "Nuestro cédito" está habilitado como forma de pago para la empresa 
 		if (nuestroCredito) {
-			$.ajax({
-				url: "/LogisticaWEB/RESTFacade/FinanciacionREST/analizarElegibilidadFinanaciacion",
-				method: "POST",
-				contentType: 'application/json',
-				data: JSON.stringify({
-					"empresaId": empresaId,
-					"documento": documento
-				})
-			}).then(function(data) {
-				if (data != null) {
-					if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_NO_REALIZAR_CLEARING) {
-						options[options.length] = formasPago[i];
-					} else if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_REALIZAR_CLEARING) {
-						formasPago[i].datosElegibilidadFinanciacion = data;
-						
-						options[options.length] = formasPago[i];
-					} else if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_RECHAZAR) {
-						// No se presenta la opción de Nuestro crédito.
+			if (documento != null && documento != "") {
+				$.ajax({
+					url: "/LogisticaWEB/RESTFacade/FinanciacionREST/analizarElegibilidadFinanaciacion",
+					method: "POST",
+					contentType: 'application/json',
+					data: JSON.stringify({
+						"empresaId": empresaId,
+						"documento": documento
+					})
+				}).then(function(data) {
+					if (data != null) {
+						if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_NO_REALIZAR_CLEARING) {
+							options[options.length] = formasPago[i];
+						} else if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_REALIZAR_CLEARING) {
+							formasPago[i].datosElegibilidadFinanciacion = data;
+							
+							options[options.length] = formasPago[i];
+						} else if (data.elegibilidad == __ELEGIBILIDAD_FINANCIACION_RECHAZAR) {
+							// No se presenta la opción de Nuestro crédito.
+						}
 					}
-				}
-				
-				fillSelect(
-					"selectFormaPago", 
-					options, 
-					"id", 
-					"descripcion", 
-					"defid", 
-					"datosElegibilidadFinanciacion.elegibilidad"
-				);
-			});
+				});
+			}
+			
+			fillSelect(
+				"selectFormaPago", 
+				options, 
+				"id", 
+				"descripcion", 
+				"defid", 
+				"datosElegibilidadFinanciacion.elegibilidad"
+			);
 		} else {
 			fillSelect(
 				"selectFormaPago", 
@@ -1500,6 +1389,13 @@ function callbackReloadFormasPago(formasPago) {
 			);
 		}
 	}
+}
+
+function selectEmpresaOnChange(event, element) {
+	$("#selectFormaPago").val(0);
+	
+	var empresaId = $("#selectEmpresa").val();
+	reloadFormasPago(empresaId);
 }
 
 function inputDocumentoOnChange(event, element) {
@@ -1545,8 +1441,8 @@ function selectBarrioOnChange() {
 	
 	if ($("#selectBarrio").val() != "0") {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/ZonaREST/getById/" + $("#selectBarrio > option:selected").attr("zid")
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/ZonaREST/getById/" + $("#selectBarrio > option:selected").attr("zid")
+		}).then(function(data) {
 			fillSelect("selectZona", [data], "id", "nombre");
 			
 			$("#selectZona").val(data.id);
@@ -1562,8 +1458,8 @@ function selectZonaOnChange() {
 	
 	if ($("#selectZona").val() != "0") {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/TurnoREST/list/"
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/TurnoREST/list/"
+		}).then(function(data) {
 			fillSelect("selectTurno", data, "id", "nombre");
 			selectTurnoOnChange();
 		});
@@ -1585,8 +1481,8 @@ function selectTurnoOnChange() {
 				+ "eid=" + ($("#selectEmpresa").length > 0 ? $("#selectEmpresa").val() : $("#divEmpresa").attr("eid"))
 				+ "&zid=" + $("#selectZona").val()
 				+ "&tid=" + $("#selectTurno").val()
-	    }).then(function(data) {
-		   	var availability = [0, 0, 0, 0, 0, 0, 0];
+		}).then(function(data) {
+			var availability = [0, 0, 0, 0, 0, 0, 0];
 			
 			for (var i=0; i<data.length; i++) {
 				availability[data[i].dia - 1] = data[i].cantidad;
@@ -1884,7 +1780,7 @@ function collectContratoData() {
 		
 		// Fechas del workflow
 		// -------------------
-		fechaVenta: $("#divFechaVenta").text().trim() != "" ? parseInt($("#divFechaVenta").text().trim()) : null,
+		fechaVenta: $("#divFechaVenta").attr("fv") != null && $("#divFechaVenta").attr("fv").trim() != "" ? parseInt($("#divFechaVenta").attr("fv").trim()) : null,
 		fechaBackoffice: $("#divFechaBackoffice").text().trim() != "" ? parseInt($("#divFechaBackoffice").text().trim()) : null,
 		fechaEntregaDistribuidor: $("#divFechaEntregaDistribuidor").text().trim() != "" ? parseInt($("#divFechaEntregaDistribuidor").text().trim()) : null,
 		fechaDevolucionDistribuidor: $("#divFechaDevolucionDistribuidor").text().trim() != "" ? parseInt($("#divFechaDevolucionDistribuidor").text().trim()) : null,
@@ -1893,14 +1789,17 @@ function collectContratoData() {
 		fechaCoordinacion: $("#divFechaCoordinacion").text().trim() != "" ? parseInt($("#divFechaCoordinacion").text().trim()) : null,
 		fechaPickUp: $("#divFechaPickUp").text().trim() != "" ? parseInt($("#divFechaPickUp").text().trim()) : null,
 		resultadoEntregaDistribucionFecha: $("#divResultadoEntregaDistribucionFecha").text().trim() != "" ? parseInt($("#divResultadoEntregaDistribucionFecha").text().trim()) : null,
+		fechaAtencionClienteOperador: $("#divFechaAtencionClienteOperador").text().trim() != "" ? parseInt($("#divFechaAtencionClienteOperador").text().trim()) : null,
+		fechaAtencionClienteGestionador: $("#divFechaAtencionClienteGestionador").text().trim() != "" ? parseInt($("#divFechaAtencionClienteGestionador").text().trim()) : null,
+		fechaAtencionClienteDevuelto: $("#divFechaAtencionClienteDevuelto").text().trim() != "" ? parseInt($("#divFechaAtencionClienteDevuelto").text().trim()) : null,
+		fechaAtencionClienteCierre: $("#divFechaAtencionClienteCierre").text().trim() != "" ? parseInt($("#divFechaAtencionClienteCierre").text().trim()) : null,
 		// -------------------
 		
-		tipoContratoDescripcion: $("#divPlan").text().trim() != "" ? $("#divPlan").text().trim() : null,
 		nuevoPlanString: $("#divNuevoPlanString").text().trim() != "" ? $("#divNuevoPlanString").text().trim() : null,
-		fechaFinContrato: $("#divFechaVencimiento").text().trim() != "" ? parseShortDate($("#divFechaVencimiento").text().trim()) : null,
-		tipoContratoDescripcion: $("#inputPlan").length > 0 ? 
-			($("#inputPlan").val().trim() != "" ? $("#inputPlan").val().trim() : null) : 
-				$("#divPlan").text().trim(),
+		fechaFinContrato: $("#divFechaFinContrato").text().trim() != "" ? parseShortDate($("#divFechaFinContrato").text().trim()) : null,
+		tipoContratoDescripcion: $("#inputTipoContratoDescripcion").length > 0 ? 
+			($("#inputTipoContratoDescripcion").val().trim() != "" ? $("#inputTipoContratoDescripcion").val().trim() : null) : 
+				$("#divTipoContratoDescripcion").text().trim(),
 		numeroContrato: $("#inputNumeroContrato").length > 0 ? 
 			($("#inputNumeroContrato").val().trim() != "" ? $("#inputNumeroContrato").val().trim() : null) : 
 				$("#divNumeroContrato").text().trim(),
@@ -1912,7 +1811,7 @@ function collectContratoData() {
 				$("#divIncluirChip").text().trim(),
 		costoEnvio: $("#inputCostoEnvio").length > 0 ?
 			($("#inputCostoEnvio").val().trim() != "" ? $("#inputCostoEnvio").val().trim() : null) :
-				$("#divCostoEnvio").text().trim(),
+				$("#divCostoEnvio").text().trim() != "" ? $("#divCostoEnvio").text().trim() : null,
 		numeroChip: $("#inputNumeroChip").length > 0 ? 
 			($("#inputNumeroChip").val().trim() != "" ? $("#inputNumeroChip").val().trim() : null) :
 				$("#divNumeroChip").text().trim(),
@@ -1922,10 +1821,10 @@ function collectContratoData() {
 		localidad: $("#divLocalidad").text().trim() != "" ? $("#divLocalidad").text().trim() : null,
 		precio: $("#inputPrecio").length > 0 ? 
 			($("#inputPrecio").val().trim() != "" ? $("#inputPrecio").val().trim() : null) :
-				$("#divPrecio").text().trim(),
+				$("#divPrecio").text().trim() != "" ? $("#divPrecio").text().trim() : null,
 		valorCuota: $("#inputValorCuota").length > 0 ? 
 			($("#inputValorCuota").val().trim() != "" ? $("#inputValorCuota").val().trim() : null) :
-				$("#divValorCuota").text().trim(),
+				$("#divValorCuota").text().trim() != "" ? $("#divValorCuota").text().trim() : null,
 		numeroVale: $("#divNumeroVale").text().trim() != "" ? $("#divNumeroVale").text().trim() : null,
 		intereses: $("#divIntereses").text().trim() != "" ? $("#divIntereses").text().trim() : null,
 		gastosAdministrativos: $("#divGastosAdministrativos").text().trim() != "" ? $("#divGastosAdministrativos").text().trim() : null,
@@ -1951,7 +1850,10 @@ function collectContratoData() {
 		fechaNacimiento: $("#inputFechaNacimiento").length > 0 ?
 			($("#inputFechaNacimiento").val().trim() != "" ? parseShortDate($("#inputFechaNacimiento").val().trim()) : null) :
 				($("#divFechaNacimiento").text().trim() != "" ? parseShortDate($("#divFechaNacimiento").text().trim()) : null),
-		
+		atencionClienteCantidadVeces: $("#inputAtencionClienteCantidadVeces").length > 0 ? 
+			($("#inputAtencionClienteCantidadVeces").val().trim() != "" ? $("#inputAtencionClienteCantidadVeces").val().trim() : null) :
+				$("#divAtencionClienteCantidadVeces").text().trim() != "" ? $("#divAtencionClienteCantidadVeces").text().trim() : null,
+				
 		direccionFactura: $("#inputDireccionFactura").length > 0 ?
 			($("#inputDireccionFactura").val().trim() != "" ? $("#inputDireccionFactura").val().trim() : null) :
 				$("#divDireccionFactura").text().trim(),
@@ -1961,64 +1863,64 @@ function collectContratoData() {
 							
 		direccionEntregaCalle: $("#inputDireccionEntregaCalle").length > 0 ?
 			($("#inputDireccionEntregaCalle").val().trim() != "" ? $("#inputDireccionEntregaCalle").val().trim() : null) :
-				$("#divDireccionEntregaCalle").text().trim(),
+			$("#divDireccionEntregaCalle").text().trim(),
 		direccionEntregaNumero: $("#inputDireccionEntregaNumero").length > 0 ?
-			($("#inputDireccionEntregaNumero").val().trim() != "" ? $("#inputDireccionEntregaNumero").val().trim() : null) :
-				$("#divDireccionEntregaNumero").text().trim(),
+			($("#inputDireccionEntregaNumero").val().trim() != "" ? $("#inputDireccionEntregaNumero").val().trim() : null)
+			: ($("#divDireccionEntregaNumero").text().trim() != "" ? $("#divDireccionEntregaNumero").text().trim() : null),
 		direccionEntregaBis: $("#inputDireccionEntregaBis").length > 0 ?
 			$("#inputDireccionEntregaBis").prop("checked") : 
-				$("#divDireccionEntregaBis").text().trim(),
+			$("#divDireccionEntregaBis").text().trim(),
 		direccionEntregaBlock: $("#inputDireccionEntregaBlock").length > 0 ?
 			($("#inputDireccionEntregaBlock").val().trim() != "" ? $("#inputDireccionEntregaBlock").val().trim() : null) :
-				$("#divDireccionEntregaBlock").text().trim(),
+			$("#divDireccionEntregaBlock").text().trim(),
 		direccionEntregaApto: $("#inputDireccionEntregaApto").length > 0 ?
 			($("#inputDireccionEntregaApto").val().trim() != "" ? $("#inputDireccionEntregaApto").val().trim() : null) :
-				$("#divDireccionEntregaApto").text().trim(),
+			$("#divDireccionEntregaApto").text().trim(),
 		direccionEntregaSolar: $("#inputDireccionEntregaSolar").length > 0 ?
 			($("#inputDireccionEntregaSolar").val().trim() != "" ? $("#inputDireccionEntregaSolar").val().trim() : null) :
-				$("#divDireccionEntregaSolar").text().trim(),
+			$("#divDireccionEntregaSolar").text().trim(),
 		direccionEntregaManzana: $("#inputDireccionEntregaManzana").length > 0 ?
-			($("#inputDireccionEntregaManzana").val().trim() != "" ? $("#inputDireccionEntregaManzana").val().trim() : null) :
-				$("#divDireccionEntregaManzana").text().trim(),
+			($("#inputDireccionEntregaManzana").val().trim() != "" ? $("#inputDireccionEntregaManzana").val().trim() : null)
+			: ($("#divDireccionEntregaManzana").text().trim() != "" ? $("#divDireccionEntregaManzana").text().trim() : null),
 		direccionEntregaCodigoPostal: $("#inputDireccionEntregaCodigoPostal").length > 0 ?
-			($("#inputDireccionEntregaCodigoPostal").val().trim() != "" ? $("#inputDireccionEntregaCodigoPostal").val().trim() : null) :
-				$("#divDireccionEntregaCodigoPostal").text().trim(),
+			($("#inputDireccionEntregaCodigoPostal").val().trim() != "" ? $("#inputDireccionEntregaCodigoPostal").val().trim() : null)
+			: ($("#divDireccionEntregaCodigoPostal").text().trim() != "" ? $("#divDireccionEntregaCodigoPostal").text().trim() : null),
 		direccionEntregaLocalidad: $("#inputDireccionEntregaLocalidad").length > 0 ?
 			($("#inputDireccionEntregaLocalidad").val().trim() != "" ? $("#inputDireccionEntregaLocalidad").val().trim() : null) :
-				$("#divDireccionEntregaLocalidad").text().trim(),
+			$("#divDireccionEntregaLocalidad").text().trim(),
 		direccionEntregaObservaciones: $("#inputDireccionEntregaObservaciones").length > 0 ?
 			($("#inputDireccionEntregaObservaciones").val().trim() != "" ? $("#inputDireccionEntregaObservaciones").val().trim() : null) :
-				$("#divDireccionEntregaObservaciones").text().trim(),
+			$("#divDireccionEntregaObservaciones").text().trim(),
 		
 		direccionFacturaCalle: $("#inputDireccionFacturaCalle").length > 0 ?
 			($("#inputDireccionFacturaCalle").val().trim() != "" ? $("#inputDireccionFacturaCalle").val().trim() : null) :
-				$("#divDireccionFacturaCalle").text().trim(),
+			$("#divDireccionFacturaCalle").text().trim(),
 		direccionFacturaNumero: $("#inputDireccionFacturaNumero").length > 0 ?
-			($("#inputDireccionFacturaNumero").val().trim() != "" ? $("#inputDireccionFacturaNumero").val().trim() : null) :
-				$("#divDireccionFacturaNumero").text().trim(),
+			($("#inputDireccionFacturaNumero").val().trim() != "" ? $("#inputDireccionFacturaNumero").val().trim() : null)
+			: ($("#divDireccionFacturaNumero").text().trim() != "" ? $("#divDireccionFacturaNumero").text().trim() : null),
 		direccionFacturaBis: $("#inputDireccionFacturaBis").length > 0 ?
 			$("#inputDireccionFacturaBis").prop("checked") : $("#divDireccionFacturaBis").text().trim(),
 		direccionFacturaBlock: $("#inputDireccionFacturaBlock").length > 0 ?
 			($("#inputDireccionFacturaBlock").val().trim() != "" ? $("#inputDireccionFacturaBlock").val().trim() : null) :
-				$("#divDireccionFacturaBlock").text().trim(),
+			$("#divDireccionFacturaBlock").text().trim(),
 		direccionFacturaApto: $("#inputDireccionFacturaApto").length > 0 ?
 			($("#inputDireccionFacturaApto").val().trim() != "" ? $("#inputDireccionFacturaApto").val().trim() : null) :
-				$("#divDireccionFacturaApto").text().trim(),
+			$("#divDireccionFacturaApto").text().trim(),
 		direccionFacturaSolar: $("#inputDireccionFacturaSolar").length > 0 ?
 			($("#inputDireccionFacturaSolar").val().trim() != "" ? $("#inputDireccionFacturaSolar").val().trim() : null) :
-				$("#divDireccionFacturaSolar").text().trim(),
+			$("#divDireccionFacturaSolar").text().trim(),
 		direccionFacturaManzana: $("#inputDireccionFacturaManzana").length > 0 ?
-			($("#inputDireccionFacturaManzana").val().trim() != "" ? $("#inputDireccionFacturaManzana").val().trim() : null) :
-				$("#divDireccionFacturaManzana").text().trim(),
+			($("#inputDireccionFacturaManzana").val().trim() != "" ? $("#inputDireccionFacturaManzana").val().trim() : null)
+			: ($("#divDireccionFacturaManzana").text().trim() != "" ? $("#divDireccionFacturaManzana").text().trim() : null),
 		direccionFacturaCodigoPostal: $("#inputDireccionFacturaCodigoPostal").length > 0 ?
-			($("#inputDireccionFacturaCodigoPostal").val().trim() != "" ? $("#inputDireccionFacturaCodigoPostal").val().trim() : null) :
-				$("#divDireccionFacturaCodigoPostal").text().trim(),
+			($("#inputDireccionFacturaCodigoPostal").val().trim() != "" ? $("#inputDireccionFacturaCodigoPostal").val().trim() : null)
+			: ($("#divDireccionFacturaCodigoPostal").text().trim() != "" ? $("#divDireccionFacturaCodigoPostal").text().trim() : null),
 		direccionFacturaLocalidad: $("#inputDireccionFacturaLocalidad").length > 0 ?
 			($("#inputDireccionFacturaLocalidad").val().trim() != "" ? $("#inputDireccionFacturaLocalidad").val().trim() : null) :
-				$("#divDireccionFacturaLocalidad").text().trim(),
+			$("#divDireccionFacturaLocalidad").text().trim(),
 		direccionFacturaObservaciones: $("#inputDireccionFacturaObservaciones").length > 0 ?
 			($("#inputDireccionFacturaObservaciones").val().trim() != "" ? $("#inputDireccionFacturaObservaciones").val().trim() : null) :
-				$("#divDireccionFacturaObservaciones").text().trim(),
+			$("#divDireccionFacturaObservaciones").text().trim(),
 				
 		telefonoContacto: $("#inputTelefonoContacto").length > 0 ?
 			($("#inputTelefonoContacto").val().trim() != "" ? $("#inputTelefonoContacto").val().trim() : null) :
@@ -2046,39 +1948,53 @@ function collectContratoData() {
 		antelImporte: $("#divAntelImporte").text().trim() != "" ? $("#divAntelImporte").text().trim() : null,
 
 		fechaEnvioANucleo: $("#divFechaEnvioANucleo").text().trim() != "" ? parseLongDate($("#divFechaEnvioANucleo").text().trim()) : null,
+		fechaEnvioAIZI: $("#divFechaEnvioAIZI").text().trim() != "" ? parseLongDate($("#divFechaEnvioAIZI").text().trim()) : null,
+		fechaEnvioAGLA: $("#divFechaEnvioAGLA").text().trim() != "" ? parseLongDate($("#divFechaEnvioAGLA").text().trim()) : null
 	};
 	
-	if ($("#selectDireccionEntregaDepartamento").val() != "0") {
+	if (($("#selectDireccionEntregaDepartamento").length > 0) 
+		&& ($("#selectDireccionEntregaDepartamento").val() != "0")) {
 		contrato.direccionEntregaDepartamento = {
 			id: $("#selectDireccionEntregaDepartamento").val()
 		};
-	}
-	
-	if ($("#selectDireccionFacturaDepartamento").val() != "0") {
-		contrato.direccionFacturaDepartamento = {
-			id: $("#selectDireccionFacturaDepartamento").val()
+	} else if ($("#divDireccionEntregaDepartamento").attr("did") != null 
+		&& $("#divDireccionEntregaDepartamento").attr("did") != "") {
+		contrato.direccionEntregaDepartamento = {
+			id: $("#divDireccionEntregaDepartamento").attr("did")
 		};
 	}
 	
-	if ($("#selectTipoDocumento").val() != "0") {
+	if (($("#selectDireccionFacturaDepartamento").length > 0) 
+		&& ($("#selectDireccionFacturaDepartamento").val() != "0")) {
+		contrato.direccionFacturaDepartamento = {
+			id: $("#selectDireccionFacturaDepartamento").val()
+		};
+	} else if ($("#divDireccionFacturaDepartamento").attr("did") != null 
+		&& $("#divDireccionFacturaDepartamento").attr("did") != "") {
+		contrato.direccionFacturaDepartamento = {
+			id: $("#divDireccionFacturaDepartamento").attr("did")
+		};
+	}
+	
+	if ($("#selectTipoDocumento").val() != null && $("#selectTipoDocumento").val() != "0") {
 		contrato.tipoDocumento = {
 			id: $("#selectTipoDocumento").val()
 		};
 	}
 	
-	if ($("#selectSexo").val() != "0") {
+	if ($("#selectSexo").val() != null && $("#selectSexo").val() != "0") {
 		contrato.sexo = {
 			id: $("#selectSexo").val()
 		};
 	}
 	
-	if ($("#selectTipoProducto").val() != "0") {
+	if ($("#selectTipoProducto").val() != null && $("#selectTipoProducto").val() != "0") {
 		contrato.tipoProducto = {
 			id: $("#selectTipoProducto").val()
 		};
 	}
 	
-	if ($("#selectEquipo").val() !=  null && $("#selectEquipo").val() != "" && $("#selectEquipo").val() != "0") {
+	if ($("#selectEquipo").val() != null && $("#selectEquipo").val() != "" && $("#selectEquipo").val() != "0") {
 		contrato.marca = {
 			id: $("#selectEquipo").length > 0 ? $("#selectEquipo option:selected").attr("maid") : $("#divEquipo").attr("maid")
 		};
@@ -2094,19 +2010,19 @@ function collectContratoData() {
 		};
 	}
 	
-	if ($("#selectNuevoPlan").val() != "0") {
+	if ($("#selectNuevoPlan").val() != null && $("#selectNuevoPlan").val() != "0") {
 		contrato.nuevoPlan = {
 			id: $("#selectNuevoPlan").val()
 		};
 	}
 	
-	if ($("#selectMotivoCambioPlan").val() != "0") {
+	if ($("#selectMotivoCambioPlan").val() != null && $("#selectMotivoCambioPlan").val() != "0") {
 		contrato.motivoCambioPlan = {
 			id: $("#selectMotivoCambioPlan").val()
 		};
 	}
 	
-	if ($("#selectMoneda").val() != "0") {
+	if ($("#selectMoneda").val() != null && $("#selectMoneda").val() != "0") {
 		contrato.moneda = {
 			id: $("#selectMoneda").val()
 		};
@@ -2118,19 +2034,37 @@ function collectContratoData() {
 		};
 	}
 	
-	if ($("#selectModalidadVenta").val() != "0") {
+	if ($("#selectModalidadVenta").val() != null && $("#selectModalidadVenta").val() != "0") {
 		contrato.modalidadVenta = {
 			id: $("#selectModalidadVenta").val()
 		};
 	}
 	
-	if ($("#selectTarjetaCredito").val() != "0") {
+	if ($("#selectAtencionClienteTipoContacto").val() != null && $("#selectAtencionClienteTipoContacto").val() != "0") {
+		contrato.atencionClienteTipoContacto = {
+			id: $("#selectAtencionClienteTipoContacto").val()
+		};
+	}
+	
+	if ($("#selectAtencionClienteConcepto").val() != null && $("#selectAtencionClienteConcepto").val() != "0") {
+		contrato.atencionClienteConcepto = {
+			id: $("#selectAtencionClienteConcepto").val()
+		};
+	}
+	
+	if ($("#selectAtencionClienteRespuestaTecnicaComercial").val() != null && $("#selectAtencionClienteRespuestaTecnicaComercial").val() != "0") {
+		contrato.atencionClienteRespuestaTecnicaComercial = {
+			id: $("#selectAtencionClienteRespuestaTecnicaComercial").val()
+		};
+	}
+	
+	if ($("#selectTarjetaCredito").val() != null && $("#selectTarjetaCredito").val() != "0") {
 		contrato.tarjetaCredito = {
 			id: $("#selectTarjetaCredito").val()
 		};
 	}
 	
-	if ($("#selectCuotas").val() != "0") {
+	if ($("#selectCuotas").val() != null && $("#selectCuotas").val() != "0") {
 		contrato.cuotas = $("#selectCuotas").val();
 	}
 	
@@ -2140,7 +2074,9 @@ function collectContratoData() {
 		};
 	}
 	
-	if ($("#selectDepartamento").val() != "0" && $("#selectBarrio").val() != "0" && $("#selectZona").val() != "0") {
+	if ($("#selectDepartamento").val() != null && $("#selectDepartamento").val() != "0" 
+		&& $("#selectBarrio").val() != null && $("#selectBarrio").val() != "0" 
+		&& $("#selectZona").val() != null && $("#selectZona").val() != "0") {
 		contrato.zona = {
 			id: $("#selectZona").val(),
 			departamento: {
@@ -2156,13 +2092,13 @@ function collectContratoData() {
 		};
 	}
 	
-	if ($("#selectTurno").val() != "0") {
+	if ($("#selectTurno").val() != null && $("#selectTurno").val() != "0") {
 		contrato.turno = {
 			id: $("#selectTurno").val()
 		};
 	}
 	
-	if ($("#selectFechaEntrega").val() != "0") {
+	if ($("#selectFechaEntrega").val() != null && $("#selectFechaEntrega").val() != "0") {
 		contrato.fechaEntrega = parseShortDate($("#selectFechaEntrega").val());
 	}
 	
@@ -2224,14 +2160,123 @@ function collectContratoData() {
 		};
 	}
 	
+	if ($("#divAtencionClienteOperador").attr("acoid") != null && $("#divAtencionClienteOperador").attr("acoid") != "") {
+		contrato.atencionClienteOperador = {
+			id: $("#divAtencionClienteOperador").attr("acoid")
+		};
+	}
+	
+	if ($("#divAtencionClienteGestionador").attr("acgid") != null && $("#divAtencionClienteGestionador").attr("acgid") != "") {
+		contrato.atencionClienteGestionador = {
+			id: $("#divAtencionClienteGestionador").attr("acgid")
+		};
+	}
+	
 	var archivosAdjuntos = [];
 	var imgs = $(".divGalleryContent > img");
 	for (var i=0; i<imgs.length; i++) {
 		archivosAdjuntos[archivosAdjuntos.length] = {
-			id: $(imgs[i]).attr("id")
+			id: $(imgs[i]).attr("aaid")
 		};
 	}
 	contrato.archivosAdjuntos = archivosAdjuntos;
+	
+	var direcciones = [];
+	direcciones[direcciones.length] = {
+		id: $("#divTab1").attr("did"),
+		tipoDireccion: {
+			id: 1
+		}, 
+		calle: $("#inputDireccionEntregaCalle").length > 0 ?
+			($("#inputDireccionEntregaCalle").val().trim() != "" ? $("#inputDireccionEntregaCalle").val().trim() : null) :
+			$("#divDireccionEntregaCalle").text().trim(),
+		numero: $("#inputDireccionEntregaNumero").length > 0 ?
+			($("#inputDireccionEntregaNumero").val().trim() != "" ? $("#inputDireccionEntregaNumero").val().trim() : null)
+			: ($("#divDireccionEntregaNumero").text().trim() != "" ? $("#divDireccionEntregaNumero").text().trim() : null),
+		bis: $("#inputDireccionEntregaBis").length > 0 ?
+			$("#inputDireccionEntregaBis").prop("checked") : 
+			$("#divDireccionEntregaBis").text().trim(),
+		block: $("#inputDireccionEntregaBlock").length > 0 ?
+			($("#inputDireccionEntregaBlock").val().trim() != "" ? $("#inputDireccionEntregaBlock").val().trim() : null) :
+			$("#divDireccionEntregaBlock").text().trim(),
+		apto: $("#inputDireccionEntregaApto").length > 0 ?
+			($("#inputDireccionEntregaApto").val().trim() != "" ? $("#inputDireccionEntregaApto").val().trim() : null) :
+			$("#divDireccionEntregaApto").text().trim(),
+		solar: $("#inputDireccionEntregaSolar").length > 0 ?
+			($("#inputDireccionEntregaSolar").val().trim() != "" ? $("#inputDireccionEntregaSolar").val().trim() : null) :
+			$("#divDireccionEntregaSolar").text().trim(),
+		manzana: $("#inputDireccionEntregaManzana").length > 0 ?
+			($("#inputDireccionEntregaManzana").val().trim() != "" ? $("#inputDireccionEntregaManzana").val().trim() : null) 
+			: ($("#divDireccionEntregaManzana").text().trim() != "" ? $("#divDireccionEntregaManzana").text().trim() : null),
+		codigoPostal: $("#inputDireccionEntregaCodigoPostal").length > 0 ?
+			($("#inputDireccionEntregaCodigoPostal").val().trim() != "" ? $("#inputDireccionEntregaCodigoPostal").val().trim() : null)
+			: ($("#divDireccionEntregaCodigoPostal").text().trim() != "" ? $("#divDireccionEntregaCodigoPostal").text().trim() : null),
+		localidad: $("#inputDireccionEntregaLocalidad").length > 0 ?
+			($("#inputDireccionEntregaLocalidad").val().trim() != "" ? $("#inputDireccionEntregaLocalidad").val().trim() : null) :
+			$("#divDireccionEntregaLocalidad").text().trim(),
+		observaciones: $("#inputDireccionEntregaObservaciones").length > 0 ?
+			($("#inputDireccionEntregaObservaciones").val().trim() != "" ? $("#inputDireccionEntregaObservaciones").val().trim() : null) :
+			$("#divDireccionEntregaObservaciones").text().trim()
+	};
+	
+	if (($("#selectDireccionEntregaDepartamento").length > 0) && ($("#selectDireccionEntregaDepartamento").val() != "0")) {
+		direcciones[direcciones.length - 1].departamento = {
+			id: $("#selectDireccionEntregaDepartamento").val()
+		};
+	} else if ($("#divDireccionEntregaDepartamento").attr("did") != null && $("#divDireccionEntregaDepartamento").attr("did") != "") {
+		direcciones[direcciones.length - 1].departamento = {
+			id: $("#divDireccionEntregaDepartamento").attr("did")
+		};
+	}
+	
+	direcciones[direcciones.length] = {
+		id: $("#divTab2").attr("did"),
+		tipoDireccion: {
+			id: 2
+		},
+		calle: $("#inputDireccionFacturaCalle").length > 0 ?
+			($("#inputDireccionFacturaCalle").val().trim() != "" ? $("#inputDireccionFacturaCalle").val().trim() : null) :
+			$("#divDireccionFacturaCalle").text().trim(),
+		numero: $("#inputDireccionFacturaNumero").length > 0 ?
+			($("#inputDireccionFacturaNumero").val().trim() != "" ? $("#inputDireccionFacturaNumero").val().trim() : null)
+			: ($("#divDireccionFacturaNumero").text().trim() != "" ? $("#divDireccionFacturaNumero").text().trim() : null),
+		bis: $("#inputDireccionFacturaBis").length > 0 ?
+			$("#inputDireccionFacturaBis").prop("checked") : 
+			$("#divDireccionFacturaBis").text().trim(),
+		block: $("#inputDireccionFacturaBlock").length > 0 ?
+			($("#inputDireccionFacturaBlock").val().trim() != "" ? $("#inputDireccionFacturaBlock").val().trim() : null) :
+			$("#divDireccionFacturaBlock").text().trim(),
+		apto: $("#inputDireccionFacturaApto").length > 0 ?
+			($("#inputDireccionFacturaApto").val().trim() != "" ? $("#inputDireccionFacturaApto").val().trim() : null) :
+			$("#divDireccionFacturaApto").text().trim(),
+		solar: $("#inputDireccionFacturaSolar").length > 0 ?
+			($("#inputDireccionFacturaSolar").val().trim() != "" ? $("#inputDireccionFacturaSolar").val().trim() : null) :
+			$("#divDireccionFacturaSolar").text().trim(),
+		manzana: $("#inputDireccionFacturaManzana").length > 0 ?
+			($("#inputDireccionFacturaManzana").val().trim() != "" ? $("#inputDireccionFacturaManzana").val().trim() : null)
+			: ($("#divDireccionFacturaManzana").text().trim() != "" ? $("#divDireccionFacturaManzana").text().trim() : null),
+		codigoPostal: $("#inputDireccionFacturaCodigoPostal").length > 0 ?
+			($("#inputDireccionFacturaCodigoPostal").val().trim() != "" ? $("#inputDireccionFacturaCodigoPostal").val().trim() : null)
+			: ($("#divDireccionFacturaCodigoPostal").text().trim() != "" ? $("#divDireccionFacturaCodigoPostal").text().trim() : null),
+		localidad: $("#inputDireccionFacturaLocalidad").length > 0 ?
+			($("#inputDireccionFacturaLocalidad").val().trim() != "" ? $("#inputDireccionFacturaLocalidad").val().trim() : null) :
+			$("#divDireccionFacturaLocalidad").text().trim(),
+		observaciones: $("#inputDireccionFacturaObservaciones").length > 0 ?
+			($("#inputDireccionFacturaObservaciones").val().trim() != "" ? $("#inputDireccionFacturaObservaciones").val().trim() : null) :
+			$("#divDireccionFacturaObservaciones").text().trim()
+	};
+	
+	if (($("#selectDireccionFacturaDepartamento").length > 0) && ($("#selectDireccionFacturaDepartamento").val() != "0")) {
+		direcciones[direcciones.length - 1].departamento = {
+			id: $("#selectDireccionFacturaDepartamento").val()
+		};
+	} else if ($("#divDireccionFacturaDepartamento").attr("did") != null && $("#divDireccionFacturaDepartamento").attr("did") != "") {
+		direcciones[direcciones.length - 1].departamento = {
+			id: $("#divDireccionFacturaDepartamento").attr("did")
+		};
+	}
+	
+	contrato.direcciones = direcciones;
 	
 	return contrato;
 }

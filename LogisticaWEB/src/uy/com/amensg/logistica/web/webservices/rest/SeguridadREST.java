@@ -1,33 +1,33 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.ISeguridadBean;
 import uy.com.amensg.logistica.bean.IUsuarioBean;
 import uy.com.amensg.logistica.bean.SeguridadBean;
 import uy.com.amensg.logistica.bean.UsuarioBean;
-import uy.com.amensg.logistica.dwr.UsuarioDWR;
-import uy.com.amensg.logistica.entities.LoginTO;
-import uy.com.amensg.logistica.entities.MenuTO;
-import uy.com.amensg.logistica.entities.RolTO;
 import uy.com.amensg.logistica.entities.SeguridadAuditoria;
 import uy.com.amensg.logistica.entities.Usuario;
-import uy.com.amensg.logistica.entities.UsuarioRolEmpresaTO;
-import uy.com.amensg.logistica.entities.UsuarioTO;
 import uy.com.amensg.logistica.exceptions.UsuarioDebeCambiarContrasenaException;
+import uy.com.amensg.logistica.web.dwr.UsuarioDWR;
+import uy.com.amensg.logistica.web.entities.LoginTO;
+import uy.com.amensg.logistica.web.entities.MenuTO;
+import uy.com.amensg.logistica.web.entities.RolTO;
+import uy.com.amensg.logistica.web.entities.UsuarioRolEmpresaTO;
+import uy.com.amensg.logistica.web.entities.UsuarioTO;
 
 @Path("/SeguridadREST")
 public class SeguridadREST {
@@ -89,6 +89,10 @@ public class SeguridadREST {
 			String userAgent = request.getHeader("User-Agent");
 			
 			HttpSession session = request.getSession(false);
+			if (session == null) {
+				session = request.getSession();
+			}
+			
 			if (session.getAttribute("sesion") == null) {
 				session.setAttribute("sesion", seguridadAuditoria.getUsuario().getId());
 				

@@ -1,15 +1,18 @@
 package uy.com.amensg.logistica.bean;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Barrio;
 import uy.com.amensg.logistica.entities.Departamento;
@@ -26,7 +29,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class PuntoVentaBean implements IPuntoVentaBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 
 	@EJB
@@ -918,5 +921,114 @@ public class PuntoVentaBean implements IPuntoVentaBean {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Exporta los datos que cumplen con los criterios especificados a un archivo .csv 
+	 * de nombre generado según: YYYYMMDDHHmmSS en la carpeta de exportación del sistema.
+	 * 
+	 * @param metadataConsulta Criterios de la consulta.
+	 * @param loggedUsuarioId ID del Usuario que consulta.
+	 */
+	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId) {
+		String result = null;
+		
+		try {
+			GregorianCalendar gregorianCalendar = new GregorianCalendar();
+			
+			String fileName = 
+				gregorianCalendar.get(GregorianCalendar.YEAR) + ""
+				+ (gregorianCalendar.get(GregorianCalendar.MONTH) + 1) + ""
+				+ gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + ""
+				+ gregorianCalendar.get(GregorianCalendar.HOUR_OF_DAY) + ""
+				+ gregorianCalendar.get(GregorianCalendar.MINUTE) + ""
+				+ gregorianCalendar.get(GregorianCalendar.SECOND)
+				+ ".csv";
+			
+			PrintWriter printWriter = 
+				new PrintWriter(
+					new FileWriter(
+						Configuration.getInstance().getProperty("exportacion.carpeta") + fileName
+					)
+				);
+			
+			printWriter.println(
+				"Id"
+				+ ";Nombre"
+				+ ";Departamento"
+				+ ";Barrio"
+				+ ";Estado"
+				+ ";Eliminado"
+				+ ";Distribuidor"
+				+ ";Asignación a Distribuidor"
+				+ ";Visitado por Distribuidor"
+				+ ";Estado última visita"
+				+ ";Fecha último cambio estado visita"
+				+ ";Fecha vencimiento chip más viejo"
+				+ ";Creado por"
+				+ ";Creado"
+			);
+			
+			metadataConsulta.setTamanoMuestra(Long.valueOf(Integer.MAX_VALUE));
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			for (Object object : this.list(metadataConsulta).getRegistrosMuestra()) {
+				PuntoVenta puntoVenta = (PuntoVenta) object;
+				
+				String line = 
+					(puntoVenta.getId() != null ?
+						puntoVenta.getId()
+						: "")
+					+ ";" + (puntoVenta.getNombre() != null ?
+						puntoVenta.getNombre()
+						: "")
+					+ ";" + (puntoVenta.getDepartamento() != null ?
+						puntoVenta.getDepartamento().getNombre()
+						: "")
+					+ ";" + (puntoVenta.getBarrio() != null ?
+						puntoVenta.getBarrio().getNombre()
+						: "")
+					+ ";" + (puntoVenta.getEstadoPuntoVenta() != null ?
+						puntoVenta.getEstadoPuntoVenta().getNombre()
+						: "")
+					+ ";" + (puntoVenta.getFechaBaja() != null ?
+						format.format(puntoVenta.getFechaBaja())
+						: "")
+					+ ";" + (puntoVenta.getDistribuidor() != null ?
+						puntoVenta.getDistribuidor().getNombre()
+						: "")
+					+ ";" + (puntoVenta.getFechaAsignacionDistribuidor() != null ?
+						format.format(puntoVenta.getFechaAsignacionDistribuidor())
+						: "")
+					+ ";" + (puntoVenta.getFechaVisitaDistribuidor() != null ?
+						format.format(puntoVenta.getFechaVisitaDistribuidor())
+						: "")
+					+ ";" + (puntoVenta.getEstadoVisitaPuntoVentaDistribuidor() != null ?
+						puntoVenta.getEstadoVisitaPuntoVentaDistribuidor().getNombre()
+						: "")
+					+ ";" + (puntoVenta.getFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor() != null ?
+						format.format(puntoVenta.getFechaUltimoCambioEstadoVisitaPuntoVentaDistribuidor())
+						: "")
+					+ ";" + (puntoVenta.getFechaVencimientoChipMasViejo() != null ?
+						format.format(puntoVenta.getFechaVencimientoChipMasViejo())
+						: "")
+					+ ";" + (puntoVenta.getCreador() != null ?
+						puntoVenta.getCreador().getNombre()
+						: "")
+					+ ";" + (puntoVenta.getFcre() != null ?
+						format.format(puntoVenta.getFcre())
+						: "");
+			
+				printWriter.println(line.replaceAll("\n", ""));
+			}
+			
+			printWriter.close();
+			
+			result = fileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }

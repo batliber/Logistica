@@ -2,7 +2,6 @@ package uy.com.amensg.logistica.bean;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -15,20 +14,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.DoubleType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.TimestampType;
-
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import uy.com.amensg.logistica.entities.Activacion;
 import uy.com.amensg.logistica.entities.EstadoProcesoImportacion;
 import uy.com.amensg.logistica.entities.Liquidacion;
@@ -47,7 +38,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class LiquidacionBean implements ILiquidacionBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -310,14 +301,12 @@ public class LiquidacionBean implements ILiquidacionBean {
 			
 			ProcesoImportacion procesoImportacionManaged = iProcesoImportacionBean.save(procesoImportacion);
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<Tuple> selectId = 
-				hibernateSession.createNativeQuery(
-					"SELECT nextval('hibernate_sequence')", Tuple.class
+			Query selectId = 
+				entityManager.createNativeQuery(
+					"SELECT nextval('hibernate_sequence')"
 				);
 			
-			NativeQuery<?> insertLiquidacion = hibernateSession.createNativeQuery(
+			Query insertLiquidacion = entityManager.createNativeQuery(
 				"INSERT INTO liquidacion("
 					+ " ucre,"
 					+ " fcre,"
@@ -377,13 +366,13 @@ public class LiquidacionBean implements ILiquidacionBean {
 				+ " )"
 			);
 			
-			insertLiquidacion.setParameter(1, loggedUsuarioId, LongType.INSTANCE);
-			insertLiquidacion.setParameter(2, hoy, TimestampType.INSTANCE);
-			insertLiquidacion.setParameter(3, loggedUsuarioId, LongType.INSTANCE);
-			insertLiquidacion.setParameter(4, hoy, TimestampType.INSTANCE);
-			insertLiquidacion.setParameter(5, Long.valueOf(1), LongType.INSTANCE);
+			insertLiquidacion.setParameter(1, loggedUsuarioId);
+			insertLiquidacion.setParameter(2, hoy);
+			insertLiquidacion.setParameter(3, loggedUsuarioId);
+			insertLiquidacion.setParameter(4, hoy);
+			insertLiquidacion.setParameter(5, Long.valueOf(1));
 			
-			NativeQuery<Tuple> selectLiquidacion = hibernateSession.createNativeQuery(
+			Query selectLiquidacion = entityManager.createNativeQuery(
 //				"SELECT id"
 //				+ " FROM liquidacion"
 //				+ " WHERE id_registro = ?",
@@ -391,8 +380,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 				+ " FROM liquidacion"
 				+ " WHERE empresa_id = ?"
 				+ " AND mid = ?"
-				+ " AND fecha_liquidacion = ?",
-				Tuple.class
+				+ " AND fecha_liquidacion = ?"
 			);
 			
 			String line = null;
@@ -425,7 +413,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 							System.err.println(
 								"Error al procesar archivo: " + fileName + "."
 								+ " Formato de línea " + lineNumber + " incompatible."
-								+ " Campo id_registro incorrecto -> " + fields[field].trim());
+								+ " Campo nro_proveedor incorrecto -> " + fields[field].trim());
 							ok = false;
 						}
 						
@@ -726,39 +714,39 @@ public class LiquidacionBean implements ILiquidacionBean {
 						if (!ok) {
 							errors++;
 						} else {
-//							selectLiquidacion.setParameter(1, idRegistro, LongType.INSTANCE);
-							selectLiquidacion.setParameter(1, empresaId, LongType.INSTANCE);
-							selectLiquidacion.setParameter(2, mid, LongType.INSTANCE);
-							selectLiquidacion.setParameter(3, fechaHoraLiquidacion, TimestampType.INSTANCE);
+//							selectLiquidacion.setParameter(1, idRegistro);
+							selectLiquidacion.setParameter(1, empresaId);
+							selectLiquidacion.setParameter(2, mid);
+							selectLiquidacion.setParameter(3, fechaHoraLiquidacion);
 							
-							List<Tuple> listLiquidacion = selectLiquidacion.list();
+							List<?> listLiquidacion = selectLiquidacion.getResultList();
 							if (listLiquidacion.size() > 0) {
 								// Si ya existe, omito.
 							} else {
-								Long id = ((BigInteger) selectId.list().get(0).get(0)).longValue();
+								Long id = (Long) selectId.getResultList().get(0);
 								
 								field = 6;
-								insertLiquidacion.setParameter(field++, id, LongType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, idRegistro, LongType.INSTANCE);
-								insertLiquidacion.setParameter(field++, empresaId, LongType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, rlid, LongType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, contrato, LongType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, fecha, TimestampType.INSTANCE);
-								insertLiquidacion.setParameter(field++, plan, StringType.INSTANCE);
-								insertLiquidacion.setParameter(field++, mid, LongType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, said, LongType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, serie, StringType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, dc, StringType.INSTANCE);
-								insertLiquidacion.setParameter(field++, monedaId, LongType.INSTANCE);
-								insertLiquidacion.setParameter(field++, importe, DoubleType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, cant, LongType.INSTANCE);
-								insertLiquidacion.setParameter(field++, fechaHoraLiquidacion, TimestampType.INSTANCE);
-								insertLiquidacion.setParameter(field++, idConcepto, LongType.INSTANCE);
-								insertLiquidacion.setParameter(field++, nomConcepto, StringType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, modelo, StringType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, fabricante, StringType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, idClaseConcepto, LongType.INSTANCE);
-//								insertLiquidacion.setParameter(field++, nomClaseConcepto, StringType.INSTANCE);
+								insertLiquidacion.setParameter(field++, id);
+//								insertLiquidacion.setParameter(field++, idRegistro);
+								insertLiquidacion.setParameter(field++, empresaId);
+//								insertLiquidacion.setParameter(field++, rlid);
+//								insertLiquidacion.setParameter(field++, contrato);
+//								insertLiquidacion.setParameter(field++, fecha);
+								insertLiquidacion.setParameter(field++, plan);
+								insertLiquidacion.setParameter(field++, mid);
+//								insertLiquidacion.setParameter(field++, said);
+//								insertLiquidacion.setParameter(field++, serie);
+//								insertLiquidacion.setParameter(field++, dc);
+								insertLiquidacion.setParameter(field++, monedaId);
+								insertLiquidacion.setParameter(field++, importe);
+//								insertLiquidacion.setParameter(field++, cant);
+								insertLiquidacion.setParameter(field++, fechaHoraLiquidacion);
+								insertLiquidacion.setParameter(field++, idConcepto);
+								insertLiquidacion.setParameter(field++, nomConcepto);
+//								insertLiquidacion.setParameter(field++, modelo);
+//								insertLiquidacion.setParameter(field++, fabricante);
+//								insertLiquidacion.setParameter(field++, idClaseConcepto);
+//								insertLiquidacion.setParameter(field++, nomClaseConcepto);
 								
 								insertLiquidacion.executeUpdate();
 								
@@ -823,9 +811,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 		try {
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<?> insertCalculoPorcentajeActivacionPuntoVenta = hibernateSession.createNativeQuery(
+			Query insertCalculoPorcentajeActivacionPuntoVenta = entityManager.createNativeQuery(
 				"INSERT INTO calculo_porcentaje_activacion_punto_venta("
 					+ " id,"
 					+ " fecha_calculo,"
@@ -864,12 +850,12 @@ public class LiquidacionBean implements ILiquidacionBean {
 				+ " ) l ON l.punto_venta_id = pv.id"
 			);
 			
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(1, hoy, TimestampType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(2, loggedUsuarioId, LongType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(3, hoy, TimestampType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(4, loggedUsuarioId, LongType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(5, hoy, TimestampType.INSTANCE);
-			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(6, Long.valueOf(1), LongType.INSTANCE);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(1, hoy);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(2, loggedUsuarioId);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(3, hoy);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(4, loggedUsuarioId);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(5, hoy);
+			insertCalculoPorcentajeActivacionPuntoVenta.setParameter(6, Long.valueOf(1));
 			
 			insertCalculoPorcentajeActivacionPuntoVenta.executeUpdate();
 		} catch (Exception e) {
@@ -881,9 +867,7 @@ public class LiquidacionBean implements ILiquidacionBean {
 		try {
 			Date hoy = GregorianCalendar.getInstance().getTime();
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			NativeQuery<?> updatePorcentajeActivacionSubLote = hibernateSession.createNativeQuery(
+			Query updatePorcentajeActivacionSubLote = entityManager.createNativeQuery(
 				"UPDATE activacion_sublote"
 				+ " SET porcentaje_activacion = COALESCE(l.cantidad, 0) * 1.0 / t.cantidad,"
 				+ " fact = ?,"
@@ -906,8 +890,8 @@ public class LiquidacionBean implements ILiquidacionBean {
 				+ " ) l ON l.activacion_sublote_id = t.activacion_sublote_id"
 				+ " WHERE activacion_sublote.id = t.activacion_sublote_id"
 			);
-			updatePorcentajeActivacionSubLote.setParameter(1, hoy, TimestampType.INSTANCE);
-			updatePorcentajeActivacionSubLote.setParameter(2, loggedUsuarioId, LongType.INSTANCE);
+			updatePorcentajeActivacionSubLote.setParameter(1, hoy);
+			updatePorcentajeActivacionSubLote.setParameter(2, loggedUsuarioId);
 			
 			updatePorcentajeActivacionSubLote.executeUpdate();
 		} catch (Exception e) {

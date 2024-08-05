@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices;
+package uy.com.amensg.logistica.web.webservices;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -9,32 +9,32 @@ import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 import uy.com.amensg.logistica.bean.BICSABean;
 import uy.com.amensg.logistica.bean.IBICSABean;
 import uy.com.amensg.logistica.bean.IRiesgoCrediticioParaguayBICSABean;
 import uy.com.amensg.logistica.bean.IRiesgoCrediticioParaguayBean;
 import uy.com.amensg.logistica.bean.RiesgoCrediticioParaguayBICSABean;
 import uy.com.amensg.logistica.bean.RiesgoCrediticioParaguayBean;
-import uy.com.amensg.logistica.entities.ObtenerInformacionSystemMasterTO;
-import uy.com.amensg.logistica.entities.ObtenerInformacionesSystemMasterTO;
-import uy.com.amensg.logistica.entities.ResultadoObtenerInformacionSystemMasterTO;
-import uy.com.amensg.logistica.entities.ResultadoObtenerInformacionesSystemMasterTO;
 import uy.com.amensg.logistica.entities.RiesgoCrediticioParaguay;
 import uy.com.amensg.logistica.entities.RiesgoCrediticioParaguayBICSA;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.web.entities.ObtenerInformacionSystemMasterTO;
+import uy.com.amensg.logistica.web.entities.ObtenerInformacionesSystemMasterTO;
+import uy.com.amensg.logistica.web.entities.ResultadoObtenerInformacionSystemMasterTO;
+import uy.com.amensg.logistica.web.entities.ResultadoObtenerInformacionesSystemMasterTO;
 import uy.com.amensg.logistica.webservices.external.bicsa.Persona;
 import uy.com.amensg.logistica.webservices.external.creditoamigo.WsBICSA;
 import uy.com.amensg.logistica.webservices.external.creditoamigo.WsBICSASoap;

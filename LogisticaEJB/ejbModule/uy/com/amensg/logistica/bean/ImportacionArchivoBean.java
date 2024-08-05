@@ -12,20 +12,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.ejb.Asynchronous;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.LongType;
-import org.hibernate.type.TimestampType;
-
+import jakarta.ejb.Asynchronous;
+import jakarta.ejb.EJB;
+import jakarta.ejb.SessionContext;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import uy.com.amensg.logistica.entities.EstadoProcesoImportacion;
 import uy.com.amensg.logistica.entities.FormatoImportacionArchivo;
 import uy.com.amensg.logistica.entities.FormatoImportacionArchivoColumna;
@@ -38,7 +32,7 @@ import uy.com.amensg.logistica.util.Constants;
 @Stateless
 public class ImportacionArchivoBean implements IImportacionArchivoBean, IImportacionArchivoBeanLocal {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@Resource
@@ -143,13 +137,9 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 			ProcesoImportacion procesoImportacionManaged = 
 				entityManager.find(ProcesoImportacion.class, procesoImportacionId);
 			
-			Session hibernateSession = entityManager.unwrap(Session.class);
-			
-			Transaction transaction = hibernateSession.beginTransaction();
-			
-			NativeQuery<Tuple> selectId = 
-				hibernateSession.createNativeQuery(
-					"SELECT nextval('hibernate_sequence')", Tuple.class
+			Query selectId = 
+				entityManager.createNativeQuery(
+					"SELECT nextval('hibernate_sequence')"
 				);
 			
 			String insertQueryStringColumns = 
@@ -198,7 +188,7 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 //				+ " )"
 //			);
 			
-			NativeQuery<?> insert = hibernateSession.createNativeQuery(
+			Query insert = entityManager.createNativeQuery(
 				"INSERT INTO " + formatoImportacionArchivo.getNombreTablaDestino() + " ("
 					+ insertQueryStringColumns
 				+ " ) VALUES ("
@@ -206,11 +196,11 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 				+ " )"
 			);
 			
-			insert.setParameter(1, loggedUsuarioId, LongType.INSTANCE);
-			insert.setParameter(2, hoy, TimestampType.INSTANCE);
-			insert.setParameter(3, loggedUsuarioId, LongType.INSTANCE);
-			insert.setParameter(4, hoy, TimestampType.INSTANCE);
-			insert.setParameter(5, Long.valueOf(1), LongType.INSTANCE);
+			insert.setParameter(1, loggedUsuarioId);
+			insert.setParameter(2, hoy);
+			insert.setParameter(3, loggedUsuarioId);
+			insert.setParameter(4, hoy);
+			insert.setParameter(5, Long.valueOf(1));
 			
 			String line = null;
 			long lineNumber = 0;
@@ -248,7 +238,7 @@ public class ImportacionArchivoBean implements IImportacionArchivoBean, IImporta
 //							if (list.size() > 0) {
 //								// Si el registro ya existe, omito.
 //							} else {
-								Long id = (Long) selectId.list().get(0).get(0);
+								Long id = (Long) selectId.getResultList().get(0);
 								
 								insert.setParameter(6, id);
 								

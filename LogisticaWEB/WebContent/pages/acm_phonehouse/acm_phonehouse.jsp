@@ -21,11 +21,16 @@
 				<div class="divButton" id="divButtonAsignarSubconjunto"><input type="submit" id="inputAsignarSubconjunto" value="Asignar subconjunto" onclick="javascript:inputAsignarSubconjuntoOnClick(event, this)"/></div>
 				<div class="divButton" id="divButtonDeshacerAsignacion"><input type="submit" id="inputDeshacerAsignacion" value="Deshacer asignaci&oacute;n" onclick="javascript:inputDeshacerAsignacionOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
+				<div class="divButton"><input type="submit" id="inputReprocesar" value="Reprocesar" onclick="javascript:inputReprocesarOnClick(event, this)"/></div>
+				<div class="divButton"><input type="submit" id="inputReprocesarSubconjunto" value="Reprocesar subconjunto" onclick="javascript:inputReprocesarSubconjuntoOnClick(event, this)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divButtonTitleBar">
 				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 				<div id="divButtonTitleFourfoldSize" class="divButtonTitleBarTitle">Asignar</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Reprocesar</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divMainWindow">
@@ -62,6 +67,34 @@
 				<div class="divFormLabelExtended" style="display: none;">Tama&ntilde;o subconjunto:</div><div style="display: none;"><input type="hidden" id="inputTamanoSubconjuntoAsignacion"/></div>
 				<div class="divFormLabelExtended">Empresa:</div><div id="divEmpresa" class="divFormValue"><select id="selectEmpresa"></select></div>
 				<div class="divFormLabelExtended">Observaciones:</div><div id="divObservaciones" class="divFormValue"><textarea id="textareaObservaciones"></textarea></div>
+			</div>
+		</div>
+	</div>
+	<div id="divIFrameSeleccionTipoProcesamiento" style="display: none;">
+		<div class="divTitleBar">
+			<div class="divTitleBarText" style="float:left;">Tipo de procesamiento</div>
+			<div class="divTitleBarCloseButton" onclick="javascript:divCloseOnClick(event, this)">&nbsp;</div>
+		</div>
+		<div id="divSeleccionTipoProcesamiento">
+			<div class="divButtonBar">
+				<div class="divButton"><input type="submit" value="Aceptar" onclick="javascript:inputAceptarSeleccionTipoProcesamientoOnClick(event)"/></div>
+				<div class="divButton"><input type="submit" value="Cancelar" onclick="javascript:inputCancelarSeleccionTipoProcesamientoOnClick(event)"/></div>
+				<div class="divButtonBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divButtonTitleBar">
+				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div class="divButtonTitleBarSeparator">&nbsp;</div>
+			</div>
+			<div class="divPopupWindow">
+				<div class="divFormLabelExtended">Tipo:</div>
+				<div id="divTipoProcesamiento" class="divFormValue">
+					<select id="selectTipoProcesamiento">
+						<option value="0">Seleccione...</option>
+						<option value="1">Por MID</option>
+						<option value="2">Por nro. de contrato</option>
+					</select>
+				</div>
+				<div class="divFormLabelExtended">Observaciones:</div><div id="divSeleccionTipoProcesamientoObservaciones" class="divFormValue"><textarea id="textareaSeleccionTipoProcesamientoObservaciones"></textarea></div>
 			</div>
 		</div>
 	</div>

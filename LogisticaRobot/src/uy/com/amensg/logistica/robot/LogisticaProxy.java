@@ -2,17 +2,22 @@ package uy.com.amensg.logistica.robot;
 
 public class LogisticaProxy {
 
+	private static int __location_parameter_index = 0;
+	private static int __method_parameter_index = 1;
+	private static int __registry_type_parameter_index = 2;
+	
 	private IConnectionStrategy iConnectionStrategy = new ConnectionStrategyWebService();
 	
-	public void getSiguienteMidSinProcesar() {
-		System.out.println(iConnectionStrategy.getSiguienteMidSinProcesar());
+	public void getSiguienteMidSinProcesar(String wsdlFileName) {
+		System.out.println(iConnectionStrategy.getSiguienteMidSinProcesar(wsdlFileName));
 	}
 	
-	public void getSiguienteNumeroContratoSinProcesar() {
-		System.out.println(iConnectionStrategy.getSiguienteNumeroContratoSinProcesar());
+	public void getSiguienteNumeroContratoSinProcesar(String wsdlFileName) {
+		System.out.println(iConnectionStrategy.getSiguienteNumeroContratoSinProcesar(wsdlFileName));
 	}
 	
 	public void actualizarDatosMidContrato(
+		String wsdlFileName,
 		String direccion,
 		String documentoTipo,
 		String documento,
@@ -30,6 +35,7 @@ public class LogisticaProxy {
 		String estadoContrato
 	) {
 		iConnectionStrategy.actualizarDatosMidContrato(
+			wsdlFileName, 
 			direccion, 
 			documentoTipo,
 			documento, 
@@ -49,6 +55,7 @@ public class LogisticaProxy {
 	}
 	
 	public void actualizarDatosMidPrepago(
+		String wsdlFileName,
 		String mesAno,
 		String mid,
 		String montoMesActual,
@@ -58,6 +65,7 @@ public class LogisticaProxy {
 		String agente
 	) {
 		iConnectionStrategy.actualizarDatosMidPrepago(
+			wsdlFileName, 
 			mesAno, 
 			mid, 
 			montoMesActual, 
@@ -68,19 +76,38 @@ public class LogisticaProxy {
 		);
 	}
 	
-	public void actualizarDatosMidListaVacia(String mid) {
+	public void actualizarDatosMidListaVacia(String wsdlFileName, String mid) {
 		iConnectionStrategy.actualizarDatosMidListaVacia(
-			mid
+			wsdlFileName, mid
 		);
 	}
 	
-	public void actualizarDatosNumeroContratoListaVacia(String numeroContrato) {
+	public void actualizarDatosNumeroContratoListaVacia(String wsdlFileName, String numeroContrato) {
 		iConnectionStrategy.actualizarDatosNumeroContratoListaVacia(
-			numeroContrato
+			wsdlFileName, numeroContrato
+		);
+	}
+	
+	public void actualizarDatosMidListaNegra(String wsdlFileName, String mid) {
+		iConnectionStrategy.actualizarDatosMidListaNegra(
+			wsdlFileName, mid
+		);
+	}
+	
+	public void actualizarDatosMidNegociando(String wsdlFileName, String mid) {
+		iConnectionStrategy.actualizarDatosMidNegociando(
+			wsdlFileName, mid
+		);
+	}
+	
+	public void actualizarDatosMidNoLlamar(String wsdlFileName, String mid) {
+		iConnectionStrategy.actualizarDatosMidNoLlamar(
+			wsdlFileName, mid
 		);
 	}
 	
 	public void actualizarDatosPersona(
+		String wsdlFileName,
 		String idCliente,
 		String mid,
 		String pais,
@@ -111,47 +138,63 @@ public class LogisticaProxy {
 		String telefonosFax,
 		String email) {
 		iConnectionStrategy.actualizarDatosPersona(
-			 idCliente,
-			 mid,
-			 pais,
-			 tipoDocumento,
-			 documento,
-			 apellido,
-			 nombre,
-			 razonSocial,
-			 tipoCliente,
-			 actividad,
-			 fechaNacimiento,
-			 sexo,
-			 direccionCalle, 
-			 direccionNumero,
-			 direccionBis,
-			 direccionApartamento,
-			 direccionEsquina,
-			 direccionBlock,
-			 direccionManzana,
-			 direccionSolar,
-			 direccionObservaciones,
-			 direccionLocalidad,
-			 direccionCodigoPostal,
-			 direccionCompleta,
-			 distribuidor,
-			 telefonosFijo,
-			 telefonosAviso,
-			 telefonosFax,
-			 email
+			wsdlFileName, 
+			idCliente,
+			mid,
+			pais,
+			tipoDocumento,
+			documento,
+			apellido,
+			nombre,
+			razonSocial,
+			tipoCliente,
+			actividad,
+			fechaNacimiento,
+			sexo,
+			direccionCalle, 
+			direccionNumero,
+			direccionBis,
+			direccionApartamento,
+			direccionEsquina,
+			direccionBlock,
+			direccionManzana,
+			direccionSolar,
+			direccionObservaciones,
+			direccionLocalidad,
+			direccionCodigoPostal,
+			direccionCompleta,
+			distribuidor,
+			telefonosFijo,
+			telefonosAviso,
+			telefonosFax,
+			email
 		);
 	}
 	
 	public static void main(String[] args) {
-		if (args[0].equals("getSiguienteMidSinProcesar")) {
-			new LogisticaProxy().getSiguienteMidSinProcesar();
-		} else if (args[0].equals("getSiguienteNumeroContratoSinProcesar")) {
-			new LogisticaProxy().getSiguienteNumeroContratoSinProcesar();
-		} else if (args[0].equals("actualizarDatosMid")) {
-			if (args[1].equals("contrato")) {
+		String wsdlFileName = "";
+		if (args[__location_parameter_index].equals("amensg")) {
+			wsdlFileName = "LogisticaWebService-amensg.wsdl";
+		} else if (args[__location_parameter_index].equals("cargamas")) {
+			wsdlFileName = "LogisticaWebService-cargamas.wsdl";
+		} else if (args[__location_parameter_index].equals("uruentregas")) {
+			wsdlFileName = "LogisticaWebService-uruentregas.wsdl";
+		} else if (args[__location_parameter_index].equals("phonehouse")) {
+			wsdlFileName = "LogisticaPHWebService-phonehouse.wsdl";
+		} else if (args[__location_parameter_index].equals("phonehousedev")) {
+			wsdlFileName = "LogisticaPHWebService-amensg.wsdl";
+		} else if (args[__location_parameter_index].equals("agentesdeventas")) {
+			wsdlFileName = "LogisticaWebService-agentesdeventas.wsdl";
+		}
+		
+		if (args[__method_parameter_index].equals("getSiguienteMidSinProcesar")) {
+			new LogisticaProxy().getSiguienteMidSinProcesar(wsdlFileName);
+		} else if (args[__method_parameter_index].equals("getSiguienteNumeroContratoSinProcesar")) {
+			new LogisticaProxy().getSiguienteNumeroContratoSinProcesar(wsdlFileName);
+		} else if (args[__method_parameter_index].equals("actualizarDatosMid")) {
+			if (args[__registry_type_parameter_index].equals("contrato")) {
 				new LogisticaProxy().actualizarDatosMidContrato(
-					args[2],
+					wsdlFileName,
 					args[3],
 					args[4],
 					args[5],
@@ -165,32 +208,46 @@ public class LogisticaProxy {
 					args[13],
 					args[14],
 					args[15],
-					args[16]
+					args[16],
+					args[17]
 				);
-			} else if (args[1].equals("prepago")) {
+			} else if (args[__registry_type_parameter_index].equals("prepago")) {
 				new LogisticaProxy().actualizarDatosMidPrepago(
-					args[2],
+					wsdlFileName,
 					args[3],
 					args[4],
 					args[5],
 					args[6],
 					args[7],
-					args[8]
+					args[8],
+					args[9]
 				);
-			} else if (args[1].equals("listaVacia")) {
+			} else if (args[__registry_type_parameter_index].equals("listaVacia")) {
 				new LogisticaProxy().actualizarDatosMidListaVacia(
-					args[2]
+					wsdlFileName, args[3]
+				);
+			} else if (args[__registry_type_parameter_index].equals("listaNegra")) {
+				new LogisticaProxy().actualizarDatosMidListaNegra(
+					wsdlFileName, args[3]
+				);
+			} else if (args[__registry_type_parameter_index].equals("negociando")) {
+				new LogisticaProxy().actualizarDatosMidNegociando(
+					wsdlFileName, args[3]
+				);
+			} else if (args[__registry_type_parameter_index].equals("noLlamar")) {
+				new LogisticaProxy().actualizarDatosMidNoLlamar(
+					wsdlFileName, args[3]
 				);
 			}
-		} else if (args[0].equals("actualizarDatosNumeroContrato")) {
+		} else if (args[__method_parameter_index].equals("actualizarDatosNumeroContrato")) {
 			if (args[1].equals("listaVacia")) {
 				new LogisticaProxy().actualizarDatosNumeroContratoListaVacia(
-					args[2]
+					wsdlFileName, args[3]
 				);
 			}
-		} else if (args[0].equals("actualizarDatosPersona")) {
+		} else if (args[__method_parameter_index].equals("actualizarDatosPersona")) {
 			new LogisticaProxy().actualizarDatosPersona(
-				args[1],
+				wsdlFileName,
 				args[2],
 				args[3],
 				args[4],
@@ -218,7 +275,8 @@ public class LogisticaProxy {
 				args[26],
 				args[27],
 				args[28],
-				args[29]
+				args[29],
+				args[30]
 			);
 		}
 	}

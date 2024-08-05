@@ -31,3 +31,34 @@
 #textareaObservaciones {
 	width: 100%;
 }
+
+#divIFrameSeleccionTipoProcesamiento {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionTipoProcesamiento {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
+}
+
+#divSeleccionTipoProcesamientoObservaciones {
+	float: left;
+	width: 60%;
+	height: 60px;
+}
+
+#textareaSeleccionTipoProcesamientoObservaciones {
+	width: 100%;
+}

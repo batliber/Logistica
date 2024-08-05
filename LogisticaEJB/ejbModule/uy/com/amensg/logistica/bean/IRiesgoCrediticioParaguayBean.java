@@ -1,8 +1,10 @@
 package uy.com.amensg.logistica.bean;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
@@ -14,7 +16,7 @@ public interface IRiesgoCrediticioParaguayBean {
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Long count(MetadataConsulta metadataConsulta, Long usuarioId);
-	
+
 	public RiesgoCrediticioParaguay getById(Long id);
 	
 	public RiesgoCrediticioParaguay getLastByDocumentoFechaNacimientoSituacionRiesgoCrediticioParaguayId(
@@ -24,16 +26,27 @@ public interface IRiesgoCrediticioParaguayBean {
 	public RiesgoCrediticioParaguay getSiguienteDocumentoParaControlar();
 	
 	public RiesgoCrediticioParaguay controlarRiesgo(
-		String documento, Date fechaNacimiento, Long situacionRiesgoCrediticioId
+		String documento, Date fechaNacimiento, Long situacionRiesgoCrediticioParaguayId
 	);
 	
-	public RiesgoCrediticioParaguay actualizarDatosRiesgoCrediticioParaguay(RiesgoCrediticioParaguay riesgoCrediticioParaguay);
-
 	public RiesgoCrediticioParaguay save(RiesgoCrediticioParaguay riesgoCrediticioParaguay);
+	
+	public RiesgoCrediticioParaguay actualizarDatosRiesgoCrediticioParaguay(RiesgoCrediticioParaguay riesgoCrediticioParaguay);
+	
+	public RiesgoCrediticioParaguay actualizarRespuestaExterna(Long id, String respuestaExterna);
 	
 	public String exportarAExcel(MetadataConsulta metadataConsulta, Long loggedUsuarioId);
 	
+	
 	public String preprocesarArchivoEmpresa(String fileName, Long empresaId);
 	
-	public String procesarArchivoEmpresa(String fileName, Long empresaId, Long loggedUsuarioId);
+	
+	public Map<Collection<String>, Integer> preprocesarConjunto(Collection<Collection<String>> claves, Long empresaId);
+	
+	
+	public String procesarArchivoEmpresa(
+		String fileName, 
+		Long empresaId, 
+		Long loggedUsuarioId
+	);
 }

@@ -2,7 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
@@ -18,6 +18,10 @@ public interface IStockMovimientoBean {
 	public MetadataConsultaResultado listStockActual(MetadataConsulta metadataConsulta);
 
 	public Long countStockActual(MetadataConsulta metadataConsulta);
+	
+	public MetadataConsultaResultado listStockActual(MetadataConsulta metadataConsulta, Long usuarioId);
+	
+	public Long countStockActual(MetadataConsulta metadataConsulta, Long usuarioId);
 	
 	public Collection<StockMovimiento> listStockByEmpresaId(Long id);
 	

@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.filters;
+package uy.com.amensg.logistica.web.filters;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -7,21 +7,21 @@ import java.util.LinkedList;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import uy.com.amensg.logistica.bean.IUsuarioBean;
 import uy.com.amensg.logistica.bean.UsuarioBean;
-import uy.com.amensg.logistica.dwr.UsuarioDWR;
-import uy.com.amensg.logistica.entities.MenuTO;
-import uy.com.amensg.logistica.entities.UsuarioTO;
+import uy.com.amensg.logistica.web.dwr.UsuarioDWR;
+import uy.com.amensg.logistica.web.entities.MenuTO;
+import uy.com.amensg.logistica.web.entities.UsuarioTO;
 
 public class SeguridadFilter implements Filter {
 

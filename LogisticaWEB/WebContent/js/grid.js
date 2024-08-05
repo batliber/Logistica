@@ -292,10 +292,10 @@ Grid.prototype.reload = function(data) {
 				}
 			} catch(e) {
 				key = null;
-		        value = null;
-		    }
+				value = null;
+			}
 			
-		    switch (this.filtroDinamico.campos[campo].tipo) {
+			switch (this.filtroDinamico.campos[campo].tipo) {
 				case __TIPO_CAMPO_NUMERICO:
 					formattedValue = value != null && value !== "" ? value : "&nbsp;";
 					
@@ -351,8 +351,8 @@ Grid.prototype.reload = function(data) {
 					
 					break;
 			}
-		    
-		    html +=
+			
+			html +=
 				"<div class='divTableBodyCell divTableBodyCell" + this.filtroDinamico.campos[campo].tipo + "' campo='" + campo + "'";
 	
 			if (this.filtroDinamico.campos[campo].oculto) {
@@ -738,8 +738,8 @@ Grid.prototype.openDetail = function(eventObject) {
 							
 							break;
 					}
-				    
-				    html +=
+					
+					html +=
 						"<div class='divTableBodyCell" + camposDetail[campoBody].tipo + "' campo='" + campoBody + "'";
 			
 					if (camposDetail[campoBody].oculto) {

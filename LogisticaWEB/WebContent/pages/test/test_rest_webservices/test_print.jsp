@@ -13,7 +13,11 @@
 	<body>
 		<div class="divRequest">
 			<div>Method:</div><div class="divMethod"><select id="selectMethod"></select></div>
-			<div>URL:</div><div class="divURL"><input type="text" id="inputURL"/></div>
+			<div>URL:</div>
+				<div class="divURL">
+					<div id="divSelectURL"><select id="selectURL" onchange="javascript:selectURLOnChange(event, this)"></select></div>
+					<div id="divInputURL"><input type="text" id="inputURL"/></div>
+				</div>
 			<div>Parameters:</div><div class="divParameters"><select id="selectParametersTemplate" onchange="javascript:selectParametersTemplateOnChange(event, this)"></select></div>
 			<div class="divParameters"><textarea id="textareaParameters"></textarea></div>
 		</div>

@@ -6,11 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 import uy.com.amensg.logistica.entities.Empresa;
 import uy.com.amensg.logistica.entities.FormaPago;
@@ -22,7 +22,7 @@ import uy.com.amensg.logistica.util.Configuration;
 @Stateless
 public class EmpresaBean implements IEmpresaBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	@EJB
@@ -265,6 +265,8 @@ public class EmpresaBean implements IEmpresaBean {
 			managedEmpresa.setNombre(empresa.getNombre());
 			managedEmpresa.setNombreContrato(empresa.getNombreContrato());
 			managedEmpresa.setNombreSucursal(empresa.getNombreSucursal());
+			managedEmpresa.setOmitirControlVendidos(empresa.getOmitirControlVendidos());
+			
 			managedEmpresa.setFormaPagos(empresa.getFormaPagos());
 			managedEmpresa.setEmpresaUsuarioContratos(empresa.getEmpresaUsuarioContratos());
 

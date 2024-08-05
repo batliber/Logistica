@@ -2,11 +2,12 @@ package uy.com.amensg.riesgoCrediticio.robot;
 
 public interface IConnectionStrategy {
 
-	public String getSiguienteDocumentoParaControlar();
+	public String getSiguienteDocumentoParaControlar(String wsdlFileName);
 	
-	public String getSiguienteDocumentoParaControlarRiesgoOnLine();
+	public String getSiguienteDocumentoParaControlarRiesgoOnLine(String wsdlFileName);
 
 	public void actualizarDatosRiesgoCrediticioACM(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
@@ -24,6 +25,7 @@ public interface IConnectionStrategy {
 	);
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
@@ -43,6 +45,7 @@ public interface IConnectionStrategy {
 	);
 
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,

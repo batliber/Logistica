@@ -1,41 +1,53 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 import uy.com.amensg.logistica.bean.IRiesgoCrediticioParaguayBean;
 import uy.com.amensg.logistica.bean.RiesgoCrediticioParaguayBean;
 import uy.com.amensg.logistica.entities.FormaPago;
-import uy.com.amensg.logistica.entities.ImportacionArchivoRiesgoCrediticioParaguayTO;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
-import uy.com.amensg.logistica.entities.ResultadoExportacionArchivoTO;
-import uy.com.amensg.logistica.entities.ResultadoImportacionArchivoTO;
 import uy.com.amensg.logistica.entities.RiesgoCrediticioParaguay;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.util.Configuration;
+import uy.com.amensg.logistica.web.entities.ImportacionArchivoRiesgoCrediticioParaguayTO;
+import uy.com.amensg.logistica.web.entities.ResultadoExportacionArchivoTO;
+import uy.com.amensg.logistica.web.entities.ResultadoImportacionArchivoTO;
+import uy.com.amensg.logistica.web.entities.ResultadoNotificarCreditoAmigoPYTO;
 
 @Path("/RiesgoCrediticioParaguayREST")
 public class RiesgoCrediticioParaguayREST {
@@ -252,6 +264,10 @@ public class RiesgoCrediticioParaguayREST {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public void actualizarDatosRiesgoCrediticioParaguay(RiesgoCrediticioParaguay riesgoCrediticioParaguay) {
 		try {
+			System.out.println(riesgoCrediticioParaguay.getDocumento()
+				+ riesgoCrediticioParaguay.getFechaNacimiento()
+				+ riesgoCrediticioParaguay.getSituacionRiesgoCrediticioParaguay().getId());
+			
 			IRiesgoCrediticioParaguayBean iRiesgoCrediticioParaguayBean = lookupBean();
 			
 			RiesgoCrediticioParaguay riesgoCrediticioParaguayUpdated = 
@@ -259,58 +275,7 @@ public class RiesgoCrediticioParaguayREST {
 			
 			if (riesgoCrediticioParaguayUpdated != null) {
 				if (Boolean.parseBoolean(Configuration.getInstance().getProperty("creditoAmigoPY.Notify"))) {
-					String urlString = 
-						Configuration.getInstance().getProperty("creditoAmigoPY.URL");
-					
-					URL url = new URL(urlString);
-					HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-					urlConnection.setRequestMethod("POST");
-					urlConnection.setRequestProperty("Content-Type", "application/json; utf-8");
-					urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
-					urlConnection.setRequestProperty("Accept", "application/json");
-					urlConnection.setRequestProperty("Authorization", "Basic Y3JlZGl0b2FtaWdvOlNDdFN5N3pBc01MM2NKTFBYWlYyazJENA==");
-					urlConnection.setDoOutput(true);
-					
-					String jsonInputString = 
-						"{"
-							+ "	\"document\": \"" + riesgoCrediticioParaguayUpdated.getDocumento()
-							+ "\","
-							+ " \"status\": \"" + 
-								Configuration.getInstance().getProperty("riesgoCrediticioPY.status.PROCESSED")
-							+ "\""
-						+ "}";
-					
-//					System.out.println(jsonInputString);
-					
-					byte[] input = jsonInputString.getBytes("utf-8");
-					
-					urlConnection.connect();
-					
-					OutputStream outputStream = urlConnection.getOutputStream();
-					outputStream.write(input, 0, input.length);
-					
-					BufferedReader bufferedReader =
-						new BufferedReader(
-							new InputStreamReader(
-								urlConnection.getInputStream(), "utf-8"
-							)
-						);
-					
-					StringBuilder response = new StringBuilder();
-					String responseLine = null;
-					while ((responseLine = bufferedReader.readLine()) != null) {
-						response.append(responseLine.trim());
-					}
-					
-					System.out.println(response.toString());
-					
-					riesgoCrediticioParaguayUpdated.setRespuestaExterna(response.toString());
-					
-					iRiesgoCrediticioParaguayBean.save(
-						riesgoCrediticioParaguayUpdated
-					);
-					
-					urlConnection.disconnect();
+					notificarCreditoAmigoPY(riesgoCrediticioParaguayUpdated.getId());
 				}
 				
 				/*
@@ -367,6 +332,136 @@ public class RiesgoCrediticioParaguayREST {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@GET
+	@Path("/notificarCreditoAmigoPY/{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ResultadoNotificarCreditoAmigoPYTO notificarCreditoAmigoPY(@PathParam("id") Long id) {
+		ResultadoNotificarCreditoAmigoPYTO result = new ResultadoNotificarCreditoAmigoPYTO();
+		
+		try {
+			IRiesgoCrediticioParaguayBean iRiesgoCrediticioParaguayBean = lookupBean();
+			
+			RiesgoCrediticioParaguay riesgoCrediticioParaguay =
+				iRiesgoCrediticioParaguayBean.getById(id);
+			
+			String keystorePath = 
+				Configuration.getInstance().getProperty("keystore.path");
+			String keystorePass =
+				Configuration.getInstance().getProperty("keystore.pass");
+			String urlString = 
+				Configuration.getInstance().getProperty("creditoAmigoPY.URL");
+			String creditoAmigoPYUser = 
+				Configuration.getInstance().getProperty("creditoAmigoPY.user");
+			String creditoAmigoPYPass = 
+				Configuration.getInstance().getProperty("creditoAmigoPY.pass");
+			
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+			KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+			ks.load(
+				new FileInputStream(keystorePath), 
+				keystorePass.toCharArray()
+			);
+			kmf.init(
+				ks, 
+				keystorePass.toCharArray()
+			);
+			
+			// Trust all certificates.
+			TrustManager[] trustManagers = new TrustManager[] {
+				new X509TrustManager (){
+					
+					public void checkClientTrusted(
+						X509Certificate[] certs, String authType
+					) throws CertificateException {
+						
+					}
+
+					public void checkServerTrusted(
+						X509Certificate[] certs, String authType
+					) throws CertificateException {
+						
+					}
+
+					public X509Certificate[] getAcceptedIssuers() {
+						return new X509Certificate[0];
+					}
+				}
+			};
+			
+			sslContext.init(kmf.getKeyManagers(), trustManagers, null);
+			
+//			URL url = new URL(urlString);
+//			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+			HttpsURLConnection urlConnection = 
+				(HttpsURLConnection) new URL(urlString).openConnection();
+			urlConnection.setRequestMethod("POST");
+			urlConnection.setDoOutput(true);
+			urlConnection.setUseCaches(false);
+			urlConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+			// Trust all hosts names
+			urlConnection.setHostnameVerifier(new HostnameVerifier() {
+				public boolean verify(String hostname, SSLSession sslSession) {
+					return true;
+				}
+			});
+			urlConnection.setRequestProperty("Content-Type", "application/json; utf-8");
+			urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
+			urlConnection.setRequestProperty("Accept", "application/json");
+			
+			String encodedCredential = 
+				Base64.getEncoder().encodeToString(
+					(creditoAmigoPYUser + ":" + creditoAmigoPYPass).getBytes()
+				);
+//			urlConnection.setRequestProperty("Authorization", "Basic Y3JlZGl0b2FtaWdvOlNDdFN5N3pBc01MM2NKTFBYWlYyazJENA==");
+			urlConnection.setRequestProperty("Authorization", "Basic " + encodedCredential);
+			
+			String jsonInputString = 
+				"{"
+					+ "	\"document\": \"" + riesgoCrediticioParaguay.getDocumento()
+					+ "\","
+					+ " \"status\": \"" + 
+						Configuration.getInstance().getProperty("riesgoCrediticioPY.status.PROCESSED")
+					+ "\""
+				+ "}";
+			
+			System.out.println(jsonInputString);
+			
+			byte[] input = jsonInputString.getBytes("utf-8");
+			
+			urlConnection.connect();
+			
+			OutputStream outputStream = urlConnection.getOutputStream();
+			outputStream.write(input, 0, input.length);
+			
+			BufferedReader bufferedReader =
+				new BufferedReader(
+					new InputStreamReader(
+						urlConnection.getInputStream(), "utf-8"
+					)
+				);
+			
+			StringBuilder response = new StringBuilder();
+			String responseLine = null;
+			while ((responseLine = bufferedReader.readLine()) != null) {
+				response.append(responseLine.trim());
+			}
+			
+			System.out.println(response.toString());
+			
+			urlConnection.disconnect();
+			
+			result.setRespuestaExterna(response.toString());
+			
+			iRiesgoCrediticioParaguayBean.actualizarRespuestaExterna(id, result.getRespuestaExterna());
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setRespuestaExterna("No se recibió respuesta externa.");
+		}
+		
+		return result;
 	}
 	
 	@POST

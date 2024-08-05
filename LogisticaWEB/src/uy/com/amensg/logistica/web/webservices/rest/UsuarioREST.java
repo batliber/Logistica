@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Collection;
 import java.util.Date;
@@ -7,31 +7,31 @@ import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.IUsuarioBean;
 import uy.com.amensg.logistica.bean.UsuarioBean;
-import uy.com.amensg.logistica.dwr.UsuarioDWR;
-import uy.com.amensg.logistica.entities.CambioContrasenaUsuarioTO;
 import uy.com.amensg.logistica.entities.MetadataCondicion;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
 import uy.com.amensg.logistica.entities.MetadataConsultaResultado;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
-import uy.com.amensg.logistica.entities.UsuarioTO;
 import uy.com.amensg.logistica.exceptions.LogisticaException;
 import uy.com.amensg.logistica.util.Configuration;
 import uy.com.amensg.logistica.util.Constants;
 import uy.com.amensg.logistica.util.MD5Utils;
+import uy.com.amensg.logistica.web.dwr.UsuarioDWR;
+import uy.com.amensg.logistica.web.entities.CambioContrasenaUsuarioTO;
+import uy.com.amensg.logistica.web.entities.UsuarioTO;
 
 @Path("/UsuarioREST")
 public class UsuarioREST {
@@ -137,10 +137,16 @@ public class UsuarioREST {
 				}
 				
 				MetadataConsultaResultado metadataConsultaResultado = 
-					iUsuarioBean.list(
+					iUsuarioBean.listSubordinados(
 						metadataConsulta,
 						usuarioId
 					);
+				
+//				MetadataConsultaResultado metadataConsultaResultado = 
+//					iUsuarioBean.list(
+//						metadataConsulta,
+//						usuarioId
+//					);
 				
 				Collection<Object> registrosMuestra = new LinkedList<Object>();
 				
@@ -202,8 +208,14 @@ public class UsuarioREST {
 					}
 				}
 				
+//				result = 
+//					iUsuarioBean.count(
+//						metadataConsulta,
+//						usuarioId
+//					);
+				
 				result = 
-					iUsuarioBean.count(
+					iUsuarioBean.countSubordinados(
 						metadataConsulta,
 						usuarioId
 					);
@@ -304,6 +316,10 @@ public class UsuarioREST {
 				usuario.setTerm(Long.valueOf(1));
 				usuario.setUact(loggedUsuarioId);
 				usuario.setUcre(loggedUsuarioId);
+				
+				if (usuario.getContrasena() != null) {
+					usuario.setContrasena(MD5Utils.stringToMD5(usuario.getContrasena()));
+				}
 				
 				result = UsuarioDWR.transform(iUsuarioBean.save(usuario), false);
 			}

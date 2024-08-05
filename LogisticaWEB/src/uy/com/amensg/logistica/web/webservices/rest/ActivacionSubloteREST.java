@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -7,17 +7,17 @@ import java.util.LinkedList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import uy.com.amensg.logistica.bean.ActivacionSubloteBean;
 import uy.com.amensg.logistica.bean.IActivacionSubloteBean;
 import uy.com.amensg.logistica.entities.Activacion;
@@ -178,6 +178,32 @@ public class ActivacionSubloteREST {
 				
 				result = 
 					prepareJSON(iActivacionSubloteBean.getByNumero(numero, true), true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@GET
+	@Path("/getByNumeroContextAware/{numero}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public ActivacionSublote getByNumeroContextAware(
+		@PathParam("numero") Long numero, @Context HttpServletRequest request
+	) {
+		ActivacionSublote result = null;
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				IActivacionSubloteBean iActivacionSubloteBean = lookupBean();
+				
+				result = 
+					prepareJSON(iActivacionSubloteBean.getByNumeroUsuario(numero, usuarioId, true), true);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

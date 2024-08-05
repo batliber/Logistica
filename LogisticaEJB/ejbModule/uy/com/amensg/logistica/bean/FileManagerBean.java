@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 import uy.com.amensg.logistica.entities.Archivo;
 import uy.com.amensg.logistica.util.Configuration;

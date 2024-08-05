@@ -49,18 +49,18 @@ function init() {
 	gridEmpresaUsuarioContratos.rebuild();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/FormaPagoREST/list"
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/FormaPagoREST/list"
+	}).then(function(data) {
 		fillSelect(
 			"selectFormaPago", 
 			data,
 			"id", 
 			"descripcion"
 		);
-    }).then(function(data) {
+	}).then(function(data) {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/UsuarioREST/listMinimal"
-	    }).then(function(data) { 
+			url: "/LogisticaWEB/RESTFacade/UsuarioREST/listMinimal"
+		}).then(function(data) { 
 			fillSelect(
 				"selectUsuario", 
 				data,
@@ -68,16 +68,17 @@ function init() {
 				"nombre"
 			);
 		});
-    }).then(function(data) {
+	}).then(function(data) {
 		if (id != null) {
 			$.ajax({
-		        url: "/LogisticaWEB/RESTFacade/EmpresaREST/getById/" + id
-		    }).then(function(data) {
+				url: "/LogisticaWEB/RESTFacade/EmpresaREST/getById/" + id
+			}).then(function(data) {
 				$("#inputEmpresaNombre").val(data.nombre);
 				$("#inputEmpresaCodigoPromotor").val(data.codigoPromotor);
 				$("#inputEmpresaNombreContrato").val(data.nombreContrato);
 				$("#inputEmpresaNombreSucursal").val(data.nombreSucursal);
 				$("#inputEmpresaDireccion").val(data.direccion);
+				$("#inputEmpresaOmitirControlVendidos").prop("checked", data.omitirControlVendidos);
 				$("#inputEmpresaId").val(data.id);
 				
 				if (data.formaPagos != null) {
@@ -112,7 +113,7 @@ function init() {
 				}
 			});
 		}
-    });
+	});
 }
 
 function refinarForm() {
@@ -178,8 +179,8 @@ function inputAgregarFormaPagoOnClick(event, element) {
 		
 		if (!found) {
 			$.ajax({
-		        url: "/LogisticaWEB/RESTFacade/FormaPagoREST/getById/" + formaPagoId
-		    }).then(function(data) {
+				url: "/LogisticaWEB/RESTFacade/FormaPagoREST/getById/" + formaPagoId
+			}).then(function(data) {
 				formaPagos.cantidadRegistros = formaPagos.cantidadRegistros + 1;
 				formaPagos.registrosMuestra[formaPagos.registrosMuestra.length] = data;
 				
@@ -204,8 +205,8 @@ function inputAgregarUsuarioOnClick(event, element) {
 		
 		if (!found) {
 			$.ajax({
-		        url: "/LogisticaWEB/RESTFacade/UsuarioREST/getByIdMinimal/" + usuarioId
-		    }).then(function(data) {
+				url: "/LogisticaWEB/RESTFacade/UsuarioREST/getByIdMinimal/" + usuarioId
+			}).then(function(data) {
 				empresaUsuarioContratos.cantidadRegistros = empresaUsuarioContratos.cantidadRegistros + 1;
 				empresaUsuarioContratos.registrosMuestra[empresaUsuarioContratos.registrosMuestra.length] = data;
 				
@@ -228,6 +229,7 @@ function inputGuardarOnClick(event) {
 		nombreContrato: $("#inputEmpresaNombreContrato").val(),
 		nombreSucursal: $("#inputEmpresaNombreSucursal").val(),
 		direccion: $("#inputEmpresaDireccion").val(),
+		omitirControlVendidos: $("#inputEmpresaOmitirControlVendidos").prop("checked"),
 		logoURL: $("#imgEmpresaLogo").attr("fn"),
 		formaPagos: [],
 		empresaUsuarioContratos: []
@@ -259,11 +261,11 @@ function inputGuardarOnClick(event) {
 		empresa.id = id;
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/EmpresaREST/update",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(empresa)
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/EmpresaREST/update",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(empresa)
+		}).then(function(data) {
 			if (updateLogo) {
 				var xmlHTTPRequest = new XMLHttpRequest();
 				xmlHTTPRequest.open(
@@ -289,12 +291,12 @@ function inputGuardarOnClick(event) {
 		});
 	} else {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/EmpresaREST/add",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(empresa)
-	    }).then(function(data) {
-	    	if(data != null) {
+			url: "/LogisticaWEB/RESTFacade/EmpresaREST/add",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(empresa)
+		}).then(function(data) {
+			if(data != null) {
 				if (updateLogo) {
 					var xmlHTTPRequest = new XMLHttpRequest();
 					xmlHTTPRequest.open(
@@ -319,9 +321,9 @@ function inputGuardarOnClick(event) {
 				alert("Operación exitosa");
 				
 				$("#divEliminarEmpresa").show();
-	    	} else {
-	    		alert("Error en la operación");
-	    	}
+			} else {
+				alert("Error en la operación");
+			}
 		});
 	}
 }
@@ -333,11 +335,11 @@ function inputEliminarOnClick(event) {
 		};
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/EmpresaREST/remove",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(empresa)
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/EmpresaREST/remove",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(empresa)
+		}).then(function(data) {
 			alert("Operación exitosa");
 		});
 	}

@@ -12,8 +12,8 @@ function init() {
 	$("#divButtonExportarAExcel").hide();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",
+	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ADMINISTRADOR
 				|| data.usuarioRolEmpresas[i].rol.id == __ROL_DEMO) {
@@ -77,22 +77,22 @@ function reloadData() {
 	grid.setStatus(grid.__STATUS_LOADING);
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/ControlREST/listContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.reload(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/ControlREST/listContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.reload(data);
+	});
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/ControlREST/countContextAware",
-        method: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
-    }).then(function(data) {
-    	grid.setCount(data);
-    });
+		url: "/LogisticaWEB/RESTFacade/ControlREST/countContextAware",
+		method: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(grid.filtroDinamico.calcularMetadataConsulta())
+	}).then(function(data) {
+		grid.setCount(data);
+	});
 }
 
 function inputActualizarOnClick(event, element) {
@@ -122,26 +122,16 @@ function closeDialog() {
 
 function inputSubirArchivoOnClick(event, element) {
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
-    }).then(function(data) {
-    	fillSelect(
-    		"selectEmpresa",
-    		data,
-    		"id",
-    		"nombre"
-    	);
-    });
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listEmpresasByContext"
+	}).then(function(data) {
+		fillSelect("selectEmpresa", data, "id", "nombre");
+	});
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/TipoControlREST/list"
-    }).then(function(data) {
-    	fillSelect(
-    		"selectTipoControl",
-    		data,
-    		"id",
-    		"descripcion"
-    	);
-    });
+		url: "/LogisticaWEB/RESTFacade/TipoControlREST/list"
+	}).then(function(data) {
+		fillSelect("selectTipoControl", data, "id", "descripcion" );
+	});
 	
 	showPopUp(document.getElementById("divIFrameImportacionArchivo"));
 }
@@ -205,16 +195,16 @@ function inputExportarAExcelOnClick(event, element) {
 	if (confirm("Se exportarán " + metadataConsulta.tamanoSubconjunto + " registros.")) {
 		$.ajax({
 			url: "/LogisticaWEB/RESTFacade/ControlREST/exportarAExcel",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(metadataConsulta)
-	    }).then(function(data) {
-	    	if (data != null) {
-	    		document.getElementById("formExportarAExcel").action = 
-	    			"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
-	    		
-	    		document.getElementById("formExportarAExcel").submit();
-	    	}
-	    });
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(metadataConsulta)
+		}).then(function(data) {
+			if (data != null) {
+				document.getElementById("formExportarAExcel").action = 
+					"/LogisticaWEB/Download?fn=" + data.nombreArchivo;
+				
+				document.getElementById("formExportarAExcel").submit();
+			}
+		});
 	}
 }

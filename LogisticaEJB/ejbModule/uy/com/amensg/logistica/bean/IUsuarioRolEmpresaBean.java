@@ -2,7 +2,7 @@ package uy.com.amensg.logistica.bean;
 
 import java.util.Collection;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
@@ -23,6 +23,10 @@ public interface IUsuarioRolEmpresaBean {
 	public Collection<UsuarioRolEmpresa> listActivadoresByUsuario(Usuario usuario);
 	
 	public Collection<UsuarioRolEmpresa> listDistribuidoresChipsByUsuario(Usuario usuario);
-
+	
+	public Collection<UsuarioRolEmpresa> listAtencionClienteOperadoresByUsuario(Usuario usuario);
+	
+	public Collection<UsuarioRolEmpresa> listAtencionClienteGestionadoresByUsuario(Usuario usuario);
+	
 	public void save(UsuarioRolEmpresa usuarioRolEmpresa);
 }

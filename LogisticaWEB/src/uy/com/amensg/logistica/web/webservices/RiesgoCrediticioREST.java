@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices;
+package uy.com.amensg.logistica.web.webservices;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -6,11 +6,11 @@ import java.util.GregorianCalendar;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import uy.com.amensg.logistica.bean.IRiesgoCrediticioBean;
 import uy.com.amensg.logistica.bean.RiesgoCrediticioBean;
 import uy.com.amensg.logistica.entities.RiesgoCrediticio;

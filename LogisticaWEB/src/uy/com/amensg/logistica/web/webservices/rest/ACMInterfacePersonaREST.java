@@ -1,13 +1,13 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import uy.com.amensg.logistica.bean.ACMInterfacePersonaBean;
 import uy.com.amensg.logistica.bean.IACMInterfacePersonaBean;
 import uy.com.amensg.logistica.entities.ACMInterfacePersona;

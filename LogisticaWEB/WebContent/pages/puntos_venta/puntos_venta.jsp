@@ -15,13 +15,15 @@
 			<div class="divButtonBar">
 				<div class="divButton"><input type="submit" value="Actualizar" onclick="javascript:inputActualizarOnClick(event)"/></div>
 				<div class="divButton" id="divButtonNew"><input type="submit" value="Agregar" onclick="javascript:inputNewOnClick(event)"/></div>
+				<form method="post" id="formExportarAExcel" action="#"></form>
+				<div class="divButton" id="divButtonExportarAExcel"><input type="submit" id="inputExportarAExcel" value="Exporta a Excel" onclick="javascript:inputExportarAExcelOnClick(event, this)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
 				<div class="divButton" id="divButtonAsignarVisitas"><input type="submit" value="Asignar visitas" onclick="javascript:inputAsignarVisitasOnClick(event)"/></div>
 				<div class="divButton" id="divButtonVisitasPermanentes"><input type="submit" value="Visitas permanentes" onclick="javascript:inputVisitasPermanentesOnClick(event)"/></div>
 				<div class="divButtonBarSeparator">&nbsp;</div>
 			</div>
 			<div class="divButtonTitleBar">
-				<div id="divButtonTitleSingleSize" class="divButtonTitleBarTitle">Acciones</div>
+				<div id="divButtonTitleTripleSize" class="divButtonTitleBarTitle">Acciones</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>
 				<div id="divButtonTitleDoubleSize" class="divButtonTitleBarTitle">Visitas</div>
 				<div class="divButtonTitleBarSeparator">&nbsp;</div>

@@ -1,7 +1,7 @@
-package uy.com.amensg.logistica.dwr;
+package uy.com.amensg.logistica.web.dwr;
 
 import uy.com.amensg.logistica.entities.FormaPago;
-import uy.com.amensg.logistica.entities.FormaPagoTO;
+import uy.com.amensg.logistica.web.entities.FormaPagoTO;
 
 public class FormaPagoDWR {
 

@@ -1,7 +1,7 @@
-package uy.com.amensg.logistica.dwr;
+package uy.com.amensg.logistica.web.dwr;
 
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
-import uy.com.amensg.logistica.entities.UsuarioRolEmpresaTO;
+import uy.com.amensg.logistica.web.entities.UsuarioRolEmpresaTO;
 
 public class UsuarioRolEmpresaDWR {
 

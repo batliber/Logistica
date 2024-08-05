@@ -2,12 +2,12 @@ package uy.com.amensg.logistica.entities;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "liquidacion")
@@ -19,7 +19,7 @@ public class Liquidacion extends BaseEntity {
 	private Long idRegistro;
 	
 	@Column(name = "numero_contrato")
-	private Long numeroContrato;
+	private String numeroContrato;
 	
 	@Column(name = "fecha")
 	private Date fecha;
@@ -85,11 +85,11 @@ public class Liquidacion extends BaseEntity {
 		this.idRegistro = idRegistro;
 	}
 
-	public Long getNumeroContrato() {
+	public String getNumeroContrato() {
 		return numeroContrato;
 	}
 
-	public void setNumeroContrato(Long numeroContrato) {
+	public void setNumeroContrato(String numeroContrato) {
 		this.numeroContrato = numeroContrato;
 	}
 

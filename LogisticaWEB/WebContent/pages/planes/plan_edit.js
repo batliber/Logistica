@@ -6,19 +6,19 @@ function init() {
 	$("#divEliminarPlan").hide();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/TipoPlanREST/list"
-    }).then(function(data) { 
+		url: "/LogisticaWEB/RESTFacade/TipoPlanREST/list"
+	}).then(function(data) { 
 		fillSelect(
 			"selectPlanTipoPlan", 
 			data,
 			"id", 
 			"descripcion"
 		);
-    }).then(function(data) { 
+	}).then(function(data) { 
 		if (id != null) {
 			$.ajax({
-		        url: "/LogisticaWEB/RESTFacade/PlanREST/getById/" + id
-		    }).then(function(data) { 
+				url: "/LogisticaWEB/RESTFacade/PlanREST/getById/" + id
+			}).then(function(data) { 
 				if (data.tipoPlan != null) {
 					$("#selectPlanTipoPlan").val(data.tipoPlan.id);
 				}
@@ -54,7 +54,7 @@ function init() {
 				}
 			});
 		}
-    });
+	});
 }
 
 function refinarForm() {
@@ -135,26 +135,62 @@ function inputGuardarOnClick(event) {
 	var plan = {
 		descripcion: $("#inputPlanDescripcion").val(),
 		abreviacion: $("#inputPlanAbreviacion").val(),
-		consumoMinimo: $("#inputPlanConsumoMinimo").val(),
+		consumoMinimo: ($("#inputPlanConsumoMinimo").val() != null && $("#inputPlanConsumoMinimo").val() != "") 
+			? $("#inputPlanConsumoMinimo").val() 
+			: null,
 		duracion: $("#inputPlanDuracion").val(),
-		precioMinutoDestinosAntelHorarioNormal: $("#inputPlanPrecioMinutoDestinosAntelHorarioNormal").val(),
-		precioMinutoDestinosAntelHorarioReducido: $("#inputPlanPrecioMinutoDestinosAntelHorarioReducido").val(),
-		rendimientoMinutosMensualDestinosAntelHorarioNormal: $("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").val(),
-		rendimientoMinutosMensualDestinosAntelHorarioReducido: $("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").val(),
-		precioMinutoNumerosAmigos: $("#inputPlanPrecioMinutoNumerosAmigos").val(),
-		precioMinutoOtrasOperadoras: $("#inputPlanPrecioMinutoOtrasOperadoras").val(),
-		rendimientoMinutosMensualOtrasOperadoras: $("#inputPlanRendimientoMinutosMensualOtrasOperadoras").val(),
-		precioSms: $("#inputPlanPrecioSms").val(),
-		montoNavegacionCelular: $("#inputPlanMontoNavegacionCelular").val(),
-		precioConsumoFueraBono: $("#inputPlanPrecioConsumoFueraBono").val(),
-		topeFacturacionMensualTraficoDatos: $("#inputPlanTopeFacturacionMensualTraficoDatos").val(),
+		precioMinutoDestinosAntelHorarioNormal: ($("#inputPlanPrecioMinutoDestinosAntelHorarioNormal").val() != null && $("#inputPlanPrecioMinutoDestinosAntelHorarioNormal").val() != "")
+			? $("#inputPlanPrecioMinutoDestinosAntelHorarioNormal").val()
+			: null,
+		precioMinutoDestinosAntelHorarioReducido: ($("#inputPlanPrecioMinutoDestinosAntelHorarioReducido").val() != null && $("#inputPlanPrecioMinutoDestinosAntelHorarioReducido").val() != "")
+			? $("#inputPlanPrecioMinutoDestinosAntelHorarioReducido").val()
+			: null,
+		rendimientoMinutosMensualDestinosAntelHorarioNormal: ($("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").val() != null && $("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").val() != "")
+			? $("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioNormal").val()
+			: null,
+		rendimientoMinutosMensualDestinosAntelHorarioReducido: ($("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").val() != null && $("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").val() != "")
+			? $("#inputPlanRendimientoMinutosMensualDestinosAntelHorarioReducido").val()
+			: null,
+		precioMinutoNumerosAmigos: ($("#inputPlanPrecioMinutoNumerosAmigos").val() != null && $("#inputPlanPrecioMinutoNumerosAmigos").val() != "")
+			? $("#inputPlanPrecioMinutoNumerosAmigos").val()
+			: null,
+		precioMinutoOtrasOperadoras: ($("#inputPlanPrecioMinutoOtrasOperadoras").val() != null && $("#inputPlanPrecioMinutoOtrasOperadoras").val() != "")
+			? $("#inputPlanPrecioMinutoOtrasOperadoras").val()
+			: null,
+		rendimientoMinutosMensualOtrasOperadoras: ($("#inputPlanRendimientoMinutosMensualOtrasOperadoras").val() != null && $("#inputPlanRendimientoMinutosMensualOtrasOperadoras").val() != "")
+			? $("#inputPlanRendimientoMinutosMensualOtrasOperadoras").val()
+			: null,
+		precioSms: ($("#inputPlanPrecioSms").val() != null && $("#inputPlanPrecioSms").val() != "")
+			? $("#inputPlanPrecioSms").val()
+			: null,
+		montoNavegacionCelular: ($("#inputPlanMontoNavegacionCelular").val() != null && $("#inputPlanMontoNavegacionCelular").val() != "")
+			? $("#inputPlanMontoNavegacionCelular").val()
+			: null,
+		precioConsumoFueraBono: ($("#inputPlanPrecioConsumoFueraBono").val() != null && $("#inputPlanPrecioConsumoFueraBono").val() != "")
+			? $("#inputPlanPrecioConsumoFueraBono").val()
+			: null,
+		topeFacturacionMensualTraficoDatos: ($("#inputPlanTopeFacturacionMensualTraficoDatos").val() != null && $("#inputPlanTopeFacturacionMensualTraficoDatos").val() != "")
+			? $("#inputPlanTopeFacturacionMensualTraficoDatos").val()
+			: null,
 		destinosGratis: $("#inputPlanDestinosGratis").val(),
-		minutosGratisMesCelularesAntel: $("#inputPlanMinutosGratisMesCelularesAntel").val(),
-		cantidadCelularesAntelMinutosGratis: $("#inputPlanCantidadCelularesAntelMinutosGratis").val(),
-		smsGratisMesCelularesAntel: $("#inputPlanSmsGratisMesCelularesAntel").val(),
-		cantidadCelularesAntelSmsGratis: $("#inputPlanCantidadCelularesAntelSmsGratis").val(),
-		minutosGratisMesFijosAntel: $("#inputPlanMinutosGratisMesFijosAntel").val(),
-		cantidadFijosAntelMinutosGratis: $("#inputPlanCantidadFijosAntelMinutosGratis").val(),
+		minutosGratisMesCelularesAntel: ($("#inputPlanMinutosGratisMesCelularesAntel").val() != null && $("#inputPlanMinutosGratisMesCelularesAntel").val() != "")
+			? $("#inputPlanMinutosGratisMesCelularesAntel").val()
+			: null,
+		cantidadCelularesAntelMinutosGratis: ($("#inputPlanCantidadCelularesAntelMinutosGratis").val() != null && $("#inputPlanCantidadCelularesAntelMinutosGratis").val() != "")
+			? $("#inputPlanCantidadCelularesAntelMinutosGratis").val()
+			: null,
+		smsGratisMesCelularesAntel: ($("#inputPlanSmsGratisMesCelularesAntel").val() != null && $("#inputPlanSmsGratisMesCelularesAntel").val())
+			? $("#inputPlanSmsGratisMesCelularesAntel").val()
+			: null,
+		cantidadCelularesAntelSmsGratis: ($("#inputPlanCantidadCelularesAntelSmsGratis").val() != null && $("#inputPlanCantidadCelularesAntelSmsGratis").val() != "")
+			? $("#inputPlanCantidadCelularesAntelSmsGratis").val()
+			: null,
+		minutosGratisMesFijosAntel: ($("#inputPlanMinutosGratisMesFijosAntel").val() != null && $("#inputPlanMinutosGratisMesFijosAntel").val() != "")
+			? $("#inputPlanMinutosGratisMesFijosAntel").val()
+			: null,
+		cantidadFijosAntelMinutosGratis: ($("#inputPlanCantidadFijosAntelMinutosGratis").val() != null && $("#inputPlanCantidadFijosAntelMinutosGratis").val() != "")
+			? $("#inputPlanCantidadFijosAntelMinutosGratis").val()
+			: null,
 		piePagina: $("#inputPlanPiePagina").val(),
 		beneficioIncluidoEnLlamadas: $("#inputPlanBeneficioIncluidoEnLlamadas").prop("checked")
 	};
@@ -169,27 +205,27 @@ function inputGuardarOnClick(event) {
 		plan.id = id;
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/PlanREST/update",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(plan)
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/PlanREST/update",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(plan)
+		}).then(function(data) {
 			alert("Operación exitosa");
 		});
 	} else {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/PlanREST/add",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(plan)
-	    }).then(function(data) {
-	    	if (data != null) {
-	    		alert("Operación exitosa");
+			url: "/LogisticaWEB/RESTFacade/PlanREST/add",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(plan)
+		}).then(function(data) {
+			if (data != null) {
+				alert("Operación exitosa");
 					
-	    		("#inputEliminarPlan").prop("disabled", false);
-	    	} else {
-	    		alert("Error en la operación");
-	    	}
+				("#inputEliminarPlan").prop("disabled", false);
+			} else {
+				alert("Error en la operación");
+			}
 		});
 	}
 }
@@ -201,11 +237,11 @@ function inputEliminarOnClick(event) {
 		};
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/PlanREST/remove",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(plan)
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/PlanREST/remove",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(plan)
+		}).then(function(data) {
 			alert("Operación exitosa");
 		});
 	}

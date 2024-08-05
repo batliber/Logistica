@@ -15,46 +15,46 @@ function init() {
 	refinarForm();
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listDistribuidoresByContextMinimal"
-    }).then(function(data) {
-    	fillSelect(
-    		"selectDistribuidor", 
-    		data, 
-    		"id", 
-    		"nombre"
-    	);
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/UsuarioRolEmpresaREST/listDistribuidoresByContextMinimal"
+	}).then(function(data) {
+		fillSelect(
+			"selectDistribuidor", 
+			data, 
+			"id", 
+			"nombre"
+		);
+	}).then(function(data) {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/DepartamentoREST/list"
-	    }).then(function(data) {
-	    	fillSelect(
-	    		"selectPuntoVentaDepartamento", 
-	    		data, 
-	    		"id", 
-	    		"nombre"
-	    	);
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/DepartamentoREST/list"
+		}).then(function(data) {
+			fillSelect(
+				"selectPuntoVentaDepartamento", 
+				data, 
+				"id", 
+				"nombre"
+			);
+		}).then(function(data) {
 			$.ajax({
-		        url: "/LogisticaWEB/RESTFacade/BarrioREST/listMinimal"
-		    }).then(function(data) {
-		    	fillSelect(
-		    		"selectPuntoVentaBarrio", 
-		    		data, 
-		    		"id", 
-		    		"nombre"
-		    	);
-		    }).then(function(data) {
+				url: "/LogisticaWEB/RESTFacade/BarrioREST/listMinimal"
+			}).then(function(data) {
+				fillSelect(
+					"selectPuntoVentaBarrio", 
+					data, 
+					"id", 
+					"nombre"
+				);
+			}).then(function(data) {
 				/*
 				$.ajax({
-			        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
-			    }).then(function(data) { 
-			    	fillSelect(
-			    		"selectPuntoVenta", 
-			    		data, 
-			    		"id", 
-			    		"nombre"
-			    	);
-			    });
+					url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
+				}).then(function(data) { 
+					fillSelect(
+						"selectPuntoVenta", 
+						data, 
+						"id", 
+						"nombre"
+					);
+				});
 				*/
 				
 				grid = new Grid(
@@ -77,8 +77,8 @@ function init() {
 				
 				if (id != null) {
 					$.ajax({
-				        url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/getById/" + id
-				    }).then(function(data) {
+						url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/getById/" + id
+					}).then(function(data) {
 						$("#divNumero").text(data.numero);
 						$("#inputDescripcion").val(data.descripcion);
 			
@@ -148,11 +148,11 @@ function init() {
 						
 						$("#divButtonImprimir").show();
 						$("#divButtonTitleSingleSize").attr("id", "divButtonTitleDoubleSize");
-				    });
+					});
 				}
-		    });
-	    });
-    });
+			});
+		});
+	});
 }
 
 function refinarForm() {
@@ -165,8 +165,8 @@ function refinarForm() {
 	}
 	
 	$.ajax({
-        url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
-    }).then(function(data) {
+		url: "/LogisticaWEB/RESTFacade/SeguridadREST/getActiveUserData",   
+	}).then(function(data) {
 		for (var i=0; i<data.usuarioRolEmpresas.length; i++) {
 			if (data.usuarioRolEmpresas[i].rol.id == __ROL_ENCARGADO_ACTIVACIONES) {
 				hideField("puntoVentaDepartamento");
@@ -186,18 +186,18 @@ function selectPuntoVentaDepartamentoOnChange(event, element) {
 	
 	if ($("#selectPuntoVentaDepartamento").val() != "0") {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/BarrioREST/listMinimalByDepartamentoId/"
-	        	+ $("#selectPuntoVentaDepartamento").val()
-	    }).then(function(data) { 
-	    	fillSelect(
-	    		"selectPuntoVentaBarrio", 
-	    		data, 
-	    		"id", 
-	    		"nombre"
-	    	);
-	    	
-	    	selectPuntoVentaBarrioOnChange();
-	    });
+			url: "/LogisticaWEB/RESTFacade/BarrioREST/listMinimalByDepartamentoId/"
+				+ $("#selectPuntoVentaDepartamento").val()
+		}).then(function(data) { 
+			fillSelect(
+				"selectPuntoVentaBarrio", 
+				data, 
+				"id", 
+				"nombre"
+			);
+			
+			selectPuntoVentaBarrioOnChange();
+		});
 	}
 }
 
@@ -206,39 +206,39 @@ function selectPuntoVentaBarrioOnChange(event, element) {
 	
 	if ($("#selectPuntoVentaBarrio").val() != "0") {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimalByBarrioId/"
-	        	+ $("#selectPuntoVentaBarrio").val()
-	    }).then(function(data) {
-	    	fillSelect(
-	    		"selectPuntoVenta", 
-	    		data, 
-	    		"id", 
-	    		"nombre"
-	    	);
-	    });
+			url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimalByBarrioId/"
+				+ $("#selectPuntoVentaBarrio").val()
+		}).then(function(data) {
+			fillSelect(
+				"selectPuntoVenta", 
+				data, 
+				"id", 
+				"nombre"
+			);
+		});
 	} else if ($("#selectPuntoVentaDepartamento").val() != "0") {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimalByDepartamentoId/"
-	        	+ $("#selectPuntoVentaDepartamento").val()
-	    }).then(function(data) {
-	    	fillSelect(
-	    		"selectPuntoVenta", 
-	    		data, 
-	    		"id", 
-	    		"nombre"
-	    	);
-	    });
+			url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimalByDepartamentoId/"
+				+ $("#selectPuntoVentaDepartamento").val()
+		}).then(function(data) {
+			fillSelect(
+				"selectPuntoVenta", 
+				data, 
+				"id", 
+				"nombre"
+			);
+		});
 	} else {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
-	    }).then(function(data) {
-	    	fillSelect(
-	    		"selectPuntoVenta",
-	    		data, 
-	    		"id", 
-	    		"nombre"
-	    	);
-	    });
+			url: "/LogisticaWEB/RESTFacade/PuntoVentaREST/listMinimal"
+		}).then(function(data) {
+			fillSelect(
+				"selectPuntoVenta",
+				data, 
+				"id", 
+				"nombre"
+			);
+		});
 	}
 }
 
@@ -254,16 +254,16 @@ function reloadGrid() {
 				var aValue = null;
 				try {
 					aValue = eval("a." + ordenaciones[i].campo);
-			    } catch(e) {
-			        aValue = null;
-			    }
-			    
-			    var bValue = null;
-			    try {
+				} catch(e) {
+					aValue = null;
+				}
+				
+				var bValue = null;
+				try {
 					bValue = eval("b." + ordenaciones[i].campo);
-			    } catch(e) {
-			        bValue = null;
-			    }
+				} catch(e) {
+					bValue = null;
+				}
 				
 				if (aValue < bValue) {
 					result = -1 * (ordenaciones[i].ascendente ? 1 : -1);
@@ -325,8 +325,8 @@ function inputChipOnChange(event, element) {
 		}
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/ActivacionREST/getLastByChip/" + val
-	    }).then(function(data) {
+			url: "/LogisticaWEB/RESTFacade/ActivacionREST/getLastByChip/" + val
+		}).then(function(data) {
 			if (data != null) {
 				if (chips.cantidadRegistros > 0 
 					&& chips.registrosMuestra[0].empresa.id != data.empresa.id
@@ -357,10 +357,16 @@ function inputChipOnChange(event, element) {
 	}
 }
 
-function inputGuardarOnClick(event) {
+function inputGuardarOnClick(event, element) {
+	var pesosElement = $(element);
+	
+	pesosElement.prop("disabled", true);
+	
 	var empresaId = $("#divEmpresa").attr("eid");
 	if (empresaId == 0) {
 		alert("Debe seleccionar una empresa.");
+		
+		pesosElement.prop("disabled", false);
 		return;
 	}
 	
@@ -395,6 +401,8 @@ function inputGuardarOnClick(event) {
 	
 	if (chips.cantidadRegistros == 0) {
 		alert("Debe ingresar al menos un Chip.");
+		
+		pesosElement.prop("disabled", false);
 		return;
 	}
 	
@@ -420,32 +428,42 @@ function inputGuardarOnClick(event) {
 		}
 		
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/update",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(activacionSublote)
-	    }).then(function(data) {
-	    	alert("Operación exitosa");
-	    	
-	    	window.parent.closeDialog();
-	    });
+			url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/update",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(activacionSublote)
+		}).then(function(data) {
+			alert("Operación exitosa");
+			
+			pesosElement.prop("disabled", false);
+			
+			window.parent.closeDialog();
+		});
 	} else {
 		$.ajax({
-	        url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/add",
-	        method: "POST",
-	        contentType: 'application/json',
-	        data: JSON.stringify(activacionSublote)
-	    }).then(function(data) {
-	    	if (data != null) {
+			url: "/LogisticaWEB/RESTFacade/ActivacionSubloteREST/add",
+			method: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(activacionSublote)
+		}).then(function(data) {
+			if (data != null) {
 				alert("Operación exitosa");
-	    	
+			
 				alert("Se ha creado el sub-lote nro: " + data.numero);
 				
-				window.parent.closeDialog();
-	    	} else {
-	    		alert("Error en la operación");
-	    	}
-	    });
+				pesosElement.prop("disabled", false);
+				
+				var formMode = __FORM_MODE_ADMIN;
+	
+				window.location.href = "/LogisticaWEB/pages/activaciones_sublote/activaciones_sublotes_edit.jsp?m=" + formMode + "&id=" + data.id;
+				
+				//window.parent.closeDialog();
+			} else {
+				alert("Error en la operación");
+				
+				pesosElement.prop("disabled", false);
+			}
+		});
 	}
 }
 

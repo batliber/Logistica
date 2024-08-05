@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.dwr;
+package uy.com.amensg.logistica.web.dwr;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -16,11 +16,11 @@ import javax.naming.NamingException;
 import uy.com.amensg.logistica.bean.IUsuarioBean;
 import uy.com.amensg.logistica.bean.UsuarioBean;
 import uy.com.amensg.logistica.entities.Menu;
-import uy.com.amensg.logistica.entities.MenuTO;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
-import uy.com.amensg.logistica.entities.UsuarioRolEmpresaTO;
-import uy.com.amensg.logistica.entities.UsuarioTO;
+import uy.com.amensg.logistica.web.entities.MenuTO;
+import uy.com.amensg.logistica.web.entities.UsuarioRolEmpresaTO;
+import uy.com.amensg.logistica.web.entities.UsuarioTO;
 
 public class UsuarioDWR {
 

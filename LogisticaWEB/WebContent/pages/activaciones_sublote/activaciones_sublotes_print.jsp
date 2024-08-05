@@ -17,10 +17,10 @@
 		<div class="divTagSheetContent">
 			<div class="divPageHeading">&nbsp;</div>
 			<div class="divPageContent">
-				<div class="divTagLabel">Empresa:</div><div id="divEmpresa" class="divTagValue">&nbsp;</div>
-				<div class="divTagLabel">Lote:</div><div id="divNumeroLote" class="divTagValue">&nbsp;</div>
-				<div class="divNumeroLoteBarCode">&nbsp;</div>
-				<div class="divTagLabel">Vence:</div><div id="divFechaVencimiento" class="divTagValue">&nbsp;</div>
+				<div class="divTagLabel">Empresa:</div><div id="divEmpresa" class="divTagValue divEmpresa">&nbsp;</div>
+				<div class="divTagLabel">Lote:</div><div id="divNumeroLote" class="divTagValue divNumeroLote">&nbsp;</div>
+				<div class="divNumeroLoteBarCode"><img class="imgNumeroLoteBarCode" src="about:blank"></img></div>
+				<div class="divTagLabel">Vence:</div><div id="divFechaVencimiento" class="divTagValue divFechaVencimiento">&nbsp;</div>
 			</div>
 			<div class="divPageFooter">&nbsp;</div>
 		</div>

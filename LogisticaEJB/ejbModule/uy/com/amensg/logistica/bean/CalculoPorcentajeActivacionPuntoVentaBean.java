@@ -5,9 +5,9 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import uy.com.amensg.logistica.entities.CalculoPorcentajeActivacionPuntoVenta;
 import uy.com.amensg.logistica.entities.MetadataConsulta;
@@ -18,7 +18,7 @@ import uy.com.amensg.logistica.util.QueryBuilder;
 @Stateless
 public class CalculoPorcentajeActivacionPuntoVentaBean implements ICalculoPorcentajeActivacionPuntoVentaBean {
 
-	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnit")
+	@PersistenceContext(unitName = "uy.com.amensg.logistica.persistenceUnitLogistica")
 	private EntityManager entityManager;
 	
 	public MetadataConsultaResultado list(MetadataConsulta metadataConsulta) {

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 public class ConnectionStrategyDirect implements IConnectionStrategy {
 
-	public String getSiguienteDocumentoParaControlar() {
+	public String getSiguienteDocumentoParaControlar(String wsdlFileName) {
 		String result = "";
 		
 		// TODO Implementar.
@@ -13,7 +13,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 		return result;
 	}
 	
-	public String getSiguienteDocumentoParaControlarRiesgoOnLine() {
+	public String getSiguienteDocumentoParaControlarRiesgoOnLine(String wsdlFileName) {
 		String result = "";
 		
 		// TODO Implementar.
@@ -22,6 +22,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosRiesgoCrediticioACM(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
@@ -62,6 +63,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 	
 	public void actualizarDatosRiesgoCrediticioBCU(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,
@@ -107,6 +109,7 @@ public class ConnectionStrategyDirect implements IConnectionStrategy {
 	}
 
 	public void actualizarDatosRiesgoCrediticioBCUInstitucionFinanciera(
+		String wsdlFileName,
 		String riesgoCrediticioId,
 		String empresaId,
 		String documento,

@@ -67,3 +67,29 @@
 	float: left;
 	width: 60%;
 }
+
+#divIFrameImportacionArchivoURSEC {
+	position: relative;
+	top: 50px;
+	left: 100px;
+	width: 400px;
+	height: 300px;
+	z-index: 3;
+	border: solid 1px black;
+	background-color: #F0F0F0;
+}
+
+#divImportacionArchivoURSEC {
+	position: absolute;
+	top: 21px;
+	left: 0;
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 95%;
+	background-color: #F0F0F0;
+}
+
+#inputArchivoURSEC {
+	float: left;
+	width: 60%;
+}

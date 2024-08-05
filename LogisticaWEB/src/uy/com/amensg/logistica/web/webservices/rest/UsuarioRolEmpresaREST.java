@@ -1,4 +1,4 @@
-package uy.com.amensg.logistica.webservices.rest;
+package uy.com.amensg.logistica.web.webservices.rest;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,22 +11,22 @@ import java.util.Map;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import uy.com.amensg.logistica.bean.IUsuarioRolEmpresaBean;
 import uy.com.amensg.logistica.bean.UsuarioRolEmpresaBean;
-import uy.com.amensg.logistica.dwr.UsuarioDWR;
-import uy.com.amensg.logistica.entities.EmpresaTO;
-import uy.com.amensg.logistica.entities.FormaPagoTO;
 import uy.com.amensg.logistica.entities.Usuario;
 import uy.com.amensg.logistica.entities.UsuarioRolEmpresa;
-import uy.com.amensg.logistica.entities.UsuarioRolEmpresaTO;
-import uy.com.amensg.logistica.entities.UsuarioTO;
+import uy.com.amensg.logistica.web.dwr.UsuarioDWR;
+import uy.com.amensg.logistica.web.entities.EmpresaTO;
+import uy.com.amensg.logistica.web.entities.FormaPagoTO;
+import uy.com.amensg.logistica.web.entities.UsuarioRolEmpresaTO;
+import uy.com.amensg.logistica.web.entities.UsuarioTO;
 
 @Path("/UsuarioRolEmpresaREST")
 public class UsuarioRolEmpresaREST {
@@ -254,6 +254,86 @@ public class UsuarioRolEmpresaREST {
 				Map<Long, Usuario> usuarios = new HashMap<Long, Usuario>();
 				for (UsuarioRolEmpresa usuarioRolEmpresa : 
 					iUsuarioRolEmpresaBean.listDistribuidoresChipsByUsuario(usuario)) {
+					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
+						usuarioRolEmpresa.getUsuario().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+						usuarios.put(
+							usuarioRolEmpresa.getUsuario().getId(), 
+							usuarioRolEmpresa.getUsuario()
+						);
+					}
+				}
+				
+				result.addAll(usuarios.values());
+				
+				Collections.sort(result, new ComparatorUsuario());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@GET
+	@Path("/listAtencionClienteOperadoresByContextMinimal")
+	@Produces("application/json")
+	public Collection<Usuario> listAtencionClienteOperadoresByContextMinimal(@Context HttpServletRequest request) {
+		List<Usuario> result = new LinkedList<Usuario>();
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				Usuario usuario = new Usuario();
+				usuario.setId(usuarioId);
+				
+				IUsuarioRolEmpresaBean iUsuarioRolEmpresaBean = lookupBean();
+				
+				Map<Long, Usuario> usuarios = new HashMap<Long, Usuario>();
+				for (UsuarioRolEmpresa usuarioRolEmpresa : 
+					iUsuarioRolEmpresaBean.listAtencionClienteOperadoresByUsuario(usuario)) {
+					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
+						usuarioRolEmpresa.getUsuario().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
+						usuarios.put(
+							usuarioRolEmpresa.getUsuario().getId(), 
+							usuarioRolEmpresa.getUsuario()
+						);
+					}
+				}
+				
+				result.addAll(usuarios.values());
+				
+				Collections.sort(result, new ComparatorUsuario());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@GET
+	@Path("/listAtencionClienteGestionadoresByContextMinimal")
+	@Produces("application/json")
+	public Collection<Usuario> listAtencionClienteGestionadoresByContextMinimal(@Context HttpServletRequest request) {
+		List<Usuario> result = new LinkedList<Usuario>();
+		
+		try {
+			HttpSession httpSession = request.getSession(false);
+			
+			if ((httpSession != null) && (httpSession.getAttribute("sesion") != null)) {
+				Long usuarioId = (Long) httpSession.getAttribute("sesion");
+				
+				Usuario usuario = new Usuario();
+				usuario.setId(usuarioId);
+				
+				IUsuarioRolEmpresaBean iUsuarioRolEmpresaBean = lookupBean();
+				
+				Map<Long, Usuario> usuarios = new HashMap<Long, Usuario>();
+				for (UsuarioRolEmpresa usuarioRolEmpresa : 
+					iUsuarioRolEmpresaBean.listAtencionClienteGestionadoresByUsuario(usuario)) {
 					if (!usuarios.containsKey(usuarioRolEmpresa.getUsuario().getId())) {
 						usuarioRolEmpresa.getUsuario().setUsuarioRolEmpresas(new LinkedList<UsuarioRolEmpresa>());
 						usuarios.put(
